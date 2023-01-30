@@ -1,0 +1,16 @@
+sign_into_account: Créer mon compte
+password: Mot de passe
+email: Votre email
+remember_me: Se souvenir de moi
+sign_in:  Se connecter
+login: Se connecter
+sign_up:  S'abonner
+logout: Me déconnecter
+forgot_password: Mot de passe oublié ?
+register: Crééer mon compte
+invalid_password_length:
+password_is_blank: Mot de passe est requis
+invalid_password: Mot de passe est invalide
+general_term_gdpr: J'accepte les termes et conditions d'utilisation (GDPR).
+agreement: J'accepte les termes conditions.
+Invalid credentials: Votre mot de passe n'est pas valide.

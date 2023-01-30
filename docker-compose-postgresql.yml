@@ -1,0 +1,73 @@
+version: '3.8'
+
+networks:
+  fenapalci:
+
+services:
+  db:
+    image: postgres:14
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: fenapalci_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: QT6e5APtSYaU
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./db:/var/lib/postgresql/data:rw
+    ports:
+      - 5432:5432
+    networks:
+      - fenapalci
+
+  pgadmin:
+    image: "dpage/pgadmin4:latest"
+    restart: always
+    container_name: pgadmin
+    environment:
+      POSTGRES_DB: fenapalci_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: QT6e5APtSYaU
+      PGADMIN_DEFAULT_EMAIL: anguidev@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: QT6e5APtSYaU
+    depends_on:
+      - db
+    ports:
+      - 15432:80
+    networks:
+      - fenapalci
+
+  app:
+    container_name: app
+    restart: always
+    build:
+      context: ./docker
+    depends_on:
+      - db
+    environment:
+      - APP_ENV=dev
+      - XDEBUG_MODES=debug
+      - DATABASE_URL=postgresql://root:QT6e5APtSYaU@db:5432/fenapalci_db?serverVersion=14
+      - REMOTE_HOST=host.docker.internal
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./app:/var/www/html
+    networks:
+      - fenapalci
+
+  nginx:
+    container_name: nginx
+    restart: always
+    build:
+      context: ./docker/nginx
+    volumes:
+      - ./app:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/sites/:/etc/nginx/sites-available
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d
+    ports:
+      - 85:80
+    depends_on:
+      - app
+    networks:
+      - fenapalci

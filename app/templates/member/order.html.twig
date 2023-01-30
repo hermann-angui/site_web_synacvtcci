@@ -1,0 +1,120 @@
+{% extends 'main.html.twig' %}
+
+{% block title %}Commandes{% endblock %}
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+    </style>
+{% endblock %}
+
+{% block profile_picture %}
+{% endblock %}
+
+{% block page_title %}
+    {{ include('_partials/page_title.html.twig', {'title': 'Commandes'}) }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="main-wrapper" class="clearfix">
+        <div id="main" class="container">
+            <div class="row row-offcanvas clearfix mt-5">
+                <main class="main-content col" id="content" role="main">
+                    <section class="section">
+
+                        <div>
+                            <div class="card border bg-transparent rounded-3">
+                                <!-- Card header START -->
+                                <div class="card-header bg-transparent border-bottom">
+                                    <h3 class="mb-0">Mes commandes</h3>
+                                </div>
+                                <!-- Card header END -->
+
+                                <!-- Card body START -->
+                                <div class="card-body">
+
+                                    <!-- Search and select START -->
+                                    <div class="row g-3 align-items-center justify-content-between mb-4">
+                                        <!-- Search -->
+                                        <div class="col-md-8">
+                                            <form class="rounded position-relative">
+                                                <input class="form-control pe-5 bg-transparent" type="search" placeholder="Rechercher" aria-label="Rechercher">
+                                                <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                                                    <svg class="svg-inline--fa fa-search fa-w-16 fs-6" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path></svg><!-- <i class="fas fa-search fs-6 "></i> -->
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <!-- Select option -->
+                                        <div class="col-md-3">
+                                            <!-- Short by filter -->
+                                            <form>
+                                                <div class="choices" data-type="select-one" tabindex="0" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false"><div class="choices__inner"><select class="form-select js-choice border-0 z-index-9 bg-transparent choices__input" aria-label=".form-select-sm" hidden="" tabindex="-1" data-choice="active"><option value="" data-custom-properties="[object Object]">Sort by</option></select><div class="choices__list choices__list--single"><div class="choices__item choices__placeholder choices__item--selectable" data-item="" data-id="1" data-value="" data-custom-properties="[object Object]" aria-selected="true">Sort by</div></div></div><div class="choices__list choices__list--dropdown" aria-expanded="false"><input type="text" class="choices__input choices__input--cloned" autocomplete="off" autocapitalize="off" spellcheck="false" role="textbox" aria-autocomplete="list" aria-label="Sort by" placeholder=""><div class="choices__list" role="listbox"><div id="choices--bh9s-item-choice-4" class="choices__item choices__item--choice is-selected choices__placeholder choices__item--selectable is-highlighted" role="option" data-choice="" data-id="4" data-value="" data-select-text="Press to select" data-choice-selectable="" aria-selected="true">Sort by</div><div id="choices--bh9s-item-choice-1" class="choices__item choices__item--choice choices__item--selectable" role="option" data-choice="" data-id="1" data-value="Free" data-select-text="Press to select" data-choice-selectable="">Free</div><div id="choices--bh9s-item-choice-2" class="choices__item choices__item--choice choices__item--selectable" role="option" data-choice="" data-id="2" data-value="Newest" data-select-text="Press to select" data-choice-selectable="">Newest</div><div id="choices--bh9s-item-choice-3" class="choices__item choices__item--choice choices__item--selectable" role="option" data-choice="" data-id="3" data-value="Oldest" data-select-text="Press to select" data-choice-selectable="">Oldest</div></div></div></div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- Search and select END -->
+
+                                    <!-- Order list table START -->
+                                    <div class="table-responsive border-0">
+                                        <!-- Table START -->
+                                        <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                                            <!-- Table head -->
+                                            <thead>
+                                            <tr>
+                                                <th scope="col" class="border-0 rounded-start">N° Commande</th>
+                                                <th scope="col" class="border-0 text-wrap">Produit</th>
+                                                <th scope="col" class="border-0">Montant</th>
+                                                <th scope="col" class="border-0 rounded-end">Créé le</th>
+                                            </tr>
+                                            </thead>
+
+                                            <!-- Table body START -->
+                                            <tbody>
+                                            </tbody>
+                                            <!-- Table body END -->
+                                        </table>
+                                        <!-- Table END -->
+                                    </div>
+                                    <!-- Order list table END -->
+
+                                    <!-- Pagination START -->
+                                    <div class="d-sm-flex justify-content-sm-end align-items-sm-end mt-4 mt-sm-3">
+                                        <!-- Content -->
+
+                                        <!-- Pagination -->
+                                        <nav class="d-flex justify-content-end mb-0" aria-label="navigation">
+                                            <ul class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0">
+                                                <li class="page-item mb-0 active"><a class="page-link" href="#" tabindex="-1"><svg class="svg-inline--fa fa-angle-left fa-w-8" aria-hidden="true" data-prefix="fas" data-icon="angle-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" data-fa-i2svg=""><path fill="currentColor" d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"></path></svg><!-- <i class="fas fa-angle-left"></i> --></a></li>
+                                                <li class="page-item mb-0"><a class="page-link" href="#">1</a></li>
+                                                <li class="page-item mb-0 "><a class="page-link" href="#">2</a></li>
+                                                <li class="page-item mb-0"><a class="page-link" href="#">3</a></li>
+                                                <li class="page-item mb-0"><a class="page-link" href="#"><svg class="svg-inline--fa fa-angle-right fa-w-8" aria-hidden="true" data-prefix="fas" data-icon="angle-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" data-fa-i2svg=""><path fill="currentColor" d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"></path></svg><!-- <i class="fas fa-angle-right"></i> --></a></li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <!-- Pagination END -->
+                                </div>
+                                <!-- Card body START -->
+                            </div>
+                        </div>
+
+
+                    </section>
+                </main>
+                {{ include('_partials/user_profile_menu.html.twig', {active : 'order'}) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+  <script>
+      $('document').ready(function() {
+      });
+   </script>
+{% endblock %}

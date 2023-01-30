@@ -1,0 +1,7 @@
+knp_snappy:
+  image:
+    enabled:    true
+    binary:     '%kernel.project_dir%/bin/wkhtmltoimage-amd64'
+    options:    []
+
+  temporary_folder: "%kernel.cache_dir%/snappy"

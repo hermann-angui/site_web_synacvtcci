@@ -1,0 +1,142 @@
+<header id="header" class="header" role="banner" aria-label="Entête du site">
+    <nav class="navbar navbar-dark" id="navbar-top">
+        <div class="container">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <section class="row region region-secondary-menu">
+                <nav role="navigation" class="block block-menu navigation menu--liens-rapides">
+                    <h2 class="sr-only" id="block-liensrapides-menu">Liens Rapides</h2>
+                    <ul class="clearfix nav mt-1">
+                        <li class="nav-item">
+                            <a href="{{ path('register') }}" class="nav-link nav-link--fr-acheter-adhesion">Devenir membre</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('contact_us') }}" class="">Nous contacter</a>
+                        </li>
+                    </ul>
+                </nav>
+                <nav role="navigation" class="block block-menu navigation menu--account">
+                    <h2 class="sr-only" id="block-useraccountmenu-menu">Menu Compte</h2>
+                    <div class="clearfix nav">
+                        {%  if app.user is null %}
+                            <a href="{{ path('login') }}" class="nav-link nav-link--fr-user-login mt-1">Se connecter</a>
+                        {% else %}
+                            <a href="{{ path('logout') }}" class="nav-link nav-link--fr-user-login mt-1">Se déconnecter</a>
+                                {% if app.user.photo is not null %}
+                                    <a href="{{ path('member_edit_profile') }}">
+                                       <img width="30" height="30" src="{{ asset('users/') }}{{ app.user.photo }}" id="user_avatar" alt="user profile picture" class="rounded-circle"/>
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('member_edit_profile') }}">
+                                         <img width="30" height="30" src="{{ asset('assets/images/avatar/avatar.jpg') }}" id="user_avatar" alt="user profile picture" class="rounded-circle"/>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                    </div>
+                </nav>
+
+            </section>
+        </div>
+    </nav>
+    <nav class="navbar navbar-expand-lg" id="navbar-main">
+        <div class="container">
+            <section class="region region-header">
+                <a href="{{ path('home') }}" title="Accueil" rel="home" class="navbar-brand">
+                    <img src="{{ asset('assets/images/logo-new.png') }}" style="width: 250px;height: 114px;" alt="Accueil" class="img-fluid d-inline-block align-top"/>
+                </a>
+            </section>
+
+            <div class="form-inline navbar-form float-right">
+                <section class="row region region-header-form">
+                    <div class="search-block-form block block-search block-search-form-block" id="block-nafr-search" role="search">
+                        <div class="content container-inline">
+                            <div class="content container-inline">
+                                <form action="" method="get" id="search-block-form" accept-charset="UTF-8" class="search-form search-block-form form-row">
+                                    <fieldset class="js-form-item js-form-type-search form-type-search js-form-item-keys form-item-keys form-no-label form-group">
+                                        <label for="edit-keys" class="sr-only">Rechercher</label>
+                                        <input title="Indiquer les termes à rechercher" type="search" id="edit-keys" name="keys" value="" size="15" maxlength="128" class="form-search form-control"/>
+                                    </fieldset>
+                                    <div  class="form-actions js-form-wrapper form-group" id="edit-actions">
+                                        <input type="submit" id="edit-submit" value="Rechercher" class="button js-form-submit form-submit btn btn-primary form-control"/>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="collapse navbar-collapse" id="CollapsingNavbar">
+                <nav role="navigation" aria-labelledby="block-nafr-main-menu-menu" id="block-nafr-main-menu"
+                     class="block block-menu navigation menu--main">
+
+                    <h2 class="sr-only" id="block-nafr-main-menu-menu">Main navigation</h2>
+
+
+                    <ul class="clearfix nav navbar-nav">
+                        <li class="nav-item menu-item--expanded dropdown">
+                            <a href="" class="nav-link dropdown-toggle nav-link-" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">La FENAPALCI</a>
+                            <ul class="dropdown-menu">
+
+                                <li class="dropdown-item">
+                                    <a href="{{ path('about_us') }}">Qui sommes-nous ?</a>
+                                </li>
+                                <li class="dropdown-item menu-item--collapsed">
+                                    <a href="{{ path('bureau') }}">Le bureau</a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="{{ path('missions') }}">Nos missions</a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="{{ path('activities') }}">Nos activités</a>
+                                </li>
+                            </ul>
+
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ path('ecommerce_index') }}" class="nav-link dropdown-toggle nav-link" >e-Boutique</a>
+                        </li>
+
+                        <li class="nav-item menu-item--expanded dropdown">
+                            <a href="#" class="nav-link dropdown-toggle nav-link-" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Services aux membres</a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item">
+                                    <a href="{{ path('members_training') }}">Formations</a>
+                                </li>
+
+                                <li class="dropdown-item">
+                                    <a href="{{ path('insurance') }}">Assurances</a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="{{ path('conseil_juridique') }}">Conseils et protection juridiques</a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="{{ path('social_care') }}">Cotisations sociales</a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                        <li class="nav-item menu-item--expanded dropdown">
+                            <a href="{{ path('activities') }}" class="nav-link dropdown-toggle nav-link">Actualités</a>
+                        </li>
+
+                        <li class="nav-item menu-item--expanded dropdown">
+                            <a href="{{ path('mediatheque') }}" class="nav-link dropdown-toggle nav-link">Médiathèque</a>
+                        </li>
+
+                        <li class="nav-item menu-item--expanded dropdown">
+                            <a href="{{ path('faq') }}" class="nav-link dropdown-toggle nav-link">FAQ</a>
+                        </li>
+
+
+                        <li class="nav-item menu-item--expanded dropdown">
+                            <a href="{{ path('contact_us') }}" class="nav-link dropdown-toggle nav-link">Nous contacter</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </nav>
+</header>
