@@ -7,6 +7,7 @@ parameters:
     app.supported_locales: ['fr','en']
     wave_success_url: https://pay.fenapalci.org/subscription/wave/checkout/success
     wave_error_url: https://pay.fenapalci.org/subscription/wave/checkout/error
+    profile_url: http://synacvtcci.develop/profile
     images_directory: '%kernel.project_dir%/public/uploads'
 
 services:
@@ -26,7 +27,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\MemberCardGeneratorService:
+        arguments:
+            $container: '@service_container'
+
+    App\Helper\CsvReaderHelper:
+        arguments:
+            $container: '@service_container'
+
     App\Helper\UserHelper:
         arguments:
             $uploadDirectory: '%kernel.project_dir%'
 
+    App\Helper\MemberHelper:
+        arguments:
+            $uploadDirectory: '%kernel.project_dir%'

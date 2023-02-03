@@ -1,0 +1,220 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+
+        {{ include('admin/_partials/header.html.twig') }}
+
+        <!-- ========== Left Sidebar Start ========== -->
+        {{ include('admin/_partials/left-sidebar.html.twig')}}
+        <!-- Left Sidebar End -->
+
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Membres</h4>
+
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Accueil</a></li>
+                                        <li class="breadcrumb-item active">Liste des Membres</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex align-items-center">
+                                        <h5 class="mb-0 card-title flex-grow-1"></h5>
+                                        <div class="flex-shrink-0">
+                                            <a href="{{ path('admin_member_new') }}" class="btn btn-primary btn-sm waves-effect waves-light" >Enregistrer un chauffeur</a>
+                                            <a href="{{ path('admin_member_upload') }}" class="btn btn-primary btn-sm waves-effect waves-light" >Importer un fichier</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body border-bottom">
+                                    <div class="row g-3">
+                                        <div class="col-xxl-4 col-lg-6">
+                                            <input type="search" class="form-control" id="searchInput" placeholder="rechercher ...">
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <select class="form-control select2">
+                                                <option>Sexe</option>
+                                                <option value="Active">F</option>
+                                                <option value="New">H</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-4">
+                                            <select class="form-control select2">
+                                                <option>Titre</option>
+                                                <option value="Chauffeur">Chauffeur</option>
+                                                <option value="Secrétaire général">Secrétaire général</option>
+                                                <option value="SN au contrôle informatique">SN au contrôle informatique</option>
+                                                <option value="SN aux finances">SN aux finances</option>
+                                                <option value="SN à l’administration">SN à l’administration</option>
+                                                <option value="Secrétaire général adjoint">Secrétaire général adjoint</option>
+                                                <option value="SN à l’organisation">SN à l’organisation</option>
+                                                <option value="SN à la communication">SN à la communication</option>
+                                                <option value="SN à la formation">SN à la formation</option>
+                                                <option value="SN chargé  des applications">SN chargé des applications</option>
+                                                <option value="SN Adjointe aux finances">SN Adjointe aux finances</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-xxl-2 col-lg-4">
+                                            <button type="button" class="btn btn-soft-secondary w-100"><i class="mdi mdi-filter-outline align-middle"></i> Filter</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle nowrap">
+                                            <thead class="table-light">
+                                            <tr>
+                                                <th></th>
+                                                <th>Date Souscription</th>
+                                                <th>Subscription expire le</th>
+                                                <th>N° permis</th>
+                                                <th>N° pièce</th>
+                                                <th>Type</th>
+                                                <th>Mobile</th>
+                                                <th>actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for member in members %}
+                                                <tr>
+                                                    <td>
+
+                                                        <div class="d-flex align-items-start">
+                                                            <div class="flex-shrink-0 me-3">
+                                                                {% if member.photo is null %}
+                                                                <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" class="avatar-md rounded-circle img-thumbnail">
+                                                                {% else %}
+                                                                    <img src="{{ asset('members') }}/{{ member.matricule }}/{{ member.photo }}" alt="" class="avatar-md rounded-circle img-thumbnail">
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="flex-grow-1 align-self-center">
+                                                                <div class="text-muted">
+                                                                    <h6>{{ member.lastName }} {{ member.firstName }}</h6>
+                                                                    <p class="mb-1">{{ member.email }}</p>
+                                                                    <p class="mb-0">Matricule: <strong>{{ member.matricule }}</strong></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ member.subscriptionDate ? member.subscriptionDate|date('Y-m-d') : '' }}</td>
+                                                    <td>{{ member.subscriptionExpireDate ? member.subscriptionExpireDate|date('Y-m-d') : '' }}</td>
+                                                    <td>{{ member.drivingLicenseNumber }}</td>
+                                                    <td>{{ member.IdNumber }}</td>
+                                                    <td>{{ member.IdType }}</td>
+                                                    <td>{{ member.mobile }}</td>
+                                                    <td>
+                                                        <ul class="list-unstyled hstack gap-1 mb-0">
+                                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="View">
+                                                                <a href="{{ path('admin_member_show', {'id': member.id}) }}" class="btn btn-sm btn-soft-primary"><i class="mdi mdi-eye-outline"></i></a>
+                                                            </li>
+                                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                                                <a href="{{ path('admin_member_edit', {'id': member.id}) }}" class="btn btn-sm btn-soft-info"><i class="mdi mdi-pencil-outline"></i></a>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="22">no records found</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div class="row justify-content-between align-items-center">
+                                            <div class="col-auto me-auto">
+                                                <p class="text-muted mb-0">Affichage <b>1</b> to <b>12</b> of <b>2000</b> entrées</p>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="card d-inline-block ms-auto mb-0">
+                                                    <div class="card-body p-2">
+                                                        <nav aria-label="Page navigation example" class="mb-0">
+                                                            <ul class="pagination pagination-rounded justify-content-center mt-4 mb-0">
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="javascript:void(0);" aria-label="Previous">
+                                                                        <span aria-hidden="true">&laquo;</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a></li>
+                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">12</a></li>
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="javascript:void(0);" aria-label="Next">
+                                                                        <span aria-hidden="true">&raquo;</span>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </nav>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end row-->
+                                </div>
+                            </div><!--end card-->
+                        </div><!--end col-->
+
+                    </div><!--end row-->
+
+
+                </div> <!-- container-fluid -->
+            </div><!-- End Page-content -->
+            {{ include('admin/_partials/footer.html.twig') }}
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right Sidebar -->
+    {{ include('admin/_partials/right-sidebar.html.twig') }}
+
+    <!-- /Right-bar -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+    });
+</script>
+{% endblock %}

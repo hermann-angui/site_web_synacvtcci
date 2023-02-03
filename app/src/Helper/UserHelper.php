@@ -19,35 +19,18 @@ class UserHelper
      */
     protected string $uploadDirectory;
 
-    /**
-     * @var Packages
-     */
-    protected Packages $assetsManager;
-
-
     public function __construct(string $uploadDirectory, FileUploadHelper $fileUploadHelper)
     {
         $this->uploadDirectory = $uploadDirectory;
         $this->fileUploadHelper = $fileUploadHelper;
     }
 
-    public function getUploadDirectory(): ?string
-    {
-        try {
-            $path = $this->uploadDirectory . '/public/users/';
-            if (!file_exists($path)) mkdir($path, 0777, true);
-            return $path;
-        } catch (\Exception $e) {
-            return null;
-        }
 
-    }
-
-    public function getUserUploadDirectory(?User $user): ?string
+    public function getUploadDirectory(?User $user): ?string
     {
         try {
             if(!$user) return null;
-            $path = $this->uploadDirectory . '/public/users/' . $user->getId() . '/';
+            $path = $this->uploadDirectory . "/public/membres/" . $user->getId() . "/" ;
             if (!file_exists($path)) mkdir($path, 0777, true);
             return $path;
         } catch (\Exception $e) {
@@ -58,13 +41,13 @@ class UserHelper
 
     public function uploadAsset(?File $file, ?User $user): ?string
     {
-        return $this->fileUploadHelper->upload($file, $this->getUploadDirectory());
+        return $this->fileUploadHelper->upload($file, $this->getUploadDirectory($user));
     }
 
 
-    public function removeAsset(?File $file, ?User $user): ?string
+    public function removeAsset(?File $file): ?string
     {
-        return $this->fileUploadHelper->remove($file, $this->getUploadDirectory());
+        return $this->fileUploadHelper->remove($file);
     }
 
 }

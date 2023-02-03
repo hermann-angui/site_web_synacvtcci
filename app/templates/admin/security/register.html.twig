@@ -1,0 +1,115 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Création de compte{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+
+
+    <div class="account-pages my-5 pt-sm-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-10 col-xl-10">
+                    <div class="card overflow-hidden">
+                        <div class="bg-white bg-soft">
+                            <div class="d-flex justify-content-center align-content-center">
+                                <div>
+                                    <img width="200" src="{{ asset('assets/admin/images/logo_synacvtcci.jpg') }}" alt="" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="row mt-4 px-5">
+                                {{ form_start(registrationForm) }}
+                                    {% if error is defined %}
+                                        <div class="alert alert-danger">
+                                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                                        </div>
+                                    {% endif %}
+                                        <!-- START PHOTO UPLOAD -->
+                                    <div class="row ">
+                                        <label for="registration_form_photo" class="d-block d-flex justify-content-center align-content-center">
+                                            <div>
+                                                <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+                                                <span class="d-block position-relative text-dark" style="top:-50px;left:50px"><i class="mdi mdi-camera mdi-48px"></i></span>
+                                                {{ form_widget(registrationForm.photo, {'attr': {'class': 'visually-hidden', 'id': 'registration_form_photo'}}) }}
+                                                <span>Télécharger votre photo</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="row mt-2">
+                                         {{ form_label(registrationForm.firstname) }}
+                                          {{ form_widget(registrationForm.firstname) }}
+                                    </div>
+                                    <div class="row mt-2">
+                                        {{ form_label(registrationForm.lastname) }}
+                                        {{ form_widget(registrationForm.lastname) }}
+                                    </div>
+                                    <div class="row mt-2">
+                                        {{ form_label(registrationForm.sex) }}
+                                        {{ form_widget(registrationForm.sex, {'attr': {'class': 'form-select required'}}) }}
+                                    </div>
+                                    <div class="row mt-2">
+                                        {{ form_label(registrationForm.nationality) }}
+                                        {{ form_widget(registrationForm.nationality, {'attr': {'class': 'form-select required'}}) }}
+                                    </div>
+                                    <div class="row mt-2">
+                                         {{ form_label(registrationForm.phoneNumber) }}
+                                         {{ form_widget(registrationForm.phoneNumber, {'attr': {'class': 'required'}}) }}
+                                    </div>
+                                    <div class="row mt-2">
+                                        {{ form_label(registrationForm.dateofBirth) }}
+                                        {{ form_widget(registrationForm.dateofBirth) }}
+                                    </div>
+                                    <div class="row mt-2">
+                                        {{ form_label(registrationForm.email) }}
+                                        {{ form_widget(registrationForm.email, {'attr': {'class': 'required'}}) }}
+                                    </div>
+                                    <div class="row mt-2">
+                                         {{ form_widget(registrationForm.password , {'attr': {'class': 'required'}}) }}
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-7">
+                                            <div class="inpt-form-group">
+                                                <div class="inpt-group">
+                                                    {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'inpt-control required'}}) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <input type="submit" value="Créer mon compte" class="btn btn-success" id="btn-register">
+                                    </div>
+                                {{ form_end(registrationForm) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+  <script>
+      $('document').ready(function() {
+          $("#registration_form_photo").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#imagePreview').attr('src', evt.target.result);
+                  $('#imagePreview').fadeIn(650);
+              }
+          });
+      });
+
+  </script>
+{% endblock %}

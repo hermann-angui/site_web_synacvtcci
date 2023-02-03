@@ -201,7 +201,7 @@ function createStyleSheet (media, nonce) {
   // WebKit hack :(
   // style.appendChild(document.createTextNode(""));
 
-  // Add the <style> element to the page
+  // Add the <style> element to the pages
   document.querySelector('head').appendChild(style);
 
   return style.sheet ? style.sheet : style.styleSheet;
@@ -2742,7 +2742,7 @@ var tns = function(options) {
         }
       }
 
-      // gallery: make sure new page won't overlap with current page
+      // gallery: make sure new pages won't overlap with current pages
       if (!carousel && indexGap && Math.abs(indexGap) < items) {
         var factor = indexGap > 0 ? 1 : -1;
         indexGap += (index + indexGap - slideCount) >= indexMin ? slideCount * factor : slideCount * 2 * factor * -1;

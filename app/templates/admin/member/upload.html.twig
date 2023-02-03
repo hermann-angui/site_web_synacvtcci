@@ -1,0 +1,103 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/dropzone/min/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block body %}
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+
+        {{ include('admin/_partials/header.html.twig') }}
+
+        <!-- ========== Left Sidebar Start ========== -->
+        {{ include('admin/_partials/left-sidebar.html.twig')}}
+        <!-- Left Sidebar End -->
+
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Importer des membres</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+
+                    <div class="row">
+                         <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <h4 class="card-title"></h4>
+                                    <p class="card-title-desc">Déposer votre fichier csv contenant la liste des membres et leurs images jpeg respectives.
+                                    </p>
+
+                                    <div>
+                                        <form method="POST" action="{{ path('admin_member_upload') }}" enctype="multipart/form-data" class="dropzone dz-clickable"  id="files-upload">
+
+                                            <div class="dz-message needsclick">
+                                                <div class="mb-3">
+                                                    <i class="display-4 text-muted bx bxs-cloud-upload"></i>
+                                                </div>
+
+                                                <h4>Glissez déposer ici ou cliquez pour envoyer vos fichiers.</h4>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <a href="{{ path('admin_member_import') }}" type="button" class="btn btn-primary waves-effect waves-light">Lancer l'import</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--end row-->
+
+
+                </div> <!-- container-fluid -->
+            </div><!-- End Page-content -->
+            {{ include('admin/_partials/footer.html.twig') }}
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right Sidebar -->
+    {{ include('admin/_partials/right-sidebar.html.twig') }}
+
+    <!-- /Right-bar -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/dropzone/min/dropzone.min.js') }}"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+        Dropzone.options.filesUpload = {
+            maxFilesize: 100,
+            acceptedFiles: ".jpeg,.jpg,.png,.gif,.csv"
+        };
+    });
+</script>
+{% endblock %}

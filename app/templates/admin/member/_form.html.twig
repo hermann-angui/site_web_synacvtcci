@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    <div class="row ">
+        <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
+            <div>
+                <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+                <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
+                {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+            </div>
+        </label>
+    </div>
+    {{ form_widget(form) }}
+    <div class="d-flex justify-content-center align-items-center">
+            <button class="btn btn-primary w-25">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+{{ form_end(form) }}

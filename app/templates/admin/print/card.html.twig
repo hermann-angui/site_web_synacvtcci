@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Republique democratique du congo evisa</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        body{
+            background-image: url('{{ cardbg }}');
+            background-repeat: no-repeat;
+            padding: 0;
+            margin: 0;
+            width: 1000px;
+        }
+        #photo{
+            position: absolute;
+            left:2px;
+            top: 238px;
+            width: 279px;
+            height: 338px;
+            background-position:center;
+            background-repeat: no-repeat;
+            background-size:contain;
+        }
+
+        #qrcode  {
+            position: absolute;
+            left: 780px;
+            top: 365px;
+            padding: 10px 10px;
+            background-color: white;
+            z-index: 2;
+        }
+
+        #qrcode img {
+            width: 150px;
+            height: 150px;
+            z-index: 10;
+        }
+
+        #info {
+            position: absolute;
+            text-align: center;
+            top: 218px;
+            left: 350px;
+            width: 550px;
+        }
+
+        #matricule{
+            letter-spacing: 3px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 0.9;
+            height: auto;
+        }
+
+        #fullname{
+            letter-spacing: 2px;
+            font-weight: bolder;
+            font-size: 1.3em;
+            text-align: center;
+            height: auto;
+        }
+
+        #titre{
+            letter-spacing: 2px;
+            font-weight: bolder;
+            font-size: 1.21em;
+            text-align: center;
+            height: auto;
+        }
+
+        #expiredate {
+            position: absolute;
+            letter-spacing: 3px;
+            left: 295px;
+            top: 525px;
+            width: 300px;
+            font-weight: bolder;
+            font-size: 0.95em;
+            color: black;
+        }
+
+        #website {
+            position: absolute;
+            letter-spacing: 4px;
+            font-weight: bolder;
+            left: 295px;
+            top: 547px;
+            width: 250px;
+            font-size: 0.95em;
+            color: white;
+        }
+
+        #footer {
+            position: absolute;
+            left: 1px;
+            top: 564px;
+            width: 600px;
+            height: 50px;
+        }
+
+    </style>
+</head>
+<body>
+<img id="photo" src="{{ photopath }}" alt="">
+<div id="info">
+    <p id="matricule">MATRICULE &nbsp; {{ matricule }}</p>
+    <p id="fullname">{{ fullname }}</p>
+    <p id="titre">{{ titre }}</p>
+</div>
+
+<div id="qrcode">
+    <img src="{{ qrcodepath }}" alt="">
+</div>
+<div id="expiredate">{{ expiredate }}</div>
+<div id="website">{{ website }}</div>
+<div id="footer"></div>
+
+</body>

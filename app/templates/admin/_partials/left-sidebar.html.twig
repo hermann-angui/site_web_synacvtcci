@@ -1,0 +1,44 @@
+<div class="vertical-menu">
+
+    <div data-simplebar class="h-100">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title" key="t-menu">Menu</li>
+                <li>
+                    <a href="{{ path('admin_index') }}" class="waves-effect" aria-expanded="false">
+                        <i class="bx bx-chat"></i>
+                        <span key="t-chat">Tableau de bord</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-calendar"></i>
+                        <span>Membres</span>
+                    </a>
+                    <ul class="sub-menu mm-collapse mm-show" aria-expanded="false">
+                        <li><a href="{{ path('admin_member_index') }}" key="t">Tous</a></li>
+                        <li><a href="{{ path('admin_member_index',{'filter': 'bureau'}) }}" key="b">Bureau</a></li>
+                        <li><a href="{{ path('admin_member_index',{'filter': 'chauffeurs'}) }}" key="c">Chauffeurs</a></li>
+                        <li><a href="{{ path('admin_member_index') }}" key="tx">Taxi</a></li>
+                    </ul>
+                </li>
+                <li class="menu-title">Paramètres</li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-home-circle"></i>
+                        <span key="t-dashboards">Securité</span>
+                    </a>
+                    <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
+                        <li><a href="{{ path('admin_index') }}" key="t-default">Utilisateurs</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-saas">Roles</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-crypto">API</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>

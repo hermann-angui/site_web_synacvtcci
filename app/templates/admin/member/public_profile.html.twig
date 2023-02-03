@@ -1,0 +1,76 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div id="layout-wrapper">
+            <div class="container-fluid">
+                <div class="row p-md-5 ">
+                    <div class="col-xl-12 p-sm-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h4 class="card-title fs-1">{{ member.lastName }} {{ member.firstName }}</h4>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                {% if member.photo is null %}
+                                    <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="200" class="rounded-2">
+                                {% else %}
+                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-responsive">
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <td><span class="text-primary fs-5 fw-bolder">{{ member.matricule }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <td>{{ member.firstName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Prénom</th>
+                                        <td>{{ member.lastName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Lieu de naissance</th>
+                                        <td>{{ member.birthCity }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>N° Permis de conduire</th>
+                                        <td>{{ member.drivingLicenseNumber }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>N° Pièce d'identité</th>
+                                        <td>{{ member.IdNumber }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Type de pièce</th>
+                                        <td>{{ member.IdType }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mobile</th>
+                                        <td>{{ member.mobile }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tel Fixe</th>
+                                        <td>{{ member.phone }}</td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}
+
+
