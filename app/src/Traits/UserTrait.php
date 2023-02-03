@@ -58,8 +58,6 @@ trait UserTrait
                 return $waveResponse->getWaveLaunchUrl();
             }
         }catch(\Exception $e){
-            dump($e);
-            die;
             return null;
         }
     }

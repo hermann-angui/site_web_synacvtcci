@@ -7,7 +7,7 @@ parameters:
     app.supported_locales: ['fr','en']
     wave_success_url: https://pay.fenapalci.org/subscription/wave/checkout/success
     wave_error_url: https://pay.fenapalci.org/subscription/wave/checkout/error
-    profile_url: http://synacvtcci.develop/profile
+    profile_url: http://synacvtcci.org/profile
     images_directory: '%kernel.project_dir%/public/uploads'
 
 services:
