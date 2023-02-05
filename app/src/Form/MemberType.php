@@ -105,7 +105,30 @@ class MemberType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-
+            ->add('photoPieceFront',FileType::class, [
+                'required' => false,
+                'label' => "Photo Piece d'identité (recto)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('photoPieceBack',FileType::class, [
+                'required' => false,
+                'label' => "Photo Piece d'identité (verso)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('photoPermisFront',FileType::class, [
+                'required' => false,
+                'label' => "Photo permis de conduire (recto)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('photoPermisBack',FileType::class, [
+                'required' => false,
+                'label' => "Photo permis de conduire (verso)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
             ->add('country', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Pays',

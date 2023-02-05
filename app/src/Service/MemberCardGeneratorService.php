@@ -33,6 +33,7 @@ class MemberCardGeneratorService
         $data['titre'] = $member->getTitre();
         $data['matricule'] = $member->getMatricule();
         $data['outputdir'] = "/var/www/html/public/members/" . $member->getMatricule() . "/";
+        if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
         $data['cardbg'] = "/var/www/html/public/assets/files/card_member_front.jpg";
         $data['photopath'] = $data['outputdir'] . $member->getPhoto();
         $data['qrcodepath'] = $data['outputdir'] . $member->getMatricule() . '_barcode.png' ;

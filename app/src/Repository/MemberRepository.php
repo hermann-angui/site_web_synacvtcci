@@ -45,8 +45,8 @@ class MemberRepository extends ServiceEntityRepository
     public function findMembresChauffeur(): array
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.titre = :val')
-            ->setParameter('val', "Chauffeur")
+            ->andWhere('m.titre in (:val)')
+            ->setParameter('val', "Membre,Chauffeur")
             ->orderBy('m.id', 'ASC')
             ->getQuery()
             ->getResult()
@@ -59,8 +59,8 @@ class MemberRepository extends ServiceEntityRepository
     public function findMembresBureau(): array
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.titre not like :val')
-            ->setParameter('val', "%Chauffeur")
+            ->andWhere('m.titre not in (:val)')
+            ->setParameter('val', "Membre,Chauffeur")
             ->orderBy('m.id', 'ASC')
             ->getQuery()
             ->getResult()

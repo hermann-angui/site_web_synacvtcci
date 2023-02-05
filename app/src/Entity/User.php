@@ -85,9 +85,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $modified_at;
 
 
-
     public function __construct()
     {
+        $this->created_at = new \DateTime();
+        $this->modified_at = new \DateTime();
     }
 
     /**

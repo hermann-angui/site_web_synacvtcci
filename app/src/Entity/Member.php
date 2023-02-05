@@ -45,10 +45,10 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $sex = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photo;
+    private ?string $photo = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $cardPhoto;
+    private ?string $cardPhoto = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_of_birth = null;
@@ -80,14 +80,39 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $photoPiece_front = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $photoPiece_back = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $photoPermis_front = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $photoPermis_back = null;
+
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
-    private $password;
+    private ?string $password;
 
-    private $plain_password;
+    private ?string $plain_password;
 
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $created_at;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $modified_at;
+
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime();
+        $this->modified_at = new \DateTime();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -177,7 +202,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDateOfBirth(): ?\DateTime
+    public function getDateOfBirth(): \DateTimeInterface
     {
         return $this->date_of_birth;
     }
@@ -370,10 +395,10 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param mixed $plain_password
+     * @param string $plain_password
      * @return User
      */
-    public function setPlainPassword($plain_password)
+    public function setPlainPassword(?string $plain_password) : self
     {
         $this->plain_password = $plain_password;
         return $this;
@@ -403,7 +428,117 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public static function getTitres(){
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $created_at
+     * @return Member
+     */
+    public function setCreatedAt(?\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getModifiedAt(): ?\DateTimeInterface
+    {
+        return $this->modified_at;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $modified_at
+     * @return Member
+     */
+    public function setModifiedAt(?\DateTimeInterface $modified_at): self
+    {
+        $this->modified_at = $modified_at;
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getPhotoPieceFront(): ?string
+    {
+        return $this->photoPiece_front;
+    }
+
+    /**
+     * @param string $photoPiece_front
+     * @return Member
+     */
+    public function setPhotoPieceFront(?string $photoPiece_front): self
+    {
+        $this->photoPiece_front = $photoPiece_front;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhotoPieceBack(): ?string
+    {
+        return $this->photoPiece_back;
+    }
+
+    /**
+     * @param string $photoPiece_back
+     * @return Member
+     */
+    public function setPhotoPieceBack(?string $photoPiece_back): self
+    {
+        $this->photoPiece_back = $photoPiece_back;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhotoPermisFront() : ?string
+    {
+        return $this->photoPermis_front;
+    }
+
+    /**
+     * @param string $photoPermis_front
+     * @return Member
+     */
+    public function setPhotoPermisFront(?string $photoPermis_front): self
+    {
+        $this->photoPermis_front = $photoPermis_front;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhotoPermisBack() : ?string
+    {
+        return $this->photoPermis_back;
+    }
+
+    /**
+     * @param string $photoPermis_back
+     * @return Member
+     */
+    public function setPhotoPermisBack(?string $photoPermis_back): self
+    {
+        $this->photoPermis_back = $photoPermis_back;
+        return $this;
+    }
+
+    public static function getTitres()
+    {
         return  [
             'Chauffeur' => 'Chauffeur',
             'Secrétaire général' => 'Secrétaire général',
@@ -418,4 +553,5 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
             'SN Adjointe aux finances' => 'SN Adjointe aux finances'
         ];
     }
+
 }

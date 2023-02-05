@@ -126,20 +126,20 @@ class MemberController extends AbstractController
                    $member = new Member();
 
                    $member->setRoles(['ROLE_USER']);
-                   if(array_key_exists("SEXE",$row)) $member->setSex($row["SEXE"]);
+                   if(array_key_exists("SEXE",$row)) $member->setSex(strtoupper($row["SEXE"]));
                    if(array_key_exists("EMAIL",$row)) $member->setEmail($row["EMAIL"]);
-                   if(array_key_exists("NOM",$row)) $member->setLastName($row["NOM"]);
-                   if(array_key_exists("PRENOMS",$row)) $member->setFirstName($row["PRENOMS"]);
+                   if(array_key_exists("NOM",$row)) $member->setLastName(strtoupper($row["NOM"]));
+                   if(array_key_exists("PRENOMS",$row)) $member->setFirstName(strtoupper($row["PRENOMS"]));
                    if(array_key_exists("DATE_NAISSANCE",$row)) $member->setDateOfBirth(new \DateTime($row["DATE_NAISSANCE"]));
                    if(array_key_exists("LIEU_NAISSANCE",$row)) $member->setBirthCity($row["LIEU_NAISSANCE"]);
                    if(array_key_exists("NUMERO_PERMIS",$row)) $member->setDrivingLicenseNumber($row["NUMERO_PERMIS"]);
                    if(array_key_exists("NUMERO_PIECE",$row)) $member->setIdNumber($row["NUMERO_PIECE"]);
                    if(array_key_exists("TYPE_PIECE",$row)) $member->setIdType($row["TYPE_PIECE"]);
                    if(array_key_exists("PAYS",$row)) $member->setCountry($row["PAYS"]);
-                   if(array_key_exists("VILLE",$row)) $member->setCity($row["VILLE"]);
-                   if(array_key_exists("COMMUNE",$row)) $member->setCommune($row["COMMUNE"]);
+                   if(array_key_exists("VILLE",$row)) $member->setCity(strtoupper($row["VILLE"]));
+                   if(array_key_exists("COMMUNE",$row)) $member->setCommune(strtoupper($row["COMMUNE"]));
                    if(array_key_exists("MOBILE",$row)) $member->setMobile($row["MOBILE"]);
-                   if(array_key_exists("TELEPHONE",$row)) $member->setPhone($row["TELEPHONE"]);
+                   if(array_key_exists("FIXE",$row)) $member->setPhone($row["FIXE"]);
                    if(array_key_exists("TITRE",$row)) $member->setTitre($row["TITRE"]);
 
                    $member->setPassword( $userPasswordHasher->hashPassword(
@@ -147,11 +147,10 @@ class MemberController extends AbstractController
                        PasswordHelper::generate()
                    ));
 
-
-                   if(!empty($row["DATE_SOUSCRIPTION"])) $member->setSubscriptionDate($date);
+                   if(isset($row["DATE_SOUSCRIPTION"])) $member->setSubscriptionDate($date);
                    else $member->setSubscriptionDate(new \DateTime($row["DATE_SOUSCRIPTION"])) ;
 
-                   if(!empty($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"])) ;
+                   if(isset($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"])) ;
                    else $member->setSubscriptionExpireDate($expiredDate);
 
                    $memberRepository->add($member, true);
@@ -164,11 +163,43 @@ class MemberController extends AbstractController
                    }
                    $exist = $memberRepository->findOneBy(['matricule'=>$matricule]);
                    if(!$exist) {
-                       if($row["PHOTO"]){
+                       if(isset($row["PHOTO"])){
                            $photo = new File($uploadDir . $row["PHOTO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
                                if($fileName) $member->setPhoto($fileName);
+                           }
+                       }
+
+                       if(isset($row["PHOTO_PIECE_RECTO"])){
+                           $photo = new File($uploadDir . $row["PHOTO_PIECE_RECTO"], false);
+                           if(file_exists($photo->getPathname())) {
+                               $fileName = $memberHelper->uploadAsset($photo, $member);
+                               if($fileName) $member->setPhotoPieceFront($fileName);
+                           }
+                       }
+
+                       if(isset($row["PHOTO_PIECE_VERSO"])){
+                           $photo = new File($uploadDir . $row["PHOTO_PIECE_VERSO"], false);
+                           if(file_exists($photo->getPathname())) {
+                               $fileName = $memberHelper->uploadAsset($photo, $member);
+                               if($fileName) $member->setPhotoPieceBack($fileName);
+                           }
+                       }
+
+                       if(isset($row["PHOTO_PERMIS_RECTO"])){
+                           $photo = new File($uploadDir . $row["PHOTO_PERMIS_RECTO"], false);
+                           if(file_exists($photo->getPathname())) {
+                               $fileName = $memberHelper->uploadAsset($photo, $member);
+                               if($fileName) $member->setPhotoPermisFront($fileName);
+                           }
+                       }
+
+                       if(isset($row["PHOTO_PERMIS_VERSO"])){
+                           $photo = new File($uploadDir . $row["PHOTO_PERMIS_VERSO"], false);
+                           if(file_exists($photo->getPathname())) {
+                               $fileName = $memberHelper->uploadAsset($photo, $member);
+                               if($fileName) $member->setPhotoPermisBack($fileName);
                            }
                        }
                        $memberRepository->add($member, true);
@@ -192,6 +223,7 @@ class MemberController extends AbstractController
         if($member){
             $cardImage = basename($memberCardGeneratorService->generate($member));
             $member->setCardPhoto($cardImage);
+            $member->setModifiedAt(new \DateTime());
             $memberRepository->add($member,true);
             return $this->render('admin/member/show_card.html.twig', ['member' => $member]);
         } else {
@@ -199,6 +231,7 @@ class MemberController extends AbstractController
             foreach($members as $member){
                 $cardImage = basename($memberCardGeneratorService->generate($member));
                 $member->setCardPhoto($cardImage);
+                $member->setModifiedAt(new \DateTime());
                 $memberRepository->add($member,true);
             }
             return $this->render('admin/member/show_card.html.twig', ['members' => $members]);
@@ -214,11 +247,30 @@ class MemberController extends AbstractController
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
     public function downloadCard(Member $member): Response
     {
-        $cardPhotoRealPath = $this->getParameter('kernel.project_dir') . "/public/membres/" . $member->getMatricule() . "/" . $member->getCardPhoto();
+        $cardPhotoRealPath = $this->getParameter('kernel.project_dir') . "/public/members/" . $member->getMatricule() . "/" . $member->getCardPhoto();
         return new BinaryFileResponse($cardPhotoRealPath);
     }
 
-    #[Route('/download/model', name: 'admin_member_sample_file', methods: ['GET'])]
+    #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET'])]
+    public function downloadMemberCards(Request $request, MemberRepository $memberRepository): Response
+    {
+        $zipArchive = new \ZipArchive();
+        $zipFile = $this->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';
+        if(file_exists($zipFile)) unlink($zipFile);
+        if($zipArchive->open($zipFile, \ZipArchive::CREATE) === true)
+        {
+            $members = $memberRepository->findAll();
+            foreach($members as $member){
+                $cardPhotoRealPath = $this->getParameter('kernel.project_dir') . "/public/members/" . $member->getMatricule() . "/" . $member->getCardPhoto();
+                if(is_file($cardPhotoRealPath)) $zipArchive->addFile($cardPhotoRealPath, $member->getMatricule() );
+            }
+            $zipArchive->close();
+            return new BinaryFileResponse($zipFile);
+        }
+        return new BinaryFileResponse(null);
+    }
+
+    #[Route('/download/sample', name: 'admin_member_sample_file', methods: ['GET'])]
     public function downloadSample(Request $request): Response
     {
         $sampleRealPath = $this->getParameter('kernel.project_dir') . "/public/assets/files/sample.csv";
