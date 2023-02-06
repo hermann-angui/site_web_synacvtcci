@@ -58,10 +58,29 @@ class MemberController extends AbstractController
             $expiredDate = $date->add(new \DateInterval("P1Y"));
             $member->setSubscriptionExpireDate($expiredDate);
 
-            $photo = $form->get('photo')->getData();
-            if($photo){
-                $fileName = $memberHelper->uploadAsset($photo, $member);
+            if($form->get('photo')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photo')->getData(), $member);
                 if($fileName) $member->setPhoto($fileName);
+            }
+
+            if($form->get('photoPieceFront')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPieceFront')->getData(), $member);
+                if($fileName) $member->setPhotoPieceFront($fileName);
+            }
+
+            if($form->get('photoPieceBack')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPieceBack')->getData(), $member);
+                if($fileName) $member->setPhotoPieceBack($fileName);
+            }
+
+            if($form->get('photoPermisFront')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPermisFront')->getData(), $member);
+                if($fileName) $member->setPhotoPermisFront($fileName);
+            }
+
+            if($form->get('photoPermisBack')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPermisBack')->getData(), $member);
+                if($fileName) $member->setPhotoPermisBack($fileName);
             }
 
             $member->setPassword( $userPasswordHasher->hashPassword(
@@ -101,7 +120,6 @@ class MemberController extends AbstractController
 
     #[Route('/import', name: 'admin_member_import', methods: ['GET', 'POST'])]
     public function import(Request $request,
-                           FileUploadHelper $fileUploadHelper,
                            MemberHelper $memberHelper,
                            MemberRepository $memberRepository,
                            UserPasswordHasherInterface $userPasswordHasher,
@@ -127,9 +145,9 @@ class MemberController extends AbstractController
 
                    $member->setRoles(['ROLE_USER']);
                    if(array_key_exists("SEXE",$row)) $member->setSex(strtoupper($row["SEXE"]));
-                   if(array_key_exists("EMAIL",$row)) $member->setEmail($row["EMAIL"]);
-                   if(array_key_exists("NOM",$row)) $member->setLastName(strtoupper($row["NOM"]));
-                   if(array_key_exists("PRENOMS",$row)) $member->setFirstName(strtoupper($row["PRENOMS"]));
+                   if(array_key_exists("EMAIL",$row)) $member->setEmail(trim($row["EMAIL"]));
+                   if(array_key_exists("NOM",$row)) $member->setLastName(strtoupper(trim($row["NOM"])));
+                   if(array_key_exists("PRENOMS",$row)) $member->setFirstName(strtoupper(trim($row["PRENOMS"])));
                    if(array_key_exists("DATE_NAISSANCE",$row)) $member->setDateOfBirth(new \DateTime($row["DATE_NAISSANCE"]));
                    if(array_key_exists("LIEU_NAISSANCE",$row)) $member->setBirthCity($row["LIEU_NAISSANCE"]);
                    if(array_key_exists("NUMERO_PERMIS",$row)) $member->setDrivingLicenseNumber($row["NUMERO_PERMIS"]);
@@ -163,7 +181,7 @@ class MemberController extends AbstractController
                    }
                    $exist = $memberRepository->findOneBy(['matricule'=>$matricule]);
                    if(!$exist) {
-                       if(isset($row["PHOTO"])){
+                       if(!empty(($row["PHOTO"]))){
                            $photo = new File($uploadDir . $row["PHOTO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -171,7 +189,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(isset($row["PHOTO_PIECE_RECTO"])){
+                       if(!empty($row["PHOTO_PIECE_RECTO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PIECE_RECTO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -179,7 +197,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(isset($row["PHOTO_PIECE_VERSO"])){
+                       if(!empty($row["PHOTO_PIECE_VERSO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PIECE_VERSO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -187,7 +205,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(isset($row["PHOTO_PERMIS_RECTO"])){
+                       if(!empty($row["PHOTO_PERMIS_RECTO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PERMIS_RECTO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -195,7 +213,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(isset($row["PHOTO_PERMIS_VERSO"])){
+                       if(!empty($row["PHOTO_PERMIS_VERSO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PERMIS_VERSO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -287,12 +305,40 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Member $member, MemberRepository $memberRepository): Response
+    public function edit(Request $request,
+                         Member $member,
+                         MemberHelper $memberHelper,
+                         MemberRepository $memberRepository): Response
     {
         $form = $this->createForm(MemberType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if($form->get('photo')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photo')->getData(), $member);
+                if($fileName) $member->setPhoto($fileName);
+            }
+
+            if($form->get('photoPieceFront')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPieceFront')->getData(), $member);
+                if($fileName) $member->setPhotoPieceFront($fileName);
+            }
+
+            if($form->get('photoPieceBack')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPieceBack')->getData(), $member);
+                if($fileName) $member->setPhotoPieceBack($fileName);
+            }
+
+            if($form->get('photoPermisFront')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPermisFront')->getData(), $member);
+                if($fileName) $member->setPhotoPermisFront($fileName);
+            }
+
+            if($form->get('photoPermisBack')->getData()){
+                $fileName = $memberHelper->uploadAsset($form->get('photoPermisBack')->getData(), $member);
+                if($fileName) $member->setPhotoPermisBack($fileName);
+            }
             $memberRepository->add($member, true);
 
             return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
