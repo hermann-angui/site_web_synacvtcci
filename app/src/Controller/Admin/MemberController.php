@@ -58,6 +58,15 @@ class MemberController extends AbstractController
             $expiredDate = $date->add(new \DateInterval("P1Y"));
             $member->setSubscriptionExpireDate($expiredDate);
 
+            $member->setPassword( $userPasswordHasher->hashPassword(
+                $member,
+                PasswordHelper::generate()
+            ));
+            $memberRepository->add($member, true);
+
+            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+            $member->setMatricule($matricule);
+
             if($form->get('photo')->getData()){
                 $fileName = $memberHelper->uploadAsset($form->get('photo')->getData(), $member);
                 if($fileName) $member->setPhoto($fileName);
@@ -83,15 +92,6 @@ class MemberController extends AbstractController
                 if($fileName) $member->setPhotoPermisBack($fileName);
             }
 
-            $member->setPassword( $userPasswordHasher->hashPassword(
-                $member,
-                PasswordHelper::generate()
-            ));
-
-            $memberRepository->add($member, true);
-
-            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-            $member->setMatricule($matricule);
             $memberRepository->add($member, true);
 
             return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
@@ -310,7 +310,7 @@ class MemberController extends AbstractController
                          MemberHelper $memberHelper,
                          MemberRepository $memberRepository): Response
     {
-        $form = $this->createForm(MemberType::class, $member);
+        $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

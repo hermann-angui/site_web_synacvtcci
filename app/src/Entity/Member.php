@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: '`member`')]
-#[UniqueEntity(fields: ['matricule','drivingLicenseNumber','idNumber'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['matricule','drivingLicenseNumber','IdNumber'], message: 'There is already an account with this email')]
 class Member implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -202,7 +202,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDateOfBirth(): \DateTimeInterface
+    public function getDateOfBirth(): ?\DateTimeInterface
     {
         return $this->date_of_birth;
     }

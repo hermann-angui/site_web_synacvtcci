@@ -23,7 +23,7 @@ class FileUploadHelper
 
             if(!$file) return null;
 
-            if(!$keepName) $fileName = time() . uniqid() .'.'. $file->getExtension();
+            if(!$keepName) $fileName = time() . uniqid() .'.'. ($file->guessExtension() ? $file->guessExtension(): $file->getExtension());
             else $fileName = $file->getClientOriginalName();
 
             if(!file_exists($destinationDirectory)) mkdir($destinationDirectory,0777, true);

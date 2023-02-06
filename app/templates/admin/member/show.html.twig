@@ -32,7 +32,9 @@
                                 <div class="card-body border-bottom">
                                     <div class="d-flex justify-content-end">
                                         <div class="flex-shrink-0">
+                                            {% if member.photo is not null %}
                                             <a href="{{ path('admin_member_generate_card',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light"><span class="fa fa-blender fa-1x"></span> Générer la carte</a>
+                                            {% endif %}
                                             {% if member.cardPhoto is not null %}
                                             <a href="{{ path('admin_member_show_card',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" ><span class="fa fa-eye fa-1x"></span> Voir la carte</a>
                                             <a href="{{ path('admin_member_download_card',{'id': member.id}) }}" class="btn btn-primary btn-sm waves-effect waves-light" ><span class="fa fa-download fa-1x"></span> Télécharger la carte</a>
@@ -51,7 +53,7 @@
                                                     {% if member.photo is null %}
                                                         <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-2">
                                                     {% else %}
-                                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
+                                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
                                                     {% endif %}
                                                 </div>
                                             </td>
@@ -108,6 +110,21 @@
                                         <tr>
                                             <th>Type de pièce</th>
                                             <td>{{ member.IdType }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Images CNI</th>
+                                            <td>
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPieceFront }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPieceBack }}" alt="" width="200" class="rounded-2">
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Images Permis</th>
+                                            <td>
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPermisFront }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPermisBack }}" alt="" width="200" class="rounded-2">
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Pays</th>

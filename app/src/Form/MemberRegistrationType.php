@@ -46,7 +46,7 @@ class MemberRegistrationType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'mapped' => true,
-                'required' => false
+                'required' => true
             ])
             ->add('titre', ChoiceType::class, [
                 'label' => 'Titre',
@@ -59,27 +59,29 @@ class MemberRegistrationType extends AbstractType
             ->add('IdNumber', TextType::class, [
                 'label' => "N° Pièce d'identité (CNI, Passeport ou Carte consulaire)",
                 'mapped' => true,
-                'required' => true
+                'required' => false
             ])
             ->add('IdType', TextType::class, [
                 'label' => 'Type de la pièce',
                 'mapped' => true,
-                'required' => true
+                'required' => false
             ])
             ->add('sex', ChoiceType::class, [
+                'label' => 'Genre',
                 'required' => false,
                 'mapped' => true,
                 'choices' => [
-                    'monsieur' => 'H',
-                    'madame' => 'F',
+                    'Homme' => 'H',
+                    'Femme' => 'F',
                 ],
-                'empty_data' => 'Homme',
-                'data' => 'Homme',
+                'empty_data' => 'H',
+                'data' => 'H',
             ])
             ->add('date_of_birth',DateType::class, [
                 'label' => 'Date de naissance',
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'years' => range($past->format('Y'), $end->format('Y')),
             ])
             ->add('birth_city', TextType::class, [
                 'label' => 'Lieu de naissance',
@@ -89,7 +91,7 @@ class MemberRegistrationType extends AbstractType
             ->add('drivingLicenseNumber', TextType::class, [
                 'label' => 'Numéro du permis de conduire',
                 'mapped' => true,
-                'required' => true
+                'required' => false
             ])
             ->add('photoPieceFront',FileType::class, [
                 'required' => false,
@@ -122,10 +124,26 @@ class MemberRegistrationType extends AbstractType
                 'choices' => $countries,
                 'choice_loader' => null
             ])
-            ->add('city')
-            ->add('commune')
-            ->add('mobile')
-            ->add('phone')
+            ->add('city', TextType::class, [
+                'label' => "Ville",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('commune', TextType::class, [
+                'label' => "Commune",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('mobile', TextType::class, [
+                'label' => "Tel Mobile",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('phone', TextType::class, [
+                'label' => "Tel fixe",
+                'mapped' => true,
+                'required' => false
+            ])
         ;
     }
 

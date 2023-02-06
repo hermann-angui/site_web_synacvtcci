@@ -136,10 +136,26 @@ class MemberType extends AbstractType
                 'choices' => $countries,
                 'choice_loader' => null
             ])
-            ->add('city')
-            ->add('commune')
-            ->add('mobile')
-            ->add('phone')
+            ->add('city', TextType::class, [
+                'label' => "Ville",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('commune', TextType::class, [
+                'label' => "Commune",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('mobile', TextType::class, [
+                'label' => "Tel Mobile",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('phone', TextType::class, [
+                'label' => "Tel fixe",
+                'mapped' => true,
+                'required' => false
+            ])
         ;
     }
 
