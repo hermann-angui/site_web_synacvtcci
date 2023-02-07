@@ -144,18 +144,18 @@ class MemberController extends AbstractController
                    $member = new Member();
 
                    $member->setRoles(['ROLE_USER']);
-                   if(array_key_exists("SEXE",$row)) $member->setSex(strtoupper($row["SEXE"]));
+                   if(array_key_exists("SEXE",$row)) $member->setSex(mb_strtoupper($row["SEXE"], 'UTF-8'));
                    if(array_key_exists("EMAIL",$row)) $member->setEmail(trim($row["EMAIL"]));
-                   if(array_key_exists("NOM",$row)) $member->setLastName(strtoupper(trim($row["NOM"])));
-                   if(array_key_exists("PRENOMS",$row)) $member->setFirstName(strtoupper(trim($row["PRENOMS"])));
+                   if(array_key_exists("NOM",$row)) $member->setLastName(mb_strtoupper(trim($row["NOM"]), 'UTF-8'));
+                   if(array_key_exists("PRENOMS",$row)) $member->setFirstName(mb_strtoupper(trim($row["PRENOMS"]),'UTF-8'));
                    if(array_key_exists("DATE_NAISSANCE",$row)) $member->setDateOfBirth(new \DateTime($row["DATE_NAISSANCE"]));
                    if(array_key_exists("LIEU_NAISSANCE",$row)) $member->setBirthCity($row["LIEU_NAISSANCE"]);
                    if(array_key_exists("NUMERO_PERMIS",$row)) $member->setDrivingLicenseNumber($row["NUMERO_PERMIS"]);
                    if(array_key_exists("NUMERO_PIECE",$row)) $member->setIdNumber($row["NUMERO_PIECE"]);
                    if(array_key_exists("TYPE_PIECE",$row)) $member->setIdType($row["TYPE_PIECE"]);
                    if(array_key_exists("PAYS",$row)) $member->setCountry($row["PAYS"]);
-                   if(array_key_exists("VILLE",$row)) $member->setCity(strtoupper($row["VILLE"]));
-                   if(array_key_exists("COMMUNE",$row)) $member->setCommune(strtoupper($row["COMMUNE"]));
+                   if(array_key_exists("VILLE",$row)) $member->setCity(mb_strtoupper($row["VILLE"], 'UTF-8'));
+                   if(array_key_exists("COMMUNE",$row)) $member->setCommune(mb_strtoupper($row["COMMUNE"], 'UTF-8'));
                    if(array_key_exists("MOBILE",$row)) $member->setMobile($row["MOBILE"]);
                    if(array_key_exists("FIXE",$row)) $member->setPhone($row["FIXE"]);
                    if(array_key_exists("TITRE",$row)) $member->setTitre($row["TITRE"]);
@@ -270,7 +270,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET'])]
-    public function downloadMemberCards(Request $request, MemberRepository $memberRepository): Response
+    public function downloadMemberCards(Request $request, MemberRepository $memberRepository, MemberCardGeneratorService $memberCardGeneratorService): Response
     {
         $zipArchive = new \ZipArchive();
         $zipFile = $this->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';
@@ -278,7 +278,14 @@ class MemberController extends AbstractController
         if($zipArchive->open($zipFile, \ZipArchive::CREATE) === true)
         {
             $members = $memberRepository->findAll();
-            foreach($members as $member){
+            foreach($members as $member)
+            {
+                if(empty($member->getPhoto())) continue;
+                $cardImage = basename($memberCardGeneratorService->generate($member));
+                $member->setCardPhoto($cardImage);
+                $member->setModifiedAt(new \DateTime());
+                $memberRepository->add($member,true);
+
                 $cardPhotoRealPath = $this->getParameter('kernel.project_dir') . "/public/members/" . $member->getMatricule() . "/" . $member->getCardPhoto();
                 if(is_file($cardPhotoRealPath)) $zipArchive->addFile($cardPhotoRealPath, $member->getMatricule() );
             }
@@ -319,6 +326,13 @@ class MemberController extends AbstractController
                 $fileName = $memberHelper->uploadAsset($form->get('photo')->getData(), $member);
                 if($fileName) $member->setPhoto($fileName);
             }
+
+            if($sex = $form->get('sex')->getData()){
+                $sexChar = substr( $member->getMatricule(),2, 1);
+                if($sexChar == '1' && $sex = 'F') $member->setMatricule(str_replace('SY1', 'SY2',$member->getMatricule() ));
+                if($sexChar == '2' && $sex = 'H') $member->setMatricule(str_replace('SY2', 'SY1',$member->getMatricule() ));
+            }
+
 
             if($form->get('photoPieceFront')->getData()){
                 $fileName = $memberHelper->uploadAsset($form->get('photoPieceFront')->getData(), $member);
