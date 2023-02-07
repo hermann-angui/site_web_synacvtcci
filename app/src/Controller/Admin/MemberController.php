@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Member;
 use App\Form\MemberRegistrationType;
-use App\Form\MemberType;
 use App\Helper\CsvReaderHelper;
 use App\Helper\FileUploadHelper;
 use App\Helper\MemberHelper;
@@ -52,11 +51,11 @@ class MemberController extends AbstractController
             $member->setSubscriptionDate($date);
 
             $sexCode = "SY1";
-            if($member->getSex() === "M") $sexCode = "SY1";
+            if($member->getSex() === "H") $sexCode = "SY1";
             if($member->getSex() === "F") $sexCode = "SY2";
 
             $expiredDate = $date->add(new \DateInterval("P1Y"));
-            $member->setSubscriptionExpireDate($expiredDate);
+            $member->setSubscriptionExpireDate(new \DateTime($expiredDate->format('Y-12-31')));
 
             $member->setPassword( $userPasswordHasher->hashPassword(
                 $member,
@@ -169,7 +168,7 @@ class MemberController extends AbstractController
                    else $member->setSubscriptionDate(new \DateTime($row["DATE_SOUSCRIPTION"])) ;
 
                    if(isset($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"])) ;
-                   else $member->setSubscriptionExpireDate($expiredDate);
+                   else $member->setSubscriptionExpireDate($expiredDate->format('Y-12-31'));
 
                    $memberRepository->add($member, true);
 
@@ -331,6 +330,7 @@ class MemberController extends AbstractController
                 $sexChar = substr( $member->getMatricule(),2, 1);
                 if($sexChar == '1' && $sex = 'F') $member->setMatricule(str_replace('SY1', 'SY2',$member->getMatricule() ));
                 if($sexChar == '2' && $sex = 'H') $member->setMatricule(str_replace('SY2', 'SY1',$member->getMatricule() ));
+
             }
 
 

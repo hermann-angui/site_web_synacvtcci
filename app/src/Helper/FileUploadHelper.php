@@ -26,7 +26,7 @@ class FileUploadHelper
             if(!$keepName) $fileName = time() . uniqid() .'.'. ($file->guessExtension() ? $file->guessExtension(): $file->getExtension());
             else $fileName = $file->getClientOriginalName();
 
-            if(!file_exists($destinationDirectory)) mkdir($destinationDirectory,0777, true);
+            if(!file_exists($destinationDirectory)) mkdir($destinationDirectory);
             $file->move($destinationDirectory, $fileName);
 
         } catch (\Exception $e) {
@@ -34,7 +34,6 @@ class FileUploadHelper
         }
         return $fileName;
     }
-
 
     public function remove(?File $file): ?bool
     {
