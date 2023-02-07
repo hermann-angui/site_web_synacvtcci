@@ -287,7 +287,7 @@ class MemberController extends AbstractController
                 $memberRepository->add($member,true);
 
                 $cardPhotoRealPath = $this->getParameter('kernel.project_dir') . "/public/members/" . $member->getMatricule() . "/" . $member->getCardPhoto();
-                if(is_file($cardPhotoRealPath)) $zipArchive->addFile($cardPhotoRealPath, $member->getMatricule() );
+                if(is_file($cardPhotoRealPath)) $zipArchive->addFile($cardPhotoRealPath, $member->getCardPhoto() );
             }
             $zipArchive->close();
             return new BinaryFileResponse($zipFile);
