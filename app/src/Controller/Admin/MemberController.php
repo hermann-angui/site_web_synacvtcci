@@ -5,16 +5,22 @@ namespace App\Controller\Admin;
 use App\Entity\Member;
 use App\Form\MemberRegistrationType;
 use App\Helper\CsvReaderHelper;
+use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
 use App\Helper\MemberHelper;
 use App\Helper\PasswordHelper;
 use App\Repository\MemberRepository;
 use App\Service\MemberCardGeneratorService;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -26,11 +32,7 @@ class MemberController extends AbstractController
     #[Route('', name: 'admin_member_index', methods: ['GET'])]
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
-        $filter = $request->get('filter');
-
-        if($filter==='chauffeurs') $members = $memberRepository->findMembresChauffeur();
-        elseif($filter==='bureau') $members = $memberRepository->findMembresBureau();
-        else $members = $memberRepository->findAll();
+        $members = $memberRepository->findAll();
 
         return $this->render('admin/member/index.html.twig', ['members' => $members]);
     }
@@ -301,6 +303,103 @@ class MemberController extends AbstractController
         return new BinaryFileResponse($sampleRealPath);
     }
 
+    #[Route('/datatable', name: 'admin_member_datatable', methods: ['GET'])]
+    public function datatable(Request $request, Connection $connection, MemberRepository $memberRepository)
+    {
+        $params = $request->query->all();
+        $paramDB = $connection->getParams();
+        $table = 'member';
+        $primaryKey = 'id';
+        $member = null;
+        $columns = [
+            [
+                'db' => 'id',
+                'dt' => 'id',
+                'formatter' => function( $d, $row ) use ($memberRepository){
+                    $member = $memberRepository->find($d);
+                    $imageUrl = $member->getMatricule() . "/" .  $member->getPhoto();
+                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
+                    return $content;
+                }
+            ],
+            [
+                'db' => 'matricule',
+                'dt' => 'matricule',
+            ],
+            [
+                'db' => 'last_name',
+                'dt' => 'last_name',
+            ],
+            [
+                'db' => 'first_name',
+                'dt' => 'first_name',
+            ],
+            [
+                'db' => 'subscription_date',
+                'dt' => 'subscription_date'
+            ],
+            [
+                'db' => 'subscription_expire_date',
+                'dt' => 'subscription_expire_date'
+            ],
+            [
+                'db' => 'driving_license_number',
+                'dt' => 'driving_license_number'
+            ],
+            [
+                'db' => 'id_number',
+                'dt' => 'id_number'
+            ],
+            [
+                'db' => 'id_type',
+                'dt' => 'id_type'
+            ],
+            [
+                'db' => 'mobile',
+                'dt' => 'mobile'
+            ],
+            [
+                'db'        => 'email',
+                'dt'        => 'email',
+                'formatter' => function($d, $row) {
+                    $id = $row['id'];
+                    $content =  "<ul class='list-unstyled hstack gap-1 mb-0'>
+                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='View'>
+                                          <a href='/admin/member/$id' class='btn btn-sm btn-soft-primary'><i class='mdi mdi-eye-outline'></i></a>
+                                      </li>
+                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
+                                         <a href='/admin/member/$id/edit' class='btn btn-sm btn-soft-info'><i class='mdi mdi-pencil-outline'></i></a>
+                                      </li>
+                                </ul>";
+                    return $content;
+                }
+            ]
+        ];
+
+        $sql_details = array(
+            'user' => $paramDB['user'],
+            'pass' => $paramDB['password'],
+            'db'   => $paramDB['dbname'],
+            'host' => $paramDB['host']
+        );
+
+        $whereResult = '';
+        if(!empty($params['matricule'])){
+            $whereResult .= " matricule='". $params['matricule'] . "' AND";
+        }
+        if(!empty($params['driving_license_number'])) {
+            $whereResult .= " driving_license_number='". $params['driving_license_number']. "' AND";
+        }
+        if(!empty($params['id_number'])) {
+            $whereResult .= " id_number	='". $params['id_number	'] . "' AND";
+        }
+
+        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+
+        $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+
+        return new JsonResponse($response);
+    }
 
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
     public function show(Member $member): Response
@@ -373,4 +472,6 @@ class MemberController extends AbstractController
 
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

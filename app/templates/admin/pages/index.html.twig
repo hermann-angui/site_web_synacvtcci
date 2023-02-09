@@ -850,6 +850,12 @@
 
 {% block javascript %}
     {{ parent() }}
+
+<!-- apexcharts -->
+<script src="{{ asset('assets/admin/libs/apexcharts/apexcharts.min.js') }}"></script>
+
+<!-- dashboard init -->
+<script src="{{ asset('assets/admin/js/pages/dashboard.init.js') }}"></script>
     <script type="text/javascript">
         jQuery(document).ready(function ($) {
         });

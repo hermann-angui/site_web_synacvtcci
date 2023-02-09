@@ -2,6 +2,8 @@
 
 {% block stylesheet %}
     {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
@@ -45,7 +47,6 @@
                     </div>
                     <!-- end page title -->
 
-
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card">
@@ -61,18 +62,23 @@
                                 </div>
                                 <div class="card-body border-bottom">
                                     <div class="row g-3">
-                                        <div class="col-xxl-4 col-lg-6">
-                                            <input type="search" class="form-control" id="searchInput" placeholder="rechercher ...">
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <input type="search" class="form-control" id="matricule" placeholder="matricule">
                                         </div>
                                         <div class="col-xxl-2 col-lg-6">
-                                            <select class="form-control select2">
-                                                <option>Sexe</option>
-                                                <option value="Active">F</option>
-                                                <option value="New">H</option>
+                                            <input type="search" class="form-control" id="driving_license_number" placeholder="N° permis">
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <input type="search" class="form-control" id="id_number" placeholder="Pièce d'identité ...">
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <select id="sex" class="form-control select2">
+                                                <option value="F">F</option>
+                                                <option value="H">H</option>
                                             </select>
                                         </div>
                                         <div class="col-xxl-2 col-lg-4">
-                                            <select class="form-control select2">
+                                            <select id="titre" class="form-control select2">
                                                 <option>Titre</option>
                                                 <option value="Chauffeur">Chauffeur</option>
                                                 <option value="Secrétaire général">Secrétaire général</option>
@@ -89,101 +95,13 @@
                                         </div>
 
                                         <div class="col-xxl-2 col-lg-4">
-                                            <button type="button" class="btn btn-soft-secondary w-100"><i class="mdi mdi-filter-outline align-middle"></i> Filter</button>
+                                            <button id="refresh-btn" type="button" class="btn btn-soft-secondary w-100"><i class="mdi mdi-filter-outline align-middle"></i> Filter</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-hover align-middle nowrap">
-                                            <thead class="table-light">
-                                            <tr>
-                                                <th></th>
-                                                <th>Date Souscription</th>
-                                                <th>Subscription expire le</th>
-                                                <th>N° permis</th>
-                                                <th>N° pièce</th>
-                                                <th>Type</th>
-                                                <th>Mobile</th>
-                                                <th>actions</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% for member in members %}
-                                                <tr>
-                                                    <td>
-
-                                                        <div class="d-flex align-items-start">
-                                                            <div class="flex-shrink-0 me-3">
-                                                                {% if member.photo is null %}
-                                                                <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" class="avatar-md rounded-circle img-thumbnail">
-                                                                {% else %}
-                                                                    <img src="{{ asset('members') }}/{{ member.matricule }}/{{ member.photo }}" alt="" class="avatar-md rounded-circle img-thumbnail">
-                                                                {% endif %}
-                                                            </div>
-                                                            <div class="flex-grow-1 align-self-center">
-                                                                <div class="text-muted">
-                                                                    <h6>{{ member.lastName }} {{ member.firstName }}</h6>
-                                                                    <p class="mb-1">{{ member.email }}</p>
-                                                                    <p class="mb-0">Matricule: <strong>{{ member.matricule }}</strong></p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>{{ member.subscriptionDate ? member.subscriptionDate|date('Y-m-d') : '' }}</td>
-                                                    <td>{{ member.subscriptionExpireDate ? member.subscriptionExpireDate|date('Y-m-d') : '' }}</td>
-                                                    <td>{{ member.drivingLicenseNumber }}</td>
-                                                    <td>{{ member.IdNumber }}</td>
-                                                    <td>{{ member.IdType }}</td>
-                                                    <td>{{ member.mobile }}</td>
-                                                    <td>
-                                                        <ul class="list-unstyled hstack gap-1 mb-0">
-                                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="View">
-                                                                <a href="{{ path('admin_member_show', {'id': member.id}) }}" class="btn btn-sm btn-soft-primary"><i class="mdi mdi-eye-outline"></i></a>
-                                                            </li>
-                                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                                                <a href="{{ path('admin_member_edit', {'id': member.id}) }}" class="btn btn-sm btn-soft-info"><i class="mdi mdi-pencil-outline"></i></a>
-                                                            </li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                            {% else %}
-                                                <tr>
-                                                    <td colspan="22">no records found</td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                        <div class="row justify-content-between align-items-center">
-                                            <div class="col-auto me-auto">
-                                                <p class="text-muted mb-0">Affichage <b>1</b> to <b>12</b> of <b>2000</b> entrées</p>
-                                            </div>
-                                            <div class="col-auto">
-                                                <div class="card d-inline-block ms-auto mb-0">
-                                                    <div class="card-body p-2">
-                                                        <nav aria-label="Page navigation example" class="mb-0">
-                                                            <ul class="pagination pagination-rounded justify-content-center mt-4 mb-0">
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="javascript:void(0);" aria-label="Previous">
-                                                                        <span aria-hidden="true">&laquo;</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a></li>
-                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
-                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
-                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
-                                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">12</a></li>
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="javascript:void(0);" aria-label="Next">
-                                                                        <span aria-hidden="true">&raquo;</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </nav>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {{ include('admin/member/_member_datatable.html.twig') }}
                                     </div>
                                     <!--end row-->
                                 </div>
@@ -191,6 +109,7 @@
                         </div><!--end col-->
 
                     </div><!--end row-->
+
 
 
                 </div> <!-- container-fluid -->
@@ -213,8 +132,49 @@
 
 {% block javascript %}
 {{ parent() }}
+<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
+
+        initDatatable();
+
+        function initDatatable(){
+            /* DATATABLE INIT */
+            var dt = $('#datatable').DataTable( {
+                "responsive": true,
+                "language": {
+                    url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                },
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": '{{ path('admin_member_datatable') }}',
+                    "data": function (d) {
+                        d.matricule = $("#matricule").val();
+                        d.driving_license_number = $("#driving_license_number").val();
+                        d.id_number = $("#id_number").val();
+                        d.sex = $("#sex").val();
+                    }
+                },
+                "columns": [
+                    {"data":  "id"},
+                    {"data":  "matricule"},
+                    {"data":  "last_name"},
+                    {"data":  "first_name"},
+                    { "data": "subscription_date" },
+                    { "data": "subscription_expire_date" },
+                    { "data": "driving_license_number" },
+                    { "data": "id_number" },
+                    { "data": "id_type" },
+                    { "data": "mobile" },
+                    { "data": "email" }
+                ],
+                "order": [[1, 'asc']]
+            } );
+            return dt;
+        }
     });
 </script>
 {% endblock %}
