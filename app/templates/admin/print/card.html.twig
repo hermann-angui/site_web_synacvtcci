@@ -10,79 +10,82 @@
             background-repeat: no-repeat;
             padding: 0;
             margin: 0;
-            width: 1013px;
+            width: auto;/*1013px;*/
             height: 642px;
         }
         #photo{
             position: absolute;
             left:2px;
-            top: 238px;
-            width: 283px;
-            height: 338px;
+            top: 236px;
+            width: 310px;
+            height: 340px;
             background-position:center;
             background-repeat: no-repeat;
-            background-size:contain;
-        }
-
-        #qrcode  {
-            position: absolute;
-            left: 780px;
-            top: 420px;
-            padding: 10px 10px;
-            background-color: white;
-            z-index: 2;
-        }
-
-        #qrcode img {
-            width: 150px;
-            height: 150px;
-            z-index: 10;
+            background-size:auto;
         }
 
         #info {
             position: absolute;
             text-align: center;
-            top: 218px;
-            left: 200px;
-            width: 850px;
+            top: 220px;
+            left: 322px;
+            width: 650px;
+            /*border: 1px solid red;*/
         }
-        #info p {
-            line-height: 25px;
-        }
+
 
         #matricule{
+            position: relative;
+            display: inline-block;
+            margin: 15px 0px 10px 0px;
+            padding: 0 0;
             letter-spacing: 3px;
             text-align: center;
-            font-weight: 0.9;
+            font-weight: 1.0;
             height: auto;
-            font-family: 'Arial';
+            width: 100%;
+            font-family: 'Arial', sans-serif;
             font-size: 20pt;
-
+            /*border: 1px solid red;*/
         }
 
-        #fullname{
-            letter-spacing: 1px;
+        #fullname {
+            margin: 20px 0px 10px 0px;
+            padding: 0 0;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            /*letter-spacing: 1px;*/
+            line-height: 1.2;
             font-weight: bolder;
             text-align: center;
             height: auto;
             font-family: 'Arial Black';
-            font-size: 24pt;
+            font-size: 25pt;
+            /*border: 1px solid red;*/
+
         }
 
         #titre{
+            margin: 15px 0px 0px 0px;
+            padding: 0 0;
+            display: inline-block;
             letter-spacing: 2px;
             font-weight: bolder;
             text-align: center;
             height: auto;
+            width: 100%;
             font-family: 'Arial Black';
-            font-size: 21pt;
+            font-size: 22pt;
             color: black;
+            /*border: 1px solid red;*/
+
         }
 
         #expiredate {
             position: absolute;
             letter-spacing: 2px;
-            left: 295px;
+            left: 325px;
             top: 527px;
             width: 300px;
             font-weight: bolder;
@@ -95,20 +98,38 @@
             position: absolute;
             letter-spacing: 2px;
             font-weight: bolder;
-            left: 295px;
+            left: 325px;
             top: 549px;
             width: 250px;
             color: white;
             font-family: 'Arial Black';
             font-size: 14pt;
+            /*border: 1px solid red;*/
         }
 
+        #qrcode  {
+            position: absolute;
+            left: 790px;
+            top: 450px;
+            padding: 10px 10px;
+            background-color: white;
+            z-index: 2;
+            /*border: 1px solid red;*/
+
+        }
+
+        #qrcode img {
+            width: 155px;
+            height: 150px;
+            z-index: 10;
+        }
         #footer {
             position: absolute;
             left: 1px;
-            top: 564px;
-            width: 600px;
+            top: 590px;
+            width: 400px;
             height: 50px;
+            /*border: 1px solid red;*/
         }
 
     </style>
