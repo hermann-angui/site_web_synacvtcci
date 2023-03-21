@@ -7,7 +7,6 @@ use App\Form\MemberRegistrationType;
 use App\Helper\MemberHelper;
 use App\Helper\PasswordHelper;
 use App\Repository\MemberRepository;
-use App\Traits\MobilePaymentTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PageController extends AbstractController
 {
-    use MobilePaymentTrait;
-
     #[Route(path: '/', name: 'home')]
     public function home(Request $request): Response
     {
