@@ -167,21 +167,29 @@ class MemberController extends AbstractController
                        PasswordHelper::generate()
                    ));
 
-                   if(isset($row["DATE_SOUSCRIPTION"])) $member->setSubscriptionDate($date);
-                   else $member->setSubscriptionDate(new \DateTime($row["DATE_SOUSCRIPTION"])) ;
+                   if(array_key_exists("DATE_SOUSCRIPTION", $row)) {
+                       if(array_key_exists("DATE_SOUSCRIPTION", $row)) $member->setSubscriptionDate($date);
+                       else $member->setSubscriptionDate(new \DateTime($row["DATE_SOUSCRIPTION"])) ;
+                   }
 
-                   if(isset($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"])) ;
-                   else $member->setSubscriptionExpireDate($expiredDate->format('Y-12-31'));
+
+                   if(array_key_exists("DATE_EXPIRATION_SOUSCRIPTION", $row)) {
+                       if(empty($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"])) ;
+                       else $member->setSubscriptionExpireDate($expiredDate->format('Y-12-31'));
+                   }
 
                    $memberRepository->add($member, true);
-
-                   $matricule = $row["MATRICULE"];
-                   if(!empty($matricule))$member->setMatricule($matricule);
-                   else{
-                       $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-                       $member->setMatricule($matricule);
+                   $exist = null;
+                   if(array_key_exists("MATRICULE", $row)) {
+                       $matricule = $row["MATRICULE"];
+                       if(!empty($matricule))$member->setMatricule($matricule);
+                       else{
+                           $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+                           $member->setMatricule($matricule);
+                       }
+                       $exist = $memberRepository->findOneBy(['matricule'=>$matricule]);
                    }
-                   $exist = $memberRepository->findOneBy(['matricule'=>$matricule]);
+
                    if(!$exist) {
                        if(!empty(($row["PHOTO"]))){
                            $photo = new File($uploadDir . $row["PHOTO"], false);
@@ -228,7 +236,8 @@ class MemberController extends AbstractController
                    }
                }
                catch(\Exception $e){
-                   continue;
+                  // continue;
+                   return $this->redirectToRoute('admin_member_index');
                }
            }
         }
