@@ -69,16 +69,28 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $country = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nationality = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $commune = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $quartier = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $mobile = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $whatsapp = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $company = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photoPiece_front = null;
@@ -550,8 +562,84 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
             'SN à la communication' => 'SN à la communication',
             'SN à la formation' => 'SN à la formation',
             'SN chargé  des applications' => 'SN chargé  des applications',
-            'SN Adjointe aux finances' => 'SN Adjointe aux finances'
+            'SN Adjointe aux finances' => 'SN Adjointe aux finances',
+            'Chef de section Marcory' => "Chef de section Marcory",
+            'Conseillé' => "Conseillé",
         ];
     }
+
+    /**
+     * @return string|null
+     */
+    public function getNationality(): ?string
+    {
+        return $this->nationality;
+    }
+
+    /**
+     * @param string|null $nationality
+     * @return Member
+     */
+    public function setNationality(?string $nationality): Member
+    {
+        $this->nationality = $nationality;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getQuartier(): ?string
+    {
+        return $this->quartier;
+    }
+
+    /**
+     * @param string|null $quartier
+     * @return Member
+     */
+    public function setQuartier(?string $quartier): Member
+    {
+        $this->quartier = $quartier;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getWhatsapp(): ?string
+    {
+        return $this->whatsapp;
+    }
+
+    /**
+     * @param string|null $whatsapp
+     * @return Member
+     */
+    public function setWhatsapp(?string $whatsapp): Member
+    {
+        $this->whatsapp = $whatsapp;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param string|null $company
+     * @return Member
+     */
+    public function setCompany(?string $company): Member
+    {
+        $this->company = $company;
+        return $this;
+    }
+
+
 
 }

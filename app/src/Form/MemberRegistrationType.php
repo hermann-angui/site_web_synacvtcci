@@ -56,15 +56,45 @@ class MemberRegistrationType extends AbstractType
                 'empty_data' => 'Chauffeur',
                 'data' => 'Chauffeur',
             ])
+            ->add('company', ChoiceType::class, [
+                'label' => 'Compagnie de VTC',
+                'mapped' => true,
+                'required' => false,
+                'choices' => [
+                    "YANGO" => "YANGO",
+                    "UBER" => "UBER",
+                    "HEECTH" => "HEECTH",
+                    "LE TRANSPORTEUR" => "LE TRANSPORTEUR",
+                    "IZIGO" => "IZIGO"
+                ],
+                'empty_data' => 'YANGO',
+                'data' => 'YANGO',
+            ])
+            ->add('nationality', TextType::class, [
+                'label' => "Nationalité",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('whatsapp', TextType::class, [
+                'label' => "Whatsapp",
+                'mapped' => true,
+                'required' => false
+            ])
             ->add('IdNumber', TextType::class, [
                 'label' => "N° Pièce d'identité (CNI, Passeport ou Carte consulaire)",
                 'mapped' => true,
                 'required' => false
             ])
-            ->add('IdType', TextType::class, [
+            ->add('IdType', ChoiceType::class, [
                 'label' => 'Type de la pièce',
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'choices' => [
+                    'CNI' => 'CNI',
+                    'PASSEPORT' => 'PASSEPORT',
+                ],
+                'empty_data' => 'CNI',
+                'data' => 'CNI',
             ])
             ->add('sex', ChoiceType::class, [
                 'label' => 'Genre',

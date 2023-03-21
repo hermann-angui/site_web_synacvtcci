@@ -1,142 +1,104 @@
-<header id="header" class="header" role="banner" aria-label="Entête du site">
-    <nav class="navbar navbar-dark" id="navbar-top">
-        <div class="container">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <section class="row region region-secondary-menu">
-                <nav role="navigation" class="block block-menu navigation menu--liens-rapides">
-                    <h2 class="sr-only" id="block-liensrapides-menu">Liens Rapides</h2>
-                    <ul class="clearfix nav mt-1">
-                        <li class="nav-item">
-                            <a href="{{ path('register') }}" class="nav-link nav-link--fr-acheter-adhesion">Devenir membre</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ path('contact_us') }}" class="">Nous contacter</a>
-                        </li>
-                    </ul>
-                </nav>
-                <nav role="navigation" class="block block-menu navigation menu--account">
-                    <h2 class="sr-only" id="block-useraccountmenu-menu">Menu Compte</h2>
-                    <div class="clearfix nav">
-                        {%  if app.user is null %}
-                            <a href="{{ path('login') }}" class="nav-link nav-link--fr-user-login mt-1">Se connecter</a>
-                        {% else %}
-                            <a href="{{ path('logout') }}" class="nav-link nav-link--fr-user-login mt-1">Se déconnecter</a>
-                                {% if app.user.photo is not null %}
-                                    <a href="{{ path('member_edit_profile') }}">
-                                       <img width="30" height="30" src="{{ asset('users/') }}{{ app.user.photo }}" id="user_avatar" alt="user profile picture" class="rounded-circle"/>
-                                    </a>
-                                {% else %}
-                                    <a href="{{ path('member_edit_profile') }}">
-                                         <img width="30" height="30" src="{{ asset('assets/images/avatar/avatar.jpg') }}" id="user_avatar" alt="user profile picture" class="rounded-circle"/>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                    </div>
-                </nav>
+<div id="top-bar-wrap" class="clr">
+    <div id="top-bar" class="clr container">
+        <div id="top-bar-inner" class="clr">
+            <div id="top-bar-content" class="clr has-content top-bar-left">
+                            <span class="topbar-content">
+                            <i class="icon-phone" style="margin: 0 7px 0 0"></i> +225 01 02 68 87 88  <i class="icon-envelope-letter" style="margin: 0 7px"></i>info@synacvtcci.net
+                            </span>
+            </div><!-- #top-bar-content -->
+            <div id="top-bar-social" class="clr top-bar-right">
+                <ul class="clr" aria-label="Social links">
+                    <li class="oceanwp-facebook">
+                        <a href="https://www.facebook.com/Syndicat-National-des-Chauffeurs-VTC-de-C%C3%B4te-dIvoire-115647051137279" aria-label="Facebook (opens in a new tab)" target="_blank" rel="noopener noreferrer"><i class=" fab fa-facebook" aria-hidden="true" role="img">
+                            </i></a>
+                    </li>
+                </ul>
+            </div><!-- #top-bar-social -->
+        </div><!-- #top-bar-inner -->
+    </div><!-- #top-bar -->
+</div><!-- #top-bar-wrap -->
 
-            </section>
-        </div>
-    </nav>
-    <nav class="navbar navbar-expand-lg" id="navbar-main">
-        <div class="container">
-            <section class="region region-header">
-                <a href="{{ path('home') }}" title="Accueil" rel="home" class="navbar-brand">
-                    <img src="{{ asset('assets/images/logo-new.png') }}" style="width: 250px;height: 114px;" alt="Accueil" class="img-fluid d-inline-block align-top"/>
-                </a>
-            </section>
-
-            <div class="form-inline navbar-form float-right">
-                <section class="row region region-header-form">
-                    <div class="search-block-form block block-search block-search-form-block" id="block-nafr-search" role="search">
-                        <div class="content container-inline">
-                            <div class="content container-inline">
-                                <form action="" method="get" id="search-block-form" accept-charset="UTF-8" class="search-form search-block-form form-row">
-                                    <fieldset class="js-form-item js-form-type-search form-type-search js-form-item-keys form-item-keys form-no-label form-group">
-                                        <label for="edit-keys" class="sr-only">Rechercher</label>
-                                        <input title="Indiquer les termes à rechercher" type="search" id="edit-keys" name="keys" value="" size="15" maxlength="128" class="form-search form-control"/>
-                                    </fieldset>
-                                    <div  class="form-actions js-form-wrapper form-group" id="edit-actions">
-                                        <input type="submit" id="edit-submit" value="Rechercher" class="button js-form-submit form-submit btn btn-primary form-control"/>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-            <div class="collapse navbar-collapse" id="CollapsingNavbar">
-                <nav role="navigation" aria-labelledby="block-nafr-main-menu-menu" id="block-nafr-main-menu"
-                     class="block block-menu navigation menu--main">
-
-                    <h2 class="sr-only" id="block-nafr-main-menu-menu">Main navigation</h2>
-
-
-                    <ul class="clearfix nav navbar-nav">
-                        <li class="nav-item menu-item--expanded dropdown">
-                            <a href="" class="nav-link dropdown-toggle nav-link-" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">La FENAPALCI</a>
-                            <ul class="dropdown-menu">
-
-                                <li class="dropdown-item">
-                                    <a href="{{ path('about_us') }}">Qui sommes-nous ?</a>
-                                </li>
-                                <li class="dropdown-item menu-item--collapsed">
-                                    <a href="{{ path('bureau') }}">Le bureau</a>
-                                </li>
-                                <li class="dropdown-item">
-                                    <a href="{{ path('missions') }}">Nos missions</a>
-                                </li>
-                                <li class="dropdown-item">
-                                    <a href="{{ path('activities') }}">Nos activités</a>
-                                </li>
-                            </ul>
-
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ path('ecommerce_index') }}" class="nav-link dropdown-toggle nav-link" >e-Boutique</a>
-                        </li>
-
-                        <li class="nav-item menu-item--expanded dropdown">
-                            <a href="#" class="nav-link dropdown-toggle nav-link-" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Services aux membres</a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-item">
-                                    <a href="{{ path('members_training') }}">Formations</a>
-                                </li>
-
-                                <li class="dropdown-item">
-                                    <a href="{{ path('insurance') }}">Assurances</a>
-                                </li>
-                                <li class="dropdown-item">
-                                    <a href="{{ path('conseil_juridique') }}">Conseils et protection juridiques</a>
-                                </li>
-                                <li class="dropdown-item">
-                                    <a href="{{ path('social_care') }}">Cotisations sociales</a>
-                                </li>
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-item menu-item--expanded dropdown">
-                            <a href="{{ path('activities') }}" class="nav-link dropdown-toggle nav-link">Actualités</a>
-                        </li>
-
-                        <li class="nav-item menu-item--expanded dropdown">
-                            <a href="{{ path('mediatheque') }}" class="nav-link dropdown-toggle nav-link">Médiathèque</a>
-                        </li>
-
-                        <li class="nav-item menu-item--expanded dropdown">
-                            <a href="{{ path('faq') }}" class="nav-link dropdown-toggle nav-link">FAQ</a>
-                        </li>
-
-
-                        <li class="nav-item menu-item--expanded dropdown">
-                            <a href="{{ path('contact_us') }}" class="nav-link dropdown-toggle nav-link">Nous contacter</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </nav>
-</header>
+<header id="site-header" class="minimal-header header-replace clr" data-height="125" role="banner">
+    <div id="site-header-inner" class="clr container">
+        <div id="site-logo" class="clr">
+            <div id="site-logo-inner" class="clr">
+                <a href="{{  path('home') }}" class="custom-logo-link" rel="home" aria-current="page"><img
+                            width="1080" height="1080"
+                            src="{{ asset('assets/front/wp-content/uploads/2022/09/logo-synacvtcci.png.jpeg') }}"
+                            class="custom-logo" alt="SYNACVTCCI"
+                            sizes="(max-width: 1080px) 100vw, 1080px"/></a>
+            </div><!-- #site-logo-inner -->
+        </div><!-- #site-logo -->
+        <div id="site-navigation-wrap" class="clr">
+            <nav id="site-navigation" class="navigation main-navigation clr" role="navigation">
+                <ul id="menu-main-menu" class="main-menu dropdown-menu sf-menu">
+                    <li id="menu-item-819"
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-355 current_page_item menu-item-819">
+                        <a href="{{ path("home") }}" class="menu-link"><span
+                                    class="text-wrap">Accueil</span></a></li>
+                    <li id="menu-item-1011"
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1011"><a
+                                href="{{ path("home") }}" class="menu-link"><span
+                                    class="text-wrap">Qui sommes-nous?</span></a></li>
+                    <li id="menu-item-816"
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-816"><a
+                                href="{{ path("home") }}" class="menu-link"><span class="text-wrap">Blog</span></a>
+                    </li>
+                    <li id="menu-item-959"
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-959"><a
+                                href="{{ path("register_member") }}" class="menu-link"><span
+                                    class="text-wrap">Adhérer</span></a></li>
+                    <li class="search-toggle-li"><a href="javascript:void(0)"
+                                                    class="site-search-toggle search-header-replace-toggle"
+                                                    aria-label="Search website"><i class=" icon-magnifier"
+                                                                                   aria-hidden="true"
+                                                                                   role="img"></i></a></li>
+                </ul>
+                <div id="searchform-header-replace" class="header-searchform-wrap clr">
+                    <form method="get" action="{{ path("home") }}" class="header-searchform">
+                        <span class="screen-reader-text">Rechercher sur ce site</span>
+                        <input aria-label="Envoyer la recherche" type="search" name="s" autocomplete="off"
+                               value="" placeholder="Saisir et appuyer sur Entrée pour rechercher…"/>
+                    </form>
+                    <span id="searchform-header-replace-close" aria-label="Fermer ce formulaire de recherche"><i
+                                class=" icon-close" aria-hidden="true" role="img"></i></span>
+                </div><!-- #searchform-header-replace -->
+            </nav><!-- #site-navigation -->
+        </div><!-- #site-navigation-wrap -->
+        <div class="oceanwp-mobile-menu-icon clr mobile-right">
+            <a href="#" class="mobile-menu" aria-label="Menu mobile">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+                <span class="oceanwp-text">Menu</span>
+                <span class="oceanwp-close-text">Fermer</span>
+            </a>
+        </div><!-- #oceanwp-mobile-menu-navbar -->
+    </div><!-- #site-header-inner -->
+    <div id="mobile-dropdown" class="clr">
+        <nav class="clr" itemscope="itemscope">
+            <ul id="menu-main-menu-1" class="menu">
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-355 current_page_item menu-item-819">
+                    <a href="{{ path("home") }}" aria-current="page">Accueil</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1011"><a
+                            href="{{ path("home") }}">Qui sommes-nous?</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-816"><a
+                            href="{{ path("home") }}">Blog</a></li>
+                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-959"><a
+                            href="{{ path("register_member") }}">Adhérer</a></li>
+                <li class="search-toggle-li"><a href="javascript:void(0)"
+                                                class="site-search-toggle search-header-replace-toggle"
+                                                aria-label="Search website"><i class=" icon-magnifier"
+                                                                               aria-hidden="true"
+                                                                               role="img"></i></a></li>
+            </ul>
+            <div id="mobile-menu-search" class="clr">
+                <form aria-label="Rechercher sur ce site" method="get" action=""{{ path("home") }}""
+                      class="mobile-searchform">
+                    <input aria-label="Insert search query" value="" class="field" id="ocean-mobile-search-1"
+                           type="search" name="s" autocomplete="off" placeholder="Rechercher"/>
+                    <button aria-label="Envoyer la recherche" type="submit" class="searchform-submit">
+                        <i class=" icon-magnifier" aria-hidden="true" role="img"></i></button>
+                </form>
+            </div><!-- .mobile-menu-search -->
+        </nav>
+    </div>
+</header><!-- #site-header -->

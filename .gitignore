@@ -1,3 +1,5 @@
+.idea
+.vscode
 app/public/users
 res
 db
@@ -7,3 +9,4 @@ app/vendor
 /app/public/users/
 /apppublic/uploads/
 /app/public/members
+app/

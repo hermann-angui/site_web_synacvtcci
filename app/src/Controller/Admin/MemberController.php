@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -148,18 +147,20 @@ class MemberController extends AbstractController
                    if(array_key_exists("SEXE",$row)) $member->setSex(mb_strtoupper($row["SEXE"], 'UTF-8'));
                    if(array_key_exists("EMAIL",$row)) $member->setEmail(trim($row["EMAIL"]));
                    if(array_key_exists("NOM",$row)) $member->setLastName(mb_strtoupper(trim($row["NOM"]), 'UTF-8'));
+                   if(array_key_exists("COMPAGNIE",$row)) $member->setCompanny(mb_strtoupper(trim($row["COMPAGNIE"]), 'UTF-8'));
+                   if(array_key_exists("NATIONALITE",$row)) $member->setLastName(mb_strtoupper(trim($row["NATIONALITE"]), 'UTF-8'));
                    if(array_key_exists("PRENOMS",$row)) $member->setFirstName(mb_strtoupper(trim($row["PRENOMS"]),'UTF-8'));
                    if(array_key_exists("DATE_NAISSANCE",$row)) $member->setDateOfBirth(new \DateTime($row["DATE_NAISSANCE"]));
-                   if(array_key_exists("LIEU_NAISSANCE",$row)) $member->setBirthCity($row["LIEU_NAISSANCE"]);
+                   if(array_key_exists("LIEU_NAISSANCE",$row)) $member->setBirthCity(mb_strtoupper(trim($row["LIEU_NAISSANCE"])));
                    if(array_key_exists("NUMERO_PERMIS",$row)) $member->setDrivingLicenseNumber($row["NUMERO_PERMIS"]);
                    if(array_key_exists("NUMERO_PIECE",$row)) $member->setIdNumber($row["NUMERO_PIECE"]);
-                   if(array_key_exists("TYPE_PIECE",$row)) $member->setIdType($row["TYPE_PIECE"]);
-                   if(array_key_exists("PAYS",$row)) $member->setCountry($row["PAYS"]);
+                   if(array_key_exists("TYPE_PIECE",$row)) $member->setIdType(mb_strtoupper(trim($row["TYPE_PIECE"])));
+                   if(array_key_exists("PAYS",$row)) $member->setCountry(mb_strtoupper(trim($row["PAYS"])));
                    if(array_key_exists("VILLE",$row)) $member->setCity(mb_strtoupper($row["VILLE"], 'UTF-8'));
                    if(array_key_exists("COMMUNE",$row)) $member->setCommune(mb_strtoupper($row["COMMUNE"], 'UTF-8'));
                    if(array_key_exists("MOBILE",$row)) $member->setMobile($row["MOBILE"]);
                    if(array_key_exists("FIXE",$row)) $member->setPhone($row["FIXE"]);
-                   if(array_key_exists("TITRE",$row)) $member->setTitre($row["TITRE"]);
+                   if(array_key_exists("TITRE",$row)) $member->setTitre(mb_strtoupper(trim($row["TITRE"])));
 
                    $member->setPassword( $userPasswordHasher->hashPassword(
                        $member,
@@ -267,12 +268,13 @@ class MemberController extends AbstractController
     public function downloadCard(Member $member): Response
     {
         $cardPhotoRealPath = $this->getParameter('kernel.project_dir') . "/public/members/" . $member->getMatricule() . "/" . $member->getCardPhoto();
-        return new BinaryFileResponse($cardPhotoRealPath);
+        return $this->file($cardPhotoRealPath);
     }
 
     #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET'])]
     public function downloadMemberCards(Request $request, MemberRepository $memberRepository, MemberCardGeneratorService $memberCardGeneratorService): Response
     {
+        set_time_limit(3600);
         $zipArchive = new \ZipArchive();
         $zipFile = $this->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';
         if(file_exists($zipFile)) unlink($zipFile);
@@ -291,16 +293,51 @@ class MemberController extends AbstractController
                 if(is_file($cardPhotoRealPath)) $zipArchive->addFile($cardPhotoRealPath, $member->getCardPhoto() );
             }
             $zipArchive->close();
-            return new BinaryFileResponse($zipFile);
+            return $this->file($zipFile);
         }
-        return new BinaryFileResponse(null);
+        return $this->file(null);
     }
 
     #[Route('/download/sample', name: 'admin_member_sample_file', methods: ['GET'])]
     public function downloadSample(Request $request): Response
     {
         $sampleRealPath = $this->getParameter('kernel.project_dir') . "/public/assets/files/sample.csv";
-        return new BinaryFileResponse($sampleRealPath);
+
+        if(!file_exists($sampleRealPath)) {
+            $columns = [
+                "TITRE",
+                "MATRICULE",
+                "NOM",
+                "PRENOMS",
+                "PHOTO",
+                "SEXE",
+                "EMAIL",
+                "WHATSAPP",
+                "DATE_NAISSANCE",
+                "LIEU_NAISSANCE",
+                "NUMERO_PERMIS",
+                "NUMERO_PIECE",
+                "TYPE_PIECE",
+                "PAYS",
+                "VILLE",
+                "COMMUNE",
+                "MOBILE",
+                "FIXE",
+                "QUARTIER",
+                "DATE_SOUSCRIPTION",
+                "DATE_EXPIRATION_SOUSCRIPTION",
+                "PHOTO_PIECE_RECTO",
+                "PHOTO_PIECE_VERSO",
+                "PHOTO_PERMIS_RECTO",
+                "PHOTO_PERMIS_VERSO"
+            ];
+            $fp = fopen($sampleRealPath, "w+");
+            fputcsv($fp, $columns);
+            fputcsv($fp, []);
+            fclose($fp);
+
+        }
+        return $this->file($sampleRealPath, 'sample.csv');
     }
 
     #[Route('/datatable', name: 'admin_member_datatable', methods: ['GET'])]
