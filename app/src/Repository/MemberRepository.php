@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -65,6 +66,23 @@ class MemberRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
             ;
+    }
+
+    public function getLastRowId(): int
+    {
+        return $this->createQueryBuilder('m')
+            ->select('MAX(m.id)')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
+            ;
+    }
+    public function setAutoIncrementToLast(int $value): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "ALTER TABLE `member` AUTO_INCREMENT = $value";
+        $stmt = $conn->prepare($sql);
+        return $stmt->executeQuery()->rowCount();
+
     }
 
 //    public function findOneBySomeField($value): ?Member

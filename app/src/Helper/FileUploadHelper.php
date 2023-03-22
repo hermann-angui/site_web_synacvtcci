@@ -20,7 +20,6 @@ class FileUploadHelper
     public function upload(?File $file, ?string $destinationDirectory = null, ?bool $keepName = false): ?string
     {
         try {
-
             if(!$file) return null;
 
             if(!$keepName) $fileName = time() . uniqid() .'.'. ($file->guessExtension() ? $file->guessExtension(): $file->getExtension());

@@ -47,7 +47,9 @@ class MemberController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $memberRepository->setAutoIncrementToLast($memberRepository->getLastRowId());
             $member->setRoles(['ROLE_USER']);
+            date_default_timezone_set("Africa/Abidjan");
             $date = new \DateTime('now');
             $member->setSubscriptionDate($date);
 
@@ -107,7 +109,9 @@ class MemberController extends AbstractController
     #[Route('/upload', name: 'admin_member_upload', methods: ['GET', 'POST'])]
     public function upload(Request $request, FileUploadHelper $fileUploadHelper): Response
     {
-       /* @var UploadedFile $file */
+        date_default_timezone_set("Africa/Abidjan");
+        set_time_limit(3600);
+        /* @var UploadedFile $file */
         if(!empty($file = $request->files->get('file'))){
             $mime = $file->getMimeType();
             $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/';
@@ -125,42 +129,47 @@ class MemberController extends AbstractController
                            UserPasswordHasherInterface $userPasswordHasher,
                            CsvReaderHelper $csvReaderHelper): Response
     {
+
+        set_time_limit(3600);
         $finder = new Finder();
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/';
         $csvFiles = $finder->in($uploadDir)->name('*.csv');
         foreach($csvFiles as $file) {
            $rows =  $csvReaderHelper->read($file);
+           $memberRepository->setAutoIncrementToLast($memberRepository->getLastRowId());
            foreach ($rows as $row){
                try{
+                   date_default_timezone_set("Africa/Abidjan");
                    $date = new \DateTime('now');
-                   $expiredDate = $date->add(new \DateInterval("P1Y"));
 
                    $sexCode = "SY1";
                    if(!empty($row["SEXE"])) {
                        if($row["SEXE"] === "M") $sexCode = "SY1";
                        if($row["SEXE"] === "F") $sexCode = "SY2";
+                   }else{
+                       throw new \Exception("Skip"); // Unable to determine sex so skip because it is not possible to generate matricule
                    }
 
                    $member = new Member();
 
                    $member->setRoles(['ROLE_USER']);
-                   if(array_key_exists("SEXE",$row)) $member->setSex(mb_strtoupper($row["SEXE"], 'UTF-8'));
-                   if(array_key_exists("EMAIL",$row)) $member->setEmail(trim($row["EMAIL"]));
-                   if(array_key_exists("NOM",$row)) $member->setLastName(mb_strtoupper(trim($row["NOM"]), 'UTF-8'));
-                   if(array_key_exists("COMPAGNIE",$row)) $member->setCompanny(mb_strtoupper(trim($row["COMPAGNIE"]), 'UTF-8'));
-                   if(array_key_exists("NATIONALITE",$row)) $member->setLastName(mb_strtoupper(trim($row["NATIONALITE"]), 'UTF-8'));
-                   if(array_key_exists("PRENOMS",$row)) $member->setFirstName(mb_strtoupper(trim($row["PRENOMS"]),'UTF-8'));
-                   if(array_key_exists("DATE_NAISSANCE",$row)) $member->setDateOfBirth(new \DateTime($row["DATE_NAISSANCE"]));
-                   if(array_key_exists("LIEU_NAISSANCE",$row)) $member->setBirthCity(mb_strtoupper(trim($row["LIEU_NAISSANCE"])));
-                   if(array_key_exists("NUMERO_PERMIS",$row)) $member->setDrivingLicenseNumber($row["NUMERO_PERMIS"]);
-                   if(array_key_exists("NUMERO_PIECE",$row)) $member->setIdNumber($row["NUMERO_PIECE"]);
-                   if(array_key_exists("TYPE_PIECE",$row)) $member->setIdType(mb_strtoupper(trim($row["TYPE_PIECE"])));
-                   if(array_key_exists("PAYS",$row)) $member->setCountry(mb_strtoupper(trim($row["PAYS"])));
-                   if(array_key_exists("VILLE",$row)) $member->setCity(mb_strtoupper($row["VILLE"], 'UTF-8'));
-                   if(array_key_exists("COMMUNE",$row)) $member->setCommune(mb_strtoupper($row["COMMUNE"], 'UTF-8'));
-                   if(array_key_exists("MOBILE",$row)) $member->setMobile($row["MOBILE"]);
-                   if(array_key_exists("FIXE",$row)) $member->setPhone($row["FIXE"]);
-                   if(array_key_exists("TITRE",$row)) $member->setTitre(mb_strtoupper(trim($row["TITRE"])));
+                   if(isset($row["SEXE"])) $member->setSex(mb_strtoupper($row["SEXE"], 'UTF-8'));
+                   if(isset($row["EMAIL"])) $member->setEmail(trim($row["EMAIL"]));
+                   if(isset($row["NOM"])) $member->setLastName(mb_strtoupper(trim($row["NOM"]), 'UTF-8'));
+                   if(isset($row["COMPAGNIE"])) $member->setCompany(mb_strtoupper(trim($row["COMPAGNIE"]), 'UTF-8'));
+                   if(isset($row["NATIONALITE"])) $member->setLastName(mb_strtoupper(trim($row["NATIONALITE"]), 'UTF-8'));
+                   if(isset($row["PRENOMS"])) $member->setFirstName(mb_strtoupper(trim($row["PRENOMS"]),'UTF-8'));
+                   if(isset($row["DATE_NAISSANCE"])) $member->setDateOfBirth(new \DateTime($row["DATE_NAISSANCE"]));
+                   if(isset($row["LIEU_NAISSANCE"])) $member->setBirthCity(mb_strtoupper(trim($row["LIEU_NAISSANCE"])));
+                   if(isset($row["NUMERO_PERMIS"])) $member->setDrivingLicenseNumber($row["NUMERO_PERMIS"]);
+                   if(isset($row["NUMERO_PIECE"])) $member->setIdNumber($row["NUMERO_PIECE"]);
+                   if(isset($row["TYPE_PIECE"])) $member->setIdType(mb_strtoupper(trim($row["TYPE_PIECE"])));
+                   if(isset($row["PAYS"])) $member->setCountry(mb_strtoupper(trim($row["PAYS"])));
+                   if(isset($row["VILLE"])) $member->setCity(mb_strtoupper($row["VILLE"], 'UTF-8'));
+                   if(isset($row["COMMUNE"])) $member->setCommune(mb_strtoupper($row["COMMUNE"], 'UTF-8'));
+                   if(isset($row["MOBILE"])) $member->setMobile($row["MOBILE"]);
+                   if(isset($row["FIXE"])) $member->setPhone($row["FIXE"]);
+                   if(isset($row["TITRE"])) $member->setTitre(mb_strtoupper(trim($row["TITRE"])));
 
                    $member->setPassword( $userPasswordHasher->hashPassword(
                        $member,
@@ -168,21 +177,24 @@ class MemberController extends AbstractController
                    ));
 
                    if(array_key_exists("DATE_SOUSCRIPTION", $row)) {
-                       if(array_key_exists("DATE_SOUSCRIPTION", $row)) $member->setSubscriptionDate($date);
+                       if(empty($row["DATE_SOUSCRIPTION"])) $member->setSubscriptionDate($date);
                        else $member->setSubscriptionDate(new \DateTime($row["DATE_SOUSCRIPTION"])) ;
                    }
 
-
-                   if(array_key_exists("DATE_EXPIRATION_SOUSCRIPTION", $row)) {
-                       if(empty($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"])) ;
-                       else $member->setSubscriptionExpireDate($expiredDate->format('Y-12-31'));
+                   if(array_key_exists("DATE_EXPIRATION_SOUSCRIPTION", $row)){
+                       $expiredDate = new \DateTime($row["DATE_SOUSCRIPTION"]);
+                       $expiredDate = $expiredDate->add(new \DateInterval("P1Y"));
+                       $expiredDate = $expiredDate->format('Y-12-31');
+                       if(!empty($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"])) ;
+                       else $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
                    }
 
                    $memberRepository->add($member, true);
+
                    $exist = null;
                    if(array_key_exists("MATRICULE", $row)) {
                        $matricule = $row["MATRICULE"];
-                       if(!empty($matricule))$member->setMatricule($matricule);
+                       if(!empty($matricule)) $member->setMatricule($matricule);
                        else{
                            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
                            $member->setMatricule($matricule);
@@ -191,7 +203,7 @@ class MemberController extends AbstractController
                    }
 
                    if(!$exist) {
-                       if(!empty(($row["PHOTO"]))){
+                       if(isset($row["PHOTO"]) && !empty($row["PHOTO"])){
                            $photo = new File($uploadDir . $row["PHOTO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -199,7 +211,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(!empty($row["PHOTO_PIECE_RECTO"])){
+                       if(isset($row["PHOTO_PIECE_RECTO"]) && !empty($row["PHOTO_PIECE_RECTO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PIECE_RECTO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -207,7 +219,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(!empty($row["PHOTO_PIECE_VERSO"])){
+                       if(isset($row["PHOTO_PIECE_VERSO"]) && !empty($row["PHOTO_PIECE_VERSO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PIECE_VERSO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -215,7 +227,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(!empty($row["PHOTO_PERMIS_RECTO"])){
+                       if(isset($row["PHOTO_PERMIS_RECTO"]) && !empty($row["PHOTO_PERMIS_RECTO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PERMIS_RECTO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -223,7 +235,7 @@ class MemberController extends AbstractController
                            }
                        }
 
-                       if(!empty($row["PHOTO_PERMIS_VERSO"])){
+                       if(isset($row["PHOTO_PERMIS_VERSO"]) && !empty($row["PHOTO_PERMIS_VERSO"])){
                            $photo = new File($uploadDir . $row["PHOTO_PERMIS_VERSO"], false);
                            if(file_exists($photo->getPathname())) {
                                $fileName = $memberHelper->uploadAsset($photo, $member);
@@ -236,8 +248,7 @@ class MemberController extends AbstractController
                    }
                }
                catch(\Exception $e){
-                  // continue;
-                   return $this->redirectToRoute('admin_member_index');
+                  continue;
                }
            }
         }
@@ -249,6 +260,7 @@ class MemberController extends AbstractController
                                  MemberRepository $memberRepository,
                                  MemberCardGeneratorService $memberCardGeneratorService): Response
     {
+        date_default_timezone_set("Africa/Abidjan");
         if($member){
             $cardImage = basename($memberCardGeneratorService->generate($member));
             $member->setCardPhoto($cardImage);
@@ -258,6 +270,7 @@ class MemberController extends AbstractController
         } else {
             $members = $memberRepository->findAll();
             foreach($members as $member){
+                date_default_timezone_set("Africa/Abidjan");
                 $cardImage = basename($memberCardGeneratorService->generate($member));
                 $member->setCardPhoto($cardImage);
                 $member->setModifiedAt(new \DateTime());
@@ -276,6 +289,8 @@ class MemberController extends AbstractController
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
     public function downloadCard(Member $member): Response
     {
+        date_default_timezone_set("Africa/Abidjan");
+        set_time_limit(3600);
         $cardPhotoRealPath = $this->getParameter('kernel.project_dir') . "/public/members/" . $member->getMatricule() . "/" . $member->getCardPhoto();
         return $this->file($cardPhotoRealPath);
     }
@@ -283,6 +298,7 @@ class MemberController extends AbstractController
     #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET'])]
     public function downloadMemberCards(Request $request, MemberRepository $memberRepository, MemberCardGeneratorService $memberCardGeneratorService): Response
     {
+        date_default_timezone_set("Africa/Abidjan");
         set_time_limit(3600);
         $zipArchive = new \ZipArchive();
         $zipFile = $this->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';
@@ -310,6 +326,7 @@ class MemberController extends AbstractController
     #[Route('/download/sample', name: 'admin_member_sample_file', methods: ['GET'])]
     public function downloadSample(Request $request): Response
     {
+        date_default_timezone_set("Africa/Abidjan");
         $sampleRealPath = $this->getParameter('kernel.project_dir') . "/public/assets/files/sample.csv";
 
         if(!file_exists($sampleRealPath)) {
@@ -322,6 +339,7 @@ class MemberController extends AbstractController
                 "SEXE",
                 "EMAIL",
                 "WHATSAPP",
+                "COMPAGNIE",
                 "DATE_NAISSANCE",
                 "LIEU_NAISSANCE",
                 "NUMERO_PERMIS",
@@ -352,6 +370,7 @@ class MemberController extends AbstractController
     #[Route('/datatable', name: 'admin_member_datatable', methods: ['GET'])]
     public function datatable(Request $request, Connection $connection, MemberRepository $memberRepository)
     {
+        date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
         $paramDB = $connection->getParams();
         $table = 'member';
@@ -461,6 +480,7 @@ class MemberController extends AbstractController
                          MemberHelper $memberHelper,
                          MemberRepository $memberRepository): Response
     {
+        date_default_timezone_set("Africa/Abidjan");
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
