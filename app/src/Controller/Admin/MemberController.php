@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -131,12 +132,21 @@ class MemberController extends AbstractController
     {
 
         set_time_limit(3600);
+
         $finder = new Finder();
+
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/';
+
         $csvFiles = $finder->in($uploadDir)->name('*.csv');
+
+        $fs = new Filesystem();
+
         foreach($csvFiles as $file) {
+
            $rows =  $csvReaderHelper->read($file);
+
            $memberRepository->setAutoIncrementToLast($memberRepository->getLastRowId());
+
            foreach ($rows as $row){
                try{
                    date_default_timezone_set("Africa/Abidjan");
@@ -251,7 +261,12 @@ class MemberController extends AbstractController
                   continue;
                }
            }
+
         }
+
+        $csvFiles = $finder->in($uploadDir)->name(['*.csv','*.jpg', '*.jpeg','*.png','*.gif']);
+        $fs->remove($csvFiles); // remove file after import
+
         return $this->redirectToRoute('admin_member_index');
     }
 
