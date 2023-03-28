@@ -21,12 +21,6 @@ class PageController extends AbstractController
         return $this->render('public/pages/index.html.twig');
     }
 
-    #[Route(path: '/accueil', name: 'accueil')]
-    public function accueil(Request $request): Response
-    {
-        return $this->render('public/pages/accueil.html.twig');
-    }
-
     #[Route(path: '/register', name: 'register_member')]
     public function registerMember(Request $request,
                                    MemberRepository $memberRepository,
