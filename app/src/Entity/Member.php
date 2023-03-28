@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MemberRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -92,6 +94,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $company = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $wife_first_name = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $wife_last_name = null;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photoPiece_front = null;
 
@@ -112,18 +120,20 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $plain_password;
 
-
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created_at;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Child::class, orphanRemoval: true)]
+    private Collection $children;
 
     public function __construct()
     {
         $this->created_at = new \DateTime();
         $this->modified_at = new \DateTime();
+        $this->children = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -637,6 +647,36 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?string $company): Member
     {
         $this->company = $company;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Child>
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(Child $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children[] = $child;
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(Child $child): self
+    {
+        if ($this->children->removeElement($child)) {
+            // set the owning side to null (unless already changed)
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
+            }
+        }
+
         return $this;
     }
 

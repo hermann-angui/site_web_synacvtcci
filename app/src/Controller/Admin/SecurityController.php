@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Form\UserFormType;
 use App\Helper\UserHelper;
 use App\Security\FormLoginAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,7 +45,7 @@ class SecurityController extends AbstractController
                              UserHelper $userHelper): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(UserFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
