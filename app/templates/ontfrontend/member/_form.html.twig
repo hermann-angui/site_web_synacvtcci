@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    <div class="col-6">
+        <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
+            <div>
+                {% if member is defined and member.photo is not null %}
+                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
+                {% else %}
+                <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+               {% endif %}
+                <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
+                {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+            </div>
+        </label>
+    </div>
+    {{ form_widget(form) }}
+    <div class="d-flex justify-content-center align-items-center" style="margin: 20px 0px 50px 5px;">
+            <button class="button">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+{{ form_end(form) }}

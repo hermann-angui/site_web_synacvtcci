@@ -1,0 +1,30 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block stylesheet %}
+   {{ parent() }}
+    <style>
+        form[name="member_registration"] {
+            padding: 0 10% 0 10%;
+        }
+        .form-group {
+           padding: 25px 0 0 0;
+        }
+        #member_registration_date_of_birth select {
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div style="margin-top:50px;" itemprop="text">
+        {{ include('frontend/member/_form.html.twig') }}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+{% endblock %}
+
+
