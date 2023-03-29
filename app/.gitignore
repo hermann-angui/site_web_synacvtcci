@@ -15,7 +15,7 @@
 
 /public/users/
 public/uploads/
-public/members
+public/members/
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###

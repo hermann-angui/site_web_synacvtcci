@@ -1,8 +1,5 @@
 version: '3.8'
 
-networks:
-  fenapalci:
-
 services:
 
   db:
@@ -13,14 +10,12 @@ services:
       MYSQL_ROOT_PASSWORD: QT6e5APtSYaU
       MYSQL_USER: root
       MYSQL_PASSWORD: QT6e5APtSYaU
-      MYSQL_DATABASE: fenapalci_db
+      MYSQL_DATABASE: synacvtcci_db
     volumes:
       - ./db:/var/lib/mysql
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     ports:
       - 3306:3306
-    networks:
-      - fenapalci
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -30,23 +25,23 @@ services:
       - 15432:80
     environment:
       UPLOAD_LIMIT: 300M
-    networks:
-      - fenapalci
 
   app:
     container_name: app
     restart: always
     build:
       context: ./docker
-    environment:
-      - APP_ENV=prod
-      - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/fenapalci_db?serverVersion=14
     depends_on:
       - db
+    environment:
+      - APP_ENV=dev
+      - XDEBUG_MODES=debug
+      - TZ=Africa/Abidjan
+      - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/synacvtcci_db?serverVersion=14
+      - REMOTE_HOST=host.docker.internal
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./app:/var/www/html
-    networks:
-      - fenapalci
 
   nginx:
     container_name: nginx
@@ -62,5 +57,3 @@ services:
       - app
     ports:
       - 85:80
-    networks:
-      - fenapalci
