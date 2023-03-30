@@ -21,6 +21,11 @@ class PageController extends AbstractController
         return $this->render('frontend/pages/index.html.twig');
     }
 
+    #[Route(path: '/success', name: 'success')]
+    public function success(Request $request): Response
+    {
+        return $this->render('frontend/member/success.html.twig');
+    }
     #[Route(path: '/register', name: 'register_member')]
     public function registerMember(Request $request,
                                    MemberRepository $memberRepository,
@@ -84,17 +89,10 @@ class PageController extends AbstractController
             return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('frontend/member/new.html.twig', [
+        return $this->renderForm('frontend/member/register.html.twig', [
             'member' => $member,
             'form' => $form,
         ]);
 
-    }
-
-    #[Route(path: '/profile/{matricule}', name: 'public_member_profile')]
-    public function memberProfile(Request $request, MemberRepository $memberRepository): Response
-    {
-        $member = $memberRepository->findOneBy(["matricule" => $request->get("matricule")]);
-        return $this->render('admin/member/public_profile.html.twig', ["member" => $member]);
     }
 }

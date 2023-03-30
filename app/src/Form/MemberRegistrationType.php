@@ -18,7 +18,7 @@ class MemberRegistrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        $past = new \DateTime('- 80 years');
+        $past = new \DateTime('- 65 years');
         $end = new \DateTime();
         $countries = array_combine(
             array_values(Countries::getNames()),
@@ -33,13 +33,14 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
             ])
 
-            ->add('firstName', TextType::class, [
-                'label' => 'Prénoms',
+
+            ->add('lastName', TextType::class, [
+                'label' => 'Nom',
                 'mapped' => true,
                 'required' => true
             ])
-            ->add('lastName', TextType::class, [
-                'label' => 'Nom',
+            ->add('firstName', TextType::class, [
+                'label' => 'Prénoms',
                 'mapped' => true,
                 'required' => true
             ])
@@ -53,8 +54,8 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false,
                 'choices' => Member::getTitres(),
-                'empty_data' => 'Chauffeur',
-                'data' => 'Chauffeur',
+                'empty_data' => null,
+                'data' => null,
             ])
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
@@ -67,8 +68,8 @@ class MemberRegistrationType extends AbstractType
                     "LE TRANSPORTEUR" => "LE TRANSPORTEUR",
                     "IZIGO" => "IZIGO"
                 ],
-                'empty_data' => 'YANGO',
-                'data' => 'YANGO',
+                'empty_data' => null,
+                'data' => null,
             ])
             ->add('nationality', TextType::class, [
                 'label' => "Nationalité",
@@ -93,12 +94,12 @@ class MemberRegistrationType extends AbstractType
                     'CNI' => 'CNI',
                     'PASSEPORT' => 'PASSEPORT',
                 ],
-                'empty_data' => 'CNI',
-                'data' => 'CNI',
+                'empty_data' => null,
+                'data' => null,
             ])
             ->add('sex', ChoiceType::class, [
-                'label' => 'Genre',
-                'required' => false,
+                'label' => 'Sexe',
+                'required' => true,
                 'mapped' => true,
                 'choices' => [
                     'Homme' => 'H',
@@ -164,6 +165,11 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false
             ])
+            ->add('quartier', TextType::class, [
+                'label' => "Quartier",
+                'mapped' => true,
+                'required' => false
+            ])
             ->add('mobile', TextType::class, [
                 'label' => "Tel Mobile",
                 'mapped' => true,
@@ -171,6 +177,16 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('phone', TextType::class, [
                 'label' => "Tel fixe",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('partner_first_name', TextType::class, [
+                'label' => "Prénoms conjoint",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('partner_last_name', TextType::class, [
+                'label' => "Nom conjoint",
                 'mapped' => true,
                 'required' => false
             ])

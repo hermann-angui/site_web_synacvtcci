@@ -1,0 +1,48 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block title %}Accueil - SYNACVTCCI{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .page-header {
+            height: 183px !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('frontend/_partials/header.html.twig') }}
+
+
+    <section class="page-header">
+        <div class="page-header-shape"></div>
+        <div class="container">
+            <div class="page-header-info">
+                <h4>Félicitation</h4>
+                <h2>Bienvenue dans la famille <span>SYNACVTCCI!</span></h2>
+            </div>
+        </div>
+    </section>
+
+    <div class="taxi-booking bg-grey padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ include('frontend/_partials/footer.html.twig') }}
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+  <script>
+      $('document').ready(function() {
+      });
+
+  </script>
+{% endblock %}

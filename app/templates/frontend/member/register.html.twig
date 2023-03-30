@@ -1,0 +1,78 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block title %}Accueil - SYNACVTCCI{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {{ include('frontend/_partials/header.html.twig') }}
+
+
+    <section class="page-header">
+        <div class="page-header-shape"></div>
+        <div class="container">
+            <div class="page-header-info">
+                <h4>Formulaire d'adhésuion!</h4>
+                <h2>Remplissez le formulaire d'adhésion <br>et rejoignez la <span>SYNACVTCCI!</span></h2>
+                <p>Faites nous confiance<br>Nous défendons vos intérêts </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="taxi-booking bg-grey padding">
+        <div class="col-lg-12 px-5">
+            {{ include('frontend/member/_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('frontend/_partials/footer.html.twig') }}
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+  <script>
+      $('document').ready(function() {
+          var children = [];
+          $("input[name='is_married']").change(function(){
+             if($(this).val() === "0"){
+                $('#partner_bock').hide();
+             }else{
+                  $('#partner_bock').show();
+             }
+          });
+          $( "#step1" ).click(function() {
+              //close accordion 1 and open accordion 3
+              $("#collapseOne, #collapseTwo").collapse('toggle');
+              $( "#documents").focus();
+           });
+          $( "#step2" ).click(function() {
+              //close accordion 1 and open accordion 3
+              $("#collapseTwo, #collapseThree").collapse('toggle');
+              $( "#info_familiales").focus();
+           });
+          $("#member_registration_photo").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#imagePreview').attr('src', evt.target.result);
+                  $('#imagePreview').fadeIn(650);
+              }
+          });
+
+          $('#addChildBtn').click(function(){
+               var child = {
+                   "lastName": $("input[name='child_first_name']"),
+                   "firstName": $("input[name='child_last_name']"),
+                   "sex": $("input[name='sex']"),
+               }
+               children.push(child);
+          });
+      });
+
+  </script>
+{% endblock %}

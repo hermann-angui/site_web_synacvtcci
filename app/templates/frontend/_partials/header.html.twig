@@ -1,0 +1,154 @@
+<!--[if lt IE 8]>
+<p class="browserupgrade">
+    You are using an <strong>outdated</strong> browser. Please
+    <a href="http://browsehappy.com/">upgrade your browser</a> to improve
+    your experience.
+</p><![endif]-->
+<div class="site-preloader">
+    <div class="car">
+        <div class="strike"></div>
+        <div class="strike strike2"></div>
+        <div class="strike strike3"></div>
+        <div class="strike strike4"></div>
+        <div class="strike strike5"></div>
+        <div class="car-detail spoiler"></div>
+        <div class="car-detail back"></div>
+        <div class="car-detail center"></div>
+        <div class="car-detail center1"></div>
+        <div class="car-detail front"></div>
+        <div class="car-detail wheel"></div>
+        <div class="car-detail wheel wheel2"></div>
+    </div>
+</div>
+
+<header class="main-header">
+    <div class="top-header">
+        <div class="container">
+            <div class="top-header-wrap">
+                <div class="top-left">
+                    <p class="topbar-content">
+                        <i class="icon-phone" style="margin: 0 7px 0 0"></i> +225 01 02 68 87 88  <i class="icon-envelope-letter" style="margin: 0 7px"></i>info@synacvtcci.org
+                    </p>
+                </div>
+                <div class="top-right">
+                    <ul class="top-header-nav">
+                        <li><a href="{{ asset('home') }}">Aide</a></li>
+                        <li><a href="{{ asset('home') }}">FAQ</a></li>
+                    </ul>
+                    <ul class="header-social-share">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mid-header">
+        <div class="container">
+            <div class="mid-header-wrap">
+                <div class="site-logo">
+                    <a href="{{ path('home') }}"><img width="120" src="{{ asset('assets/frontend/img/logo-synacvtcci.jpg') }}" alt="Logo"></a>
+                </div>
+
+                <ul class="header-info">
+                    <li>
+                        <div class="header-info-icon">
+                            <i class="las la-phone-volume"></i>
+                        </div>
+                        <div class="header-info-text">
+                            <h3><span>Info line</span><a href="tel:5267214392">+225 01 02 68 87 88</a></h3>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="header-info-icon">
+                            <i class="las la-envelope-open"></i>
+                        </div>
+                        <div class="header-info-text">
+                            <h3><span>Email</span>
+                                <a href="{{ path('home') }}" class="__cf_email__" data-cfemail="1851767e77366a717c7d735875797174367b7775">info@synacvtcci.org</a>
+                            </h3>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="header-info-icon">
+                            <i class="las la-map-marked-alt"></i>
+                        </div>
+                        <div class="header-info-text">
+                            <h3><span>Riviera</span>palmeraie</h3>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-menu-wrapper">
+        <div class="container">
+            <div class="nav-menu-inner">
+                <div class="site-logo">
+                    <a href="href="{{ path('home') }}"><img src="{{ asset('assets/frontend/img/logo-dark.png') }}" alt="Logo"></a>
+                </div>
+
+                <div class="header-menu-wrap">
+                    <ul class="nav-menu">
+                        <li class="active dropdown_menu">
+                            <a href="{{ path('home') }}">Accueil</a>
+                        </li>
+                        <li class="dropdown_menu">
+                            <a href="{{ path('home') }}">Qui sommes-nous ?</a>
+                        </li>
+                        <li class="dropdown_menu">
+                            <a href="{{ path('home') }}">Blog</a>
+                        </li>
+                        <li class="dropdown_menu">
+                            <a href="{{ path('register_member') }}">Adhérer</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="menu-right-item">
+                    <div class="search-icon dl-search-icon">
+                        <i class="las la-search"></i>
+                    </div>
+                    <div class="sidebox-icon dl-sidebox-icon">
+                        <i class="las la-bars"></i>
+                    </div>
+                    <a href="{{ asset('register') }}" class="menu-btn">Rejoins-nous</a>
+                </div>
+                <div class="mobile-menu-icon">
+                    <div class="burger-menu">
+                        <div class="line-menu line-half first-line"></div>
+                        <div class="line-menu"></div>
+                        <div class="line-menu line-half last-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<div id="popup-search-box">
+    <div class="box-inner-wrap d-flex align-items-center">
+        <form id="form" action="#" method="get" role="search">
+            <input id="popup-search" type="text" name="s" placeholder="Type keywords here...">
+            <button id="popup-search-button" type="submit" name="submit">
+                <i class="las la-search"></i>
+            </button>
+        </form>
+        <div class="search-close"><i class="las la-times"></i></div>
+    </div>
+</div>
+
+<div id="searchbox-overlay"></div>
+<div id="popup-sidebox" class="popup-sidebox">
+    <div class="sidebox-content">
+        <div class="site-logo">
+            <a href="{{ path('home') }}"><img src="{{ asset('assets/frontend/img/logo-light.png') }}" alt="logo"></a>
+        </div>
+    </div>
+</div>
+
+<div id="sidebox-overlay"></div>

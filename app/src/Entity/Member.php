@@ -95,10 +95,10 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $company = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $wife_first_name = null;
+    private ?string $partner_first_name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $wife_last_name = null;
+    private ?string $partner_last_name = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photoPiece_front = null;
@@ -680,6 +680,41 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getPartnerFirstName(): ?string
+    {
+        return $this->partner_first_name;
+    }
+
+    /**
+     * @param string|null $partner_first_name
+     * @return Member
+     */
+    public function setPartnerFirstName(?string $partner_first_name): Member
+    {
+        $this->partner_first_name = $partner_first_name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPartnerLastName(): ?string
+    {
+        return $this->partner_last_name;
+    }
+
+    /**
+     * @param string|null $partner_last_name
+     * @return Member
+     */
+    public function setPartnerLastName(?string $partner_last_name): Member
+    {
+        $this->partner_last_name = $partner_last_name;
+        return $this;
+    }
 
 
 }
