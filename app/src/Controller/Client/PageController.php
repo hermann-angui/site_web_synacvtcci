@@ -136,6 +136,12 @@ class PageController extends AbstractController
             'member' => $member,
             'form' => $form,
         ]);
+    }
 
+    #[Route(path: '/profile/{matricule}', name: 'public_member_profile')]
+    public function memberProfile(Request $request, MemberRepository $memberRepository): Response
+    {
+        $member = $memberRepository->findOneBy(["matricule" => $request->get("matricule")]);
+        return $this->render('admin/member/public_profile.html.twig', ["member" => $member]);
     }
 }
