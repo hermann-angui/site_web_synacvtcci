@@ -22,17 +22,18 @@
                 {{ form_row(form.sex) }}
                 {{ form_row(form.lastName) }}
                 {{ form_row(form.firstName) }}
-                {{ form_row(form.company) }}
-                {{ form_row(form.nationality) }}
-                {{ form_row(form.whatsapp) }}
                 {{ form_row(form.date_of_birth) }}
                 {{ form_row(form.birth_city) }}
+                {{ form_row(form.company) }}
+                {{ form_row(form.nationality) }}
+                {{ form_row(form.mobile) }}
+                {{ form_row(form.phone) }}
+                {{ form_row(form.whatsapp) }}
                 {{ form_row(form.country) }}
                 {{ form_row(form.city) }}
                 {{ form_row(form.commune) }}
                 {{ form_row(form.quartier) }}
-                {{ form_row(form.mobile) }}
-                {{ form_row(form.phone) }}
+
                 <div class="d-flex justify-content-end">
                     <span class="btn-primary btn default-btn" id="step1"> Etape suivante</span>
                 </div>
@@ -86,9 +87,12 @@
                     <input type="radio" name="has_child" value="0" checked /> Non &nbsp;&nbsp;
                     <input type="radio" name="has_child" value="1"/> Oui
                     <br>
-                    <div id="children_bock" class="pt-2">
-                        <button id="newChild" class="btn btn-small btn-rounded btn-primary" data-bs-toggle="modal" data-bs-target="#enfantModal" data-bs-whatever="@mdo"><i class="fa fa-plus fa-1x"></i> Ajouter un enfant </button>
+                    <div id="child-row" style="display:none;">
+                        <div id="children_bock"  class="pt-2">
+                        </div>
+                        <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Ajouter un enfant </span>
                     </div>
+
                 </div>
 
              </div>
@@ -98,41 +102,6 @@
     <div class="d-flex justify-content-center align-items-center">
         <a href="{{ path('home') }}" class="btn btn-primary w-50 default-btn bg-info">{{ button_label|default('Fermer') }}</a> &nbsp;&nbsp;
         <button class="btn btn-primary w-50 default-btn">{{ button_label|default('Enregistrer') }}</button>
-    </div>
-
-    <div class="modal fade" id="enfantModal" tabindex="-1" aria-labelledby="enfantModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="Nom">Enregister un enfant</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label">Nom:</label>
-                            <input type="text" class="form-control" id="child_first_name" name="child_first_name" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="message-text" class="col-form-label">Prénoms:</label>
-                            <input type="text" class="form-control" id="child_last_name" name="child_last_name" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="sex" class="col-form-label">Sexe:</label>
-                            <select class="form-select" name="sex">
-                                <option value="" selected></option>
-                                <option value="Masculin">Masculin</option>
-                                <option value="Feminin">Feminin</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary default-btn" data-bs-dismiss="modal">Fermer</button>
-                    <button type="button" class="btn btn-primary default-btn" id="addChildBtn">Enregistrer</button>
-                </div>
-            </div>
-        </div>
     </div>
 
 {{ form_end(form) }}

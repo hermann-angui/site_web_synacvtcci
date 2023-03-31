@@ -1,0 +1,138 @@
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="flex-shrink-0">
+                                            {% if member.photo is not null %}
+                                            <a href="{{ path('admin_member_generate_card',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light"><span class="fa fa-blender fa-1x"></span> Générer la carte</a>
+                                            {% endif %}
+                                            {% if member.cardPhoto is not null %}
+                                            <a href="{{ path('admin_member_show_card',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" ><span class="fa fa-eye fa-1x"></span> Voir la carte</a>
+                                            <a href="{{ path('admin_member_download_card',{'id': member.id}) }}" class="btn btn-primary btn-sm waves-effect waves-light" ><span class="fa fa-download fa-1x"></span> Télécharger la carte</a>
+                                            {% endif %}
+                                            <a href="{{ path('admin_member_index') }}" class="btn btn-primary btn-sm waves-effect waves-light" >Fermer</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Fiche membre : <strong class="badge bg-gradient bg-info">{{ member.matricule }}</strong></h4>
+                                    <table class="table table-bordered px-5">
+                                        <tbody>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="d-flex justify-content-center">
+                                                    {% if member.photo is null %}
+                                                        <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-2">
+                                                    {% else %}
+                                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Matricule</th>
+                                            <td>{{ member.matricule }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <td>{{ member.lastName }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Prénoms</th>
+                                            <td>{{ member.firstName }}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Email</th>
+                                            <td>{{ member.email }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Titre</th>
+                                            <td><span class="badge badge-pill bg-info font-size-11">{{ member.titre }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Date de souscription</th>
+                                            <td>{{ member.subscriptionDate ? member.subscriptionDate|date('Y-m-d') : '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Expire le</th>
+                                            <td>{{ member.subscriptionExpireDate ? member.subscriptionExpireDate|date('Y-m-d') : '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Sex</th>
+                                            <td>{{ member.sex }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Date de naissance</th>
+                                            <td>{{ member.dateOfBirth ? member.dateOfBirth|date('Y-m-d') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Lieu de naissance</th>
+                                            <td>{{ member.birthCity }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>N° Permis de conduire</th>
+                                            <td>{{ member.drivingLicenseNumber }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>N° Pièce d'identité</th>
+                                            <td>{{ member.IdNumber }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Type de pièce</th>
+                                            <td>{{ member.IdType }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Images CNI</th>
+                                            <td>
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPieceFront }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPieceBack }}" alt="" width="200" class="rounded-2">
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Images Permis</th>
+                                            <td>
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPermisFront }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPermisBack }}" alt="" width="200" class="rounded-2">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Pays</th>
+                                            <td>{{ member.country }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Ville</th>
+                                            <td>{{ member.city }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Commune</th>
+                                            <td>{{ member.commune }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Tel Mobile</th>
+                                            <td>{{ member.mobile }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Tel Fixe</th>
+                                            <td>{{ member.phone }}</td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+

@@ -2,16 +2,19 @@
 
 namespace App\Controller\Client;
 
+use App\Entity\Child;
 use App\Entity\Member;
 use App\Form\MemberRegistrationType;
 use App\Helper\MemberHelper;
 use App\Helper\PasswordHelper;
+use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Snappy\Pdf;
 
 class PageController extends AbstractController
 {
@@ -26,12 +29,15 @@ class PageController extends AbstractController
     {
         return $this->render('frontend/member/success.html.twig');
     }
+
     #[Route(path: '/register', name: 'register_member')]
-    public function registerMember(Request $request,
+    public function registerMember (Request $request,
                                    MemberRepository $memberRepository,
+                                   ChildRepository $childRepository,
                                    MemberHelper $memberHelper,
                                    UserPasswordHasherInterface $userPasswordHasher): Response
     {
+
 
         $member = new Member();
         $form = $this->createForm(MemberRegistrationType::class, $member);
@@ -79,14 +85,51 @@ class PageController extends AbstractController
                 if($fileName) $member->setPhotoPermisFront($fileName);
             }
 
+            if($form->get('quartier')->getData()){
+                $member->setQuartier($form->get('quartier')->getData());
+            }
+
+            if($form->get('commune')->getData()){
+                $member->setQuartier($form->get('commune')->getData());
+            }
+
+            if($form->get('partner_first_name')->getData()){
+                $member->setPartnerFirstName($form->get('partner_first_name')->getData());
+            }
+
+            if($form->get('partner_last_name')->getData()){
+                $member->setPartnerLastName($form->get('partner_last_name')->getData());
+            }
+
+            if($form->get('whatsapp')->getData()){
+                $member->setWhatsapp($form->get('whatsapp')->getData());
+            }
+
+            if($form->get('company')->getData()){
+                $member->setCompany($form->get('company')->getData());
+            }
+
             if($form->get('photoPermisBack')->getData()){
                 $fileName = $memberHelper->uploadAsset($form->get('photoPermisBack')->getData(), $member);
                 if($fileName) $member->setPhotoPermisBack($fileName);
             }
 
+            $cl = $request->get('child_lastname');
+            if(is_array($cl)){
+                $count = count($cl);
+                for($i =0; $i < $count ; $i++){
+                    $child =  new Child();
+                    $child->setLastName($request->get('child_lastname')[$i]);
+                    $child->setFirstName($request->get('child_firstname')[$i]);
+                    $child->setSex($request->get('child_sex')[$i]);
+                    $child->setParent($member);
+                    $childRepository->add($child);
+                }
+            }
+
             $memberRepository->add($member, true);
 
-            return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('success',[], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('frontend/member/register.html.twig', [
