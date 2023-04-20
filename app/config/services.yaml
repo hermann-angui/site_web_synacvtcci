@@ -27,7 +27,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\Service\MemberCardGeneratorService:
+    App\Service\Member\MemberService:
+        arguments:
+            $container: '@service_container'
+
+    App\Service\Member\MemberReceiptGeneratorService:
+        arguments:
+            $container: '@service_container'
+
+    App\Service\Member\MemberCardGeneratorService:
         arguments:
             $container: '@service_container'
 
@@ -39,6 +47,6 @@ services:
         arguments:
             $uploadDirectory: '%kernel.project_dir%'
 
-    App\Helper\MemberHelper:
+    App\Helper\MemberAssetHelper:
         arguments:
             $uploadDirectory: '%kernel.project_dir%'

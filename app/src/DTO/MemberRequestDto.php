@@ -1,141 +1,97 @@
 <?php
 
-namespace App\Entity;
+namespace App\DTO;
 
-use App\Repository\MemberRepository;
+use App\Entity\Child;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-
-#[ORM\Entity(repositoryClass: MemberRepository::class)]
-#[ORM\Table(name: '`member`')]
-#[UniqueEntity(fields: ['matricule','drivingLicenseNumber','IdNumber'], message: 'There is already an account with this email')]
-class Member implements UserInterface, PasswordAuthenticatedUserInterface
+class MemberRequestDto implements PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column()]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $matricule = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $titre = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $subscription_date = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $subscription_expire_date = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $sex = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photo = null;
+    private ?File $photo = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $cardPhoto = null;
+    private ?File $cardPhoto = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_of_birth = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $birth_city = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $drivingLicenseNumber = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $IdNumber = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $IdType = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nationality = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $commune = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $quartier = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $mobile = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $whatsapp = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $company = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $partner_first_name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $partner_last_name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = 'PENDING';
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPiece_front = null;
+    private ?File $photoPiece_front = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPiece_back = null;
+    private ?File $photoPiece_back = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPermis_front = null;
+    private ?File $photoPermis_front = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPermis_back = null;
+    private ?File $photoPermis_back = null;
 
-    #[ORM\Column(type: 'json')]
     private $roles = [];
 
-    #[ORM\Column(type: 'string')]
     private ?string $password;
 
     private ?string $plain_password;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created_at;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Child::class, orphanRemoval: true, cascade: ["persist"])]
     private Collection $children;
 
     public function __construct()
     {
-        $this->created_at = new \DateTime();
-        $this->modified_at = new \DateTime();
+        $this->created_at = new \DateTime('now');
+        $this->modified_at = new \DateTime('now');
         $this->children = new ArrayCollection();
     }
     public function getId(): ?int
@@ -429,24 +385,24 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhoto(): ?string
+    public function getPhoto(): ?File
     {
         return $this->photo;
     }
 
-    public function setPhoto(?string $photo): self
+    public function setPhoto(?File $photo): self
     {
         $this->photo = $photo;
 
         return $this;
     }
 
-    public function getCardPhoto(): ?string
+    public function getCardPhoto(): ?File
     {
         return $this->cardPhoto;
     }
 
-    public function setCardPhoto(?string $cardPhoto): self
+    public function setCardPhoto(?File $cardPhoto): self
     {
         $this->cardPhoto = $cardPhoto;
 
@@ -463,7 +419,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param \DateTimeInterface|null $created_at
-     * @return Member
+     * @return MemberRequestDto
      */
     public function setCreatedAt(?\DateTimeInterface $created_at): self
     {
@@ -481,7 +437,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param \DateTimeInterface|null $modified_at
-     * @return Member
+     * @return MemberRequestDto
      */
     public function setModifiedAt(?\DateTimeInterface $modified_at): self
     {
@@ -493,70 +449,70 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string
      */
-    public function getPhotoPieceFront(): ?string
+    public function getPhotoPieceFront(): ?File
     {
         return $this->photoPiece_front;
     }
 
     /**
-     * @param string $photoPiece_front
-     * @return Member
+     * @param File $photoPiece_front
+     * @return MemberRequestDto
      */
-    public function setPhotoPieceFront(?string $photoPiece_front): self
+    public function setPhotoPieceFront(?File $photoPiece_front): self
     {
         $this->photoPiece_front = $photoPiece_front;
         return $this;
     }
 
     /**
-     * @return string
+     * @return File
      */
-    public function getPhotoPieceBack(): ?string
+    public function getPhotoPieceBack(): ?File
     {
         return $this->photoPiece_back;
     }
 
     /**
-     * @param string $photoPiece_back
-     * @return Member
+     * @param File $photoPiece_back
+     * @return MemberRequestDto
      */
-    public function setPhotoPieceBack(?string $photoPiece_back): self
+    public function setPhotoPieceBack(?File $photoPiece_back): self
     {
         $this->photoPiece_back = $photoPiece_back;
         return $this;
     }
 
     /**
-     * @return string
+     * @return File
      */
-    public function getPhotoPermisFront() : ?string
+    public function getPhotoPermisFront() : ?File
     {
         return $this->photoPermis_front;
     }
 
     /**
-     * @param string $photoPermis_front
-     * @return Member
+     * @param File $photoPermis_front
+     * @return MemberRequestDto
      */
-    public function setPhotoPermisFront(?string $photoPermis_front): self
+    public function setPhotoPermisFront(?File $photoPermis_front): self
     {
         $this->photoPermis_front = $photoPermis_front;
         return $this;
     }
 
     /**
-     * @return string
+     * @return File
      */
-    public function getPhotoPermisBack() : ?string
+    public function getPhotoPermisBack() : ?File
     {
         return $this->photoPermis_back;
     }
 
     /**
-     * @param string $photoPermis_back
-     * @return Member
+     * @param File $photoPermis_back
+     * @return MemberRequestDto
      */
-    public function setPhotoPermisBack(?string $photoPermis_back): self
+    public function setPhotoPermisBack(?File $photoPermis_back): self
     {
         $this->photoPermis_back = $photoPermis_back;
         return $this;
@@ -591,9 +547,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string|null $nationality
-     * @return Member
+     * @return MemberRequestDto
      */
-    public function setNationality(?string $nationality): Member
+    public function setNationality(?string $nationality): MemberRequestDto
     {
         $this->nationality = $nationality;
         return $this;
@@ -609,9 +565,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string|null $quartier
-     * @return Member
+     * @return MemberRequestDto
      */
-    public function setQuartier(?string $quartier): Member
+    public function setQuartier(?string $quartier): MemberRequestDto
     {
         $this->quartier = $quartier;
         return $this;
@@ -627,9 +583,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string|null $whatsapp
-     * @return Member
+     * @return MemberRequestDto
      */
-    public function setWhatsapp(?string $whatsapp): Member
+    public function setWhatsapp(?string $whatsapp): MemberRequestDto
     {
         $this->whatsapp = $whatsapp;
         return $this;
@@ -645,27 +601,27 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string|null $company
-     * @return Member
+     * @return MemberRequestDto
      */
-    public function setCompany(?string $company): Member
+    public function setCompany(?string $company): MemberRequestDto
     {
         $this->company = $company;
         return $this;
     }
 
     /**
-     * @return Collection<int, Child>
+     * @return Collection<int, ChildDto>
      */
     public function getChildren(): Collection
     {
         return $this->children;
     }
 
-    public function addChild(Child $child): self
+    public function addChild(ChildDto $childDto): self
     {
-        if (!$this->children->contains($child)) {
-            $this->children[] = $child;
-            $child->setParent($this);
+        if (!$this->children->contains($childDto)) {
+            $this->children[] = $childDto;
+            $childDto->setParent($this);
         }
 
         return $this;
@@ -693,9 +649,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string|null $partner_first_name
-     * @return Member
+     * @return MemberRequestDto
      */
-    public function setPartnerFirstName(?string $partner_first_name): Member
+    public function setPartnerFirstName(?string $partner_first_name): MemberRequestDto
     {
         $this->partner_first_name = $partner_first_name;
         return $this;
@@ -711,9 +667,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string|null $partner_last_name
-     * @return Member
+     * @return MemberRequestDto
      */
-    public function setPartnerLastName(?string $partner_last_name): Member
+    public function setPartnerLastName(?string $partner_last_name): MemberRequestDto
     {
         $this->partner_last_name = $partner_last_name;
         return $this;
@@ -721,9 +677,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string|null $status
-     * @return Member
+     * @return MemberRequestDto
      */
-    public function setStatus(?string $status): Member
+    public function setStatus(?string $status): MemberRequestDto
     {
         $this->status = $status;
         return $this;
@@ -736,5 +692,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->status;
     }
+
 
 }

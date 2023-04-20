@@ -17,7 +17,7 @@ class FileUploadHelper
     {
     }
 
-    public function upload(?File $file, ?string $destinationDirectory = null, ?bool $keepName = false): ?string
+    public function upload(?File $file, ?string $destinationDirectory = null, ?bool $keepName = false): ?File
     {
         try {
             if(!$file) return null;
@@ -26,12 +26,11 @@ class FileUploadHelper
             else $fileName = $file->getClientOriginalName();
 
             if(!file_exists($destinationDirectory)) mkdir($destinationDirectory);
-            $file->move($destinationDirectory, $fileName);
+            return $file->move($destinationDirectory, $fileName);
 
         } catch (\Exception $e) {
             return null;
         }
-        return $fileName;
     }
 
     public function remove(?File $file): ?bool

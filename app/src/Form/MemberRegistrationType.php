@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\DTO\MemberRequestDto;
 use App\Entity\Member;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -190,13 +191,24 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false
             ])
+/*            ->add('status', ChoiceType::class, [
+                'label' => 'Statut',
+                'required' => true,
+                'mapped' => false,
+                'choices' => [
+                    'PENDING' => 'EN ATTENTE',
+                    'VALIDATED' => 'VALIDER',
+                ],
+                'empty_data' =>  null,
+                'data' => null,
+            ])*/
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Member::class,
+            'data_class' => MemberRequestDto::class,
         ]);
     }
 }

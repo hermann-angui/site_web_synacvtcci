@@ -1,42 +1,27 @@
 <?php
 
-namespace App\Entity;
+namespace App\DTO;
 
-use App\Repository\ChildRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Child;
+use App\Entity\Member;
 
-#[ORM\Entity(repositoryClass: ChildRepository::class)]
-#[ORM\Table(name: '`child`')]
-#[ORM\HasLifecycleCallbacks()]
-class Child
+class ChildDto
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private $first_name;
 
-    #[ORM\Column(type: 'string')]
     private $last_name;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $sex;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $lieu_naissance;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
     private $created_at;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
     private $modified_at;
 
-    #[ORM\ManyToOne(inversedBy: 'children')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Member $parent = null;
+    private ?MemberRequestDto $parent = null;
 
 
     public function __construct()
@@ -45,19 +30,6 @@ class Child
         $this->modified_at = new \DateTime();
     }
 
-
-
-    /**
-     * Prepersist gets triggered on Insert
-     * @ORM\PrePersist
-     */
-    public function updatedTimestamps()
-    {
-        if ($this->created_at == null) {
-            $this->created_at = new \DateTime('now');
-        }
-        $this->modified_at =  new \DateTime('now');
-    }
 
     public function getId(): ?int
     {
@@ -88,12 +60,12 @@ class Child
         return $this->modified_at;
     }
 
-    public function getParent(): ?Member
+    public function getParent(): ?MemberRequestDto
     {
         return $this->parent;
     }
 
-    public function setParent(?Member $parent): self
+    public function setParent(?MemberRequestDto $parent): self
     {
         $this->parent = $parent;
 

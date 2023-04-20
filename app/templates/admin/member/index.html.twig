@@ -13,13 +13,11 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
 
-
         {{ include('admin/_partials/header.html.twig') }}
 
         <!-- ========== Left Sidebar Start ========== -->
         {{ include('admin/_partials/left-sidebar.html.twig')}}
         <!-- Left Sidebar End -->
-
 
         <!-- ============================================================== -->
         <!-- Start right Content here -->
@@ -28,25 +26,21 @@
 
             <div class="page-content">
                 <div class="container-fluid">
-
                     <!-- start page title -->
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                                 <h4 class="mb-sm-0 font-size-18">Membres</h4>
-
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
                                         <li class="breadcrumb-item"><a href="javascript: void(0);">Accueil</a></li>
                                         <li class="breadcrumb-item active">Liste des Membres</li>
                                     </ol>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                     <!-- end page title -->
-
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card">
@@ -62,24 +56,25 @@
                                 </div>
                                 <div class="card-body border-bottom">
                                     <div class="row g-3">
+                                        <div class="col-xxl-1 col-lg-1">
+                                            <button id="refresh-btn" type="button" class="btn btn-soft-secondary w-100">Filtre<i class="mdi mdi-filter-outline align-middle"></i></button>
+                                        </div>
                                         <div class="col-xxl-2 col-lg-6">
                                             <input type="search" class="form-control" id="matricule" placeholder="matricule">
                                         </div>
                                         <div class="col-xxl-2 col-lg-6">
-                                            <input type="search" class="form-control" id="driving_license_number" placeholder="N° permis">
+                                            <input type="search" class="form-control" id="firstname" placeholder="Nom">
                                         </div>
                                         <div class="col-xxl-2 col-lg-6">
-                                            <input type="search" class="form-control" id="id_number" placeholder="Pièce d'identité ...">
+                                            <input type="search" class="form-control" id="driving_license_number" placeholder="Numéro du permis">
                                         </div>
                                         <div class="col-xxl-2 col-lg-6">
-                                            <select id="sex" class="form-control select2">
-                                                <option value="F">F</option>
-                                                <option value="H">H</option>
-                                            </select>
+                                            <input type="search" class="form-control" id="id_number" placeholder="Pièce d'identité">
                                         </div>
+
                                         <div class="col-xxl-2 col-lg-4">
-                                            <select id="titre" class="form-control select2">
-                                                <option>Titre</option>
+                                            <select id="title" class="form-control select2"  title="Catégorie">
+                                                <option>--Type--</option>
                                                 <option value="Chauffeur">Chauffeur</option>
                                                 <option value="Secrétaire général">Secrétaire général</option>
                                                 <option value="SN au contrôle informatique">SN au contrôle informatique</option>
@@ -93,10 +88,6 @@
                                                 <option value="SN Adjointe aux finances">SN Adjointe aux finances</option>
                                             </select>
                                         </div>
-
-                                        <div class="col-xxl-2 col-lg-4">
-                                            <button id="refresh-btn" type="button" class="btn btn-soft-secondary w-100"><i class="mdi mdi-filter-outline align-middle"></i> Filter</button>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -107,17 +98,12 @@
                                 </div>
                             </div><!--end card-->
                         </div><!--end col-->
-
                     </div><!--end row-->
-
-
-
                 </div> <!-- container-fluid -->
             </div><!-- End Page-content -->
             {{ include('admin/_partials/footer.html.twig') }}
         </div>
         <!-- end main content-->
-
     </div>
     <!-- END layout-wrapper -->
 
@@ -138,7 +124,11 @@
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
 
-        initDatatable();
+        var datatable = initDatatable();
+
+        $("#matricule,#driving_license_number,#id_number,#sex").change(function (e) {
+                datatable.draw();
+        });
 
         function initDatatable(){
             /* DATATABLE INIT */
@@ -146,6 +136,8 @@
                 "responsive": true,
                 "language": {
                     url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                    processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
+                    sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />"
                 },
                 "processing": true,
                 "serverSide": true,
@@ -153,9 +145,10 @@
                     "url": '{{ path('admin_member_datatable') }}',
                     "data": function (d) {
                         d.matricule = $("#matricule").val();
+                        d.lastname = $("#lastname").val();
                         d.driving_license_number = $("#driving_license_number").val();
                         d.id_number = $("#id_number").val();
-                        d.sex = $("#sex").val();
+                        d.title = $("#title").val();
                     }
                 },
                 "columns": [
@@ -173,6 +166,8 @@
                 ],
                 "order": [[1, 'asc']]
             } );
+
+
             return dt;
         }
     });

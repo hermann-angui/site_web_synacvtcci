@@ -7,7 +7,7 @@ use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\RouterInterface;
 
-class UserHelper
+class UserHelper implements AssetHelperInterface
 {
     /**
      * @var FileUploadHelper
@@ -26,11 +26,11 @@ class UserHelper
     }
 
 
-    public function getUploadDirectory(?User $user): ?string
+    public function getUploadDirectory(?string $destDirectory): ?string
     {
         try {
-            if(!$user) return null;
-            $path = $this->uploadDirectory . "/public/membres/" . $user->getId() . "/" ;
+            if(!$destDirectory) return null;
+            $path = $this->uploadDirectory . "/public/users/" . $destDirectory . "/" ;
             if (!file_exists($path)) mkdir($path, 0777, true);
             return $path;
         } catch (\Exception $e) {
@@ -39,9 +39,9 @@ class UserHelper
 
     }
 
-    public function uploadAsset(?File $file, ?User $user): ?string
+    public function uploadAsset(?File $file, ?string $destDirectory): ?File
     {
-        return $this->fileUploadHelper->upload($file, $this->getUploadDirectory($user));
+        return $this->fileUploadHelper->upload($file, $this->getUploadDirectory($destDirectory));
     }
 
 
