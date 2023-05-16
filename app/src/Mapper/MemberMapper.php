@@ -11,7 +11,10 @@ class MemberMapper
 {
     public static function MapToMemberRequestDto(Member $member): MemberRequestDto{
         $memberDto = new MemberRequestDto();
+        $memberAssetPath = "/var/www/html/public/members/" . $member->getMatricule() . "/";
+
         $memberDto->setFirstName($member->getFirstName());
+        $memberDto->setId($member->getId());
         $memberDto->setLastName($member->getLastName());
         $memberDto->setPassword($member->getPassword());
         $memberDto->setWhatsapp($member->getWhatsapp());
@@ -20,12 +23,27 @@ class MemberMapper
         $memberDto->setPartnerLastName($member->getPartnerLastName());
         $memberDto->setPhone($member->getPhone());
         $memberDto->setMatricule($member->getMatricule());
-        $memberDto->setPhoto(new File($member->getPhoto()));
-        $memberDto->setPhotoPermisBack(new File($member->getPhotoPermisBack()));
-        $memberDto->setPhotoPermisFront(new File($member->getPhotoPermisFront()));
-        $memberDto->setPhotoPieceBack(new File($member->getPhotoPieceBack()));
-        $memberDto->setPhotoPieceFront(new File($member->getPhotoPieceFront()));
-        $memberDto->setCardPhoto(new File($member->getCardPhoto()));
+        if($member->getPhoto()) $memberDto->setPhoto(new File($memberAssetPath . $member->getPhoto()));
+        if($member->getPhotoPermisBack()) {
+            $file = new File($memberAssetPath . $member->getPhotoPermisBack(), false);
+            if($file->isFile()) $memberDto->setPhotoPermisBack($file);
+        }
+        if($member->getPhotoPermisFront()) {
+            $file = new File($memberAssetPath . $member->getPhotoPermisFront(), false);
+            if($file->isFile()) $memberDto->setPhotoPermisFront($file);
+        }
+        if($member->getPhotoPieceBack()) {
+            $file = new File($memberAssetPath . $member->getPhotoPieceBack(), false);
+            if($file->isFile())  $memberDto->setPhotoPieceBack( $file);
+        }
+        if($member->getPhotoPieceFront()) {
+            $file = new File($memberAssetPath . $member->getPhotoPieceFront(), false);
+            if($file->isFile())  $memberDto->setPhotoPieceFront($file);
+        }
+        if($member->getCardPhoto()) {
+            $file = new File($memberAssetPath . $member->getCardPhoto(), false);
+            if($file->isFile())  $memberDto->setCardPhoto($file);
+        }
         $memberDto->setMobile($member->getMobile());
         $memberDto->setCity($member->getCity());
         $memberDto->setCountry($member->getCountry());
@@ -42,16 +60,12 @@ class MemberMapper
         $memberDto->setEmail($member->getEmail());
         $memberDto->setStatus($member->getStatus());
         $memberDto->setTitre($member->getTitre());
-
-        foreach($member->getChildren() as $child){
-            $memberDto->addChild($child);
-        }
-
         return $memberDto;
     }
 
     public static function MapToMember(MemberRequestDto $memberDto): Member{
         $member = new Member();
+        $member->setFirstName($memberDto->getFirstName());
         $member->setFirstName($memberDto->getFirstName());
         $member->setLastName($memberDto->getLastName());
         $member->setPassword($memberDto->getPassword());
@@ -61,12 +75,24 @@ class MemberMapper
         $member->setPartnerLastName($memberDto->getPartnerLastName());
         $member->setPhone($memberDto->getPhone());
         $member->setMatricule($memberDto->getMatricule());
-        if($memberDto->getPhoto()) $member->setPhoto($memberDto->getPhoto());
-        if($memberDto->getPhotoPermisBack()) $member->setPhotoPermisBack($memberDto->getPhotoPermisBack()->getFilename());
-        if($memberDto->getPhotoPermisFront()) $member->setPhotoPermisFront($memberDto->getPhotoPermisFront()->getFilename());
-        if($memberDto->getPhotoPieceBack()) $member->setPhotoPieceBack($memberDto->getPhotoPieceBack()->getFilename());
-        if($memberDto->getPhotoPieceFront()) $member->setPhotoPieceFront($memberDto->getPhotoPieceFront()->getFilename());
-        if($memberDto->getCardPhoto()) $member->setCardPhoto($memberDto->getCardPhoto()->getFilename());
+        if($memberDto->getPhoto()) {
+            $member->setPhoto($memberDto->getPhoto()->getFilename());
+        }
+        if($memberDto->getPhotoPermisBack()) {
+            $member->setPhotoPermisBack($memberDto->getPhotoPermisBack()->getFilename());
+        }
+        if($memberDto->getPhotoPermisFront()) {
+            $member->setPhotoPermisFront($memberDto->getPhotoPermisFront()->getFilename());
+        }
+        if($memberDto->getPhotoPieceBack()) {
+            $member->setPhotoPieceBack($memberDto->getPhotoPieceBack()->getFilename());
+        }
+        if($memberDto->getPhotoPieceFront()) {
+            $member->setPhotoPieceFront($memberDto->getPhotoPieceFront()->getFilename());
+        }
+        if($memberDto->getCardPhoto()) {
+            $member->setCardPhoto($memberDto->getCardPhoto()->getFilename());
+        }
         $member->setMobile($memberDto->getMobile());
         $member->setCity($memberDto->getCity());
         $member->setCountry($memberDto->getCountry());

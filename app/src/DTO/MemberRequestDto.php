@@ -7,7 +7,6 @@ use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 class MemberRequestDto implements PasswordAuthenticatedUserInterface
@@ -93,6 +92,12 @@ class MemberRequestDto implements PasswordAuthenticatedUserInterface
         $this->created_at = new \DateTime('now');
         $this->modified_at = new \DateTime('now');
         $this->children = new ArrayCollection();
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id =  $id;
+        return $this;
     }
     public function getId(): ?int
     {
@@ -692,6 +697,4 @@ class MemberRequestDto implements PasswordAuthenticatedUserInterface
     {
         return $this->status;
     }
-
-
 }

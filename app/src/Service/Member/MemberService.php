@@ -2,7 +2,6 @@
 
 namespace App\Service\Member;
 
-use App\DTO\ChildDto;
 use App\DTO\MemberRequestDto;
 use App\Entity\Member;
 use App\Helper\CsvReaderHelper;
@@ -93,6 +92,64 @@ class MemberService
             if($fileName) $memberRequestDto->setPhotoPieceBack($fileName);
         }
 
+        if($memberRequestDto->getPhotoPermisFront()){
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPermisFront(), $memberRequestDto->getMatricule());
+            if($fileName) $memberRequestDto->setPhotoPermisFront($fileName);
+        }
+
+        if($memberRequestDto->getPhotoPermisBack()){
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPermisBack(), $memberRequestDto->getMatricule());
+            if($fileName) $memberRequestDto->setPhotoPermisBack($fileName);
+        }
+
+        $member = MemberMapper::MapToMember($memberRequestDto);
+        $this->memberRepository->add($member, true);
+
+        foreach($memberRequestDto->getChildren() as $childDto){
+            $this->childRepository->add(ChildMapper::MapToChild($member, $childDto), true);
+        }
+
+    }
+
+
+    public function updateMember(?MemberRequestDto $memberRequestDto)
+    {
+        date_default_timezone_set("Africa/Abidjan");
+
+        $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
+        $lastRowId = $this->memberRepository->getLastRowId();
+        $memberRequestDto->setRoles(['ROLE_USER']);
+
+        $date = new \DateTime('now');
+        $memberRequestDto->setSubscriptionDate($date);
+
+        $sexCode = null;
+        if($memberRequestDto->getSex() === "H") $sexCode = "SY1";
+        elseif($memberRequestDto->getSex() === "F") $sexCode = "SY2";
+
+        $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $lastRowId+1);
+        $memberRequestDto->setMatricule($matricule);
+
+        $expiredDate = $date->format('Y-12-31');
+        $memberRequestDto->setSubscriptionExpireDate(new \DateTime($expiredDate));
+
+        $memberRequestDto->setPassword($this->userPasswordHasher->hashPassword($memberRequestDto, PasswordHelper::generate()));
+
+        if($memberRequestDto->getPhoto()){
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhoto(), $memberRequestDto->getMatricule());
+            if($fileName) $memberRequestDto->setPhoto($fileName);
+        }
+
+        if($memberRequestDto->getPhotoPieceFront()){
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceFront(), $memberRequestDto->getMatricule());
+            if($fileName) $memberRequestDto->setPhotoPieceFront($fileName);
+        }
+
+        if($memberRequestDto->getPhotoPieceBack()){
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getMatricule());
+            if($fileName) $memberRequestDto->setPhotoPieceBack($fileName);
+        }
+
         if($memberRequestDto->getPhotoPieceBack()){
             $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getMatricule());
             if($fileName) $memberRequestDto->setPhotoPermisFront($fileName);
@@ -107,99 +164,27 @@ class MemberService
         $this->memberRepository->add($member, true);
     }
 
-    public function deleteMember(?MemberRequestDto $memberDto){
+    public function deleteMember(?MemberRequestDto $memberDto)
+    {
 
     }
-
-    public function updateMember(?MemberRequestDto $memberRequestDto){
-        $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
-        $memberRequestDto->setRoles(['ROLE_USER']);
-        date_default_timezone_set("Africa/Abidjan");
-        $date = new \DateTime('now');
-        $memberRequestDto->setSubscriptionDate($date);
-
-        $sexCode = "SY1";
-        if($memberRequestDto->getSex() === "H") $sexCode = "SY1";
-        if($memberRequestDto->getSex() === "F") $sexCode = "SY2";
-
-        if($sex = $data['sex']->getData()){
-            $sexChar = substr( $memberRequestDto->getMatricule(),2, 1);
-            if($sexChar == '1' && $sex == 'F') $memberRequestDto->setMatricule(str_replace('SY1', 'SY2',$memberRequestDto->getMatricule() ));
-            if($sexChar == '2' && $sex == 'H') $memberRequestDto->setMatricule(str_replace('SY2', 'SY1',$memberRequestDto->getMatricule() ));
-        }
-
-        // $expiredDate = $date->add(new \DateInterval("P1Y"));
-        $expiredDate = $date->format('Y-12-31');
-        $memberRequestDto->setSubscriptionExpireDate(new \DateTime($expiredDate));
-
-        $memberRequestDto->setPassword($this->userPasswordHasher->hashPassword($memberRequestDto, PasswordHelper::generate()));
-
-        $member = MemberMapper::MapToMember($memberRequestDto);
-        $this->memberRepository->add($member, true);
-
-        $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $memberRequestDto->getId());
-        $memberRequestDto->setMatricule($matricule);
-
-        if($data['photo']->getData()){
-            $fileName = $this->memberAssetHelper->uploadAsset($data['photo']->getData(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhoto($fileName);
-        }
-
-        if($data['photoPieceFront']->getData()){
-            $fileName = $this->memberAssetHelper->uploadAsset($data['photoPieceFront']->getData(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPieceFront($fileName);
-        }
-
-        if($data['photoPieceBack']->getData()){
-            $fileName = $this->memberAssetHelper->uploadAsset($data['photoPieceBack']->getData(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPieceBack($fileName);
-        }
-
-        if($data['photoPermisFront']->getData()){
-            $fileName = $this->memberAssetHelper->uploadAsset($data['photoPermisFront']->getData(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPermisFront($fileName);
-        }
-
-        if($data['photoPermisBack']->getData()){
-            $fileName = $this->memberAssetHelper->uploadAsset($data['photoPermisBack']->getData(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPermisBack($fileName);
-        }
-
-        $cl = $data['child_lastname'];
-        if(is_array($cl)){
-            $count = count($cl);
-            for($i =0; $i < $count ; $i++){
-                $child =  new ChildDto();
-                $child->setLastName($data['child_lastname'][$i]);
-                $child->setFirstName($data['child_firstname'][$i]);
-                $child->setSex($data['child_sex'][$i]);
-                $child->setParent($memberRequestDto);
-                $memberRequestDto->addChild($child);
-                $this->childRepository->add(ChildMapper::MapToChild($child));
-            }
-        }
-
-        $member = MemberMapper::MapToMember($memberRequestDto);
-        $this->memberRepository->add($member, true);
-    }
-
 
     public function uploadAsset(?File $file, ?string $destDirectory): ?string
     {
         return $this->memberAssetHelper->uploadAsset($file, $destDirectory);
     }
 
-    public function generateMemberCard(?MemberRequestDto $memberRequestDto): void
+    public function generateMemberCard(?MemberRequestDto $memberRequestDto): ?MemberRequestDto
     {
         date_default_timezone_set("Africa/Abidjan");
         if ($memberRequestDto) {
-            if(empty($memberRequestDto->getPhoto())) return;
+            if(empty($memberRequestDto->getPhoto())) return null;
             $cardImage = $this->memberCardGeneratorService->generate($memberRequestDto);
             $memberRequestDto->setCardPhoto(new File($cardImage));
             $memberRequestDto->setModifiedAt(new \DateTime());
-            $member = MemberMapper::MapToMember($memberRequestDto);
-            $this->memberRepository->add($member, true);
+            return $memberRequestDto;
         }
+        return null;
     }
 
     public function generateAllMemberCards(): array
@@ -209,7 +194,7 @@ class MemberService
         $members = $this->memberRepository->findAll();
         foreach ($members as $member) {
             $memberDto = MemberMapper::MapToMemberRequestDto($member);
-            $this->generateMemberCard($memberDto);
+        //    $this->generateMemberCard($memberDto);
             $memberDtos[] = $memberDto;
         }
         return $memberDtos;
@@ -224,11 +209,23 @@ class MemberService
         if(file_exists($zipFile)) unlink($zipFile);
         if($zipArchive->open($zipFile, \ZipArchive::CREATE) === true)
         {
-            $this->generateAllMemberCards();
+            /**@var MemberRequestDto $memberDto **/
             foreach($memberDtos as $memberDto)
             {
-                $cardPhotoRealPath = $this->container->getParameter('kernel.project_dir') . "/public/members/" . $memberDto->getMatricule() . "/" . $memberDto->getCardPhoto();
-                if(is_file($cardPhotoRealPath)) $zipArchive->addFile($cardPhotoRealPath, $memberDto->getCardPhoto() );
+                $photoRealPath =  $memberDto->getPhoto();
+                if(is_file($photoRealPath)) {
+                    $zipArchive->addFile($photoRealPath->getRealPath(), $memberDto->getMatricule() . '_photo.png');
+                }
+
+                $cardPhotoRealPath =  $memberDto->getCardPhoto();
+                if(is_file($cardPhotoRealPath)) {
+                    $zipArchive->addFile($cardPhotoRealPath->getRealPath(), $memberDto->getMatricule() . '_card.png');
+                }
+
+                $barCodePhotoRealPath = $this->container->getParameter('kernel.project_dir') . "/public/members/" . $memberDto->getMatricule() . "/" . $memberDto->getMatricule() . "_barcode.png";
+                if(is_file($barCodePhotoRealPath)) {
+                    $zipArchive->addFile($barCodePhotoRealPath, $memberDto->getMatricule() . '_barcode.png');
+                }
             }
             $zipArchive->close();
             return $zipFile;
@@ -288,7 +285,7 @@ class MemberService
         $uploadDir = $this->container->getParameter('kernel.project_dir') . '/public/uploads/';
         $csvFiles = $finder->in($uploadDir)->name(['*.csv','*.jpg', '*.jpeg','*.png','*.gif']);
         $fs = new Filesystem();
-        $fs->remove($csvFiles); // remove file after import
+        // remove file after import
         foreach($csvFiles as $file) {
             $rows =  $this->csvReaderHelper->read($file);
             $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
@@ -404,7 +401,7 @@ class MemberService
                 }
             }
         }
-
+        $fs->remove($csvFiles);
     }
 
 }

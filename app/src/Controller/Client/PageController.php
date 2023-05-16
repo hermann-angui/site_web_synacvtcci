@@ -4,18 +4,12 @@ namespace App\Controller\Client;
 
 use App\DTO\ChildDto;
 use App\DTO\MemberRequestDto;
-use App\Entity\Child;
-use App\Entity\Member;
 use App\Form\MemberRegistrationType;
-use App\Helper\MemberAssetHelper;
-use App\Helper\PasswordHelper;
-use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PageController extends AbstractController
@@ -33,8 +27,7 @@ class PageController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'register_member')]
-    public function registerMember (Request $request,
-                                   MemberService $memberService): Response
+    public function registerMember (Request $request, MemberService $memberService): Response
     {
         $memberRequestDto = new MemberRequestDto();
         $form = $this->createForm(MemberRegistrationType::class, $memberRequestDto);
@@ -49,19 +42,22 @@ class PageController extends AbstractController
             $memberRequestDto->setPhotoPermisBack($form->get('photoPermisBack')->getData());
 
             $data = $request->request->all();
-            if(is_array($data) && isset($data['child_lastname'])){
+
+            if(is_array($data) && isset($data['child_lastname']))
+            {
                 $count = count($data['child_lastname']);
                 for($i = 0; $i < $count ; $i++){
-                    $child =  new ChildDto();
-                    $child->setLastName($data['child_lastname'][$i]);
-                    $child->setFirstName($data['child_firstname'][$i]);
-                    $child->setSex($data['child_sex'][$i]);
-                    $child->setParent($memberRequestDto);
-                    $memberRequestDto->addChild($child);
-                    //  $this->childRepository->add(ChildMapper::MapToChild($child));
+                    $childDto =  new ChildDto();
+                    $childDto->setLastName($data['child_lastname'][$i]);
+                    $childDto->setFirstName($data['child_firstname'][$i]);
+                    $childDto->setSex($data['child_sex'][$i]);
+                    $childDto->setParent($memberRequestDto);
+                    $memberRequestDto->addChild($childDto);
                 }
             }
+            $memberRequestDto->setStatus("PENDING");
             $memberService->createMember($memberRequestDto);
+
             return $this->redirectToRoute('success',[], Response::HTTP_SEE_OTHER);
         }
 

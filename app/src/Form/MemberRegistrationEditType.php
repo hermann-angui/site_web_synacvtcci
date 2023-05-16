@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MemberRegistrationType extends AbstractType
+class MemberRegistrationEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -30,7 +30,6 @@ class MemberRegistrationType extends AbstractType
             ->add('photo',FileType::class, [
                 'required' => false,
                 'label' => 'Photo',
-                'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('lastName', TextType::class, [
@@ -53,7 +52,6 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false,
                 'choices' => Member::getTitres(),
-                'empty_data' => null,
             ])
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
@@ -66,8 +64,6 @@ class MemberRegistrationType extends AbstractType
                     "LE TRANSPORTEUR" => "LE TRANSPORTEUR",
                     "IZIGO" => "IZIGO"
                 ],
-                'empty_data' => null,
-                'data' => null,
             ])
             ->add('nationality', TextType::class, [
                 'label' => "Nationalité",
@@ -91,9 +87,7 @@ class MemberRegistrationType extends AbstractType
                 'choices' => [
                     'CNI' => 'CNI',
                     'PASSEPORT' => 'PASSEPORT',
-                ],
-                'empty_data' => null,
-                'data' => null,
+                ]
             ])
             ->add('sex', ChoiceType::class, [
                 'label' => 'Sexe',
@@ -102,9 +96,7 @@ class MemberRegistrationType extends AbstractType
                 'choices' => [
                     'Homme' => 'H',
                     'Femme' => 'F',
-                ],
-                'empty_data' => 'H',
-                'data' => 'H',
+                ]
             ])
             ->add('date_of_birth',DateType::class, [
                 'label' => 'Date de naissance',
@@ -131,19 +123,16 @@ class MemberRegistrationType extends AbstractType
             ->add('photoPieceBack',FileType::class, [
                 'required' => false,
                 'label' => "Photo Piece d'identité (verso)",
-                'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisFront',FileType::class, [
                 'required' => false,
                 'label' => "Photo permis de conduire (recto)",
-                'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisBack',FileType::class, [
                 'required' => false,
                 'label' => "Photo permis de conduire (verso)",
-                'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('country', ChoiceType::class, [

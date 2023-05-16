@@ -1,9 +1,13 @@
 {{ form_start(form) }}
 
-    <div class="row pb-3">
+    <div class="row ">
         <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
             <div>
-                <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+                {% if member is defined and member.photo is not null %}
+                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
+                {% else %}
+                    <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+                {% endif %}
                 <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
                 {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
             </div>
@@ -35,9 +39,6 @@
                 {{ form_row(form.commune) }}
                 {{ form_row(form.quartier) }}
 
-                <div class="d-flex justify-content-end">
-                    <span class="btn-primary btn default-btn" id="step1"> Etape suivante</span>
-                </div>
             </div>
         </div>
     </div>
@@ -58,9 +59,6 @@
                 {{ form_row(form.drivingLicenseNumber) }}
                 {{ form_row(form.photoPermisFront) }}
                 {{ form_row(form.photoPermisBack) }}
-                <div class="d-flex justify-content-end">
-                    <span class="btn-primary btn default-btn" id="step2"> Etape suivante</span>
-                </div>
             </div>
         </div>
     </div>
@@ -96,12 +94,12 @@
 
                 </div>
 
-             </div>
+            </div>
         </div>
     </div>
 
     <div class="d-flex justify-content-center align-items-center">
-        <a href="{{ path('home') }}" class="btn btn-primary w-50 default-btn bg-info">{{ button_label|default('Fermer') }}</a> &nbsp;&nbsp;
+        <a href="{{ path('home') }}" class="btn btn-primary w-50 default-btn bg-info">Fermer</a> &nbsp;&nbsp;
         <button class="btn btn-primary w-50 default-btn">{{ button_label|default('Enregistrer') }}</button>
     </div>
 

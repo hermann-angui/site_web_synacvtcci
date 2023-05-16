@@ -129,7 +129,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Child::class, orphanRemoval: true, cascade: ["persist"])]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Child::class, cascade: ["remove", "persist"], orphanRemoval: true)]
     private Collection $children;
 
     public function __construct()

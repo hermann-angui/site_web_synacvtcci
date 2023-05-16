@@ -1,0 +1,174 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block body %}
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        {{ include('admin/_partials/header.html.twig') }}
+
+        <!-- ========== Left Sidebar Start ========== -->
+        {{ include('admin/_partials/left-sidebar.html.twig')}}
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Membres inscrits</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item active">Nouvelles inscriptions en attente de validation par le syndicat</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex align-items-center">
+                                        <h5 class="mb-0 card-title flex-grow-1"></h5>
+                                        <div class="flex-shrink-0">
+                                            <a href="{{ path('admin_member_new') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-plus-circle fa-1x"></span> Nouveau membre</a>
+                                            <a href="{{ path('admin_member_upload') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-upload fa-1x"></span> Importer</a>
+                                            <a href="{{ path('admin_member_download_cards') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-download fa-1x"></span> Télécharger toutes cartes</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body border-bottom">
+                                    <div class="row g-3">
+                                        <div class="col-xxl-1 col-lg-1">
+                                            <button id="refresh-btn" type="button" class="btn btn-soft-secondary w-100">Filtre<i class="mdi mdi-filter-outline align-middle"></i></button>
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <input type="search" class="form-control" id="matricule" placeholder="matricule">
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <input type="search" class="form-control" id="firstname" placeholder="Nom">
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <input type="search" class="form-control" id="driving_license_number" placeholder="Numéro du permis">
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-6">
+                                            <input type="search" class="form-control" id="id_number" placeholder="Pièce d'identité">
+                                        </div>
+
+                                        <div class="col-xxl-2 col-lg-4">
+                                            <select id="title" class="form-control select2"  title="Catégorie">
+                                                <option>--Type--</option>
+                                                <option value="Chauffeur">Chauffeur</option>
+                                                <option value="Secrétaire général">Secrétaire général</option>
+                                                <option value="SN au contrôle informatique">SN au contrôle informatique</option>
+                                                <option value="SN aux finances">SN aux finances</option>
+                                                <option value="SN à l’administration">SN à l’administration</option>
+                                                <option value="Secrétaire général adjoint">Secrétaire général adjoint</option>
+                                                <option value="SN à l’organisation">SN à l’organisation</option>
+                                                <option value="SN à la communication">SN à la communication</option>
+                                                <option value="SN à la formation">SN à la formation</option>
+                                                <option value="SN chargé  des applications">SN chargé des applications</option>
+                                                <option value="SN Adjointe aux finances">SN Adjointe aux finances</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        {{ include('admin/member/_member_datatable.html.twig') }}
+                                    </div>
+                                    <!--end row-->
+                                </div>
+                            </div><!--end card-->
+                        </div><!--end col-->
+                    </div><!--end row-->
+                </div> <!-- container-fluid -->
+            </div><!-- End Page-content -->
+            {{ include('admin/_partials/footer.html.twig') }}
+        </div>
+        <!-- end main content-->
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right Sidebar -->
+
+    <!-- /Right-bar -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+
+        var datatable = initDatatable();
+
+        $("#matricule,#driving_license_number,#id_number,#sex").change(function (e) {
+                datatable.draw();
+        });
+
+        function initDatatable(){
+            /* DATATABLE INIT */
+            var dt = $('#datatable').DataTable( {
+                "responsive": true,
+                "language": {
+                    url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                    processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
+                    sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />"
+                },
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": '{{ path('admin_member_new_subscription_datatable') }}',
+                    "data": function (d) {
+                        d.matricule = $("#matricule").val();
+                        d.lastname = $("#lastname").val();
+                        d.driving_license_number = $("#driving_license_number").val();
+                        d.id_number = $("#id_number").val();
+                        d.title = $("#title").val();
+                    }
+                },
+                "columns": [
+                    {"data":  "id"},
+                    {"data":  "matricule"},
+                    {"data":  "last_name"},
+                    {"data":  "first_name"},
+                    { "data": "subscription_date" },
+                    { "data": "subscription_expire_date" },
+                    { "data": "driving_license_number" },
+                    { "data": "id_number" },
+                    { "data": "id_type" },
+                    { "data": "mobile" },
+                    { "data": "email" }
+                ],
+                "order": [[1, 'asc']]
+            } );
+
+
+            return dt;
+        }
+    });
+</script>
+{% endblock %}

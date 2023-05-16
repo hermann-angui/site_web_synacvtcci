@@ -66,7 +66,7 @@ class SecurityController extends AbstractController
 
             $photo = $form->get('photo')->getData();
             if($photo){
-                $fileName = $userHelper->uploadAsset($photo, $user);
+                $fileName = $userHelper->uploadAsset($photo, $user->getId());
                 if($fileName) $user->setPhoto($fileName);
             }
 

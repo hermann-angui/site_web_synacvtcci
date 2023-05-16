@@ -5,6 +5,7 @@ namespace App\Service\Member;
 use App\DTO\MemberRequestDto;
 use App\Helper\ImageGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  *
@@ -43,7 +44,7 @@ class MemberCardGeneratorService
         $data['outputdir'] = "/var/www/html/public/members/" . $memberDto->getMatricule() . "/";
         if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
         $data['cardbg'] = "/var/www/html/public/assets/files/card_member_front.jpg";
-        $data['photopath'] = $data['outputdir'] . $memberDto->getPhoto();
+        $data['photopath'] =  $memberDto->getPhoto()->getRealPath();
         $data['qrcodepath'] = $data['outputdir'] . $memberDto->getMatricule() . '_barcode.png' ;
         $data['cardpath'] = $data['outputdir'] . $memberDto->getMatricule() . '_card.png' ;
         $data['qrcodeurl'] = $this->container->getParameter('profile_url')  . "/" . $memberDto->getMatricule();

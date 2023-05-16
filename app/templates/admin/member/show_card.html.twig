@@ -68,7 +68,7 @@
             <div class="page-content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-xl-8">
+                        <div class="col-xl-10">
                             <div class="card">
                                 <div class="card-body border-bottom">
                                     <div class="d-flex justify-content-end">
@@ -81,8 +81,8 @@
                                     <h4 class="card-title mb-5">Fiche membre : <strong class="badge bg-gradient bg-info">{{ member.matricule }}</strong></h4>
                                     <div class="flip-card d-flex justify-content-center">
                                         <div class="flip-card-inner">
-                                            <div class="flip-card-front">
-                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.cardPhoto }}" alt="Avatar" class="w-75">
+                                            <div class="flip-card-front center">
+                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.cardPhoto.fileName }}" alt="Avatar" class="w-75">
                                             </div>
                                             <div class="flip-card-back">
                                                 <img src="{{ asset('assets/files/card_member_back.jpg')}}" alt="Avatar" class="w-75">

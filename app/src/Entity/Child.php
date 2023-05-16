@@ -34,7 +34,7 @@ class Child
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $modified_at;
 
-    #[ORM\ManyToOne(inversedBy: 'children')]
+    #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'children')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Member $parent = null;
 

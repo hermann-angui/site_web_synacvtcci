@@ -13,14 +13,22 @@ class MemberAssetHelper implements AssetHelperInterface
     protected FileUploadHelper $fileUploadHelper;
 
     /**
+     * @var ImageHelper
+     */
+    protected ImageHelper $imageHelper;
+
+    /**
      * @var string
      */
     protected string $uploadDirectory;
 
-    public function __construct(string $uploadDirectory, FileUploadHelper $fileUploadHelper)
+    public function __construct(string $uploadDirectory,
+                                FileUploadHelper $fileUploadHelper,
+                                ImageHelper $imageHelper)
     {
         $this->fileUploadHelper = $fileUploadHelper;
         $this->uploadDirectory = $uploadDirectory;
+        $this->imageHelper = $imageHelper;
     }
 
     public function getUploadDirectory(?string $destDirectory): ?string
@@ -43,6 +51,11 @@ class MemberAssetHelper implements AssetHelperInterface
     public function removeAsset(?File $file): ?string
     {
         return $this->fileUploadHelper->remove($file);
+    }
+
+
+    public function createThumbnail(?File $file, ?string $destDirectory){
+        $this->imageHelper->createThumbnail($file->getRealPath(), $this->getUploadDirectory($destDirectory));
     }
 
 }
