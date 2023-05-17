@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\DTO\ChildDto;
 use App\DTO\MemberRequestDto;
+use App\Entity\Child;
 use App\Entity\Member;
 use App\Form\MemberRegistrationEditType;
 use App\Form\MemberRegistrationType;
@@ -352,30 +353,31 @@ class MemberController extends AbstractController
     public function edit(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
-        $memberRequestDto = MemberMapper::MapToMemberRequestDto($member);
-        $form = $this->createForm(MemberRegistrationEditType::class, $memberRequestDto);
+        $form = $this->createForm(MemberRegistrationEditType::class, MemberMapper::MapToMemberRequestDto($member));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $memberRequestDto->setPhoto($form->get('photo')->getData());
-            $memberRequestDto->setPhotoPieceFront($form->get('photoPieceFront')->getData());
-            $memberRequestDto->setPhotoPieceBack($form->get('photoPieceBack')->getData());
-            $memberRequestDto->setPhotoPermisFront($form->get('photoPermisFront')->getData());
-            $memberRequestDto->setPhotoPermisBack($form->get('photoPermisBack')->getData());
+            if($form->get('photo')->getData())            $member->setPhoto($form->get('photo')->getData());
+            if($form->get('photoPieceFront')->getData())  $member->setPhotoPieceFront($form->get('photoPieceFront')->getData());
+            if($form->get('photoPieceBack')->getData())   $member->setPhotoPieceBack($form->get('photoPieceBack')->getData());
+            if($form->get('photoPermisFront')->getData()) $member->setPhotoPermisFront($form->get('photoPermisFront')->getData());
+            if($form->get('photoPermisBack')->getData())  $member->setPhotoPermisBack($form->get('photoPermisBack')->getData());
 
             $data = $request->request->all();
+
             if(is_array($data) && isset($data['child_lastname'])) {
                 $count = count($data['child_lastname']);
                 for($i = 0; $i < $count ; $i++){
-                    $child =  new ChildDto();
+                    $child =  new Child();
                     $child->setLastName($data['child_lastname'][$i]);
                     $child->setFirstName($data['child_firstname'][$i]);
                     $child->setSex($data['child_sex'][$i]);
-                    $child->setParent($memberRequestDto);
-                    $memberRequestDto->addChild($child);
+                    $child->setParent($member);
+                    $member->addChild($child);
                 }
             }
-            $memberService->updateMember($memberRequestDto);
+
+            $memberService->updateMember($member);
             return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -393,6 +395,5 @@ class MemberController extends AbstractController
         }
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
     }
-
 
 }

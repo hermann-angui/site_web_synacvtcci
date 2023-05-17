@@ -112,55 +112,10 @@ class MemberService
     }
 
 
-    public function updateMember(?MemberRequestDto $memberRequestDto)
+    public function updateMember(Member $member)
     {
-        date_default_timezone_set("Africa/Abidjan");
+        $this->saveMemberImages($member);
 
-        $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
-        $lastRowId = $this->memberRepository->getLastRowId();
-        $memberRequestDto->setRoles(['ROLE_USER']);
-
-        $date = new \DateTime('now');
-        $memberRequestDto->setSubscriptionDate($date);
-
-        $sexCode = null;
-        if($memberRequestDto->getSex() === "H") $sexCode = "SY1";
-        elseif($memberRequestDto->getSex() === "F") $sexCode = "SY2";
-
-        $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $lastRowId+1);
-        $memberRequestDto->setMatricule($matricule);
-
-        $expiredDate = $date->format('Y-12-31');
-        $memberRequestDto->setSubscriptionExpireDate(new \DateTime($expiredDate));
-
-        $memberRequestDto->setPassword($this->userPasswordHasher->hashPassword($memberRequestDto, PasswordHelper::generate()));
-
-        if($memberRequestDto->getPhoto()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhoto(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhoto($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPieceFront()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceFront(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPieceFront($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPieceBack()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPieceBack($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPieceBack()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPermisFront($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPermisBack()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPermisBack(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPermisBack($fileName);
-        }
-
-        $member = MemberMapper::MapToMember($memberRequestDto);
         $this->memberRepository->add($member, true);
     }
 
@@ -194,7 +149,7 @@ class MemberService
         $members = $this->memberRepository->findAll();
         foreach ($members as $member) {
             $memberDto = MemberMapper::MapToMemberRequestDto($member);
-        //    $this->generateMemberCard($memberDto);
+            $this->generateMemberCard($memberDto);
             $memberDtos[] = $memberDto;
         }
         return $memberDtos;
@@ -402,6 +357,39 @@ class MemberService
             }
         }
         $fs->remove($csvFiles);
+    }
+
+    /**
+     * @param Member $member
+     * @return void
+     */
+
+    public function saveMemberImages(Member $member): void
+    {
+        if ($member->getPhoto()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhoto(), $member->getMatricule());
+            if ($fileName) $member->setPhoto($fileName->getFilename());
+        }
+
+        if ($member->getPhotoPieceFront()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPieceFront(), $member->getMatricule());
+            if ($fileName) $member->setPhotoPieceFront($fileName->getFilename());
+        }
+
+        if ($member->getPhotoPieceBack()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPieceBack(), $member->getMatricule());
+            if ($fileName) $member->setPhotoPieceBack($fileName->getFilename());
+        }
+
+        if ($member->getPhotoPieceBack()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPieceBack(), $member->getMatricule());
+            if ($fileName) $member->setPhotoPermisFront($fileName->getFilename());
+        }
+
+        if ($member->getPhotoPermisBack()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPermisBack(), $member->getMatricule());
+            if ($fileName) $member->setPhotoPermisBack($fileName->getFilename());
+        }
     }
 
 }

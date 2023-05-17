@@ -60,7 +60,7 @@
 {{ parent() }}
   <script>
       $('document').ready(function() {
-          $("#member_registration_photo").change(function(data){
+          $("#member_registration_edit_photo").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
@@ -70,6 +70,7 @@
                   $('#imagePreview').fadeIn(650);
               }
           });
+
       });
 
   </script>
