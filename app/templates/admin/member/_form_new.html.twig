@@ -3,7 +3,7 @@
     <div class="row ">
         <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
             <div>
-                {% if member is defined and member.photo is not null %}
+                {% if member is defined and member.photo is not empty %}
                     <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
                 {% else %}
                     <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">

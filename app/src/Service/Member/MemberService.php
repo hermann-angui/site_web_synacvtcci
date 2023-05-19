@@ -11,6 +11,7 @@ use App\Mapper\ChildMapper;
 use App\Mapper\MemberMapper;
 use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
+use DateTime;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -54,7 +55,10 @@ class MemberService
     }
 
 
-    public function createMember(MemberRequestDto $memberRequestDto)
+    /**
+     * @throws \Exception
+     */
+    public function createMember(MemberRequestDto $memberRequestDto): void
     {
         date_default_timezone_set("Africa/Abidjan");
 
@@ -62,7 +66,7 @@ class MemberService
         $lastRowId = $this->memberRepository->getLastRowId();
         $memberRequestDto->setRoles(['ROLE_USER']);
 
-        $date = new \DateTime('now');
+        $date = new DateTime('now');
         $memberRequestDto->setSubscriptionDate($date);
 
         $sexCode = null;
@@ -77,30 +81,7 @@ class MemberService
 
         $memberRequestDto->setPassword($this->userPasswordHasher->hashPassword($memberRequestDto, PasswordHelper::generate()));
 
-        if($memberRequestDto->getPhoto()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhoto(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhoto($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPieceFront()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceFront(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPieceFront($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPieceBack()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPieceBack($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPermisFront()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPermisFront(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPermisFront($fileName);
-        }
-
-        if($memberRequestDto->getPhotoPermisBack()){
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPermisBack(), $memberRequestDto->getMatricule());
-            if($fileName) $memberRequestDto->setPhotoPermisBack($fileName);
-        }
+        $this->saveMemberImages($memberRequestDto);
 
         $member = MemberMapper::MapToMember($memberRequestDto);
         $this->memberRepository->add($member, true);
@@ -111,24 +92,19 @@ class MemberService
 
     }
 
-
-    public function updateMember(Member $member)
-    {
-        $this->saveMemberImages($member);
-
-        $this->memberRepository->add($member, true);
-    }
-
-    public function deleteMember(?MemberRequestDto $memberDto)
+    /**
+     * @param MemberRequestDto|null $memberDto
+     * @return void
+     */
+    public function deleteMember(?MemberRequestDto $memberDto): void
     {
 
     }
 
-    public function uploadAsset(?File $file, ?string $destDirectory): ?string
-    {
-        return $this->memberAssetHelper->uploadAsset($file, $destDirectory);
-    }
-
+    /**
+     * @param MemberRequestDto|null $memberRequestDto
+     * @return MemberRequestDto|null
+     */
     public function generateMemberCard(?MemberRequestDto $memberRequestDto): ?MemberRequestDto
     {
         date_default_timezone_set("Africa/Abidjan");
@@ -136,12 +112,15 @@ class MemberService
             if(empty($memberRequestDto->getPhoto())) return null;
             $cardImage = $this->memberCardGeneratorService->generate($memberRequestDto);
             $memberRequestDto->setCardPhoto(new File($cardImage));
-            $memberRequestDto->setModifiedAt(new \DateTime());
+            $memberRequestDto->setModifiedAt(new DateTime());
             return $memberRequestDto;
         }
         return null;
     }
 
+    /**
+     * @return array
+     */
     public function generateAllMemberCards(): array
     {
         date_default_timezone_set("Africa/Abidjan");
@@ -155,6 +134,10 @@ class MemberService
         return $memberDtos;
     }
 
+    /**
+     * @param array $memberDtos
+     * @return string|null
+     */
     public function archiveMemberCards(array $memberDtos): ?string
     {
         date_default_timezone_set("Africa/Abidjan");
@@ -188,11 +171,27 @@ class MemberService
         return null;
     }
 
+    /**
+     * @param MemberRequestDto|null $memberRequestDto
+     * @return void
+     */
     public function generateMemberPdfReceipt(?MemberRequestDto $memberRequestDto): void
     {
         $this->memberReceiptGeneratorService->generate($memberRequestDto);
     }
 
+    /**
+     * @param Member $member
+     * @return void
+     */
+    public function storeMember(Member $member): void
+    {
+         $this->memberRepository->add($member, true);
+    }
+
+    /**
+     * @return string
+     */
     public function generateSampleCsvFile()
     {
         date_default_timezone_set("Africa/Abidjan");
@@ -232,9 +231,11 @@ class MemberService
         return $sampleRealPath;
     }
 
+    /**
+     * @return void
+     */
     public function createMemberFromFile(): void
     {
-
         set_time_limit(3600);
         $finder = new Finder();
         $uploadDir = $this->container->getParameter('kernel.project_dir') . '/public/uploads/';
@@ -247,7 +248,7 @@ class MemberService
             foreach ($rows as $row){
                 try{
                     date_default_timezone_set("Africa/Abidjan");
-                    $date = new \DateTime('now');
+                    $date = new DateTime('now');
 
                     $sexCode = "SY1";
                     if (!empty($row["SEXE"])) {
@@ -266,7 +267,7 @@ class MemberService
                     if (isset($row["COMPAGNIE"])) $member->setCompany(mb_strtoupper(trim($row["COMPAGNIE"]), 'UTF-8'));
                     if (isset($row["NATIONALITE"])) $member->setLastName(mb_strtoupper(trim($row["NATIONALITE"]), 'UTF-8'));
                     if (isset($row["PRENOMS"])) $member->setFirstName(mb_strtoupper(trim($row["PRENOMS"]), 'UTF-8'));
-                    if (isset($row["DATE_NAISSANCE"])) $member->setDateOfBirth(new \DateTime($row["DATE_NAISSANCE"]));
+                    if (isset($row["DATE_NAISSANCE"])) $member->setDateOfBirth(new DateTime($row["DATE_NAISSANCE"]));
                     if (isset($row["LIEU_NAISSANCE"])) $member->setBirthCity(mb_strtoupper(trim($row["LIEU_NAISSANCE"])));
                     if (isset($row["NUMERO_PERMIS"])) $member->setDrivingLicenseNumber($row["NUMERO_PERMIS"]);
                     if (isset($row["NUMERO_PIECE"])) $member->setIdNumber($row["NUMERO_PIECE"]);
@@ -282,15 +283,15 @@ class MemberService
 
                     if (array_key_exists("DATE_SOUSCRIPTION", $row)) {
                         if (empty($row["DATE_SOUSCRIPTION"])) $member->setSubscriptionDate($date);
-                        else $member->setSubscriptionDate(new \DateTime($row["DATE_SOUSCRIPTION"]));
+                        else $member->setSubscriptionDate(new DateTime($row["DATE_SOUSCRIPTION"]));
                     }
 
                     if (array_key_exists("DATE_EXPIRATION_SOUSCRIPTION", $row)) {
-                        $expiredDate = new \DateTime($row["DATE_SOUSCRIPTION"]);
+                        $expiredDate = new DateTime($row["DATE_SOUSCRIPTION"]);
                         //   $expiredDate = $expiredDate->add(new \DateInterval("P1Y"));
                         $expiredDate = $expiredDate->format('Y-12-31');
-                        if (!empty($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new \DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"]));
-                        else $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
+                        if (!empty($row["DATE_EXPIRATION_SOUSCRIPTION"])) $member->setSubscriptionExpireDate(new DateTime($row["DATE_EXPIRATION_SOUSCRIPTION"]));
+                        else $member->setSubscriptionExpireDate(new DateTime($expiredDate));
                     }
 
                     $this->memberRepository->add($member, true);
@@ -307,45 +308,11 @@ class MemberService
                     }
 
                     if (!$exist) {
-                        if (isset($row["PHOTO"]) && !empty($row["PHOTO"])) {
-                            $photo = new File($uploadDir . $row["PHOTO"], false);
-                            if (file_exists($photo->getPathname())) {
-                                $fileName = $this->uploadAsset($photo, $member->getMatricule());
-                                if ($fileName) $member->setPhoto($fileName);
-                            }
-                        }
-
-                        if (isset($row["PHOTO_PIECE_RECTO"]) && !empty($row["PHOTO_PIECE_RECTO"])) {
-                            $photo = new File($uploadDir . $row["PHOTO_PIECE_RECTO"], false);
-                            if (file_exists($photo->getPathname())) {
-                                $fileName = $this->uploadAsset($photo, $member->getMatricule());
-                                if ($fileName) $member->setPhotoPieceFront($fileName);
-                            }
-                        }
-
-                        if (isset($row["PHOTO_PIECE_VERSO"]) && !empty($row["PHOTO_PIECE_VERSO"])) {
-                            $photo = new File($uploadDir . $row["PHOTO_PIECE_VERSO"], false);
-                            if (file_exists($photo->getPathname())) {
-                                $fileName = $this->uploadAsset($photo, $member->getMatricule());
-                                if ($fileName) $member->setPhotoPieceBack($fileName);
-                            }
-                        }
-
-                        if (isset($row["PHOTO_PERMIS_RECTO"]) && !empty($row["PHOTO_PERMIS_RECTO"])) {
-                            $photo = new File($uploadDir . $row["PHOTO_PERMIS_RECTO"], false);
-                            if (file_exists($photo->getPathname())) {
-                                $fileName = $this->uploadAsset($photo, $member->getMatricule());
-                                if ($fileName) $member->setPhotoPermisFront($fileName);
-                            }
-                        }
-
-                        if (isset($row["PHOTO_PERMIS_VERSO"]) && !empty($row["PHOTO_PERMIS_VERSO"])) {
-                            $photo = new File($uploadDir . $row["PHOTO_PERMIS_VERSO"], false);
-                            if (file_exists($photo->getPathname())) {
-                                $fileName = $this->uploadAsset($photo, $member->getMatricule());
-                                if ($fileName) $member->setPhotoPermisBack($fileName);
-                            }
-                        }
+                        $this->storeAsset($row["PHOTO"], $uploadDir, $member);
+                        $this->storeAsset($row["PHOTO_PIECE_RECTO"], $uploadDir, $member);
+                        $this->storeAsset($row["PHOTO_PIECE_VERSO"], $uploadDir, $member);
+                        $this->storeAsset($row["PHOTO_PERMIS_RECTO"], $uploadDir, $member);
+                        $this->storeAsset($row["PHOTO_PERMIS_VERSO"], $uploadDir, $member);
                         $this->memberRepository->add($member, true);
                     } else {
                         $this->memberRepository->remove($member, true);
@@ -360,35 +327,55 @@ class MemberService
     }
 
     /**
-     * @param Member $member
+     * @param MemberRequestDto $memberRequestDto
      * @return void
      */
 
-    public function saveMemberImages(Member $member): void
+    public function saveMemberImages(MemberRequestDto $memberRequestDto): MemberRequestDto
     {
-        if ($member->getPhoto()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhoto(), $member->getMatricule());
-            if ($fileName) $member->setPhoto($fileName->getFilename());
+        if ($memberRequestDto->getPhoto()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhoto(), $memberRequestDto->getMatricule());
+            if ($fileName) $memberRequestDto->setPhoto($fileName);
         }
 
-        if ($member->getPhotoPieceFront()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPieceFront(), $member->getMatricule());
-            if ($fileName) $member->setPhotoPieceFront($fileName->getFilename());
+        if ($memberRequestDto->getPhotoPieceFront()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceFront(), $memberRequestDto->getMatricule());
+            if ($fileName) $memberRequestDto->setPhotoPieceFront($fileName);
         }
 
-        if ($member->getPhotoPieceBack()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPieceBack(), $member->getMatricule());
-            if ($fileName) $member->setPhotoPieceBack($fileName->getFilename());
+        if ($memberRequestDto->getPhotoPieceBack()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getMatricule());
+            if ($fileName) $memberRequestDto->setPhotoPieceBack($fileName);
         }
 
-        if ($member->getPhotoPieceBack()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPieceBack(), $member->getMatricule());
-            if ($fileName) $member->setPhotoPermisFront($fileName->getFilename());
+        if ($memberRequestDto->getPhotoPieceBack()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getMatricule());
+            if ($fileName) $memberRequestDto->setPhotoPermisFront($fileName);
         }
 
-        if ($member->getPhotoPermisBack()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($member->getPhotoPermisBack(), $member->getMatricule());
-            if ($fileName) $member->setPhotoPermisBack($fileName->getFilename());
+        if ($memberRequestDto->getPhotoPermisBack()) {
+            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPermisBack(), $memberRequestDto->getMatricule());
+            if ($fileName) $memberRequestDto->setPhotoPermisBack($fileName);
+        }
+
+        return $memberRequestDto;
+    }
+
+
+    /**
+     * @param $row
+     * @param string $uploadDir
+     * @param Member $member
+     * @return void
+     */
+    public function storeAsset($row, string $uploadDir, Member $member): void
+    {
+        if (isset($row) && !empty($row)) {
+            $photo = new File($uploadDir . $row, false);
+            if (file_exists($photo->getPathname())) {
+                $fileName = $this->memberAssetHelper->uploadAsset($photo, $member->getMatricule());
+                if ($fileName) $member->setPhoto($fileName);
+            }
         }
     }
 

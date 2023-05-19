@@ -31,7 +31,7 @@
                             <div class="card">
                                 <div class="card-body px-5">
                                     <h4 class="card-title mb-4">Enregistrer un nouveau membre</h4>
-                                    {{ include('admin/member/_form2.html.twig') }}
+                                    {{ include('admin/member/_form_new.html.twig') }}
                                 </div>
                             </div>
                         </div>
@@ -95,16 +95,6 @@
               $("#collapseTwo, #collapseThree").collapse('toggle');
               $( "#info_familiales").focus();
            });
-          $("#member_registration_photo").change(function(data){
-              var imageFile = data.target.files[0];
-              var reader = new FileReader();
-              reader.readAsDataURL(imageFile);
-
-              reader.onload = function(evt){
-                  $('#imagePreview').attr('src', evt.target.result);
-                  $('#imagePreview').fadeIn(650);
-              }
-          });
 
           $('#newChild').click(function(){
             var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";

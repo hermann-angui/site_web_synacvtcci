@@ -31,7 +31,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="card-title mb-4">Editer les informations</h4>
-                                    {{ include('admin/member/_form2.html.twig', {'button_label': 'Mettre à jour'}) }}
+                                    {{ include('admin/member/_form_edit.html.twig', {'button_label': 'Mettre à jour'}) }}
 
                                 </div>
                             </div>
@@ -71,8 +71,38 @@
               }
           });
 
-      });
+                  var children = [];
+          $("input[name='is_married']").change(function(){
+             if($(this).val() === "0"){
+                $('#partner_bock').hide();
+             }else{
+                  $('#partner_bock').show();
+             }
+          });
+          $("input[name='has_child']").change(function(){
+              if($(this).val() === "0"){
+                  $('#child-row').hide();
+              }else{
+                  $('#child-row').show();
+              }
+          });
+          $( "#step1" ).click(function() {
+              //close accordion 1 and open accordion 3
+              $("#collapseOne, #collapseTwo").collapse('toggle');
+              $( "#documents").focus();
+           });
+          $( "#step2" ).click(function() {
+              //close accordion 1 and open accordion 3
+              $("#collapseTwo, #collapseThree").collapse('toggle');
+              $( "#info_familiales").focus();
+           });
 
+          $('#newChild').click(function(){
+            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";
+            $('#children_bock').append(row);
+          });
+
+      });
   </script>
 {% endblock %}
 

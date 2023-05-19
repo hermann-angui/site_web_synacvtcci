@@ -1,0 +1,106 @@
+{{ form_start(form) }}
+
+<div class="row ">
+    <label for="member_registration_edit_photo" class="d-block d-flex justify-content-center align-content-center">
+        <div>
+            {% if member is defined and member.photo is not empty %}
+                <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
+            {% else %}
+                <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+            {% endif %}
+            <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
+            {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+        </div>
+    </label>
+</div>
+
+<div class="card accordion my-3" id="info_perso">
+    <div class="card-header accordion-item accordion-header" id="headingOne">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            1 - INFORMATIONS PERSONNELLES
+        </button>
+    </div>
+    <div id="collapseOne" class="card-body accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#info_perso">
+        <div class="accordion-body">
+            {{ form_row(form.email) }}
+            {{ form_row(form.titre) }}
+            {{ form_row(form.sex) }}
+            {{ form_row(form.lastName) }}
+            {{ form_row(form.firstName) }}
+            {{ form_row(form.date_of_birth) }}
+            {{ form_row(form.birth_city) }}
+            {{ form_row(form.company) }}
+            {{ form_row(form.nationality) }}
+            {{ form_row(form.mobile) }}
+            {{ form_row(form.phone) }}
+            {{ form_row(form.whatsapp) }}
+            {{ form_row(form.country) }}
+            {{ form_row(form.city) }}
+            {{ form_row(form.commune) }}
+            {{ form_row(form.quartier) }}
+
+        </div>
+    </div>
+</div>
+
+<div class="card accordion my-3" id="documents">
+    <div class="card-header accordion-item accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
+            2-DOCUMENTS
+        </button>
+    </div>
+    <div id="collapseTwo" class="card-body accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#documents">
+        <div class="accordion-body">
+            {{ form_row(form.IdType) }}
+            {{ form_row(form.IdNumber) }}
+            {{ form_row(form.photoPieceFront) }}
+            {{ form_row(form.photoPieceBack) }}
+            <hr class="my-2">
+            {{ form_row(form.drivingLicenseNumber) }}
+            {{ form_row(form.photoPermisFront) }}
+            {{ form_row(form.photoPermisBack) }}
+        </div>
+    </div>
+</div>
+
+<div class="card accordion my-3" id="info_familiales">
+    <div class="card-header accordion-item accordion-header" id="headingThree">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseOne">
+            3-INFORMATIONS FAMILIALES
+        </button>
+    </div>
+    <div id="collapseThree" class="card-body accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#info_familiales">
+        <div class="accordion-body">
+            <div class="py-3">
+                Etes-vous marié ? &nbsp;&nbsp;
+                <input type="radio" name="is_married" value="0" checked /> Non &nbsp;&nbsp;
+                <input type="radio" name="is_married" value="1"/> Oui
+                <div id="partner_bock" style="display:none;" class="my-3">
+                    {{ form_row(form.partner_first_name) }}
+                    {{ form_row(form.partner_last_name) }}
+                </div>
+            </div>
+
+            <div class="py-3">
+                Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
+                <input type="radio" name="has_child" value="0" checked /> Non &nbsp;&nbsp;
+                <input type="radio" name="has_child" value="1"/> Oui
+                <br>
+                <div id="child-row" style="display:none;">
+                    <div id="children_bock"  class="pt-2">
+                    </div>
+                    <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Ajouter un enfant </span>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center align-items-center">
+    <a href="{{ path('home') }}" class="btn btn-primary w-50 default-btn bg-info">Fermer</a> &nbsp;&nbsp;
+    <button class="btn btn-primary w-50 default-btn">{{ button_label|default('Enregistrer') }}</button>
+</div>
+
+{{ form_end(form) }}

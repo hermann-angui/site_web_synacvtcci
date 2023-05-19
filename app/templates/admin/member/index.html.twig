@@ -63,7 +63,7 @@
                                             <input type="search" class="form-control" id="matricule" placeholder="matricule">
                                         </div>
                                         <div class="col-xxl-2 col-lg-6">
-                                            <input type="search" class="form-control" id="firstname" placeholder="Nom">
+                                            <input type="search" class="form-control" id="last_name" placeholder="Nom">
                                         </div>
                                         <div class="col-xxl-2 col-lg-6">
                                             <input type="search" class="form-control" id="driving_license_number" placeholder="Numéro du permis">
@@ -126,7 +126,7 @@
 
         var datatable = initDatatable();
 
-        $("#matricule,#driving_license_number,#id_number,#sex").change(function (e) {
+        $("#matricule,#last_name,#driving_license_number,#id_number,#sex").change(function (e) {
                 datatable.draw();
         });
 
@@ -145,7 +145,7 @@
                     "url": '{{ path('admin_member_datatable') }}',
                     "data": function (d) {
                         d.matricule = $("#matricule").val();
-                        d.lastname = $("#lastname").val();
+                        d.last_name = $("#last_name").val();
                         d.driving_license_number = $("#driving_license_number").val();
                         d.id_number = $("#id_number").val();
                         d.title = $("#title").val();

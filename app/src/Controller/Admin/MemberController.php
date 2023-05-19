@@ -233,6 +233,9 @@ class MemberController extends AbstractController
         if(!empty($params['driving_license_number'])) {
             $whereResult .= " driving_license_number LIKE'". $params['driving_license_number']. "' AND";
         }
+        if(!empty($params['last_name'])) {
+            $whereResult .= " last_name LIKE '%". $params['last_name']. "%' AND";
+        }
         if(!empty($params['id_number'])) {
             $whereResult .= " id_number	LIKE '". $params['id_number	'] . "' AND ";
         }
@@ -326,13 +329,16 @@ class MemberController extends AbstractController
 
         $whereResult = '';
         if(!empty($params['matricule'])){
-            $whereResult .= " matricule LIKE '". $params['matricule'] . "' AND";
+            $whereResult .= " matricule LIKE '%". $params['matricule'] . "%' AND";
         }
         if(!empty($params['driving_license_number'])) {
-            $whereResult .= " driving_license_number LIKE'". $params['driving_license_number']. "' AND";
+            $whereResult .= " driving_license_number LIKE '%". $params['driving_license_number']. "%' AND";
+        }
+        if(!empty($params['last_name'])) {
+            $whereResult .= " last_name LIKE '%". $params['last_name']. "%' AND";
         }
         if(!empty($params['id_number'])) {
-            $whereResult .= " id_number	LIKE '". $params['id_number	'] . "' AND";
+            $whereResult .= " id_number	LIKE '%". $params['id_number	'] . "%' AND";
         }
 
         $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
@@ -353,31 +359,58 @@ class MemberController extends AbstractController
     public function edit(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
-        $form = $this->createForm(MemberRegistrationEditType::class, MemberMapper::MapToMemberRequestDto($member));
+        $memberRequestDto = MemberMapper::MapToMemberRequestDto($member);
+        $form = $this->createForm(MemberRegistrationEditType::class, $memberRequestDto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($form->get('photo')->getData())            $member->setPhoto($form->get('photo')->getData());
-            if($form->get('photoPieceFront')->getData())  $member->setPhotoPieceFront($form->get('photoPieceFront')->getData());
-            if($form->get('photoPieceBack')->getData())   $member->setPhotoPieceBack($form->get('photoPieceBack')->getData());
-            if($form->get('photoPermisFront')->getData()) $member->setPhotoPermisFront($form->get('photoPermisFront')->getData());
-            if($form->get('photoPermisBack')->getData())  $member->setPhotoPermisBack($form->get('photoPermisBack')->getData());
+            if($form->get('photo')->getData())            $memberRequestDto->setPhoto($form->get('photo')->getData());
+            if($form->get('photoPieceFront')->getData())  $memberRequestDto->setPhotoPieceFront($form->get('photoPieceFront')->getData());
+            if($form->get('photoPieceBack')->getData())   $memberRequestDto->setPhotoPieceBack($form->get('photoPieceBack')->getData());
+            if($form->get('photoPermisFront')->getData()) $memberRequestDto->setPhotoPermisFront($form->get('photoPermisFront')->getData());
+            if($form->get('photoPermisBack')->getData())  $memberRequestDto->setPhotoPermisBack($form->get('photoPermisBack')->getData());
+
+            $member->setStatus($memberRequestDto->getStatus());
+            $member->setCompany($memberRequestDto->getCompany());
+            $member->setTitre($memberRequestDto->getTitre());
+            $member->setEmail($memberRequestDto->getEmail());
+            $member->setCommune($memberRequestDto->getCommune());
+            $member->setDateOfBirth($memberRequestDto->getDateOfBirth());
+            $member->setDrivingLicenseNumber($memberRequestDto->getDrivingLicenseNumber());
+            $member->setBirthCity($memberRequestDto->getBirthCity());
+            $member->setIdType($memberRequestDto->getIdType());
+            $member->setCountry($memberRequestDto->getCountry());
+            $member->setCity($memberRequestDto->getCity());
+            $member->setMobile($memberRequestDto->getMobile());
+            $member->setPartnerLastName($memberRequestDto->getPartnerLastName());
+            $member->setPhone($memberRequestDto->getPhone());
+            $member->setFirstName($memberRequestDto->getFirstName());
+            $member->setLastName($memberRequestDto->getLastName());
+            $member->setQuartier($memberRequestDto->getQuartier());
+            $member->setWhatsapp($memberRequestDto->getWhatsapp());
+            $member->setNationality($memberRequestDto->getNationality());
 
             $data = $request->request->all();
-
             if(is_array($data) && isset($data['child_lastname'])) {
                 $count = count($data['child_lastname']);
                 for($i = 0; $i < $count ; $i++){
                     $child =  new Child();
-                    $child->setLastName($data['child_lastname'][$i]);
-                    $child->setFirstName($data['child_firstname'][$i]);
-                    $child->setSex($data['child_sex'][$i]);
+                    $child->setLastName(strtoupper($data['child_lastname'][$i]));
+                    $child->setFirstName(strtoupper($data['child_firstname'][$i]));
+                    $child->setSex(strtoupper($data['child_sex'][$i]));
                     $child->setParent($member);
                     $member->addChild($child);
                 }
             }
+            $result = $memberService->saveMemberImages($memberRequestDto);
+            if($result->getPhoto()) $member->setPhoto($result->getPhoto()->getFilename());
+            if($result->getPhotoPermisFront()) $member->setPhotoPermisFront($result->getPhotoPermisFront()->getFilename());
+            if($result->getPhotoPermisBack()) $member->setPhotoPermisBack($result->getPhotoPermisBack()->getFilename());
+            if($result->getPhotoPieceFront()) $member->setPhotoPieceFront($result->getPhotoPieceFront()->getFilename());
+            if($result->getPhotoPieceBack()) $member->setPhotoPieceBack($result->getPhotoPieceBack()->getFilename());
 
-            $memberService->updateMember($member);
+            $memberService->storeMember($member);
+
             return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
         }
 

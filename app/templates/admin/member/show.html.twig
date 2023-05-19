@@ -50,11 +50,13 @@
                                         <tr>
                                             <td colspan="2">
                                                 <div class="d-flex justify-content-center">
-                                                    {% if member.photo is null %}
-                                                        <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-2">
-                                                    {% else %}
-                                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
-                                                    {% endif %}
+                                                    <label for="member_registration_edit_photo" class="d-block d-flex justify-content-center align-content-center">
+                                                        {% if member.photo is null %}
+                                                            <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-2">
+                                                        {% else %}
+                                                        <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                                        {% endif %}
+                                                    </label>
                                                 </div>
                                             </td>
                                         </tr>
