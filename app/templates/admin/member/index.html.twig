@@ -50,7 +50,8 @@
                                         <div class="flex-shrink-0">
                                             <a href="{{ path('admin_member_new') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-plus-circle fa-1x"></span> Nouveau membre</a>
                                             <a href="{{ path('admin_member_upload') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-upload fa-1x"></span> Importer</a>
-                                            <a href="{{ path('admin_member_download_cards') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-download fa-1x"></span> Télécharger toutes cartes</a>
+                                            {# <a href="{{ path('admin_member_download_cards') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-download fa-1x"></span> Télécharger toutes cartes</a> #}
+                                            <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".bs-downloadcards"><span class="fa fa-download fa-1x"></span>Télécharger des cartes</button>
                                         </div>
                                     </div>
                                 </div>
@@ -114,6 +115,47 @@
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
 
+    <div class="modal fade bs-downloadcards" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Matricules à télécharger</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{{ path('admin_member_download_cards') }}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="selection_type" class="form-label">Interval:</label>
+                                <input type="radio" name="selection_type" class="form-check" value="1" checked />  &nbsp;&nbsp;
+                            </div>
+                            <div class="col-md-6">
+                                <label for="selection_type" class="form-label">Tous:</label>
+                                <input type="radio" name="selection_type" class="form-check" value="0"/>
+                            </div>
+                        </div>
+                        <div class="row" id="interval-row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="from_matricule" class="form-label">Du Matricule:</label>
+                                    <input type="text" class="form-control" name="from_matricule" placeholder="Entrez matricule initial">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="to_matricule" class="form-label">Au Matricule:</label>
+                                    <input type="text" class="form-control" name="to_matricule" placeholder="Entrez matricule final">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary w-md" data-bs-dismiss="modal">Valider</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 {% endblock %}
 
 {% block javascript %}
@@ -130,6 +172,13 @@
                 datatable.draw();
         });
 
+       $("input[name='selection_type']").change(function(){
+             if($(this).val() === "0"){
+                $('#interval-row').hide();
+             }else{
+                  $('#interval-row').show();
+             }
+          });
         function initDatatable(){
             /* DATATABLE INIT */
             var dt = $('#datatable').DataTable( {

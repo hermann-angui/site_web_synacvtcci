@@ -1,0 +1,62 @@
+{% extends 'admin/pdf/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div id="layout-wrapper">
+            <div class="container-fluid">
+                <div class="row p-md-5 ">
+                    <div class="col-xl-12 p-sm-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-light border-0 border-primary my-5">
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="d-flex justify-content-center">
+                                                <img id="imagePreview" src="/var/www/html/public/{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <td><span class="text-primary fs-5 fw-bolder">{{ member.matricule }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <td>{{ member.lastName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Prénoms</th>
+                                        <td>{{ member.firstName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="text-center fw-bolder">
+                                                <h5>Contacts du syndicat</h5>
+                                                <h5>Tel: 01 02 68 87 88</h5>
+                                                <h5>Fixe: 27 22 28 65 16</h5>
+                                                <h5>Email: info@synacvtcci.org</h5>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="d-flex justify-content-center">
+                                                <img id="imagePreview" src="/var/www/html/public/{{ asset('members/') }}{{ member.matricule }}/{{ member.matricule }}_barcode.png" alt="" width="100" class="rounded-2">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+{% endblock %}
+
+
+

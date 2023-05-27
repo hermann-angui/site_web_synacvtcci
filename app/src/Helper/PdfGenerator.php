@@ -20,7 +20,7 @@ class PdfGenerator
     public function generate($data)
     {
         $html = $this->twig->render($data['twig_view'], $data['view_data']);
-      //  $output = $this->snappy->generateFromHtml($html);
+        $output = $this->snappy->generateFromHtml($html);
     }
 
     public function generateBarCode($data, $outputFile, $width = 50, $height = 50)

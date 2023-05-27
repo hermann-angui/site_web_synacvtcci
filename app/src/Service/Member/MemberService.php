@@ -105,7 +105,7 @@ class MemberService
      * @param MemberRequestDto|null $memberRequestDto
      * @return MemberRequestDto|null
      */
-    public function generateMemberCard(?MemberRequestDto $memberRequestDto): ?MemberRequestDto
+    public function generateSingleMemberCard(?MemberRequestDto $memberRequestDto): ?MemberRequestDto
     {
         date_default_timezone_set("Africa/Abidjan");
         if ($memberRequestDto) {
@@ -121,14 +121,19 @@ class MemberService
     /**
      * @return array
      */
-    public function generateAllMemberCards(): array
+    public function generateMultipleMemberCards(array $matricules = []): array
     {
         date_default_timezone_set("Africa/Abidjan");
         $memberDtos = [];
-        $members = $this->memberRepository->findAll();
+        if(empty($matricules)){
+            $members = $this->memberRepository->findAll();
+        }else{
+            $members = $this->memberRepository->findBy(["matricule" => $matricules]);
+        }
+
         foreach ($members as $member) {
             $memberDto = MemberMapper::MapToMemberRequestDto($member);
-            $this->generateMemberCard($memberDto);
+            $this->generateSingleMemberCard($memberDto);
             $memberDtos[] = $memberDto;
         }
         return $memberDtos;

@@ -14,12 +14,16 @@ use App\Mapper\MemberMapper;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 #[Route('admin/member')]
 class MemberController extends AbstractController
@@ -29,6 +33,19 @@ class MemberController extends AbstractController
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
         return $this->render('admin/member/index.html.twig');
+    }
+
+    #[Route('/pdf/{id}', name: 'admin_pdf', methods: ['GET'])]
+    public function pdfGenerate(Request $request, Member $member, Pdf $knpSnappyPdf): Response
+    {
+        $html = $this->renderView('admin/pdf/public_profile.html.twig', array(
+            'member'  => $member
+        ));
+
+        return new PdfResponse(
+            $knpSnappyPdf->getOutputFromHtml($html),
+            'file.pdf'
+        );
     }
 
     #[Route('/new-subscription', name: 'admin_member_new_subscription', methods: ['GET'])]
@@ -104,7 +121,7 @@ class MemberController extends AbstractController
     #[Route('/generate/new/card/{id}', name: 'admin_member_generate_card', methods: ['GET'])]
     public function generateCard(Member $member, MemberService $memberService, MemberRepository $memberRepository): Response
     {
-        $memberRequestDto = $memberService->generateMemberCard(MemberMapper::MapToMemberRequestDto($member));
+        $memberRequestDto = $memberService->generateSingleMemberCard(MemberMapper::MapToMemberRequestDto($member));
         $member->setCardPhoto($memberRequestDto->getCardPhoto()->getFilename());
         $member->setModifiedAt(new \DateTime());
         $memberRepository->add($member, true);
@@ -122,17 +139,32 @@ class MemberController extends AbstractController
     public function downloadCard(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
-        set_time_limit(3600);
+        ini_set('max_execution_time', '-1');
         $memberRequestDto = MemberMapper::MapToMemberRequestDto($member);
-        $memberService->generateMemberCard($memberRequestDto);
+        $memberService->generateSingleMemberCard($memberRequestDto);
         $zipFile = $memberService->archiveMemberCards([$memberRequestDto]);
         return $this->file($zipFile);
     }
 
-    #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET'])]
-    public function downloadMemberCards(Request $request,MemberService $memberService): Response
+    #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET', 'POST'])]
+    public function downloadMemberCards(Request $request, MemberService $memberService): Response
     {
-        $memberDtos = $memberService->generateAllMemberCards();
+        $from = $request->get("from_matricule");
+        $to = $request->get("to_matricule");
+        ini_set('max_execution_time', '-1');
+
+        if(!empty($from) && !empty($to)){
+            $from = (int)substr($from, -5);
+            $to = (int) substr($to, -5);
+            $ranges = range($from, $to);
+            foreach($ranges as $matricule){
+                $matricules[] = "SY12023" .   sprintf('%05d', $matricule);
+            }
+            $memberDtos = $memberService->generateMultipleMemberCards($matricules);
+        }else{
+            $memberDtos = $memberService->generateMultipleMemberCards();
+        }
+
         $zipFile = $memberService->archiveMemberCards($memberDtos);
         return $this->file($zipFile);
     }
@@ -228,16 +260,16 @@ class MemberController extends AbstractController
 
         $whereResult = '';
         if(!empty($params['matricule'])){
-            $whereResult .= " matricule LIKE '". $params['matricule'] . "' AND";
+            $whereResult .= " matricule LIKE '%". $params['matricule'] . "%' AND";
         }
         if(!empty($params['driving_license_number'])) {
-            $whereResult .= " driving_license_number LIKE'". $params['driving_license_number']. "' AND";
+            $whereResult .= " driving_license_number LIKE '%". $params['driving_license_number']. "%' AND";
         }
         if(!empty($params['last_name'])) {
             $whereResult .= " last_name LIKE '%". $params['last_name']. "%' AND";
         }
         if(!empty($params['id_number'])) {
-            $whereResult .= " id_number	LIKE '". $params['id_number	'] . "' AND ";
+            $whereResult .= " id_number	LIKE '%". $params['id_number	'] . "%' AND ";
         }
 
         $whereResult.= " status='PENDING'";
@@ -312,7 +344,10 @@ class MemberController extends AbstractController
                                           <a href='/admin/member/$id' class='btn btn-sm btn-soft-primary'><i class='mdi mdi-eye-outline'></i></a>
                                       </li>
                                       <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
-                                         <a href='/admin/member/$id/edit' class='btn btn-sm btn-soft-info'><i class='mdi mdi-pencil-outline'></i></a>
+                                         <a href='/admin/member/$id/edit' class='btn btn-sm btn-soft-success'><i class='mdi mdi-pencil-outline'></i></a>
+                                      </li>
+                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Supprimer'>
+                                         <a href='/admin/member/$id/supprimer' class='btn btn-sm btn-soft-danger'><i class='mdi mdi-delete-alert-outline'></i></a>
                                       </li>
                                 </ul>";
                     return $content;
@@ -420,13 +455,20 @@ class MemberController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'admin_member_delete', methods: ['POST'])]
+    #[Route('/{id}/supprimer', name: 'admin_member_delete', methods: ['GET','POST'])]
     public function delete(Request $request, Member $member, MemberRepository $memberRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$member->getId(), $request->request->get('_token'))) {
+        if ( true /* $this->isCsrfTokenValid('delete'.$member->getId(), $request->request->get('_token')) */ ) {
             $memberRepository->remove($member, true);
+            $fileName = "/var/www/html/public/members/" . $member->getMatricule() . "/";
+            if(file_exists($fileName)) {
+                $fs =  new Filesystem();
+                $fs->remove($fileName);
+            }
         }
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 
 }
