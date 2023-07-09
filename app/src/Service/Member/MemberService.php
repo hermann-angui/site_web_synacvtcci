@@ -35,14 +35,14 @@ class MemberService
     private CsvReaderHelper $csvReaderHelper;
 
     public function __construct(
-        ContainerInterface $container,
-        MemberCardGeneratorService $memberCardGeneratorService,
+        ContainerInterface             $container,
+        MemberCardGeneratorService    $memberCardGeneratorService,
         MemberReceiptGeneratorService $memberReceiptGeneratorService,
-        MemberAssetHelper $memberAssetHelper,
-        MemberRepository $memberRepository,
-        ChildRepository $childRepository,
-        UserPasswordHasherInterface $userPasswordHasher,
-        CsvReaderHelper $csvReaderHelper)
+        MemberAssetHelper              $memberAssetHelper,
+        MemberRepository               $memberRepository,
+        ChildRepository                $childRepository,
+        UserPasswordHasherInterface    $userPasswordHasher,
+        CsvReaderHelper                $csvReaderHelper)
     {
         $this->memberCardGeneratorService = $memberCardGeneratorService;
         $this->memberReceiptGeneratorService = $memberReceiptGeneratorService;
@@ -176,6 +176,13 @@ class MemberService
         return null;
     }
 
+
+    public function getMemberCardsList(array $memberDtos){
+        $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';;
+         if(!file_exists($zipFile)){
+             $this->generateMultipleMemberCards();
+         }
+    }
     /**
      * @param MemberRequestDto|null $memberRequestDto
      * @return void

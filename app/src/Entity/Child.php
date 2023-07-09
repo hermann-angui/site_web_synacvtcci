@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\ChildRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ChildRepository::class)]
 #[ORM\Table(name: '`child`')]

@@ -1,0 +1,164 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block title %}Accueil - SYNACVTCCI{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {{ include('frontend/_partials/header.html.twig') }}
+
+{#
+    <section class="page-header">
+        <div class="container">
+            <div class="page-header-info">
+                <h4>Communiqués!</h4>
+                <h2>Suivez le fil d'actualité du <span>SYNACVTCCI!</span></h2>
+            </div>
+        </div>
+    </section>
+#}
+
+    <section class="service-section bg-grey padding">
+        <div class="bg-half"></div>
+        <div class="container">
+            <div class="section-heading text-center mb-40 wow fade-in-bottom" data-wow-delay="200ms">
+                <h4><span></span>Activités</h4>
+                <h2 class="white">Suivez en images, les activités de votre syndicat<br></h2>
+                <p>Le bureau de la SYNACVTCCI est toujours ne manage aucun effort pour le bien être de ses memebres.</p>
+            </div>
+
+            <div class="swiper-outside">
+                <div class="service-carousel">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="service-item wow fade-in-bottom" data-wow-delay="200ms">
+                                <div class="service-thumb">
+                                    <img src="{{ asset('assets/frontend/img/05/WhatsApp-Image-2022-05-09-at-08.39.10-1.jpeg') }}" alt="img">
+                                    {#                                    <div class="service-shape-wrap">
+                                        <div class="service-shape"></div>
+                                    </div>#}
+                                    <div class="service-car"><img src="{{ asset('assets/frontend/img/car-1.png') }}" alt="car"></div>
+                                </div>
+                                <div class="service-content">
+                                    <h3><a href="{{  path('home') }}">Signature d’une convention avec l’assurance BIAM</a></h3>
+                                    <p>A l’instar de la maison d’assurance maladie Vitalis Santé, le...</p>
+                                    <a class="read-more" href="{{ path('home') }}">En savoir +</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="service-item wow fade-in-bottom" data-wow-delay="200ms">
+                                <div class="service-thumb">
+                                    <img src="{{ asset('assets/frontend/img/05/remise-de-dons-600x450.jpeg') }}" alt="img">
+                                    {#                                    <div class="service-shape-wrap">
+                                        <div class="service-shape"></div>
+                                    </div>#}
+                                    <div class="service-car"><img src="{{ asset('assets/frontend/img/car-1.png') }}" alt="car"></div>
+                                </div>
+                                <div class="service-content">
+                                    <h3><a href="{{  path('home') }}">Le SYNACVTCCI apporte son assistance au chauffeur victime d’agression</a></h3>
+                                    <p>Le Syndicat National des Chauffeurs VTC de Côte d’Ivoire a...</p>
+                                    <a class="read-more" href="{{ path('home') }}">En savoir +</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="service-item wow fade-in-bottom" data-wow-delay="200ms">
+                                <div class="service-thumb">
+                                    <img src="{{ asset('assets/frontend/img/05/WhatsApp-Image-2022-05-07-at-16.05.13.jpeg') }}" alt="img">
+                                    {#                                    <div class="service-shape-wrap">
+                                        <div class="service-shape"></div>
+                                    </div>#}
+                                    <div class="service-car"><img src="{{ asset('assets/frontend/img/car-1.png') }}" alt="car"></div>
+                                </div>
+                                <div class="service-content">
+                                    <h3><a href="{{  path('home') }}">Communiqué du SYNACVTCCI suite à la bastonnade du chauffeur de Yango</a></h3>
+                                    <p>Dans la matinée de ce mardi 15 mars 2022, dans...</p>
+                                    <a class="read-more" href="{{ path('home') }}">En savoir +</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="service-item wow fade-in-bottom" data-wow-delay="200ms">
+                                <div class="service-thumb">
+                                    <img src="{{ asset('assets/frontend/img/05/vitalis.png') }}" alt="img">
+                                    {#                                    <div class="service-shape-wrap">
+                                        <div class="service-shape"></div>
+                                    </div>#}
+                                    <div class="service-car"><img src="{{ asset('assets/frontend/img/car-1.png') }}" alt="car"></div>
+                                </div>
+                                <div class="service-content">
+                                    <h3><a href="{{  path('home') }}">Le SYNCAVTCCI signe une convention avec la maison d’assurance Vitalis Santé (Business 24)</a></h3>
+                                    <p>Dans le cadre de ses prérogatives, le syndicat a signé...
+                                    </p>
+                                    <a class="read-more" href="{{ path('home') }}">En savoir +</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+
+                <div class="swiper-nav swiper-next"><i class="las la-long-arrow-alt-right"></i></div>
+                <div class="swiper-nav swiper-prev"><i class="las la-long-arrow-alt-left"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <h1>Article index</h1>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Content</th>
+                    <th>Created_at</th>
+                    <th>Modified_at</th>
+                    <th>actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for article in articles %}
+                    <tr>
+                        <td>{{ article.id }}</td>
+                        <td>{{ article.title }}</td>
+                        <td>{{ article.category }}</td>
+                        <td>{{ article.description }}</td>
+                        <td>{{ article.content }}</td>
+                        <td>{{ article.createdAt ? article.createdAt|date('Y-m-d') : '' }}</td>
+                        <td>{{ article.modifiedAt ? article.modifiedAt|date('Y-m-d') : '' }}</td>
+                        <td>
+                            <a href="{{ path('blog_show', {'id': article.id}) }}">show</a>
+                            <a href="{{ path('blog_edit', {'id': article.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </section>
+
+{{ include('frontend/_partials/footer.html.twig') }}
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script>
+    $('document').ready(function() {
+    });
+</script>
+{% endblock %}
+
+

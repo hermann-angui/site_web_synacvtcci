@@ -71,7 +71,7 @@
     align-items: center;
     justify-content: space-between;
     column-gap: 15px;
-    padding: 25px 0
+    padding: 0px 0
 }
 
 .mid-header-wrap .site-logo {
@@ -92,17 +92,17 @@
 }
 
 .header-info li .header-info-icon {
-    font-size: 40px;
+    font-size: 25px;
     color: #0701b9;
     margin-right: 5px
 }
 
 .header-info li .header-info-text h3 {
-    font-weight: 700;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 14px;
     text-transform: capitalize;
     margin: 0;
-    line-height: 1
+    line-height: 0.5
 }
 
 .header-info li .header-info-text h3 a:hover {
@@ -250,7 +250,7 @@
         align-items: center;
         justify-content: space-between;
         max-width: 80%;
-        height: 60px;
+        height: 42px;
         margin-left: auto;
         position: relative;
         z-index: 1
@@ -288,7 +288,7 @@
         font-size: 16px;
         letter-spacing: -.2px;
         font-weight: 600;
-        text-transform: capitalize;
+        /* text-transform: capitalize; */
         color: #fff;
         padding: 0;
         margin: 0;
@@ -382,7 +382,7 @@
         color: #666;
         font-weight: 500;
         font-size: 16px;
-        text-transform: capitalize;
+        /* text-transform: capitalize;*/
         line-height: 20px;
         letter-spacing: -.2px;
         width: 100%;
@@ -538,7 +538,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 70px
+        min-height: 42px
     }
 
     .header-menu-wrap ul {
@@ -831,7 +831,7 @@
     }
 
     .sidebox-content .sidebox-list li span {
-        text-transform: capitalize;
+       /* text-transform: capitalize; */
         display: block;
         font-size: 16px;
         font-weight: 400;

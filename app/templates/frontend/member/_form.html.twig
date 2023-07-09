@@ -18,8 +18,11 @@
         </div>
         <div id="collapseOne" class="card-body accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#info_perso">
             <div class="accordion-body">
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                </div>
                 {{ form_row(form.email) }}
-                {{ form_row(form.titre) }}
+{#                {{ form_row(form.titre) }}#}
                 {{ form_row(form.sex) }}
                 {{ form_row(form.lastName) }}
                 {{ form_row(form.firstName) }}
@@ -28,9 +31,9 @@
                 {{ form_row(form.company) }}
                 {{ form_row(form.nationality) }}
                 {{ form_row(form.mobile) }}
-                {{ form_row(form.phone) }}
+{#                {{ form_row(form.phone) }}#}
                 {{ form_row(form.whatsapp) }}
-                {{ form_row(form.country) }}
+{#                {{ form_row(form.country) }}#}
                 {{ form_row(form.city) }}
                 {{ form_row(form.commune) }}
                 {{ form_row(form.quartier) }}
@@ -45,7 +48,7 @@
     <div class="card accordion my-3" id="documents">
         <div class="card-header accordion-item accordion-header" id="headingTwo">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
-                2-DOCUMENTS
+                2-DOCUMENTS (Facultatif)
             </button>
         </div>
         <div id="collapseTwo" class="card-body accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#documents">
@@ -68,7 +71,7 @@
     <div class="card accordion my-3" id="info_familiales">
         <div class="card-header accordion-item accordion-header" id="headingThree">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseOne">
-                3-INFORMATIONS FAMILIALES
+                3-INFORMATIONS FAMILIALES (Facultatif)
             </button>
         </div>
         <div id="collapseThree" class="card-body accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#info_familiales">
@@ -82,7 +85,6 @@
                         {{ form_row(form.partner_last_name) }}
                     </div>
                 </div>
-
                 <div class="py-3">
                     Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
                     <input type="radio" name="has_child" value="0" checked /> Non &nbsp;&nbsp;
@@ -95,7 +97,6 @@
                     </div>
 
                 </div>
-
              </div>
         </div>
     </div>

@@ -128,7 +128,9 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/web-profiler-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/app/templates/themeforest" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/h4cc/wkhtmltopdf-amd64" />
+      <excludeFolder url="file://$MODULE_DIR$/sfp/db" />
     </content>
+    <content url="file://$MODULE_DIR$/app/templates" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

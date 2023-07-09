@@ -1,0 +1,175 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block title %}Enregistrement - SYNACVTCCI{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/css/app.min.css') }}" type="text/css" rel="stylesheet">
+    <style>
+        .page-header {
+            height: 160px !important;
+        }
+        .liste-etapes {
+            color: #000000;
+            font-size: .875rem;
+            font-weight: 400;
+            line-height: 1.25;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .etape {
+            background-color: transparent;
+            border-radius: 3px;
+            padding: 56px 16px 0;
+            position: relative;
+            width: 272px;
+        }
+        .etape .icon, .etape .info {
+            text-align: center;
+            z-index: 2;
+        }
+        .etape .icon {
+            top: 16px;
+            left: calc(50% - 16px);
+            width: 32px;
+            height: 32px;
+            border: 2px solid #0701b9;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 28px;
+        }
+        .etape .icon, .etape .line {
+            position: absolute;
+            background-color: #0701b9;
+        }
+        .etape.active .info {
+            color: #444;
+            font-weight: 700;
+        }
+        .etape .info {
+            color: #b2b2b2;
+            font-size: .875rem;
+            font-weight: 600;
+            line-height: 20px;
+        }
+        .etape .icon, .etape .info {
+            text-align: center;
+            z-index: 2;
+        }
+        .etape.disabled .line {
+            background-color: #e0e0e0;
+        }
+        .etape .icon, .etape .line {
+            position: absolute;
+            background-color: #0701b9;
+        }
+        .etape .line {
+            top: 31px;
+            left: -60px;
+            width: 120px;
+            height: 2px;
+            border-radius: 4px;
+            z-index: 1;
+        }
+        .etape.disabled .icon {
+            background-color: transparent;
+            color: #b2b2b2;
+            border-color: #e0e0e0;
+        }
+        .etape .icon, .etape .info {
+            text-align: center;
+            z-index: 2;
+        }
+        .etape .info {
+            color: #b2b2b2;
+            font-size: .875rem;
+            font-weight: 600;
+            line-height: 20px;
+        }
+        .etape.active .info {
+            color: #444;
+            font-weight: 700;
+        }
+
+
+        .wizard .steps>ul>li a{
+            font-size: 10px;
+            font-weight: bolder;
+        }
+        .form-control {
+            padding: 0.275rem 0.55rem;
+            font-size: 0.78rem;
+        }
+        .form-control:focus {
+            border-color: none;
+            outline: 0;
+             box-shadow: none;
+        }
+        .col-form-label {
+            padding-top: calc(0.375rem + 1px);
+            padding-bottom: calc(0.375rem + 1px);
+            margin-bottom: 0;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+        .form-check-label{
+            font-size: 0.82rem;
+        }
+
+        .form-check-input {
+            margin-top: 0.4em;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('frontend/_partials/header.html.twig') }}
+
+    <section class="page-header">
+        <div class="page-header-shape"></div>
+        <div class="container">
+            <div class="page-header-info">
+                <h4>Formulaire</h4>
+                <h2>Remplissez le formulaire d'immatriculation <span>CNMCI</span></h2>
+                <p>Chambre National de Métiers de Côte d'Ivoire </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        {{ include('frontend/artisan/_form_cnmci.html.twig') }}
+    </div>
+
+    {{ include('frontend/_partials/footer.html.twig') }}
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+  <script src="{{ asset('assets/frontend/js/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
+  <script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
+  <script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
+  <script>
+      $('document').ready(function() {
+         $(".input-mask").inputmask();
+
+         $('#form_artisan_cnmcci').ajaxForm({
+            url: "{{ path('ajax_register_artisan', {step: 1}) }}",
+            dataType: 'json',
+            type: 'POST',
+            success: function(response) {
+                  window.location.replace("{{ path('ajax_register_artisan', {step: 2}) }}");
+            },
+            error: function(xhr, textStatus, errorThrown) {
+              console.log(xhr.responseText);
+            }
+         });
+
+      });
+  </script>
+{% endblock %}

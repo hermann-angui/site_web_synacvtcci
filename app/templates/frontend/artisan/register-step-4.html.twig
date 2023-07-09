@@ -1,0 +1,199 @@
+{% extends 'frontend/base.html.twig' %}
+
+{% block title %}Enregistrement - SYNACVTCCI{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/css/app.min.css') }}" type="text/css" rel="stylesheet">
+    <style>
+        .page-header {
+            height: 160px !important;
+        }
+        .liste-etapes {
+            color: #000000;
+            font-size: .875rem;
+            font-weight: 400;
+            line-height: 1.25;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .etape {
+            background-color: transparent;
+            border-radius: 3px;
+            padding: 56px 16px 0;
+            position: relative;
+            width: 272px;
+        }
+        .etape .icon, .etape .info {
+            text-align: center;
+            z-index: 2;
+        }
+        .etape .icon {
+            top: 16px;
+            left: calc(50% - 16px);
+            width: 32px;
+            height: 32px;
+            border: 2px solid #0701b9;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 28px;
+        }
+        .etape .icon, .etape .line {
+            position: absolute;
+            background-color: #0701b9;
+        }
+        .etape.active .info {
+            color: #444;
+            font-weight: 700;
+        }
+        .etape .info {
+            color: #b2b2b2;
+            font-size: .875rem;
+            font-weight: 600;
+            line-height: 20px;
+        }
+        .etape .icon, .etape .info {
+            text-align: center;
+            z-index: 2;
+        }
+        .etape.disabled .line {
+            background-color: #e0e0e0;
+        }
+        .etape .icon, .etape .line {
+            position: absolute;
+            background-color: #0701b9;
+        }
+        .etape .line {
+            top: 31px;
+            left: -60px;
+            width: 120px;
+            height: 2px;
+            border-radius: 4px;
+            z-index: 1;
+        }
+        .etape.disabled .icon {
+            background-color: transparent;
+            color: #b2b2b2;
+            border-color: #e0e0e0;
+        }
+        .etape .icon, .etape .info {
+            text-align: center;
+            z-index: 2;
+        }
+        .etape .info {
+            color: #b2b2b2;
+            font-size: .875rem;
+            font-weight: 600;
+            line-height: 20px;
+        }
+        .etape.active .info {
+            color: #444;
+            font-weight: 700;
+        }
+
+
+        .wizard .steps>ul>li a{
+            font-size: 10px;
+            font-weight: bolder;
+        }
+        .form-control {
+            padding: 0.275rem 0.55rem;
+            font-size: 0.78rem;
+        }
+        .form-control:focus {
+            border-color: none;
+            outline: 0;
+             box-shadow: none;
+        }
+        .col-form-label {
+            padding-top: calc(0.375rem + 1px);
+            padding-bottom: calc(0.375rem + 1px);
+            margin-bottom: 0;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+        .form-check-label{
+            font-size: 0.82rem;
+        }
+
+        .form-check-input {
+            margin-top: 0.4em;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('frontend/_partials/header.html.twig') }}
+
+    <section class="page-header">
+        <div class="page-header-shape"></div>
+        <div class="container">
+            <div class="page-header-info">
+                <h4>Formulaire d'adhésuion!</h4>
+                <h2>Remplissez le formulaire d'immatriculation</h2>
+                <p>Chambre National de Métiers de Côte d'Ivoire </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="taxi-booking bg-grey mb-3">
+        <div class="d-flex justify-content-center">
+            <div class="col-lg-12 p-3">
+                {{ include('frontend/artisan/_form_cnmci.html.twig') }}
+            </div>
+        </div>
+    </div>
+
+    {{ include('frontend/_partials/footer.html.twig') }}
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+  <script src="{{ asset('assets/admin/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
+  <script>
+      $('document').ready(function() {
+            $("#basic-example").steps({
+                headerTag: "h3",
+                bodyTag: "section",
+                transitionEffect: "slide",
+                stepsOrientation: "vertical"
+            });
+
+                      var children = [];
+          $("input[name='is_married']").change(function(){
+             if($(this).val() === "0"){
+                $('#partner_bock').hide();
+             }else{
+                  $('#partner_bock').show();
+             }
+          });
+          $("input[name='has_child']").change(function(){
+              if($(this).val() === "0"){
+                  $('#child-row').hide();
+              }else{
+                  $('#child-row').show();
+              }
+          });
+          $("#artisan_registration_photo").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#imagePreview').attr('src', evt.target.result);
+                  $('#imagePreview').fadeIn(650);
+              }
+          });
+
+          $('#newChild').click(function(){
+            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";
+            $('#children_bock').append(row);
+          });
+      });
+  </script>
+{% endblock %}

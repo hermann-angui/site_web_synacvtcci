@@ -1,0 +1,52 @@
+<form name="article" method="post" enctype="multipart/form-data">
+    <div id="article">
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-2 required" for="article_title">Titre de l'activité</label>
+            <div class="col-sm-10">
+                <input type="text" id="article_title" name="article[title]" required="required" class="form-control">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-2 required" for="article_description">Description</label>
+            <div class="col-sm-10">
+            <textarea id="article_description" name="article[description]" required="required" class="form-control">
+
+            </textarea>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-2 required" for="article_category">Catégorie</label>
+            <div class="col-sm-10">
+                <select id="article_category" name="article[category]" class="form-select">
+                    <option value="Article">Article</option>
+                    <option value="Vidéo">Video</option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-2 required" for="article_content">Contenu</label>
+            <div class="col-sm-10">
+                <textarea id="article_content" name="article[content]" required="required" class="form-control"></textarea>
+            </div>
+        </div>
+        <div class="mb-3 row image-upload-wrapper">
+            <label class="col-form-label col-sm-2 active" for="article[images]">Images de l'activité</label>
+            <div class="col-sm-10">
+                <div class="input-images" style="padding-top: .5rem;"></div>
+            </div>
+        </div>
+        <div class="mb-3 row video-upload-wrapper">
+            <label class="col-form-label col-sm-2 active" for="article[videos]">Video de l'activité</label>
+            <div class="col-sm-10">
+                <input type="file" accept="video/*" id="input-tag"/><br>
+                <video controls id="video-tag" class="py-2" width="350">
+                    <source id="video-source" src="splashVideo">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-success btn-lg mt-5">Enregistrer</button>
+        </div>
+    </div>
+</form>

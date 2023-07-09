@@ -31,7 +31,7 @@ class MemberRegistrationType extends AbstractType
                 'required' => false,
                 'label' => 'Photo',
                 'data_class' =>  null,
-                'mapped' => true,
+                'mapped' => false,
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
@@ -48,13 +48,14 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-            ->add('titre', ChoiceType::class, [
+/*            ->add('titre', ChoiceType::class, [
                 'label' => 'Titre',
                 'mapped' => true,
                 'required' => false,
                 'choices' => Member::getTitres(),
                 'empty_data' => null,
             ])
+*/
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
                 'mapped' => true,
@@ -110,6 +111,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Date de naissance',
                 'mapped' => true,
                 'required' => false,
+                'format' => 'dd-MM-yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
             ->add('birth_city', TextType::class, [
@@ -146,22 +148,49 @@ class MemberRegistrationType extends AbstractType
                 'data_class' =>  null,
                 'mapped' => true,
             ])
-            ->add('country', ChoiceType::class, [
+/*            ->add('country', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Pays',
                 'mapped' => true,
                 'choices' => $countries,
                 'choice_loader' => null
-            ])
-            ->add('city', TextType::class, [
+            ])*/
+            ->add('city', ChoiceType::class, [
                 'label' => "Ville",
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'choices' => [
+                    "ABIDJAN" => "ABIDJAN",
+                    "BOUAKE" => "BOUAKE",
+                    "YAMOUSSOUKRO" => "YAMOUSSOUKRO",
+                    "KORHOGO" => "KORHOGO",
+                    "MAN" => "MAN",
+                    "SAN-PEDRO" => "SAN-PEDRO",
+                    "BASSAM" => "BASSAM",
+                    "BONOUA" => "BONOUA",
+                    "BONDOUKOU" => "BONDOUKOU"
+                ],
+                'empty_data' => null,
+                'data' => null,
             ])
-            ->add('commune', TextType::class, [
+            ->add('commune', ChoiceType::class, [
                 'label' => "Commune",
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'choices' => [
+                    "ABOBO" => "ABOBO",
+                    "ANYAMA" => "ANYAMA",
+                    "ATTECOUBE" => "ATTECOUBE",
+                    "MARCORY" => "MARCORY",
+                    "BINGERVILLE" => "BINGERVILLE",
+                    "COCODY" => "COCODY",
+                    "PLATEAU" => "PLATEAU",
+                    "KOUMASSI" => "KOUMASSI",
+                    "PORT-BOUET" => "PORT-BOUET",
+                    "TREICHVILLE" => "TREICHVILLE",
+                ],
+                'empty_data' => null,
+                'data' => null,
             ])
             ->add('quartier', TextType::class, [
                 'label' => "Quartier",
@@ -173,11 +202,11 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false
             ])
-            ->add('phone', TextType::class, [
+/*            ->add('phone', TextType::class, [
                 'label' => "Tel fixe",
                 'mapped' => true,
                 'required' => false
-            ])
+            ])*/
             ->add('partner_first_name', TextType::class, [
                 'label' => "Prénoms conjoint",
                 'mapped' => true,

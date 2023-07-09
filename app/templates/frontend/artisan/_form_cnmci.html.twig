@@ -1,0 +1,657 @@
+<div class="liste-etapes is-clearfix">
+    <div class="etape active current"><!---->
+        <div class="icon">1</div> <!---->
+        <div class="info">Demande d' immatriculation CNMCI</div>
+    </div>
+    <div class="etape disabled">
+        <div class="line"></div>
+        <div class="icon">2</div>
+        <div class="info">Information complementaire adhésion SYNACVTCCI</div>
+    </div>
+    <div class="etape disabled">
+        <div class="line"></div>
+        <div class="icon">3</div> <!---->
+        <div class="info">Récapitulatif</div>
+    </div>
+    <div class="etape disabled">
+        <div class="line"></div>
+        <div class="icon">4</div> <!---->
+        <div class="info">Confirmation</div>
+    </div>
+</div>
+<div class="d-flex justify-content-center">
+    <img src="{{ asset('assets/frontend/img/cnmci.png') }}" width="100" height="100" />
+</div>
+<form id="form_artisan_cnmcci" method="post" enctype="multipart/form-data">
+    <div class="row mt-3 border border-1 border-dark">
+        <div class="fw-bold text-center border-bottom border-dark" style="background-color: #0701b9; color:#fff;">A. RENSEIGNEMENT SUR L'EXPLOITANT</div>
+        <div class="p-3">
+            <div class="row my-2 align-items-center">
+                <div class="col-1">
+                    <label for="exploitantNom" class="col-form-label">Nom :</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" id="exploitantNom" name="exploitantNom" class="form-control" aria-labelledby="exploitantNom">
+                </div>
+                <div class="col-1">
+                    <label for="exploitantPrenoms" class="col-form-label">Prénoms :</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" id="exploitantPrenoms" name="exploitantPrenoms" class="form-control" aria-labelledby="passwordHelpInline">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="exploitantDateNais" class="col-form-label">Né(e) le :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantDateNais" name="exploitantDateNais" class="form-control input-mask" aria-labelledby="exploitantDateNais"  data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                </div>
+                <div class="col-auto">
+                    <label for="exploitantLieuNais" class="col-form-label">à :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantLieuNais" name="exploitantLieuNais" class="form-control" aria-labelledby="exploitantLieuNais">
+                </div>
+                <div class="col-auto">
+                    <label for="exploitantNationalite" class="col-form-label">Nationalité :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantNationalite" name="exploitantNationalite" class="form-control" aria-labelledby="exploitantNationalite">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="exploitantSex" class="col-form-label">Sexe :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="H">
+                        <label class="form-check-label" for="exploitantSex">Homme</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="F">
+                        <label class="form-check-label" for="exploitantSex">Femme</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label for="exploitantDomicile" class="col-form-label">Domicilié (e) à :</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" id="exploitantDomicile" name="exploitantDomicile" class="form-control" aria-labelledby="exploitantDomicile">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="exploitantTypeDoc" class="col-form-label">Type de document :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="cni">
+                        <label class="form-check-label" for="exploitantTypeDoc">CNI</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="cc">
+                        <label class="form-check-label" for="exploitantTypeDoc">CC</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="passeport">
+                        <label class="form-check-label" for="exploitantTypeDoc">Passeport</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Carte de résident">
+                        <label class="form-check-label" for="exploitantTypeDoc">Carte de résident</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Autre">
+                        <label class="form-check-label" for="exploitantTypeDoc">Autre</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label for="document_other" class="col-form-label">(à preciser) :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantTypeDocAutre" name="exploitantTypeDocAutre" class="form-control" aria-labelledby="exploitantTypeDoc">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="exploitantTypeDocNum" class="col-form-label">N° :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantTypeDocNum" name="exploitantTypeDocNum" class="form-control" aria-labelledby="exploitantTypeDocNum">
+                </div>
+                <div class="col-auto">
+                    <label for="exploitantDocLieuDelivrance" class="col-form-label">Délivré à :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantDocLieuDelivrance" name="exploitantDocLieuDelivrance" class="form-control" aria-labelledby="exploitantDocLieuDelivrance">
+                </div>
+                <div class="col-auto">
+                    <label for="exploitantDocDateDelivrance" class="col-form-label">Le :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantDocDateDelivrance" name="exploitantDocDateDelivrance" class="form-control input-mask" aria-labelledby="exploitantDocDateDelivrance" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="exploitantEtatCivil" class="col-form-label">Etat civil :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="Marié">
+                        <label class="form-check-label" for="exploitantEtatCivil">Marié</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="Célibataire">
+                        <label class="form-check-label" for="exploitantEtatCivil">Célibataire</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="Divorcé">
+                        <label class="form-check-label" for="exploitantEtatCivil">Divorcé(e)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="Veuf">
+                        <label class="form-check-label" for="exploitantEtatCivil">Veuf(ve)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="exploitantTel" class="col-form-label">Telephone :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantTel" name="exploitantTel" class="form-control" aria-labelledby="exploitantTel">
+                </div>
+                <div class="col-auto">
+                    <label for="exploitantEmail" class="col-form-label">Email :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="exploitantEmail" name="exploitantEmail" class="form-control input-mask" aria-labelledby="exploitantEmail" data-inputmask="'alias': 'email'">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row border border-1 border-dark">
+        <div class="fw-bold text-center border-bottom border-dark" style="background-color: #0701b9; color:#fff;">B. RENSEIGNEMENT SUR LA FORMATION PROFESSIONNELLE</div>
+        <div class="p-3">
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="exploitantNiveauEtude" class="col-form-label">Niveau d'étude :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Non Scolarisé">
+                        <label class="form-check-label" for="education">1- Non scolarisé</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Primaire">
+                        <label class="form-check-label" for="education">2- Primaire</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Secondaire">
+                        <label class="form-check-label" for="education">3- Secondaire</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Superieure">
+                        <label class="form-check-label" for="education">4- Supérieur</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="formationClass" class="col-form-label">Précisez la classe(2-3-4) :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="formationClass" name="formationClass" class="form-control" aria-labelledby="formationClass">
+                </div>
+                <div class="col-auto">
+                    <label for="formationDiplomeObtenu" class="col-form-label">Précisez le diplôme obtenu :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="formationDiplomeObtenu" name="formationDiplomeObtenu" class="form-control" aria-labelledby="formationDiplomeObtenu">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="formationApprenMetier" class="col-form-label">Apprentissage du métier :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="Sur le tas">
+                        <label class="form-check-label" for="formationApprenMetier">1- Sur le tas</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="CFP">
+                        <label class="form-check-label" for="training">2- Centre de Formation Professionnelle (CFP)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="formationApprenMetierNiveau" class="col-form-label">Précisez le niveau (2) :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="formationApprenMetierNiveau" name="formationApprenMetierNiveau" class="form-control" aria-labelledby="formationApprenMetierNiveau">
+                </div>
+                <div class="col-auto">
+                    <label for="formationApprenMetierDiplomeObtenu" class="col-form-label">Précisez le diplôme obtenu :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="formationApprenMetierDiplomeObtenu" name="formationApprenMetierDiplomeObtenu" class="form-control" aria-labelledby="formationApprenMetierDiplomeObtenu">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="formationApprenMetierCNMCI" class="col-form-label">Avez-vous un diplôme delivré par la CNMCI :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="0">
+                        <label class="form-check-label" for="formationApprenMetierCNMCI">NON</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="1">
+                        <label class="form-check-label" for="formationApprenMetierCNMCI">OUI</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label for="formationApprenMetierTypeCNMCI" class="col-form-label">Lequel ?</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="0">
+                        <label class="form-check-label" for="formationApprenMetierTypeCNMCI">Maître Artisan</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="1">
+                        <label class="form-check-label" for="formationApprenMetierTypeCNMCI">Fin d'Apprentissage</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row border border-1 border-dark">
+        <div class="fw-bold text-center border-bottom border-dark" style="background-color: #0701b9; color:#fff;">C. RENSEIGNEMENT SUR L'ETABLISSEMENT</div>
+        <div class="p-3">
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="principalActiviteEtabl" class="col-form-label">Activité principale exercée :</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" id="principalActiviteEtabl" name="principalActiviteEtabl" class="form-control" aria-labelledby="principalActiviteEtabl">
+                </div>
+            </div>
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="activiteSecondaireEtabl" class="col-form-label">Activité secondaire :</label>
+                </div>
+                <div class="col-9">
+                    <input type="text" id="activiteSecondaireEtabl" name="activiteSecondaireEtabl" class="form-control" aria-labelledby="activiteSecondaireEtabl">
+                </div>
+            </div>
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="raisonSocialEtabl" class="col-form-label">Raison social :</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" class="form-control" aria-labelledby="raisonSocialEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="sigleEnseigneEtabl" class="col-form-label">Sigle ou Enseigne :</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl" class="form-control" aria-labelledby="sigleEnseigneEtabl">
+                </div>
+            </div>
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="dateDebutActiviteEtabl" class="col-form-label">Date de début d'activité :</label>
+                </div>
+                <div class="col-9">
+                    <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" aria-labelledby="dateDebutActiviteEtabl">
+                </div>
+            </div>
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="typeEntrepriseEtabl" class="col-form-label">Type de l'entreprise :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="Entreprise individuelle">
+                        <label class="form-check-label" for="typeEntrepriseEtabl">Entreprise individuelle</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="SARL">
+                        <label class="form-check-label" for="typeEntrepriseEtabl">SARL</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="GIE">
+                        <label class="form-check-label" for="typeEntrepriseEtabl">GIE</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="typeEntreprise" name="typeEntrepriseEtabl" value="Societe cooperative">
+                        <label class="form-check-label" for="typeEntrepriseEtabl">Société coopérative</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="regimeFiscalEtabl" class="col-form-label">Regime fiscal :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe communale de l'entrepenant">
+                        <label class="form-check-label" for="regimeFiscalEtabl">Taxe communale de l'Entrepenant</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe d'Etat de l'Entreprenant">
+                        <label class="form-check-label" for="regimeFiscalEtabl">Taxe d'Etat de l'Entreprenant</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Autres">
+                        <label class="form-check-label" for="regimeFiscalEtabl">Autres</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="identifiantCNPSEtabl" class="col-form-label">Identifiant CNPS de l'entreprise ou de l'artisan :</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" id="identifiantCNPSEtabl" name="identifiantCNPSEtabl" class="form-control" aria-labelledby="identifiantCNPSEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="numCompteContribuableEtabl" class="col-form-label">N° Compte contribuable :</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" id="numCompteContribuableEtabl" name="numCompteContribuableEtabl" class="form-control" aria-labelledby="numCompteContribuableEtabl">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="addressPostalEtabl" class="col-form-label">Adresse postale :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="addressPostalEtabl" name="addressPostalEtabl" class="form-control" aria-labelledby="addressPostalEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="TelEtabl" class="col-form-label">Telephone :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="TelEtabl" name="TelEtabl" class="form-control" aria-labelledby="TelEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="faxEtabl" class="col-form-label">Fax :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="faxEtabl" name="faxEtabl" class="form-control" aria-labelledby="faxEtabl">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="" class="col-form-label">Adresse géographique :</label>
+                    <label for="deptEtabl" class="col-form-label">Département :</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="communeEtabl" class="col-form-label">Commune :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="spEtabl" class="col-form-label">S/P :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="spEtabl" name="spEtabl" class="form-control" aria-labelledby="spEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="quartierEtabl" class="col-form-label">Quartier :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="quartEtabl" name="quartEtabl" class="form-control" aria-labelledby="quartEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="villageEtabl" class="col-form-label">Village :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="villageEtabl" name="villageEtabl" class="form-control" aria-labelledby="villageEtabl">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="lotEtabl" class="col-form-label">Lot N° :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="lotEtabl" name="lotEtabl" class="form-control" aria-labelledby="lotEtabl">
+                </div>
+                <div class="col-auto">
+                    <label for="ilotEtabl" class="col-form-label">ILOT N° :</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" id="ilotEtabl" name="ilotEtabl" class="form-control" aria-labelledby="ilotEtabl">
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-auto">
+                    <label for="effectifSalarieEtabl" class="col-form-label">Effectif des salariés :</label>
+                </div>
+                <div class="col-auto d-flex">
+                    <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablFemme" class="form-control" aria-labelledby="effectifSalarieEtablFemme">
+                    <div class="small">Femmes</div>
+                </div>
+                <div class="col-auto d-flex">
+                    <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablHomme" class="form-control" aria-labelledby="effectifSalarieEtablHomme">
+                    <div class="small">Hommes</div>
+                </div>
+                <div class="col-auto">
+                    <label for="effectifApprenantEtabl" class="col-form-label">Effectif des salariés :</label>
+                </div>
+                <div class="col-auto d-flex">
+                    <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablFemme" class="form-control" aria-labelledby="effectifApprenantEtablFemme">
+                    <div class="small">Femmes</div>
+                </div>
+                <div class="col-auto d-flex">
+                    <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablHomme" class="form-control" aria-labelledby="effectifApprenantEtablHomme">
+                    <div class="small">Hommes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row border border-1 border-dark">
+        <div class="fw-bold text-center border-bottom border-dark" style="background-color: #0701b9; color:#fff;">D. RENSEIGNEMENT SUR PERSONNE POUVANT ENGAGER L'ENTREPRISE</div>
+        <div class="p-3">
+            <div class="row g-3 align-items-center">
+                <div class="col-1 col-xs-6">
+                    <label for="referantNom" class="col-form-label">Nom :</label>
+                </div>
+                <div class="col-5 col-xs-6">
+                    <input type="text" id="referantNom" name="referantNom" class="form-control" aria-labelledby="referantNom">
+                </div>
+                <div class="col-1 col-xs-6">
+                    <label for="referantPrenom" class="col-form-label">Prénoms :</label>
+                </div>
+                <div class="col-5 col-xs-6">
+                    <input type="text" id="referantPrenom" name="firstname" class="form-control" aria-labelledby="referantPrenom">
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label for="referantDateNais" class="col-form-label">Né(e) le :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantDateNais" name="referantDateNais" class="form-control input" aria-labelledby="referantDateNais"   data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                </div>
+                <div class="col-auto">
+                    <label for="referantLieuNais" class="col-form-label">à :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantLieuNais" name="referantLieuNais" class="form-control" aria-labelledby="referantLieuNais">
+                </div>
+                <div class="col-auto">
+                    <label for="referantNationalite" class="col-form-label">Nationalité :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantNationalite" name="nationality" class="form-control" aria-labelledby="referantNationalite">
+                </div>
+            </div>
+
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="referantSex" class="col-form-label">Sexe :</label>
+                </div>
+                <div class="col-3">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="sex" name="referantSex" value="H">
+                        <label class="form-check-label" for="referantSex">Homme</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantSex" name="referantSex" value="F">
+                        <label class="form-check-label" for="referantSex">Femme</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label for="referantDomicile" class="col-form-label">Domicilié (e) à :</label>
+                </div>
+                <div class="col-5">
+                    <input type="text" id="referantDomicile" name="referantDomicile" class="form-control" aria-labelledby="referantDomicile">
+                </div>
+            </div>
+
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="referantTypeDoc" class="col-form-label">Type de document :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cni">
+                        <label class="form-check-label" for="referantTypeDoc">CNI</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cc">
+                        <label class="form-check-label" for="referantTypeDoc">CC</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="passeport">
+                        <label class="form-check-label" for="referantTypeDoc">Passeport</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="Carte de résident">
+                        <label class="form-check-label" for="referantTypeDoc">Carte de résident</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="document" name="referantTypeDoc" value="other">
+                        <label class="form-check-label" for="referantTypeDoc">Autre</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label for="referantTypeDocAutre" class="col-form-label">(à preciser) :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantTypeDocAutre" name="referantTypeDocAutre" class="form-control" aria-labelledby="referantTypeDocAutre">
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label for="referantNumDoc" class="col-form-label">N° :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantNumDoc" name="referantNumDoc" class="form-control" aria-labelledby="referantNumDoc">
+                </div>
+                <div class="col-auto">
+                    <label for="referantDocLieuDelivrance" class="col-form-label">Délivré à :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantDocLieuDelivrance" name="referantDocLieuDelivrance" class="form-control" aria-labelledby="referantDocLieuDelivrance">
+                </div>
+                <div class="col-auto">
+                    <label for="referantDocDateDelivrance" class="col-form-label">Le :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control input-mask" aria-labelledby="referantDocDateDelivrance" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                </div>
+            </div>
+
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="referantEtatCivil" class="col-form-label">Etat civil :</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="Marié">
+                        <label class="form-check-label" for="referantEtatCivil">Marié</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="Célibataire">
+                        <label class="form-check-label" for="referantEtatCivil">Célibataire</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="Divorcé">
+                        <label class="form-check-label" for="referantEtatCivil">Divorcé(e)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="Veuf">
+                        <label class="form-check-label" for="referantEtatCivil">Veuf(ve)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label for="referantTel" class="col-form-label">Telephone :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantTel" name="referantTel" class="form-control" aria-labelledby="referantTel">
+                </div>
+                <div class="col-auto">
+                    <label for="referantEmail" class="col-form-label">Email :</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="referantEmail" name="referantEmail" class="form-control input-mask" aria-labelledby="referantEmail" data-inputmask="'alias': 'email'">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row p-2" style="font-size: 10px;">
+        <div class="col-9">(*) Les promoteurs des entreprises artisanales participant personnellement et continuellement à l'actvité et possédant une qualification professionnelle dans le métier exercé peuvent introduire une demande de carte professionnelle d'artisant</div>
+        <div class="col-3">
+            Déclaration certifiée sincère <br>
+            A Abidjan le 10/07/2023
+        </div>
+        <p  style="font-size: 10px;">NB: Toute information erronée entraine le refus de votre demande.</p>
+    </div>
+    <div>
+        <div class="row justify-content-end py-3">
+            <button type="submit" class="default-btn w-25">Etape suivante</button>
+        </div>
+    </div>
+</form>
+<!-- END SECTION -->
+

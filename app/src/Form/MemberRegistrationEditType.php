@@ -142,15 +142,40 @@ class MemberRegistrationEditType extends AbstractType
                 'choices' => $countries,
                 'choice_loader' => null
             ])
-            ->add('city', TextType::class, [
+            ->add('city', ChoiceType::class, [
                 'label' => "Ville",
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'choices' => [
+                    "ABIDJAN" => "ABIDJAN",
+                    "BOUAKE" => "BOUAKE",
+                    "YAMOUSSOUKRO" => "YAMOUSSOUKRO",
+                    "KORHOGO" => "KORHOGO",
+                    "MAN" => "MAN",
+                    "SAN-PEDRO" => "SAN-PEDRO",
+                    "BASSAM" => "BASSAM",
+                    "BONOUA" => "BONOUA",
+                    "BONDOUKOU" => "BONDOUKOU"
+                ],
+                'empty_data' => null,
+                'data' => null,
             ])
-            ->add('commune', TextType::class, [
+            ->add('commune', ChoiceType::class, [
                 'label' => "Commune",
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'choices' => [
+                    "ABOBO" => "ABOBO",
+                    "ANYAMA" => "ANYAMA",
+                    "ATTECOUBE" => "ATTECOUBE",
+                    "MARCORY" => "MARCORY",
+                    "BINGERVILLE" => "BINGERVILLE",
+                    "COCODY" => "COCODY",
+                    "PLATEAU" => "PLATEAU",
+                    "KOUMASSI" => "KOUMASSI",
+                    "PORT-BOUET" => "PORT-BOUET",
+                    "TREICHVILLE" => "TREICHVILLE",
+                ],
             ])
             ->add('quartier', TextType::class, [
                 'label' => "Quartier",

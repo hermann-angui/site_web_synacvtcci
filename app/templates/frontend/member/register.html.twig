@@ -4,6 +4,35 @@
 
 {% block stylesheet %}
     {{ parent() }}
+
+    <style>
+        .card-header {
+            padding: 0;
+        }
+        .accordion-button {
+            background-color: #fff;
+            color: #222;
+            font-size: 13px;
+            line-height: 28px;
+            letter-spacing: -.5px;
+            font-weight: 500;
+            text-transform: capitalize;
+            border: 1px solid #eee;
+            padding: 3px 3px;
+        }
+        .card-body {
+            padding: 0.2rem 0.2rem;
+        }
+
+        .accordion-body {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .form-control:focus {
+            border-color: 0;
+            box-shadow: none;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -16,16 +45,19 @@
         <div class="container">
             <div class="page-header-info">
                 <h4>Formulaire d'adhésuion!</h4>
-                <h2>Remplissez le formulaire d'adhésion <br>et rejoignez la <span>SYNACVTCCI!</span></h2>
-                <p>Faites nous confiance<br>Nous défendons vos intérêts </p>
+                <h2>Remplissez le formulaire d'adhésion et rejoignez la <span>SYNACVTCCI!</span></h2>
+                <p>Faites nous confiance, nous défendons vos intérêts </p>
             </div>
         </div>
     </section>
 
-    <div class="taxi-booking bg-grey padding">
-        <div class="col-lg-12 px-5">
-            {{ include('frontend/member/_form.html.twig') }}
+    <div class="taxi-booking bg-grey mb-3">
+        <div class="d-flex justify-content-center">
+            <div class="col-lg-10 px-5">
+                {{ include('frontend/member/_form.html.twig') }}
+            </div>
         </div>
+
     </div>
 
     {{ include('frontend/_partials/footer.html.twig') }}

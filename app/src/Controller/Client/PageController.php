@@ -4,8 +4,11 @@ namespace App\Controller\Client;
 
 use App\DTO\ChildDto;
 use App\DTO\MemberRequestDto;
+use App\Entity\Artisan;
+use App\Form\ArtisanType;
 use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
+use App\Service\Artisan\ArtisanService;
 use App\Service\Member\MemberService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +20,34 @@ class PageController extends AbstractController
     #[Route(path: '/', name: 'home')]
     public function home(Request $request): Response
     {
-        return $this->render('frontend/pages/index.html.twig');
+        $flashInfos = [
+            "Suite à la bastonnade d'un chauffeur à ..",
+            "La SYNACVTCCI apporte son assistance au chauffeur bastonné ..",
+            "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
+        ];
+
+        $imageTextActivities = [
+            [
+                "title"  => "",
+                "description"  => "",
+                "images" => ["","",""],
+                "url" => ""
+            ],
+        ];
+
+        $videoActivities = [
+            [
+                "title"  => "",
+                "description"  => "",
+                "url" => ""
+            ],
+        ];
+
+        return $this->render('frontend/pages/index.html.twig',[
+            "flashInfos" => $flashInfos,
+            "videoActivities" => $videoActivities,
+            "imageTextActivities" => $imageTextActivities,
+        ]);
     }
 
     #[Route(path: '/success', name: 'success')]
@@ -29,6 +59,11 @@ class PageController extends AbstractController
     #[Route(path: '/register', name: 'register_member')]
     public function registerMember (Request $request, MemberService $memberService): Response
     {
+        $flashInfos = [
+            "Suite à la bastonnade d'un chauffeur à ..",
+            "La SYNACVTCCI apporte son assistance au chauffeur bastonné ..",
+            "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
+        ];
         $memberRequestDto = new MemberRequestDto();
         $form = $this->createForm(MemberRegistrationType::class, $memberRequestDto);
         $form->handleRequest($request);
@@ -43,8 +78,7 @@ class PageController extends AbstractController
 
             $data = $request->request->all();
 
-            if(is_array($data) && isset($data['child_lastname']))
-            {
+            if(is_array($data) && isset($data['child_lastname'])) {
                 $count = count($data['child_lastname']);
                 for($i = 0; $i < $count ; $i++){
                     $childDto =  new ChildDto();
@@ -62,11 +96,32 @@ class PageController extends AbstractController
         }
 
         return $this->renderForm('frontend/member/register.html.twig', [
+            "flashInfos" => $flashInfos,
             'member' => $memberRequestDto,
             'form' => $form,
         ]);
     }
 
+    #[Route(path: '/artisan/register/{step}', name: 'register_artisan')]
+    public function registerArtisan (int $step, Request $request, ArtisanService $artisanService): Response
+    {
+        $flashInfos = [
+            "Suite à la bastonnade d'un chauffeur à ..",
+            "La SYNACVTCCI apporte son assistance au chauffeur bastonné ..",
+            "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
+        ];
+        return $this->renderForm("frontend/artisan/register-step-${step}.html.twig", [
+            "flashInfos" => $flashInfos
+        ]);
+    }
+
+    #[Route(path: '/artisan/ajax_register/{step}', name: 'ajax_register_artisan')]
+    public function ajaxRegisterArtisan (int $step, Request $request, ArtisanService $artisanService): Response
+    {
+        $data = $request->request->all();
+        $files = $request->files->all();
+        return $this->json('');
+    }
     #[Route(path: '/profile/{matricule}', name: 'public_member_profile')]
     public function memberProfile(Request $request, MemberRepository $memberRepository): Response
     {

@@ -1,0 +1,93 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}ARTISAN - SYNACVTCCI{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+
+    <style>
+
+        #top-row .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.4em;
+        }
+        .form-check-input:checked[type=radio] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e")
+        }
+
+        .form-label, .col-form-label, .form-check-label {
+            font-size: 14px;
+        }
+
+        .form-check-input {
+            width: 0.85em;
+            height: 0.85em;
+            margin-top: 0.4em;
+        }
+        .form-check-input:checked {
+            background-color: #101011;
+            border-color: #000000;
+        }
+
+        .form-check-input:focus {
+            border-color: none;
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .form-check-input[type=radio] {
+            border-radius: 0.2em;
+        }
+
+        input[type="text"]{
+            border: 0;
+            border-bottom: 1px dashed #000;
+            background-color: #f4f5f8;
+            height: 15px;
+        }
+
+        .form-control:focus {
+            background-color: #f4f5f8;
+            border-color: #000;
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .page-header {
+            height: 160px !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('frontend/_partials/header.html.twig') }}
+
+    <section class="page-header">
+        <div class="page-header-shape"></div>
+        <div class="container">
+            <div class="page-header-info">
+                <h4>Formulaire d'adhésuion!</h4>
+                <h2>Remplissez le formulaire d'immatriculation <span>CNMCI</span></h2>
+                <p>Chambre National de Métiers de Côte d'Ivoire </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="taxi-booking bg-grey mb-3">
+        <div class="d-flex justify-content-center">
+                {{ include('frontend/artisan/_formulaire.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('frontend/_partials/footer.html.twig') }}
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+  <script>
+      $('document').ready(function() {
+      });
+  </script>
+{% endblock %}

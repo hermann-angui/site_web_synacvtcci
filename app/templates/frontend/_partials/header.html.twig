@@ -50,7 +50,7 @@
         <div class="container">
             <div class="mid-header-wrap">
                 <div class="site-logo">
-                    <a href="{{ path('home') }}"><img width="120" src="{{ asset('assets/frontend/img/logo-synacvtcci.jpg') }}" alt="Logo"></a>
+                    <a href="{{ path('home') }}"><img width="85" src="{{ asset('assets/frontend/img/logo-synacvtcci.jpg') }}" alt="Logo"></a>
                 </div>
 
                 <ul class="header-info">
@@ -77,10 +77,26 @@
                             <i class="las la-map-marked-alt"></i>
                         </div>
                         <div class="header-info-text">
-                            <h3><span>Riviera</span>palmeraie</h3>
+                            <h3><span>Localisation</span> du Siége</h3>
                         </div>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="news-ticker-wrap">
+                <span class="ticker-title tt-u">ANNONCES</span>
+                <ul class="news-ticker" style="height: 25px; overflow: hidden;">
+                    {% for flash in flashInfos %}
+                        <li style="margin-top: 0px;">
+                            <a href="#">{{ flash }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="ticker-control">
+                    <i class="fa fa-angle-left" id="prev-ticker"></i>
+                    <i class="fa fa-angle-right" id="next-ticker"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -101,10 +117,10 @@
                             <a href="{{ path('home') }}">Qui sommes-nous ?</a>
                         </li>
                         <li class="dropdown_menu">
-                            <a href="{{ path('home') }}">Blog</a>
+                            <a href="{{ path('blog_index') }}">Activités</a>
                         </li>
                         <li class="dropdown_menu">
-                            <a href="{{ path('register_member') }}">Adhérer</a>
+                            <a href="{{ path('register_artisan', { step:1 }) }}">Adhérer</a>
                         </li>
                     </ul>
                 </div>
@@ -115,7 +131,7 @@
                     <div class="sidebox-icon dl-sidebox-icon">
                         <i class="las la-bars"></i>
                     </div>
-                    <a href="{{ asset('register') }}" class="menu-btn">Rejoins-nous</a>
+                    <a href="{{ path('home') }}" class="menu-btn">Donner</a>
                 </div>
                 <div class="mobile-menu-icon">
                     <div class="burger-menu">

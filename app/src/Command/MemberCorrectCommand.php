@@ -3,6 +3,8 @@
 namespace App\Command;
 
 use App\Entity\Member;
+use App\Service\Member\ArtisanService;
+use App\Service\Member\MemberService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,19 +25,19 @@ class MemberCorrectCommand extends Command
 {
 
     /**
+     * @var ArtisanService
+     */
+    private $memberService;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
 
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private $userPasswordHasher;
-
-    public function __construct(EntityManagerInterface $entityManager,UserPasswordHasherInterface $userPasswordHasher)
+    public function __construct(EntityManagerInterface $entityManager, MemberService $memberService)
     {
         $this->entityManager = $entityManager;
-        $this->userPasswordHasher = $userPasswordHasher;
+        $this->memberService = $memberService;
 
         parent::__construct();
     }
@@ -44,33 +46,31 @@ class MemberCorrectCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addArgument('from', InputArgument::OPTIONAL, 'Initial matricule')
+            ->addOption('to', null, InputOption::VALUE_NONE, 'Final matricule')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        ini_set('max_execution_time', '-1');
+
+        if (($from = $input->getOption('from')) && ($to = $input->getOption('to')))
+        {
+            $from = (int)substr($from, -5);
+            $to = (int) substr($to, -5);
+            $ranges = range($from, $to);
+            foreach($ranges as $matricule){
+                $matricules[] = "SY12023" .   sprintf('%05d', $matricule);
+            }
+            $memberDtos = $this->memberService->generateMultipleMemberCards($matricules);
+        }else{
+            $memberDtos = $this->memberService->generateMultipleMemberCards();
         }
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
-
-        $member = new Member();
-        $member->setEmail("test@test.com");
-        $member->setMobile("+22544477787");
-        $member->setRegistrationCode(bin2hex(openssl_random_pseudo_bytes(10)));
-        $member->setPassword($this->userPasswordHasher->hashPassword($member, "anguidev"));
-        $this->entityManager->persist($member);
-
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-
+        $zipFile = $this->memberService->archiveMemberCards($memberDtos);
         return Command::SUCCESS;
     }
 }
