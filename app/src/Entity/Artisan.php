@@ -23,167 +23,200 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $lastName = null;                        // Nom
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $firstName = null;                       // Prénoms
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_of_birth = null;        // Date naissance
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $birth_city = null;                       // Lieu naissance
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $nationality = null;                      // Nationalité
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $sex = null;                               // Sexe
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $IdType = null;                            // Type de document
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $IdNumber = null;                          // Numero du document
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?string $IdDeliveryDate = null;                  // Numéro du document
+    private ?\DateTimeInterface $IdDeliveryDate = null;                  // Numéro du document
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $titre = null;                           // Etat civil
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $mobile = null;                          // Telephone
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $phone = null;                           // Telephone
 
-
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $email = null;                         // Email
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $domicile;                          // domicilie a
+
     /******************* FORMATION PROFESSIONNELLE *******************/
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $studyLevel = null;                     // Niveau d'études
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationNiveauEtude;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationClass;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationDiplomeObtenu;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationApprenMetierNiveau;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationApprenMetierDiplomeObtenu;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $exploitantEtatCivil;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationApprenMetier;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationApprenMetierCNMCI;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $formationApprenMetierTypeCNMCI;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $studyClass = null;                     // Précisez la classe
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $studyDegree = null;                    //  diplome obtenu
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $jobTraining = null;                    //  Apprentissage du métier
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $preciseLevel = null;                //  Précisez le niveau
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $preciseDegreeObtain= null;          //  Précisez le diplome obtenu
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $cnmciDegree= null;          //  diplome delivré par le cnmci
 
     /******************* ETABLISSEMENT *******************/
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyMainActivity = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companySecondaryActivity = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyName = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companySigle = null;
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?string $companyStartingDate = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    private ?\DateTimeInterface $companyStartingDate = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $typeCompany = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyFiscalRegime = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $identifiantCnps = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyAdressPostal = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyTel = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyFax = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyDepartement = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyCommune = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companySp = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyQuartier = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyVillage = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyLotNum = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyILotNum = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyTotalMen = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyTotalWomen = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyTotalMenApprentis = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $companyTotalWomenApprentis = null;
 
-    /***  PERSONNE POUVANT ENGAGER l'ENTREPRISE ***/
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $numCompteContribuableEtabl = null;
+
+
+    /*******  PERSONNE POUVANT ENGAGER l'ENTREPRISE *******/
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprLastName = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprFirstName = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprQualification= null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprSex = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprIDType = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprIDNum = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprIDDeliveryPlace = null;
-    private ?string $reprIDDeliveryDate = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprTitle = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprTel = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $reprEmail = null;
 
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $drivingLicenseNumber = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $country = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $city = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $commune = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $quartier = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $whatsapp = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $company = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $partner_first_name = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $partner_last_name = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $status = 'PENDING';
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $reprLieuNais = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPiece_front = null;
-
+    private ?string $reprEtatCivil = null;
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPiece_back = null;
+    private ?string $reprDomicile = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPermis_front = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $reprIDDeliveryDate = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $reprDateNais = null;
+
+    /***********************************/
+
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $drivingLicenseNumber = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $country = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $city = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $commune = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $quartier = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $whatsapp = null;
+
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $company = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $partner_first_name = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $partner_last_name = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $status = 'PENDING';
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $photoPiece_front = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $photoPiece_back = null;
+//
+//    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+//    private ?string $photoPermis_front = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photoPermis_back = null;
@@ -191,7 +224,7 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $password;
 
     private ?string $plain_password;
@@ -202,7 +235,7 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $matricule = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -321,7 +354,7 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->date_of_birth;
     }
 
-    public function setDateOfBirth(?\DateTime $date_of_birth): self
+    public function setDateOfBirth(?\DateTimeInterface $date_of_birth): self
     {
         $this->date_of_birth = $date_of_birth;
 
@@ -679,78 +712,6 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getNationality(): ?string
-    {
-        return $this->nationality;
-    }
-
-    /**
-     * @param string|null $nationality
-     * @return Member
-     */
-    public function setNationality(?string $nationality): Artisan
-    {
-        $this->nationality = $nationality;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getQuartier(): ?string
-    {
-        return $this->quartier;
-    }
-
-    /**
-     * @param string|null $quartier
-     * @return Member
-     */
-    public function setQuartier(?string $quartier): Artisan
-    {
-        $this->quartier = $quartier;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getWhatsapp(): ?string
-    {
-        return $this->whatsapp;
-    }
-
-    /**
-     * @param string|null $whatsapp
-     * @return Member
-     */
-    public function setWhatsapp(?string $whatsapp): Artisan
-    {
-        $this->whatsapp = $whatsapp;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompany(): ?string
-    {
-        return $this->company;
-    }
-
-    /**
-     * @param string|null $company
-     * @return Member
-     */
-    public function setCompany(?string $company): Artisan
-    {
-        $this->company = $company;
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Child>
      */
     public function getChildren(): Collection
@@ -783,70 +744,34 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getPartnerFirstName(): ?string
+    public function getNationality(): ?string
     {
-        return $this->partner_first_name;
+        return $this->nationality;
     }
 
     /**
-     * @param string|null $partner_first_name
-     * @return Member
+     * @param string|null $nationality
+     * @return Artisan
      */
-    public function setPartnerFirstName(?string $partner_first_name): Artisan
+    public function setNationality(?string $nationality): Artisan
     {
-        $this->partner_first_name = $partner_first_name;
+        $this->nationality = $nationality;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return \DateTimeInterface|null
      */
-    public function getPartnerLastName(): ?string
-    {
-        return $this->partner_last_name;
-    }
-
-    /**
-     * @param string|null $partner_last_name
-     * @return Member
-     */
-    public function setPartnerLastName(?string $partner_last_name): Artisan
-    {
-        $this->partner_last_name = $partner_last_name;
-        return $this;
-    }
-
-    /**
-     * @param string|null $status
-     * @return Member
-     */
-    public function setStatus(?string $status): Artisan
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getIdDeliveryDate(): ?string
+    public function getIdDeliveryDate(): ?\DateTimeInterface
     {
         return $this->IdDeliveryDate;
     }
 
     /**
-     * @param string|null $IdDeliveryDate
+     * @param \DateTimeInterface|null $IdDeliveryDate
      * @return Artisan
      */
-    public function setIdDeliveryDate(?string $IdDeliveryDate): Artisan
+    public function setIdDeliveryDate(?\DateTimeInterface $IdDeliveryDate): Artisan
     {
         $this->IdDeliveryDate = $IdDeliveryDate;
         return $this;
@@ -855,126 +780,180 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getStudyLevel(): ?string
+    public function getDomicile(): ?string
     {
-        return $this->studyLevel;
+        return $this->domicile;
     }
 
     /**
-     * @param string|null $studyLevel
+     * @param string|null $domicile
      * @return Artisan
      */
-    public function setStudyLevel(?string $studyLevel): Artisan
+    public function setDomicile(?string $domicile): Artisan
     {
-        $this->studyLevel = $studyLevel;
+        $this->domicile = $domicile;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getStudyClass(): ?string
+    public function getFormationNiveauEtude(): ?string
     {
-        return $this->studyClass;
+        return $this->formationNiveauEtude;
     }
 
     /**
-     * @param string|null $studyClass
+     * @param string|null $formationNiveauEtude
      * @return Artisan
      */
-    public function setStudyClass(?string $studyClass): Artisan
+    public function setFormationNiveauEtude(?string $formationNiveauEtude): Artisan
     {
-        $this->studyClass = $studyClass;
+        $this->formationNiveauEtude = $formationNiveauEtude;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getStudyDegree(): ?string
+    public function getFormationClass(): ?string
     {
-        return $this->studyDegree;
+        return $this->formationClass;
     }
 
     /**
-     * @param string|null $studyDegree
+     * @param string|null $formationClass
      * @return Artisan
      */
-    public function setStudyDegree(?string $studyDegree): Artisan
+    public function setFormationClass(?string $formationClass): Artisan
     {
-        $this->studyDegree = $studyDegree;
+        $this->formationClass = $formationClass;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getJobTraining(): ?string
+    public function getFormationDiplomeObtenu(): ?string
     {
-        return $this->jobTraining;
+        return $this->formationDiplomeObtenu;
     }
 
     /**
-     * @param string|null $jobTraining
+     * @param string|null $formationDiplomeObtenu
      * @return Artisan
      */
-    public function setJobTraining(?string $jobTraining): Artisan
+    public function setFormationDiplomeObtenu(?string $formationDiplomeObtenu): Artisan
     {
-        $this->jobTraining = $jobTraining;
+        $this->formationDiplomeObtenu = $formationDiplomeObtenu;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getPreciseLevel(): ?string
+    public function getFormationApprenMetierNiveau(): ?string
     {
-        return $this->preciseLevel;
+        return $this->formationApprenMetierNiveau;
     }
 
     /**
-     * @param string|null $preciseLevel
+     * @param string|null $formationApprenMetierNiveau
      * @return Artisan
      */
-    public function setPreciseLevel(?string $preciseLevel): Artisan
+    public function setFormationApprenMetierNiveau(?string $formationApprenMetierNiveau): Artisan
     {
-        $this->preciseLevel = $preciseLevel;
+        $this->formationApprenMetierNiveau = $formationApprenMetierNiveau;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getPreciseDegreeObtain(): ?string
+    public function getFormationApprenMetierDiplomeObtenu(): ?string
     {
-        return $this->preciseDegreeObtain;
+        return $this->formationApprenMetierDiplomeObtenu;
     }
 
     /**
-     * @param string|null $preciseDegreeObtain
+     * @param string|null $formationApprenMetierDiplomeObtenu
      * @return Artisan
      */
-    public function setPreciseDegreeObtain(?string $preciseDegreeObtain): Artisan
+    public function setFormationApprenMetierDiplomeObtenu(?string $formationApprenMetierDiplomeObtenu): Artisan
     {
-        $this->preciseDegreeObtain = $preciseDegreeObtain;
+        $this->formationApprenMetierDiplomeObtenu = $formationApprenMetierDiplomeObtenu;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getCnmciDegree(): ?string
+    public function getExploitantEtatCivil(): ?string
     {
-        return $this->cnmciDegree;
+        return $this->exploitantEtatCivil;
     }
 
     /**
-     * @param string|null $cnmciDegree
+     * @param string|null $exploitantEtatCivil
      * @return Artisan
      */
-    public function setCnmciDegree(?string $cnmciDegree): Artisan
+    public function setExploitantEtatCivil(?string $exploitantEtatCivil): Artisan
     {
-        $this->cnmciDegree = $cnmciDegree;
+        $this->exploitantEtatCivil = $exploitantEtatCivil;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFormationApprenMetier(): ?string
+    {
+        return $this->formationApprenMetier;
+    }
+
+    /**
+     * @param string|null $formationApprenMetier
+     * @return Artisan
+     */
+    public function setFormationApprenMetier(?string $formationApprenMetier): Artisan
+    {
+        $this->formationApprenMetier = $formationApprenMetier;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFormationApprenMetierCNMCI(): ?string
+    {
+        return $this->formationApprenMetierCNMCI;
+    }
+
+    /**
+     * @param string|null $formationApprenMetierCNMCI
+     * @return Artisan
+     */
+    public function setFormationApprenMetierCNMCI(?string $formationApprenMetierCNMCI): Artisan
+    {
+        $this->formationApprenMetierCNMCI = $formationApprenMetierCNMCI;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFormationApprenMetierTypeCNMCI(): ?string
+    {
+        return $this->formationApprenMetierTypeCNMCI;
+    }
+
+    /**
+     * @param string|null $formationApprenMetierTypeCNMCI
+     * @return Artisan
+     */
+    public function setFormationApprenMetierTypeCNMCI(?string $formationApprenMetierTypeCNMCI): Artisan
+    {
+        $this->formationApprenMetierTypeCNMCI = $formationApprenMetierTypeCNMCI;
         return $this;
     }
 
@@ -1051,18 +1030,18 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string|null
+     * @return \DateTimeInterface|null
      */
-    public function getCompanyStartingDate(): ?string
+    public function getCompanyStartingDate(): ?\DateTimeInterface
     {
         return $this->companyStartingDate;
     }
 
     /**
-     * @param string|null $companyStartingDate
+     * @param \DateTimeInterface|null $companyStartingDate
      * @return Artisan
      */
-    public function setCompanyStartingDate(?string $companyStartingDate): Artisan
+    public function setCompanyStartingDate(?\DateTimeInterface $companyStartingDate): Artisan
     {
         $this->companyStartingDate = $companyStartingDate;
         return $this;
@@ -1377,6 +1356,24 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
+    public function getNumCompteContribuableEtabl(): ?string
+    {
+        return $this->numCompteContribuableEtabl;
+    }
+
+    /**
+     * @param string|null $numCompteContribuableEtabl
+     * @return Artisan
+     */
+    public function setNumCompteContribuableEtabl(?string $numCompteContribuableEtabl): Artisan
+    {
+        $this->numCompteContribuableEtabl = $numCompteContribuableEtabl;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getReprLastName(): ?string
     {
         return $this->reprLastName;
@@ -1501,18 +1498,18 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string|null
+     * @return \DateTimeInterface|null
      */
-    public function getReprIDDeliveryDate(): ?string
+    public function getReprIDDeliveryDate(): ?\DateTimeInterface
     {
         return $this->reprIDDeliveryDate;
     }
 
     /**
-     * @param string|null $reprIDDeliveryDate
+     * @param \DateTimeInterface|null $reprIDDeliveryDate
      * @return Artisan
      */
-    public function setReprIDDeliveryDate(?string $reprIDDeliveryDate): Artisan
+    public function setReprIDDeliveryDate(?\DateTimeInterface $reprIDDeliveryDate): Artisan
     {
         $this->reprIDDeliveryDate = $reprIDDeliveryDate;
         return $this;
@@ -1572,5 +1569,184 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getReprDateNais(): ?\DateTimeInterface
+    {
+        return $this->reprDateNais;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $reprDateNais
+     * @return Artisan
+     */
+    public function setReprDateNais(?\DateTimeInterface $reprDateNais): Artisan
+    {
+        $this->reprDateNais = $reprDateNais;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReprLieuNais(): ?string
+    {
+        return $this->reprLieuNais;
+    }
+
+    /**
+     * @param string|null $reprLieuNais
+     * @return Artisan
+     */
+    public function setReprLieuNais(?string $reprLieuNais): Artisan
+    {
+        $this->reprLieuNais = $reprLieuNais;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReprEtatCivil(): ?string
+    {
+        return $this->reprEtatCivil;
+    }
+
+    /**
+     * @param string|null $reprEtatCivil
+     * @return Artisan
+     */
+    public function setReprEtatCivil(?string $reprEtatCivil): Artisan
+    {
+        $this->reprEtatCivil = $reprEtatCivil;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReprDomicile(): ?string
+    {
+        return $this->reprDomicile;
+    }
+
+    /**
+     * @param string|null $reprDomicile
+     * @return Artisan
+     */
+    public function setReprDomicile(?string $reprDomicile): Artisan
+    {
+        $this->reprDomicile = $reprDomicile;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getQuartier(): ?string
+    {
+        return $this->quartier;
+    }
+
+    /**
+     * @param string|null $quartier
+     * @return Artisan
+     */
+    public function setQuartier(?string $quartier): Artisan
+    {
+        $this->quartier = $quartier;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getWhatsapp(): ?string
+    {
+        return $this->whatsapp;
+    }
+
+    /**
+     * @param string|null $whatsapp
+     * @return Artisan
+     */
+    public function setWhatsapp(?string $whatsapp): Artisan
+    {
+        $this->whatsapp = $whatsapp;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param string|null $company
+     * @return Artisan
+     */
+    public function setCompany(?string $company): Artisan
+    {
+        $this->company = $company;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPartnerFirstName(): ?string
+    {
+        return $this->partner_first_name;
+    }
+
+    /**
+     * @param string|null $partner_first_name
+     * @return Artisan
+     */
+    public function setPartnerFirstName(?string $partner_first_name): Artisan
+    {
+        $this->partner_first_name = $partner_first_name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPartnerLastName(): ?string
+    {
+        return $this->partner_last_name;
+    }
+
+    /**
+     * @param string|null $partner_last_name
+     * @return Artisan
+     */
+    public function setPartnerLastName(?string $partner_last_name): Artisan
+    {
+        $this->partner_last_name = $partner_last_name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string|null $status
+     * @return Artisan
+     */
+    public function setStatus(?string $status): Artisan
+    {
+        $this->status = $status;
+        return $this;
+    }
 
 }

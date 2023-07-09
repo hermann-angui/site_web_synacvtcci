@@ -168,7 +168,7 @@
                     <label for="exploitantTel" class="col-form-label">Telephone :</label>
                 </div>
                 <div class="col-auto">
-                    <input type="text" id="exploitantTel" name="exploitantTel" class="form-control" aria-labelledby="exploitantTel">
+                    <input type="text" id="exploitantTel" name="exploitantTel" class="form-control input-mask" aria-labelledby="exploitantTel" data-inputmask="'mask': '9999999999'">
                 </div>
                 <div class="col-auto">
                     <label for="exploitantEmail" class="col-form-label">Email :</label>
@@ -185,23 +185,23 @@
 
             <div class="row my-2 align-items-center">
                 <div class="col-auto">
-                    <label for="exploitantNiveauEtude" class="col-form-label">Niveau d'étude :</label>
+                    <label for="formationNiveauEtude" class="col-form-label">Niveau d'étude :</label>
                 </div>
                 <div class="col-auto">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Non Scolarisé">
+                        <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Non Scolarisé">
                         <label class="form-check-label" for="education">1- Non scolarisé</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Primaire">
+                        <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Primaire">
                         <label class="form-check-label" for="education">2- Primaire</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Secondaire">
+                        <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Secondaire">
                         <label class="form-check-label" for="education">3- Secondaire</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="exploitantNiveauEtude" name="exploitantNiveauEtude" value="Superieure">
+                        <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Superieure">
                         <label class="form-check-label" for="education">4- Supérieur</label>
                     </div>
                 </div>
@@ -286,7 +286,7 @@
     <div class="row border border-1 border-dark">
         <div class="fw-bold text-center border-bottom border-dark" style="background-color: #0701b9; color:#fff;">C. RENSEIGNEMENT SUR L'ETABLISSEMENT</div>
         <div class="p-3">
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="principalActiviteEtabl" class="col-form-label">Activité principale exercée :</label>
                 </div>
@@ -294,7 +294,7 @@
                     <input type="text" id="principalActiviteEtabl" name="principalActiviteEtabl" class="form-control" aria-labelledby="principalActiviteEtabl">
                 </div>
             </div>
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="activiteSecondaireEtabl" class="col-form-label">Activité secondaire :</label>
                 </div>
@@ -302,7 +302,7 @@
                     <input type="text" id="activiteSecondaireEtabl" name="activiteSecondaireEtabl" class="form-control" aria-labelledby="activiteSecondaireEtabl">
                 </div>
             </div>
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="raisonSocialEtabl" class="col-form-label">Raison social :</label>
                 </div>
@@ -316,15 +316,15 @@
                     <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl" class="form-control" aria-labelledby="sigleEnseigneEtabl">
                 </div>
             </div>
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="dateDebutActiviteEtabl" class="col-form-label">Date de début d'activité :</label>
                 </div>
                 <div class="col-9">
-                    <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" aria-labelledby="dateDebutActiviteEtabl">
+                    <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control input" aria-labelledby="dateDebutActiviteEtabl"  data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                 </div>
             </div>
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="typeEntrepriseEtabl" class="col-form-label">Type de l'entreprise :</label>
                 </div>
@@ -348,7 +348,7 @@
                 </div>
             </div>
 
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="regimeFiscalEtabl" class="col-form-label">Regime fiscal :</label>
                 </div>
@@ -368,7 +368,7 @@
                 </div>
             </div>
 
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="identifiantCNPSEtabl" class="col-form-label">Identifiant CNPS de l'entreprise ou de l'artisan :</label>
                 </div>
@@ -383,7 +383,7 @@
                 </div>
             </div>
 
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="addressPostalEtabl" class="col-form-label">Adresse postale :</label>
                 </div>
@@ -394,7 +394,7 @@
                     <label for="TelEtabl" class="col-form-label">Telephone :</label>
                 </div>
                 <div class="col-3">
-                    <input type="text" id="TelEtabl" name="TelEtabl" class="form-control" aria-labelledby="TelEtabl">
+                    <input type="text" id="TelEtabl" name="TelEtabl" class="form-control input-mask" aria-labelledby="TelEtabl"  data-inputmask="'mask': '9999999999'">
                 </div>
                 <div class="col-auto">
                     <label for="faxEtabl" class="col-form-label">Fax :</label>
@@ -404,7 +404,7 @@
                 </div>
             </div>
 
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="" class="col-form-label">Adresse géographique :</label>
                     <label for="deptEtabl" class="col-form-label">Département :</label>
@@ -420,7 +420,7 @@
                 </div>
             </div>
 
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="spEtabl" class="col-form-label">S/P :</label>
                 </div>
@@ -441,7 +441,7 @@
                 </div>
             </div>
 
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="lotEtabl" class="col-form-label">Lot N° :</label>
                 </div>
@@ -456,27 +456,27 @@
                 </div>
             </div>
 
-            <div class="row my-2 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="effectifSalarieEtabl" class="col-form-label">Effectif des salariés :</label>
                 </div>
                 <div class="col-auto d-flex">
-                    <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablFemme" class="form-control" aria-labelledby="effectifSalarieEtablFemme">
+                    <input style="max-width: 50px;" type="number" id="effectifSalarieEtabl" name="effectifSalarieEtablFemme" class="form-control" aria-labelledby="effectifSalarieEtablFemme">
                     <div class="small">Femmes</div>
                 </div>
                 <div class="col-auto d-flex">
-                    <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablHomme" class="form-control" aria-labelledby="effectifSalarieEtablHomme">
+                    <input style="max-width: 50px;" type="number" id="effectifSalarieEtabl" name="effectifSalarieEtablHomme" class="form-control" aria-labelledby="effectifSalarieEtablHomme">
                     <div class="small">Hommes</div>
                 </div>
                 <div class="col-auto">
                     <label for="effectifApprenantEtabl" class="col-form-label">Effectif des salariés :</label>
                 </div>
                 <div class="col-auto d-flex">
-                    <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablFemme" class="form-control" aria-labelledby="effectifApprenantEtablFemme">
+                    <input style="max-width: 50px;" type="number" id="effectifApprenantEtabl" name="effectifApprenantEtablFemme" class="form-control" aria-labelledby="effectifApprenantEtablFemme">
                     <div class="small">Femmes</div>
                 </div>
                 <div class="col-auto d-flex">
-                    <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablHomme" class="form-control" aria-labelledby="effectifApprenantEtablHomme">
+                    <input style="max-width: 50px;" type="number" id="effectifApprenantEtabl" name="effectifApprenantEtablHomme" class="form-control" aria-labelledby="effectifApprenantEtablHomme">
                     <div class="small">Hommes</div>
                 </div>
             </div>
@@ -485,7 +485,7 @@
     <div class="row border border-1 border-dark">
         <div class="fw-bold text-center border-bottom border-dark" style="background-color: #0701b9; color:#fff;">D. RENSEIGNEMENT SUR PERSONNE POUVANT ENGAGER L'ENTREPRISE</div>
         <div class="p-3">
-            <div class="row g-3 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-1 col-xs-6">
                     <label for="referantNom" class="col-form-label">Nom :</label>
                 </div>
@@ -496,11 +496,11 @@
                     <label for="referantPrenom" class="col-form-label">Prénoms :</label>
                 </div>
                 <div class="col-5 col-xs-6">
-                    <input type="text" id="referantPrenom" name="firstname" class="form-control" aria-labelledby="referantPrenom">
+                    <input type="text" id="referantPrenom" name="referantPrenom" class="form-control" aria-labelledby="referantPrenom">
                 </div>
             </div>
 
-            <div class="row align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="referantDateNais" class="col-form-label">Né(e) le :</label>
                 </div>
@@ -517,11 +517,11 @@
                     <label for="referantNationalite" class="col-form-label">Nationalité :</label>
                 </div>
                 <div class="col-auto">
-                    <input type="text" id="referantNationalite" name="nationality" class="form-control" aria-labelledby="referantNationalite">
+                    <input type="text" id="referantNationalite" name="referantNationalite" class="form-control" aria-labelledby="referantNationalite">
                 </div>
             </div>
 
-            <div class="row g-3 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="referantSex" class="col-form-label">Sexe :</label>
                 </div>
@@ -543,7 +543,7 @@
                 </div>
             </div>
 
-            <div class="row g-3 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="referantTypeDoc" class="col-form-label">Type de document :</label>
                 </div>
@@ -577,7 +577,7 @@
                 </div>
             </div>
 
-            <div class="row align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="referantNumDoc" class="col-form-label">N° :</label>
                 </div>
@@ -598,7 +598,7 @@
                 </div>
             </div>
 
-            <div class="row g-3 align-items-center">
+            <div class="row py-2 align-items-center">
                 <div class="col-auto">
                     <label for="referantEtatCivil" class="col-form-label">Etat civil :</label>
                 </div>
@@ -627,7 +627,7 @@
                     <label for="referantTel" class="col-form-label">Telephone :</label>
                 </div>
                 <div class="col-auto">
-                    <input type="text" id="referantTel" name="referantTel" class="form-control" aria-labelledby="referantTel">
+                    <input type="text" id="referantTel" name="referantTel" class="form-control input-mask" aria-labelledby="referantTel"  data-inputmask="'mask': '9999999999'">
                 </div>
                 <div class="col-auto">
                     <label for="referantEmail" class="col-form-label">Email :</label>

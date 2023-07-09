@@ -192,7 +192,8 @@
                 dataType: 'json',
                 type: 'POST',
                 success: function(response) {
-                      window.location.replace("{{ path('ajax_register_artisan', {step: 2}) }}");
+                    console.log(response);
+                  //  window.location.replace("{{ path('register_artisan', {step: 2}) }}");
                 },
                 error: function(xhr, textStatus, errorThrown) {
                   console.log(xhr.responseText);

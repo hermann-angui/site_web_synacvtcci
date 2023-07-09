@@ -118,9 +118,28 @@ class PageController extends AbstractController
     #[Route(path: '/artisan/ajax_register/{step}', name: 'ajax_register_artisan')]
     public function ajaxRegisterArtisan (int $step, Request $request, ArtisanService $artisanService): Response
     {
+        $session = $request->getSession();
+        if($step = 1 && $session->has('artisan')){
+            $session->remove('artisan');
+        }
         $data = $request->request->all();
-        $files = $request->files->all();
-        return $this->json('');
+        switch($step){
+            case "1":
+                $artisan = $artisanService->create($data);
+                $session->set("artisan", $artisan);
+                break;
+            case "2":
+                $files = $request->files->all();
+                $data = array_merge($data, $files);
+                $artisan = $session->get("artisan");
+                $artisanService->update($data, $artisan);
+                break;
+            case "3":
+                break;
+            case "4":
+                break;
+        }
+        return $this->json('ok');
     }
     #[Route(path: '/profile/{matricule}', name: 'public_member_profile')]
     public function memberProfile(Request $request, MemberRepository $memberRepository): Response
