@@ -34,9 +34,12 @@ class Child
     private $modified_at;
 
     #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'children')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Member $parent = null;
 
+    #[ORM\ManyToOne(targetEntity: Artisan::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Artisan $artisan = null;
 
     public function __construct()
     {
@@ -168,6 +171,24 @@ class Child
     public function setLieuNaissance($lieu_naissance)
     {
         $this->lieu_naissance = $lieu_naissance;
+        return $this;
+    }
+
+    /**
+     * @return Artisan|null
+     */
+    public function getArtisan(): ?Artisan
+    {
+        return $this->artisan;
+    }
+
+    /**
+     * @param Artisan|null $artisan
+     * @return Child
+     */
+    public function setArtisan(?Artisan $artisan): Child
+    {
+        $this->artisan = $artisan;
         return $this;
     }
 

@@ -41,6 +41,12 @@ class MemberRequestDto implements PasswordAuthenticatedUserInterface
 
     private ?string $IdNumber = null;
 
+    private ?string $IdDeliveryPlace = null;
+
+    private ?\DateTimeInterface $IdDeliveryDate = null;
+
+    private ?string $etatCivil = null;
+
     private ?string $IdType = null;
 
     private ?string $country = null;
@@ -697,4 +703,60 @@ class MemberRequestDto implements PasswordAuthenticatedUserInterface
     {
         return $this->status;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getIdDeliveryPlace(): ?string
+    {
+        return $this->IdDeliveryPlace;
+    }
+
+    /**
+     * @param string|null $IdDeliveryPlace
+     * @return MemberRequestDto
+     */
+    public function setIdDeliveryPlace(?string $IdDeliveryPlace): MemberRequestDto
+    {
+        $this->IdDeliveryPlace = $IdDeliveryPlace;
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getIdDeliveryDate(): ?\DateTimeInterface
+    {
+        return $this->IdDeliveryDate;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $IdDeliveryDate
+     * @return MemberRequestDto
+     */
+    public function setIdDeliveryDate(?\DateTimeInterface $IdDeliveryDate): MemberRequestDto
+    {
+        $this->IdDeliveryDate = $IdDeliveryDate;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEtatCivil(): ?string
+    {
+        return $this->etatCivil;
+    }
+
+    /**
+     * @param string|null $etatCivil
+     * @return MemberRequestDto
+     */
+    public function setEtatCivil(?string $etatCivil): MemberRequestDto
+    {
+        $this->etatCivil = $etatCivil;
+        return $this;
+    }
+
+
 }

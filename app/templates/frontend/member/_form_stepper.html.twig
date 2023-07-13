@@ -1,0 +1,103 @@
+<div class="col-lg-12 py-5">
+    <div class="card">
+        <div class="card-body p-4">
+                {{ form_start(form, {'method': 'POST', 'method':'POST', 'attr': {'id': 'basic-example'}}) }}
+                <h3>INFORMATIONS PERSONNELLES</h3>
+                <fieldset>
+                    <div id="step0">
+                        <div class="my-custom-class-for-errors">
+                            {{ form_errors(form) }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="d-flex justify-content-center">
+                                <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
+                                    <div>
+                                        <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+                                        <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
+                                        {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.sex) }}
+                        {{ form_row(form.lastName) }}
+                        {{ form_row(form.firstName) }}
+                        {{ form_row(form.date_of_birth) }}
+                        {{ form_row(form.birth_city) }}
+                        {{ form_row(form.company) }}
+                        {{ form_row(form.nationality) }}
+                        {{ form_row(form.mobile) }}
+                        {{ form_row(form.whatsapp) }}
+                        {{ form_row(form.city) }}
+                        {{ form_row(form.commune) }}
+                        {{ form_row(form.quartier) }}
+                    </div>
+                </fieldset>
+
+                <h3>DOCUMENTS</h3>
+                <fieldset>
+                    <div id="step1">
+                        {{ form_row(form.IdType) }}
+                        {{ form_row(form.IdNumber) }}
+                        {{ form_row(form.IdDeliveryDate) }}
+                        {{ form_row(form.IdDeliveryPlace) }}
+                        {{ form_row(form.photoPieceFront) }}
+                        {{ form_row(form.photoPieceBack) }}
+                        <hr class="my-2">
+                        {{ form_row(form.drivingLicenseNumber) }}
+                        {{ form_row(form.photoPermisFront) }}
+                        {{ form_row(form.photoPermisBack) }}
+                    </div>
+                </fieldset>
+
+                <h3>INFORMATIONS SUR VOTRE FAMILLE</h3>
+                <fieldset>
+                    <div id="step2">
+                        <div class="py-3">
+                            Etes-vous marié ? &nbsp;&nbsp;
+                            <input type="radio" name="is_married" value="0" checked /> Non &nbsp;&nbsp;
+                            <input type="radio" name="is_married" value="1"/> Oui
+                            <div id="partner_bock" style="display:none;" class="my-3">
+                                {{ form_row(form.partner_first_name) }}
+                                {{ form_row(form.partner_last_name) }}
+                            </div>
+                        </div>
+                        <div class="py-3">
+                            Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
+                            <input type="radio" name="has_child" value="0" checked /> Non &nbsp;&nbsp;
+                            <input type="radio" name="has_child" value="1"/> Oui
+                            <br>
+                            <div id="child-row" style="display:none;">
+                                <div id="children_bock"  class="pt-2">
+                                </div>
+                                <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Ajouter un enfant </span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <h3>CONFIRMATION</h3>
+                <fieldset>
+                    <div  id="step3" class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="text-center">
+                                <div class="mb-4">
+                                    <i class="mdi mdi-check-circle-outline text-success display-4"></i>
+                                </div>
+                                <div>
+                                    <h5>Attention!! nous allons procéder à l'enregistement de vos données.</h5>
+                                    <h5>Cliquer sur le bouton <strong>Terminer</strong> pour valider ou sur le bouton <strong>Précédent</strong> pour apporter des modifications.</h5>
+                                    <p class="text-muted"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            {{ form_end(form) }}
+        </div>
+        <!-- end card body -->
+    </div>
+    <!-- end card -->
+</div>
+<!-- end col -->

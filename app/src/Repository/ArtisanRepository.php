@@ -43,7 +43,7 @@ class ArtisanRepository extends ServiceEntityRepository
     /**
      * @return Artisan[] Returns an array of Artisan objects
      */
-    public function findMembresChauffeur(): array
+    public function findMembresChauffeur(): ?array
     {
         return $this->createQueryBuilder('m')
             ->andWhere('m.titre in (:val)')
@@ -57,7 +57,7 @@ class ArtisanRepository extends ServiceEntityRepository
     /**
      * @return Artisan[] Returns an array of Artisan objects
      */
-    public function findMembresBureau(): array
+    public function findMembresBureau(): ?array
     {
         return $this->createQueryBuilder('m')
             ->andWhere('m.titre not in (:val)')
@@ -68,7 +68,7 @@ class ArtisanRepository extends ServiceEntityRepository
             ;
     }
 
-    public function getLastRowId(): int
+    public function getLastRowId(): ?int
     {
         return $this->createQueryBuilder('m')
             ->select('MAX(m.id)')
@@ -76,7 +76,7 @@ class ArtisanRepository extends ServiceEntityRepository
             ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
             ;
     }
-    public function setAutoIncrementToLast(int $value): int
+    public function setAutoIncrementToLast(int $value): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "ALTER TABLE `artisan` AUTO_INCREMENT = $value";

@@ -73,7 +73,8 @@ class MemberRegistrationType extends AbstractType
             ->add('nationality', TextType::class, [
                 'label' => "Nationalité",
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'data' => 'Ivoirienne'
             ])
             ->add('whatsapp', TextType::class, [
                 'label' => "Whatsapp",
@@ -86,15 +87,30 @@ class MemberRegistrationType extends AbstractType
                 'required' => false
             ])
             ->add('IdType', ChoiceType::class, [
-                'label' => 'Type de la pièce',
+                'label' => 'Type de pièce',
                 'mapped' => true,
                 'required' => false,
                 'choices' => [
                     'CNI' => 'CNI',
+                    'CC' => 'CC',
                     'PASSEPORT' => 'PASSEPORT',
+                    'CARTE DE RESIDENCE' => 'CARTE DE RESIDENCE',
+                    'AUTRE' => 'AUTRE',
                 ],
                 'empty_data' => null,
                 'data' => null,
+            ])
+            ->add('IdDeliveryPlace',TextType::class, [
+                'label' => "Délivré à",
+                'mapped' => true,
+                'required' => false
+            ])
+            ->add('IdDeliveryDate',DateType::class, [
+                'label' => 'Délivré le',
+                'mapped' => true,
+                'required' => false,
+                'format' => 'dd-MM-yyyy',
+                'years' => range($past->format('Y'), $end->format('Y')),
             ])
             ->add('sex', ChoiceType::class, [
                 'label' => 'Sexe',
@@ -126,25 +142,25 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('photoPieceFront',FileType::class, [
                 'required' => false,
-                'label' => "Photo Piece d'identité (recto)",
+                'label' => "Copie scannée de la pièce (recto)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPieceBack',FileType::class, [
                 'required' => false,
-                'label' => "Photo Piece d'identité (verso)",
+                'label' => "Copie scannée de la pièce (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisFront',FileType::class, [
                 'required' => false,
-                'label' => "Photo permis de conduire (recto)",
+                'label' => "Copie scannée du permis de conduire (recto)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisBack',FileType::class, [
                 'required' => false,
-                'label' => "Photo permis de conduire (verso)",
+                'label' => "Copie scannée du  de conduire (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
@@ -163,12 +179,15 @@ class MemberRegistrationType extends AbstractType
                     "ABIDJAN" => "ABIDJAN",
                     "BOUAKE" => "BOUAKE",
                     "YAMOUSSOUKRO" => "YAMOUSSOUKRO",
+                    "ABENGOUROU" => "ABENGOUROU",
+                    "BONDOUKOU" => "BONDOUKOU",
+                    "VAVOUA" => "VAVOUA",
                     "KORHOGO" => "KORHOGO",
                     "MAN" => "MAN",
                     "SAN-PEDRO" => "SAN-PEDRO",
                     "BASSAM" => "BASSAM",
                     "BONOUA" => "BONOUA",
-                    "BONDOUKOU" => "BONDOUKOU"
+                    "DALOA" => "DALOA"
                 ],
                 'empty_data' => null,
                 'data' => null,

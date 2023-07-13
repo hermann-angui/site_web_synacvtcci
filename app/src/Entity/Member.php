@@ -65,6 +65,14 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $IdNumber = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $IdDeliveryPlace = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $IdDeliveryDate = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $etatCivil = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $IdType = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -743,6 +751,60 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function getStatus(): ?string
     {
         return $this->status;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIdDeliveryPlace(): ?string
+    {
+        return $this->IdDeliveryPlace;
+    }
+
+    /**
+     * @param string|null $IdDeliveryPlace
+     * @return Member
+     */
+    public function setIdDeliveryPlace(?string $IdDeliveryPlace): Member
+    {
+        $this->IdDeliveryPlace = $IdDeliveryPlace;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEtatCivil(): ?string
+    {
+        return $this->etatCivil;
+    }
+
+    /**
+     * @param string|null $etatCivil
+     * @return Member
+     */
+    public function setEtatCivil(?string $etatCivil): Member
+    {
+        $this->etatCivil = $etatCivil;
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getIdDeliveryDate(): ?\DateTimeInterface
+    {
+        return $this->IdDeliveryDate;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $IdDeliveryDate
+     * @return Member
+     */
+    public function setIdDeliveryDate(?\DateTimeInterface $IdDeliveryDate): Member
+    {
+        $this->IdDeliveryDate = $IdDeliveryDate;
+        return $this;
     }
 
 }

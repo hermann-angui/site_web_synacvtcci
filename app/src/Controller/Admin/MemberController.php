@@ -12,7 +12,7 @@ use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
 use App\Mapper\MemberMapper;
 use App\Repository\MemberRepository;
-use App\Service\Member\ArtisanService;
+use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-#[Route('admin/member')]
+#[Route('/admin/member')]
 class MemberController extends AbstractController
 {
 
@@ -55,7 +55,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/new', name: 'admin_member_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ArtisanService $memberService): Response
+    public function new(Request $request, MemberService $memberService): Response
     {
         $memberRequestDto = new MemberRequestDto();
         $form = $this->createForm(MemberRegistrationType::class, $memberRequestDto);
@@ -112,14 +112,14 @@ class MemberController extends AbstractController
     }
 
     #[Route('/import', name: 'admin_member_import', methods: ['GET', 'POST'])]
-    public function import(Request $request, ArtisanService $memberService): Response
+    public function import(Request $request, MemberService $memberService): Response
     {
         $memberService->createMemberFromFile();
         return $this->redirectToRoute('admin_member_index');
     }
 
     #[Route('/generate/new/card/{id}', name: 'admin_member_generate_card', methods: ['GET'])]
-    public function generateCard(Member $member, ArtisanService $memberService, MemberRepository $memberRepository): Response
+    public function generateCard(Member $member, MemberService $memberService, MemberRepository $memberRepository): Response
     {
         $memberRequestDto = $memberService->generateSingleMemberCard(MemberMapper::MapToMemberRequestDto($member));
         $member->setCardPhoto($memberRequestDto->getCardPhoto()->getFilename());
@@ -136,7 +136,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
-    public function downloadCard(Request $request, Member $member, ArtisanService $memberService): Response
+    public function downloadCard(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         ini_set('max_execution_time', '-1');
@@ -147,7 +147,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET', 'POST'])]
-    public function downloadMemberCards(Request $request, ArtisanService $memberService): Response
+    public function downloadMemberCards(Request $request, MemberService $memberService): Response
     {
         $from = $request->get("from_matricule");
         $to = $request->get("to_matricule");
@@ -170,7 +170,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/sample', name: 'admin_member_sample_file', methods: ['GET'])]
-    public function downloadSample(Request $request, ArtisanService $memberService): Response
+    public function downloadSample(Request $request, MemberService $memberService): Response
     {
         $sampleRealPath = $memberService->generateSampleCsvFile();
         return $this->file($sampleRealPath, 'sample.csv');
@@ -452,7 +452,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Member $member, ArtisanService $memberService): Response
+    public function edit(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         $memberRequestDto = MemberMapper::MapToMemberRequestDto($member);

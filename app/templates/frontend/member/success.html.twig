@@ -28,21 +28,13 @@
 
     <div class="taxi-booking bg-grey padding">
         <div class="container">
-            <div class="row mx-auto justify-content-center">
-                <div class="col-lg-5 col-md-7 sm-padding">
-                    <div class="pricing-item">
-                        <div class="pricing-head-wrap">
-                                <img src="{{ asset('assets/frontend/img/successfully-done.gif') }}"  alt="success" />
-                        </div>
-                        <div class="pricing-head">
-                            <h3>Bienvenue dans la famille SYNACVTCCI</h3>
-                            <span class="location"></span>
-                        </div>
-                        <ul class="pricing-list d-flex justify-content-center align-items-center align-content-center">
-{#                            <li><a class="btn btn-light" href="{{ path('download_receipt') }}/{{ member.id }}">Télécharger votre reçu d'inscription</a></li>#}
-                            <li><a class="btn btn-light" href="{{ path('home') }}">Revenir à l'accueil</a></li>
-                        </ul>
-                    </div>
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <div class="mb-3">
+                    <img src="{{ asset('assets/frontend/img/successfully-done.gif') }}"  alt="success" width="200" height="200"/>
+                </div>
+                <h3>Bienvenue dans la famille SYNACVTCCI</h3>
+                <div>
+                    <a class="btn btn-dark btn-rounded" href="{{ path('home') }}">Cliquez ici pour revenir à l'accueil</a>
                 </div>
             </div>
         </div>

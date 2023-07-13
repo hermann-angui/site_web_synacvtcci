@@ -35,7 +35,7 @@ class ArtisanAssetHelper implements AssetHelperInterface
     {
         try {
             if (!$destDirectory) return null;
-            $path = $this->uploadDirectory . "/public/members/" . $destDirectory . "/";
+            $path = $this->uploadDirectory . "/public/artisans/" . $destDirectory . "/";
             if (!file_exists($path)) mkdir($path, 0777, true);
             return $path;
         } catch (\Exception $e) {

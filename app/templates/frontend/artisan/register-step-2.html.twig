@@ -150,10 +150,10 @@
 
 {% block javascript %}
   {{ parent() }}
-  <script src="{{ asset('assets/admin/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
-  <script src="{{ asset('admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
-  <script src="{{ asset('admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
-  <script src="{{ asset('admin/libs/jquery.form/jquery.form.min.js') }}"></script>
+  <script src="{{ asset('assets/frontend/js/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
+  <script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
+  <script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
   <script>
       $('document').ready(function() {
            var children = [];
@@ -187,13 +187,16 @@
             $('#children_bock').append(row);
           });
 
-          $('#form_artisan_cnmcci').ajaxForm({
-                url: action="{{ path('ajax_register_artisan', {step: 2}) }}",
+          $(".input-mask").inputmask();
+
+          $('#form_artisan_synacvtcci').ajaxForm({
+                url: "{{ path('ajax_register_artisan', {step: 2}) }}",
                 dataType: 'json',
                 type: 'POST',
                 success: function(response) {
-                    console.log(response);
-                  //  window.location.replace("{{ path('register_artisan', {step: 2}) }}");
+                        console.log(response);
+                    //  window.location.replace("{{ path('register_artisan', {step: 3}) }}");
+                        window.location.href = "{{ path('register_artisan', {step: 3}) }}";
                 },
                 error: function(xhr, textStatus, errorThrown) {
                   console.log(xhr.responseText);

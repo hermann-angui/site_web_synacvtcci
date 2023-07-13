@@ -6,7 +6,10 @@
     {{ parent() }}
 
     <style>
-
+        .head {
+            background-color: #ffd4f9;
+            color: #000000;
+        }
         #top-row .form-check-input {
             width: 1.2em;
             height: 1.2em;
@@ -42,7 +45,7 @@
             border-radius: 0.2em;
         }
 
-        input[type="text"]{
+        input[type="text"],input[type="number"] {
             border: 0;
             border-bottom: 1px dashed #000;
             background-color: #f4f5f8;
@@ -83,7 +86,7 @@
                 <div class="container-fluid">
                     <div class="d-flex justify-content-center">
                         <div class="col-lg-10 px-5">
-                            {{ include('admin/artisan/_formulaire.html.twig') }}
+                            {{ include('admin/artisan/_form_cnmci.html.twig') }}
                         </div>
                     </div>
                 </div> <!-- container-fluid -->

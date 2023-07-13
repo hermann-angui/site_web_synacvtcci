@@ -164,7 +164,9 @@
             type: 'POST',
             success: function(response) {
                 console.log(response);
+                console.log("{{ path('register_artisan', {step: 2}) }}");
                // window.location.replace("{{ path('register_artisan', {step: 2}) }}");
+                window.location.href = "{{ path('register_artisan', {step: 2}) }}";
             },
             error: function(xhr, textStatus, errorThrown) {
               console.log(xhr.responseText);

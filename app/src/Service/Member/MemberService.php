@@ -54,8 +54,9 @@ class MemberService
         $this->csvReaderHelper = $csvReaderHelper;
     }
 
-
     /**
+     * @param MemberRequestDto $memberRequestDto
+     * @return void
      * @throws \Exception
      */
     public function createMember(MemberRequestDto $memberRequestDto): void
@@ -176,13 +177,17 @@ class MemberService
         return null;
     }
 
-
+    /**
+     * @param array $memberDtos
+     * @return void
+     */
     public function getMemberCardsList(array $memberDtos){
         $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';;
          if(!file_exists($zipFile)){
              $this->generateMultipleMemberCards();
          }
     }
+
     /**
      * @param MemberRequestDto|null $memberRequestDto
      * @return void
@@ -342,7 +347,6 @@ class MemberService
      * @param MemberRequestDto $memberRequestDto
      * @return void
      */
-
     public function saveMemberImages(MemberRequestDto $memberRequestDto): MemberRequestDto
     {
         if ($memberRequestDto->getPhoto()) {
