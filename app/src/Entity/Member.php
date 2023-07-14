@@ -26,6 +26,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $reference = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -43,7 +46,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $subscription_expire_date = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $sex = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -65,29 +68,35 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $IdNumber = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $codeSticker = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $IdDeliveryPlace = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $IdDeliveryDate = null;
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $etatCivil = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $IdType = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $nationality = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $commune = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $quartier = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -108,7 +117,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $partner_last_name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $status = 'PENDING';
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -804,6 +813,60 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIdDeliveryDate(?\DateTimeInterface $IdDeliveryDate): Member
     {
         $this->IdDeliveryDate = $IdDeliveryDate;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string|null $address
+     * @return Member
+     */
+    public function setAddress(?string $address): Member
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param string|null $reference
+     * @return Member
+     */
+    public function setReference(?string $reference): Member
+    {
+        $this->reference = $reference;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCodeSticker(): ?string
+    {
+        return $this->codeSticker;
+    }
+
+    /**
+     * @param string|null $codeSticker
+     * @return Member
+     */
+    public function setCodeSticker(?string $codeSticker): Member
+    {
+        $this->codeSticker = $codeSticker;
         return $this;
     }
 

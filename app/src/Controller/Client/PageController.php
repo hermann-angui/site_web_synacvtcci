@@ -124,7 +124,7 @@ class PageController extends AbstractController
                 }
             }
             $memberRequestDto->setStatus("PENDING");
-            $memberService->createMember($memberRequestDto);
+            $memberService->createMemberFromDto($memberRequestDto);
 
             return $this->redirectToRoute('home',[], Response::HTTP_SEE_OTHER);
         }

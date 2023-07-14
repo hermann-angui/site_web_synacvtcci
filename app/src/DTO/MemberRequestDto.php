@@ -15,6 +15,10 @@ class MemberRequestDto implements PasswordAuthenticatedUserInterface
 
     private ?string $email = null;
 
+    private ?string $reference = null;
+
+    private ?string $codeSticker = null;
+
     private ?string $firstName = null;
 
     private ?string $lastName = null;
@@ -54,6 +58,8 @@ class MemberRequestDto implements PasswordAuthenticatedUserInterface
     private ?string $nationality = null;
 
     private ?string $city = null;
+
+    private ?string $address = null;
 
     private ?string $commune = null;
 
@@ -755,6 +761,60 @@ class MemberRequestDto implements PasswordAuthenticatedUserInterface
     public function setEtatCivil(?string $etatCivil): MemberRequestDto
     {
         $this->etatCivil = $etatCivil;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string|null $address
+     * @return MemberRequestDto
+     */
+    public function setAddress(?string $address): MemberRequestDto
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param string|null $reference
+     * @return MemberRequestDto
+     */
+    public function setReference(?string $reference): MemberRequestDto
+    {
+        $this->reference = $reference;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCodeSticker(): ?string
+    {
+        return $this->codeSticker;
+    }
+
+    /**
+     * @param string|null $codeSticker
+     * @return MemberRequestDto
+     */
+    public function setCodeSticker(?string $codeSticker): MemberRequestDto
+    {
+        $this->codeSticker = $codeSticker;
         return $this;
     }
 

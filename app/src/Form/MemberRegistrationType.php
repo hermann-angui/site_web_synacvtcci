@@ -48,14 +48,14 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-/*            ->add('titre', ChoiceType::class, [
+            ->add('titre', ChoiceType::class, [
                 'label' => 'Titre',
                 'mapped' => true,
                 'required' => false,
                 'choices' => Member::getTitres(),
                 'empty_data' => null,
             ])
-*/
+
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
                 'mapped' => true,
@@ -96,6 +96,19 @@ class MemberRegistrationType extends AbstractType
                     'PASSEPORT' => 'PASSEPORT',
                     'CARTE DE RESIDENCE' => 'CARTE DE RESIDENCE',
                     'AUTRE' => 'AUTRE',
+                ],
+                'empty_data' => null,
+                'data' => null,
+            ])
+            ->add('etatCivil', ChoiceType::class, [
+                'label' => 'Etat civil',
+                'mapped' => true,
+                'required' => false,
+                'choices' => [
+                    'MARIE(E)' => 'MARIE(E)',
+                    'CELIBATAIRE' => 'CELIBATAIRE',
+                    'DIVORCE(E)' => 'DIVORCE(E)',
+                    'VEUF(VE)' => 'VEUF(VE)',
                 ],
                 'empty_data' => null,
                 'data' => null,
@@ -164,13 +177,7 @@ class MemberRegistrationType extends AbstractType
                 'data_class' =>  null,
                 'mapped' => true,
             ])
-/*            ->add('country', ChoiceType::class, [
-                'required' => false,
-                'label' => 'Pays',
-                'mapped' => true,
-                'choices' => $countries,
-                'choice_loader' => null
-            ])*/
+
             ->add('city', ChoiceType::class, [
                 'label' => "Ville",
                 'mapped' => true,
@@ -221,11 +228,11 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false
             ])
-/*            ->add('phone', TextType::class, [
+            ->add('phone', TextType::class, [
                 'label' => "Tel fixe",
                 'mapped' => true,
                 'required' => false
-            ])*/
+            ])
             ->add('partner_first_name', TextType::class, [
                 'label' => "Prénoms conjoint",
                 'mapped' => true,

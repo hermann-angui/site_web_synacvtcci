@@ -23,6 +23,30 @@ class MemberMapper
         $memberDto->setPartnerLastName($member->getPartnerLastName());
         $memberDto->setPhone($member->getPhone());
         $memberDto->setMatricule($member->getMatricule());
+        $memberDto->setReference($member->getReference());
+        $memberDto->setEtatCivil($member->getEtatCivil());
+        $memberDto->setAddress($member->getAddress());
+        $memberDto->setIdDeliveryDate($member->getIdDeliveryDate());
+        $memberDto->setIdDeliveryPlace($member->getIdDeliveryPlace());
+        $memberDto->setMobile($member->getMobile());
+        $memberDto->setCity($member->getCity());
+        $memberDto->setSex($member->getSex());
+        $memberDto->setCountry($member->getCountry());
+        $memberDto->setIdNumber($member->getIdNumber());
+        $memberDto->setIdType($member->getIdType());
+        $memberDto->setDrivingLicenseNumber($member->getDrivingLicenseNumber());
+        $memberDto->setBirthCity($member->getBirthCity());
+        $memberDto->setDateOfBirth($member->getDateOfBirth());
+        $memberDto->setSubscriptionExpireDate($member->getSubscriptionExpireDate());
+        $memberDto->setSubscriptionDate($member->getSubscriptionDate());
+        $memberDto->setRoles($member->getRoles());
+        $memberDto->setCommune($member->getCommune());
+        $memberDto->setCompany($member->getCompany());
+        $memberDto->setEmail($member->getEmail());
+        $memberDto->setStatus($member->getStatus());
+        $memberDto->setTitre($member->getTitre());
+
+
         if($member->getPhoto()) $memberDto->setPhoto(new File($memberAssetPath . $member->getPhoto()));
         if($member->getPhotoPermisBack()) {
             $file = new File($memberAssetPath . $member->getPhotoPermisBack(), false);
@@ -44,22 +68,7 @@ class MemberMapper
             $file = new File($memberAssetPath . $member->getCardPhoto(), false);
             if($file->isFile())  $memberDto->setCardPhoto($file);
         }
-        $memberDto->setMobile($member->getMobile());
-        $memberDto->setCity($member->getCity());
-        $memberDto->setCountry($member->getCountry());
-        $memberDto->setIdNumber($member->getIdNumber());
-        $memberDto->setIdType($member->getIdType());
-        $memberDto->setDrivingLicenseNumber($member->getDrivingLicenseNumber());
-        $memberDto->setBirthCity($member->getBirthCity());
-        $memberDto->setDateOfBirth($member->getDateOfBirth());
-        $memberDto->setSubscriptionExpireDate($member->getSubscriptionExpireDate());
-        $memberDto->setSubscriptionDate($member->getSubscriptionDate());
-        $memberDto->setRoles($member->getRoles());
-        $memberDto->setCommune($member->getCommune());
-        $memberDto->setCompany($member->getCompany());
-        $memberDto->setEmail($member->getEmail());
-        $memberDto->setStatus($member->getStatus());
-        $memberDto->setTitre($member->getTitre());
+
         return $memberDto;
     }
 
@@ -75,6 +84,28 @@ class MemberMapper
         $member->setPartnerLastName(strtoupper($memberDto->getPartnerLastName()));
         $member->setPhone($memberDto->getPhone());
         $member->setMatricule($memberDto->getMatricule());
+        $member->setSex($memberDto->getSex());
+        $member->setReference($memberDto->getReference());
+        $member->setAddress($memberDto->getAddress());
+        $member->setIdDeliveryDate($memberDto->getIdDeliveryDate());
+        $member->setIdDeliveryPlace($memberDto->getIdDeliveryPlace());
+        $member->setMobile($memberDto->getMobile());
+        $member->setCity(strtoupper($memberDto->getCity()));
+        $member->setCountry(strtoupper($memberDto->getCountry()));
+        $member->setIdNumber(strtoupper($memberDto->getIdNumber()));
+        $member->setIdType(strtoupper($memberDto->getIdType()));
+        $member->setDrivingLicenseNumber(strtoupper($memberDto->getDrivingLicenseNumber()));
+        $member->setBirthCity(strtoupper($memberDto->getBirthCity()));
+        $member->setDateOfBirth($memberDto->getDateOfBirth());
+        $member->setSubscriptionExpireDate($memberDto->getSubscriptionExpireDate());
+        $member->setSubscriptionDate($memberDto->getSubscriptionDate());
+        $member->setRoles($memberDto->getRoles());
+        $member->setCommune(strtoupper($memberDto->getCommune()));
+        $member->setCompany(strtoupper($memberDto->getCompany()));
+        $member->setEmail($memberDto->getEmail());
+        $member->setStatus(strtoupper($memberDto->getStatus()));
+        $member->setTitre(strtoupper($memberDto->getTitre()));
+
         if($memberDto->getPhoto()) {
             $member->setPhoto($memberDto->getPhoto()->getFilename());
         }
@@ -93,22 +124,6 @@ class MemberMapper
         if($memberDto->getCardPhoto()) {
             $member->setCardPhoto($memberDto->getCardPhoto()->getFilename());
         }
-        $member->setMobile($memberDto->getMobile());
-        $member->setCity(strtoupper($memberDto->getCity()));
-        $member->setCountry(strtoupper($memberDto->getCountry()));
-        $member->setIdNumber(strtoupper($memberDto->getIdNumber()));
-        $member->setIdType(strtoupper($memberDto->getIdType()));
-        $member->setDrivingLicenseNumber(strtoupper($memberDto->getDrivingLicenseNumber()));
-        $member->setBirthCity(strtoupper($memberDto->getBirthCity()));
-        $member->setDateOfBirth($memberDto->getDateOfBirth());
-        $member->setSubscriptionExpireDate($memberDto->getSubscriptionExpireDate());
-        $member->setSubscriptionDate($memberDto->getSubscriptionDate());
-        $member->setRoles($memberDto->getRoles());
-        $member->setCommune(strtoupper($memberDto->getCommune()));
-        $member->setCompany(strtoupper($memberDto->getCompany()));
-        $member->setEmail($memberDto->getEmail());
-        $member->setStatus(strtoupper($memberDto->getStatus()));
-        $member->setTitre(strtoupper($memberDto->getTitre()));
 
         return $member;
     }

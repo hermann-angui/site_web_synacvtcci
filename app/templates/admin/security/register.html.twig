@@ -32,12 +32,12 @@
                                     {% endif %}
                                         <!-- START PHOTO UPLOAD -->
                                     <div class="row ">
-                                        <label for="registration_form_photo" class="d-block d-flex justify-content-center align-content-center">
-                                            <div>
+                                        <label for="user_form_photo" class="d-block d-flex justify-content-center align-content-center">
+                                            <div class="d-flex flex-column justify-content-center align-items-center">
                                                 <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
-                                                <span class="d-block position-relative text-dark" style="top:-50px;left:50px"><i class="mdi mdi-camera mdi-48px"></i></span>
-                                                {{ form_widget(registrationForm.photo, {'attr': {'class': 'visually-hidden', 'id': 'registration_form_photo'}}) }}
-                                                <span>Télécharger votre photo</span>
+                                                <div class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></div>
+                                                {{ form_widget(registrationForm.photo, {'attr': {'class': 'visually-hidden'}}) }}
+                                                <div style="margin-top:-40px">Télécharger votre photo</div>
                                             </div>
                                         </label>
                                     </div>
@@ -99,7 +99,7 @@
 {{ parent() }}
   <script>
       $('document').ready(function() {
-          $("#registration_form_photo").change(function(data){
+          $("#user_form_photo").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);

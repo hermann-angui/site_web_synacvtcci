@@ -202,6 +202,11 @@ class MemberRegistrationEditType extends AbstractType
                 'mapped' => true,
                 'required' => false
             ])
+            ->add('codeSticker', TextType::class, [
+                'required' => false,
+                'label' => 'Code du sticker',
+                'mapped' => true,
+            ])
 /*            ->add('status', ChoiceType::class, [
                 'label' => 'Statut',
                 'required' => true,

@@ -17,6 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Uid\Uuid;
 
 class MemberService
 {
@@ -55,11 +56,51 @@ class MemberService
     }
 
     /**
+     * @param Member $member
+     * @return void
+     * @throws \Exception
+     */
+    public function createMember(Member $member): void
+    {
+        date_default_timezone_set("Africa/Abidjan");
+
+        $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
+        $lastRowId = $this->memberRepository->getLastRowId();
+        $member->setRoles(['ROLE_USER']);
+
+        $date = new DateTime('now');
+        $member->setSubscriptionDate($date);
+
+        $sexCode = null;
+        if($member->getSex() === "H") $sexCode = "SY1";
+        elseif($member->getSex() === "F") $sexCode = "SY2";
+
+        $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $lastRowId+1);
+        $member->setMatricule($matricule);
+
+        $expiredDate = $date->format('Y-12-31');
+        $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
+
+        $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
+
+        $this->saveMemberImages($member);
+
+        $member = MemberMapper::MapToMember($member);
+        $this->memberRepository->add($member, true);
+
+        foreach($member->getChildren() as $childDto){
+            $this->childRepository->add(ChildMapper::MapToChild($member, $childDto), true);
+        }
+
+    }
+
+
+    /**
      * @param MemberRequestDto $memberRequestDto
      * @return void
      * @throws \Exception
      */
-    public function createMember(MemberRequestDto $memberRequestDto): void
+    public function createMemberFromDto(MemberRequestDto $memberRequestDto): void
     {
         date_default_timezone_set("Africa/Abidjan");
 
@@ -69,6 +110,8 @@ class MemberService
 
         $date = new DateTime('now');
         $memberRequestDto->setSubscriptionDate($date);
+
+        $memberRequestDto->setReference(trim(substr(Uuid::v4()->toRfc4122(), 0, 18), "-"));
 
         $sexCode = null;
         if($memberRequestDto->getSex() === "H") $sexCode = "SY1";

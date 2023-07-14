@@ -2,14 +2,15 @@
 
     <div class="row ">
         <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
-            <div>
+            <div class="d-flex flex-column justify-content-center align-items-center">
                 {% if member is defined and member.photo is not empty %}
                     <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
                 {% else %}
                     <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
                 {% endif %}
-                <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
+                <div class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></div>
                 {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+                <div style="margin-top:-40px">Télécharger votre photo</div>
             </div>
         </label>
     </div>
@@ -34,8 +35,8 @@
                 {{ form_row(form.mobile) }}
                 {{ form_row(form.phone) }}
                 {{ form_row(form.whatsapp) }}
-                {{ form_row(form.country) }}
                 {{ form_row(form.city) }}
+                {{ form_row(form.etatCivil) }}
                 {{ form_row(form.commune) }}
                 {{ form_row(form.quartier) }}
 

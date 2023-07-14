@@ -37,6 +37,7 @@
                                             {% endif %}
                                             {% if member.cardPhoto is not null %}
                                             <a href="{{ path('admin_member_show_card',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" ><span class="fa fa-eye fa-1x"></span> Voir la carte</a>
+                                            <a href="{{ path('admin_member_cncmi_show', {id: member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" ><span class="fa fa-eye fa-1x"></span> Formulaire CNMCI</a>
                                             <a href="{{ path('admin_member_download_card',{'id': member.id}) }}" class="btn btn-primary btn-sm waves-effect waves-light" ><span class="fa fa-download fa-1x"></span> Télécharger la carte</a>
                                             {% endif %}
                                             <a href="{{ path('admin_member_index') }}" class="btn btn-primary btn-sm waves-effect waves-light" >Fermer</a>

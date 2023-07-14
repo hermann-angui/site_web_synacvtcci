@@ -35,6 +35,20 @@ class MemberController extends AbstractController
         return $this->render('admin/member/index.html.twig');
     }
 
+    #[Route('/cnmci/show/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
+    public function formCnmciShow(Member $member, MemberRepository $memberRepository): Response
+    {
+        return $this->render('admin/member/cnmci_show.html.twig', ['member' => $member]);
+    }
+
+    #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['GET'])]
+    public function cnmciEdit(Member $member, Request  $request, MemberRepository $memberRepository): Response
+    {
+        $data = $request->request->all();
+        return $this->json([]);
+    }
+
+
     #[Route('/pdf/{id}', name: 'admin_pdf', methods: ['GET'])]
     public function pdfGenerate(Request $request, Member $member, Pdf $knpSnappyPdf): Response
     {
@@ -84,7 +98,7 @@ class MemberController extends AbstractController
                 }
             }
 
-            $memberService->createMember($memberRequestDto);
+            $memberService->createMemberFromDto($memberRequestDto);
             return $this->redirectToRoute('admin_member_index');
 
         }
@@ -161,7 +175,8 @@ class MemberController extends AbstractController
                 $matricules[] = "SY12023" .   sprintf('%05d', $matricule);
             }
             $memberDtos = $memberService->generateMultipleMemberCards($matricules);
-        }else{
+        }
+        else{
             $memberDtos = $memberService->generateMultipleMemberCards();
         }
 
@@ -300,11 +315,11 @@ class MemberController extends AbstractController
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
                     $content =  "<ul class='list-unstyled hstack gap-1 mb-0'>
-                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='View'>
-                                          <a href='/admin/member/$id' class='btn btn-sm btn-soft-primary'><i class='mdi mdi-eye-outline'></i></a>
+                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
+                                         <a href='/admin/member/$id/edit' class='btn btn-sm btn-dark d-flex'><i class='mdi mdi-18px mdi-pencil-outline'></i> Inscription SYNACVTCCI</a>
                                       </li>
                                       <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
-                                         <a href='/admin/member/$id/edit' class='btn btn-sm btn-soft-info'><i class='mdi mdi-pencil-outline'></i></a>
+                                         <a href='/admin/member/cnmci/show/$id' class='btn btn-sm btn-warning d-flex'><i class='mdi mdi-18px mdi-pencil-outline'></i> Inscription CNMCCI</a>
                                       </li>
                                 </ul>";
                     return $content;
@@ -437,7 +452,8 @@ class MemberController extends AbstractController
             $whereResult .= " id_number	LIKE '%". $params['id_number	'] . "%' AND";
         }
 
-        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+        $whereResult.= " status='VALIDATED'";
+    //  $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
         $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -470,6 +486,14 @@ class MemberController extends AbstractController
             $member->setCompany($memberRequestDto->getCompany());
             $member->setTitre($memberRequestDto->getTitre());
             $member->setEmail($memberRequestDto->getEmail());
+            $member->setSex($memberRequestDto->getSex());
+            $member->setAddress($memberRequestDto->getAddress());
+            $member->setReference($memberRequestDto->getReference());
+            $member->setEtatCivil($memberRequestDto->getEtatCivil());
+            $member->setIdDeliveryDate($memberRequestDto->getIdDeliveryDate());
+            $member->setIdNumber($memberRequestDto->getIdNumber());
+            $member->setIdDeliveryPlace($memberRequestDto->getIdDeliveryPlace());
+            $member->setReference($memberRequestDto->getReference());
             $member->setCommune($memberRequestDto->getCommune());
             $member->setDateOfBirth($memberRequestDto->getDateOfBirth());
             $member->setDrivingLicenseNumber($memberRequestDto->getDrivingLicenseNumber());
@@ -485,6 +509,7 @@ class MemberController extends AbstractController
             $member->setQuartier($memberRequestDto->getQuartier());
             $member->setWhatsapp($memberRequestDto->getWhatsapp());
             $member->setNationality($memberRequestDto->getNationality());
+            $member->setStatus("VALIDATED");
 
             $data = $request->request->all();
             if(is_array($data) && isset($data['child_lastname'])) {

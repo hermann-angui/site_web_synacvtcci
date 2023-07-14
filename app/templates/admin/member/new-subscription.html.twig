@@ -47,9 +47,8 @@
                                     <div class="d-flex align-items-center">
                                         <h5 class="mb-0 card-title flex-grow-1"></h5>
                                         <div class="flex-shrink-0">
-                                            <a href="{{ path('admin_member_new') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-plus-circle fa-1x"></span> Nouveau membre</a>
+                                            <a href="{{ path('admin_member_new') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-plus-circle fa-1x"></span> Enregister un membre</a>
                                             <a href="{{ path('admin_member_upload') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-upload fa-1x"></span> Importer</a>
-                                            <a href="{{ path('admin_member_download_cards') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-download fa-1x"></span> Télécharger toutes cartes</a>
                                         </div>
                                     </div>
                                 </div>
@@ -140,6 +139,7 @@
                 },
                 "processing": true,
                 "serverSide": true,
+                 "pageLength": 50,
                 "ajax": {
                     "url": '{{ path('admin_member_new_subscription_datatable') }}',
                     "data": function (d) {

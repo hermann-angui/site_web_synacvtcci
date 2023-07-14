@@ -24,7 +24,7 @@
                         <li><a href="{{ path('admin_cards_list') }}" key="t3">Cartes</a></li>
                     </ul>
                 </li>
-                <li>
+{#                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-data"></i>
                         <span>Chambre des metiers</span>
@@ -33,21 +33,11 @@
                         <li><a href="{{ path('admin_artisan_index') }}" key="t2">Inscrits</a></li>
                     </ul>
                 </li>
-                <li class="menu-title">Paramètres</li>
+#}
+
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bx-home-circle"></i>
-                        <span key="t-dashboards">Securité</span>
-                    </a>
-                    <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
-                        <li><a href="{{ path('admin_index') }}" key="t-u">Utilisateurs</a></li>
-                        <li><a href="{{ path('admin_index') }}" key="t-t">Roles</a></li>
-                        <li><a href="{{ path('admin_index') }}" key="t-a">API</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bx-home-circle"></i>
+                        <i class="bx bxs-factory"></i>
                         <span key="t-dashboards">Activités</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
@@ -55,6 +45,19 @@
                         <li><a href="{{ path('admin_index') }}" key="t-u">Activités en images</a></li>
                         <li><a href="{{ path('admin_index') }}" key="t-u">Activités en vidéos</a></li>
                         <li><a href="{{ path('admin_index') }}" key="t-t">Galerie</a></li>
+                    </ul>
+                </li>
+
+                <li class="menu-title">Paramètres</li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-lock"></i>
+                        <span key="t-dashboards">Securité</span>
+                    </a>
+                    <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
+                        <li><a href="{{ path('admin_index') }}" key="t-u">Utilisateurs</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-t">Roles</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-a">API</a></li>
                     </ul>
                 </li>
             </ul>
