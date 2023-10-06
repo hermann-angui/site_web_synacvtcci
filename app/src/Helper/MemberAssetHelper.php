@@ -54,8 +54,8 @@ class MemberAssetHelper implements AssetHelperInterface
     }
 
 
-    public function createThumbnail(?File $file, ?string $destDirectory){
-        $this->imageHelper->createThumbnail($file->getRealPath(), $this->getUploadDirectory($destDirectory));
+    public function createThumbnail(?File $file, ?string $destDirectory,$width, $height){
+        $this->imageHelper->createThumbnail($file->getPathname(), $this->getUploadDirectory($destDirectory), $width, $height);
     }
 
 }

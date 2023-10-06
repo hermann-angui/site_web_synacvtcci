@@ -41,13 +41,13 @@ class ArtisanCardGeneratorService
         $data['fullname'] = $memberDto->getLastName() . " " . $memberDto->getFirstName();
         $data['titre'] = $memberDto->getTitre();
         $data['matricule'] = $memberDto->getMatricule();
-        $data['outputdir'] = "/var/www/html/public/members/" . $memberDto->getMatricule() . "/";
+        $data['outputdir'] = "/var/www/html/public/members/" . $memberDto->getReference() . "/";
         if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
         $data['cardbg'] = "/var/www/html/public/assets/files/card_member_front.jpg";
         $data['photopath'] =  $memberDto->getPhoto()->getRealPath();
-        $data['qrcodepath'] = $data['outputdir'] . $memberDto->getMatricule() . '_barcode.png' ;
-        $data['cardpath'] = $data['outputdir'] . $memberDto->getMatricule() . '_card.png' ;
-        $data['qrcodeurl'] = $this->container->getParameter('profile_url')  . "/" . $memberDto->getMatricule();
+        $data['qrcodepath'] = $data['outputdir'] . $memberDto->getReference() . '_barcode.png' ;
+        $data['cardpath'] = $data['outputdir'] . $memberDto->getReference() . '_card.png' ;
+        $data['qrcodeurl'] = $this->container->getParameter('profile_url')  . "/" . $memberDto->getReference();
         $data['expiredate'] = "Expire le " . $memberDto->getSubscriptionExpireDate()->format('d/m/Y');
         $data['website'] = "www.synacvtcci.org";
 

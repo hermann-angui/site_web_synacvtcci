@@ -11,7 +11,7 @@ class MemberMapper
 {
     public static function MapToMemberRequestDto(Member $member): MemberRequestDto{
         $memberDto = new MemberRequestDto();
-        $memberAssetPath = "/var/www/html/public/members/" . $member->getMatricule() . "/";
+        $memberAssetPath = "/var/www/html/public/members/" . $member->getReference() . "/";
 
         $memberDto->setFirstName($member->getFirstName());
         $memberDto->setId($member->getId());

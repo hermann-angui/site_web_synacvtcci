@@ -124,9 +124,10 @@ class PageController extends AbstractController
                 }
             }
             $memberRequestDto->setStatus("PENDING");
-            $memberService->createMemberFromDto($memberRequestDto);
+            $memberService->createMemberFromDto($memberRequestDto, true);
 
-            return $this->redirectToRoute('home',[], Response::HTTP_SEE_OTHER);
+           // return $this->redirectToRoute('home',[], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('success',[], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('frontend/member/register.html.twig', [
@@ -144,7 +145,6 @@ class PageController extends AbstractController
             "La SYNACVTCCI apporte son assistance au chauffeur bastonné ..",
             "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
         ];
-
         if($step == 3 ){
             $artisan = $request->getSession()->get("artisan");
             return $this->renderForm("frontend/artisan/register-step-${step}.html.twig", [

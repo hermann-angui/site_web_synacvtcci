@@ -55,7 +55,7 @@
                                                         {% if member.photo is null %}
                                                             <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-2">
                                                         {% else %}
-                                                        <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                                        <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
                                                         {% endif %}
                                                     </label>
                                                 </div>
@@ -117,16 +117,16 @@
                                         <tr>
                                             <th>Images CNI</th>
                                             <td>
-                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPieceFront }}" alt="" width="200" class="rounded-2">
-                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPieceBack }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPieceFront }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPieceBack }}" alt="" width="200" class="rounded-2">
 
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>Images Permis</th>
                                             <td>
-                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPermisFront }}" alt="" width="200" class="rounded-2">
-                                                <img src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photoPermisBack }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPermisFront }}" alt="" width="200" class="rounded-2">
+                                                <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPermisBack }}" alt="" width="200" class="rounded-2">
                                             </td>
                                         </tr>
                                         <tr>

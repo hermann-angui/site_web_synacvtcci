@@ -17,7 +17,7 @@
                                 {% if member.photo is null %}
                                     <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="200" class="rounded-2">
                                 {% else %}
-                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
                                 {% endif %}
                             </div>
                             <div class="card-body">

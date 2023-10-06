@@ -48,7 +48,8 @@ RUN apt-get update && \
     docker-php-ext-enable apcu pdo_pgsql pdo_mysql sodium && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype && \
+    docker-php-ext-install gd
 
 RUN curl -sS https://getcomposer.org/installer | php -- \
    --install-dir=/usr/bin --filename=composer --version=2.1.9

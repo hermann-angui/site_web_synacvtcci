@@ -87,6 +87,15 @@
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="flex-shrink-0">
+                                            {% if member is not null %}
+                                                <a href="{{ path('admin_download_cnmci_pdf', {id: member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" ><span class="fa fa-eye fa-1x"></span>Télécharger le pdf</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <h4 class="card-title mb-4">Editer le formulaire de la chambre de métiers</h4>
                                     {{ include('admin/member/_form_cnmci.html.twig', {'button_label': 'Mettre à jour'}) }}

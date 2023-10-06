@@ -8,27 +8,18 @@ use Twig\Environment;
 
 class PdfGenerator
 {
+    public function __construct(protected Pdf $pdf, protected Environment $twig){ }
 
-    protected $snappy;
-
-    protected $twig;
-
-    public function __construct(Pdf $snappy, Environment $twig){
-        $this->snappy = $snappy;
-        $this->twig = $twig;
-    }
-    public function generate($data)
+    public function generatePdf(string $twigTemplate, array $viewData): ?string
     {
-        $html = $this->twig->render($data['twig_view'], $data['view_data']);
-        $output = $this->snappy->generateFromHtml($html);
+        $html = $this->twig->render($twigTemplate, $viewData);
+        return $this->pdf->getOutputFromHtml($html);
     }
 
-    public function generateBarCode($data, $outputFile, $width = 50, $height = 50)
+    public function generateBarCode($data, $width = 50, $height = 50)
     {
         $barCodeObj = new TCPDF2DBarcode($data, "QRCODE" );
-        $barCodeImage = $barCodeObj->getBarcodePngData($width, $height);
-        file_put_contents($outputFile, $barCodeImage);
-
-        return $outputFile;
+        return $barCodeObj->getBarcodePngData($width, $height);
     }
+
 }

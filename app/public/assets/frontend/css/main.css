@@ -1150,7 +1150,6 @@
 }
 
 .taxi-holder .mockup {
-    background-image: url(../img/mockup.png);
     background-repeat: no-repeat;
     background-position: center right;
     background-size: contain;
@@ -1254,7 +1253,6 @@
 }
 
 .download-mockup {
-    background-image: url(../img/mockup-2.png);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
@@ -1438,7 +1436,6 @@
 }
 
 .cta-men {
-    background-image: url(../img/cta-men.png);
     background-repeat: no-repeat;
     background-position: bottom right;
     background-size: contain;
@@ -1504,7 +1501,6 @@
 
 .cta-section-2:before {
     background-color: #0701b9;
-    background-image: url(../img/cta-map.png);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -1798,7 +1794,6 @@
 }
 
 .contact-section .map {
-    background-image: url(../img/cta-map.png);
     background-repeat: no-repeat;
     background-position: left center;
     background-size: 80%;

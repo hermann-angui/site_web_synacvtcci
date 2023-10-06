@@ -57,7 +57,7 @@ class SecurityController extends AbstractController
                 )
             );
             $user->setRoles(['ROLE_USER']);
-            $user->setStatus('WAITING_FOR_PAYMENT');
+          //  $user->setStatus('WAITING_FOR_PAYMENT');
             $user->setCreatedAt(new \DateTime());
             $user->setModifiedAt(new \DateTime());
 
@@ -67,7 +67,7 @@ class SecurityController extends AbstractController
             $photo = $form->get('photo')->getData();
             if($photo){
                 $fileName = $userHelper->uploadAsset($photo, $user->getId());
-                if($fileName) $user->setPhoto($fileName);
+                if($fileName) $user->setPhoto($fileName->getFilename());
             }
 
             $entityManager->persist($user);

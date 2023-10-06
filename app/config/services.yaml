@@ -43,10 +43,6 @@ services:
         arguments:
             $container: '@service_container'
 
-    App\Service\Member\MemberReceiptGeneratorService:
-        arguments:
-            $container: '@service_container'
-
     App\Service\Member\MemberCardGeneratorService:
         arguments:
             $container: '@service_container'
@@ -66,3 +62,4 @@ services:
     App\Helper\ArtisanAssetHelper:
         arguments:
             $uploadDirectory: '%kernel.project_dir%'
+

@@ -1,10 +1,10 @@
 <!-- MAIN SECTION -->
-<form action="{{ path('admin_member_cncmi_edit', {id: member.id}) }}" id="form_member_edit">
+<form action="{{ path('admin_member_cncmi_edit', {id: member.id}) }}" id="form_member_edit" method="post">
     <div class="row ">
         <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
             <div>
                 {% if member is defined and member.photo is not empty %}
-                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.matricule }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
+                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="100" class="rounded-2">
                 {% else %}
                     <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
                 {% endif %}
@@ -113,7 +113,7 @@
                                 <label class="form-check-label" for="exploitantTypeDoc">Carte de résident</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Autre" {{ member.idType == 'AUTRE' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Autre" {{ member.idType not in ['CC'] ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantTypeDoc">Autre</label>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ member.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE" {{ member.etatCivil == "MARIE" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Marié</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -160,11 +160,11 @@
                                 <label class="form-check-label" for="exploitantEtatCivil">Célibataire</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE(E)" {{ member.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE" {{ member.etatCivil == "DIVORCE" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Divorcé(e)</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF(VE)" {{ member.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF" {{ member.etatCivil == "VEUF" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Veuf(ve)</label>
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                             <label for="exploitantTel" class="col-form-label">Telephone :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantTel" name="exploitantTel" class="form-control input-mask" aria-labelledby="exploitantTel" value="{{ member.mobile }}"  data-inputmask="'mask': '9999999999'">
+                            <input type="text" id="exploitantTel" name="exploitantTel" class="form-control input-mask" aria-labelledby="exploitantTel" value="{{ member.phone }}"  data-inputmask="'mask': '9999999999'">
                         </div>
                         <div class="col-auto">
                             <label for="exploitantEmail" class="col-form-label">Email :</label>
@@ -196,19 +196,19 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Non Scolarisé">
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Non Scolarisé" disabled>
                                 <label class="form-check-label" for="education">1- Non scolarisé</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Primaire">
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Primaire" disabled>
                                 <label class="form-check-label" for="education">2- Primaire</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Secondaire">
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Secondaire" disabled>
                                 <label class="form-check-label" for="education">3- Secondaire</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Superieure">
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Superieure" disabled>
                                 <label class="form-check-label" for="education">4- Supérieur</label>
                             </div>
                         </div>
@@ -219,13 +219,13 @@
                             <label for="formationClass" class="col-form-label">Précisez la classe(2-3-4) :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="formationClass" name="formationClass" class="form-control" aria-labelledby="formationClass">
+                            <input type="text" id="formationClass" name="formationClass" class="form-control" aria-labelledby="formationClass" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="formationDiplomeObtenu" class="col-form-label">Précisez le diplôme obtenu :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="formationDiplomeObtenu" name="formationDiplomeObtenu" class="form-control" aria-labelledby="formationDiplomeObtenu">
+                            <input type="text" id="formationDiplomeObtenu" name="formationDiplomeObtenu" class="form-control" aria-labelledby="formationDiplomeObtenu" disabled>
                         </div>
                     </div>
 
@@ -235,11 +235,11 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="Sur le tas">
+                                <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="Sur le tas" disabled>
                                 <label class="form-check-label" for="formationApprenMetier">1- Sur le tas</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="CFP">
+                                <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="CFP" disabled>
                                 <label class="form-check-label" for="training">2- Centre de Formation Professionnelle (CFP)</label>
                             </div>
                         </div>
@@ -250,13 +250,13 @@
                             <label for="formationApprenMetierNiveau" class="col-form-label">Précisez le niveau (2) :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="formationApprenMetierNiveau" name="formationApprenMetierNiveau" class="form-control" aria-labelledby="formationApprenMetierNiveau">
+                            <input type="text" id="formationApprenMetierNiveau" name="formationApprenMetierNiveau" class="form-control" aria-labelledby="formationApprenMetierNiveau" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="formationApprenMetierDiplomeObtenu" class="col-form-label">Précisez le diplôme obtenu :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="formationApprenMetierDiplomeObtenu" name="formationApprenMetierDiplomeObtenu" class="form-control" aria-labelledby="formationApprenMetierDiplomeObtenu">
+                            <input type="text" id="formationApprenMetierDiplomeObtenu" name="formationApprenMetierDiplomeObtenu" class="form-control" aria-labelledby="formationApprenMetierDiplomeObtenu" disabled>
                         </div>
                     </div>
 
@@ -266,11 +266,11 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="0">
+                                <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="0" disabled>
                                 <label class="form-check-label" for="formationApprenMetierCNMCI">NON</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="1">
+                                <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="1" disabled>
                                 <label class="form-check-label" for="formationApprenMetierCNMCI">OUI</label>
                             </div>
                         </div>
@@ -279,11 +279,11 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="0">
+                                <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="0" disabled>
                                 <label class="form-check-label" for="formationApprenMetierTypeCNMCI">Maître Artisan</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="1">
+                                <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="1" disabled>
                                 <label class="form-check-label" for="formationApprenMetierTypeCNMCI">Fin d'Apprentissage</label>
                             </div>
                         </div>
@@ -298,7 +298,7 @@
                             <label for="principalActiviteEtabl" class="col-form-label">Activité principale exercée :</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="principalActiviteEtabl" name="principalActiviteEtabl" class="form-control" aria-labelledby="principalActiviteEtabl">
+                            <input type="text" id="principalActiviteEtabl" name="principalActiviteEtabl" class="form-control" aria-labelledby="principalActiviteEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -306,7 +306,7 @@
                             <label for="activiteSecondaireEtabl" class="col-form-label">Activité secondaire :</label>
                         </div>
                         <div class="col-9">
-                            <input type="text" id="activiteSecondaireEtabl" name="activiteSecondaireEtabl" class="form-control" aria-labelledby="activiteSecondaireEtabl">
+                            <input type="text" id="activiteSecondaireEtabl" name="activiteSecondaireEtabl" class="form-control" aria-labelledby="activiteSecondaireEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -314,13 +314,13 @@
                             <label for="raisonSocialEtabl" class="col-form-label">Raison social :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" class="form-control" aria-labelledby="raisonSocialEtabl">
+                            <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" class="form-control" aria-labelledby="raisonSocialEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="sigleEnseigneEtabl" class="col-form-label">Sigle ou Enseigne :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl" class="form-control" aria-labelledby="sigleEnseigneEtabl">
+                            <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl" class="form-control" aria-labelledby="sigleEnseigneEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -328,7 +328,7 @@
                             <label for="dateDebutActiviteEtabl" class="col-form-label">Date de début d'activité :</label>
                         </div>
                         <div class="col-9">
-                            <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" aria-labelledby="dateDebutActiviteEtabl">
+                            <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" aria-labelledby="dateDebutActiviteEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -337,19 +337,19 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="Entreprise individuelle">
+                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="Entreprise individuelle" disabled>
                                 <label class="form-check-label" for="typeEntrepriseEtabl">Entreprise individuelle</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="SARL">
+                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="SARL" disabled>
                                 <label class="form-check-label" for="typeEntrepriseEtabl">SARL</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="GIE">
+                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="GIE" disabled>
                                 <label class="form-check-label" for="typeEntrepriseEtabl">GIE</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="typeEntreprise" name="typeEntrepriseEtabl" value="Societe cooperative">
+                                <input class="form-check-input" type="radio" id="typeEntreprise" name="typeEntrepriseEtabl" value="Societe cooperative" disabled>
                                 <label class="form-check-label" for="typeEntrepriseEtabl">Société coopérative</label>
                             </div>
                         </div>
@@ -361,15 +361,15 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe communale de l'entrepenant">
+                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe communale de l'entrepenant" disabled>
                                 <label class="form-check-label" for="regimeFiscalEtabl">Taxe communale de l'Entrepenant</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe d'Etat de l'Entreprenant">
+                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe d'Etat de l'Entreprenant" disabled>
                                 <label class="form-check-label" for="regimeFiscalEtabl">Taxe d'Etat de l'Entreprenant</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Autres">
+                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Autres" disabled>
                                 <label class="form-check-label" for="regimeFiscalEtabl">Autres</label>
                             </div>
                         </div>
@@ -380,13 +380,13 @@
                             <label for="identifiantCNPSEtabl" class="col-form-label">Identifiant CNPS de l'entreprise ou de l'artisan :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="identifiantCNPSEtabl" name="identifiantCNPSEtabl" class="form-control" aria-labelledby="identifiantCNPSEtabl">
+                            <input type="text" id="identifiantCNPSEtabl" name="identifiantCNPSEtabl" class="form-control" aria-labelledby="identifiantCNPSEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="numCompteContribuableEtabl" class="col-form-label">N° Compte contribuable :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="numCompteContribuableEtabl" name="numCompteContribuableEtabl" class="form-control" aria-labelledby="numCompteContribuableEtabl">
+                            <input type="text" id="numCompteContribuableEtabl" name="numCompteContribuableEtabl" class="form-control" aria-labelledby="numCompteContribuableEtabl" disabled>
                         </div>
                     </div>
 
@@ -395,19 +395,19 @@
                             <label for="addressPostalEtabl" class="col-form-label">Adresse postale :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="addressPostalEtabl" name="addressPostalEtabl" class="form-control" aria-labelledby="addressPostalEtabl">
+                            <input type="text" id="addressPostalEtabl" name="addressPostalEtabl" class="form-control" aria-labelledby="addressPostalEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="TelEtabl" class="col-form-label">Telephone :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="TelEtabl" name="TelEtabl" class="form-control input-mask" aria-labelledby="TelEtabl"  data-inputmask="'mask': '9999999999'">
+                            <input type="text" id="TelEtabl" name="TelEtabl" class="form-control input-mask" aria-labelledby="TelEtabl"  data-inputmask="'mask': '9999999999'" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="faxEtabl" class="col-form-label">Fax :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="faxEtabl" name="faxEtabl" class="form-control" aria-labelledby="faxEtabl">
+                            <input type="text" id="faxEtabl" name="faxEtabl" class="form-control" aria-labelledby="faxEtabl" disabled>
                         </div>
                     </div>
 
@@ -417,13 +417,13 @@
                             <label for="deptEtabl" class="col-form-label">Département :</label>
                         </div>
                         <div class="col-5">
-                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl">
+                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="communeEtabl" class="col-form-label">Commune :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl">
+                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl" disabled>
                         </div>
                     </div>
 
@@ -432,19 +432,19 @@
                             <label for="spEtabl" class="col-form-label">S/P :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="spEtabl" name="spEtabl" class="form-control" aria-labelledby="spEtabl">
+                            <input type="text" id="spEtabl" name="spEtabl" class="form-control" aria-labelledby="spEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="quartierEtabl" class="col-form-label">Quartier :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="quartEtabl" name="quartEtabl" class="form-control" aria-labelledby="quartEtabl">
+                            <input type="text" id="quartEtabl" name="quartEtabl" class="form-control" aria-labelledby="quartEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="villageEtabl" class="col-form-label">Village :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="villageEtabl" name="villageEtabl" class="form-control" aria-labelledby="villageEtabl">
+                            <input type="text" id="villageEtabl" name="villageEtabl" class="form-control" aria-labelledby="villageEtabl" disabled>
                         </div>
                     </div>
 
@@ -453,13 +453,13 @@
                             <label for="lotEtabl" class="col-form-label">Lot N° :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="lotEtabl" name="lotEtabl" class="form-control" aria-labelledby="lotEtabl">
+                            <input type="text" id="lotEtabl" name="lotEtabl" class="form-control" aria-labelledby="lotEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="ilotEtabl" class="col-form-label">ILOT N° :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="ilotEtabl" name="ilotEtabl" class="form-control" aria-labelledby="ilotEtabl">
+                            <input type="text" id="ilotEtabl" name="ilotEtabl" class="form-control" aria-labelledby="ilotEtabl" disabled>
                         </div>
                     </div>
 
@@ -468,22 +468,22 @@
                             <label for="effectifSalarieEtabl" class="col-form-label">Effectif des salariés :</label>
                         </div>
                         <div class="col-auto d-flex">
-                            <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablFemme" class="form-control" aria-labelledby="effectifSalarieEtablFemme">
+                            <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablFemme" class="form-control" aria-labelledby="effectifSalarieEtablFemme" disabled>
                             <div class="small">Femmes</div>
                         </div>
                         <div class="col-auto d-flex">
-                            <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablHomme" class="form-control" aria-labelledby="effectifSalarieEtablHomme">
+                            <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablHomme" class="form-control" aria-labelledby="effectifSalarieEtablHomme" disabled>
                             <div class="small">Hommes</div>
                         </div>
                         <div class="col-auto">
                             <label for="effectifApprenantEtabl" class="col-form-label">Effectif des salariés :</label>
                         </div>
                         <div class="col-auto d-flex">
-                            <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablFemme" class="form-control" aria-labelledby="effectifApprenantEtablFemme">
+                            <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablFemme" class="form-control" aria-labelledby="effectifApprenantEtablFemme" disabled>
                             <div class="small">Femmes</div>
                         </div>
                         <div class="col-auto d-flex">
-                            <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablHomme" class="form-control" aria-labelledby="effectifApprenantEtablHomme">
+                            <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablHomme" class="form-control" aria-labelledby="effectifApprenantEtablHomme" disabled>
                             <div class="small">Hommes</div>
                         </div>
                     </div>
@@ -512,7 +512,7 @@
                             <label for="referantDateNais" class="col-form-label">Né(e) le :</label>
                         </div>
                         <div class="col-2">
-                            <input type="text" id="referantDateNais" name="referantDateNais" class="form-control input-mask" aria-labelledby="referantDateNais" value="{{ member.dateOfBirth | date('d-m-Y') }}">
+                            <input type="text" id="referantDateNais" name="referantDateNais" class="form-control input-mask" aria-labelledby="referantDateNais" value="{{ member.dateOfBirth | date('d-m-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                         <div class="col-auto">
                             <label for="referantLieuNais" class="col-form-label">à :</label>
@@ -601,7 +601,7 @@
                             <label for="referantDocDateDelivrance" class="col-form-label">Le :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control" aria-labelledby="referantDocDateDelivrance"  value="{{ member.idDeliveryDate| date('d-md-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                            <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control input-mask" aria-labelledby="referantDocDateDelivrance"  value="{{ member.idDeliveryDate| date('d-m-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                     </div>
 
@@ -619,11 +619,11 @@
                                 <label class="form-check-label" for="referantEtatCivil">Célibataire</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="DIVORCE(E)"  {{ member.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="DIVORCE"  {{ member.etatCivil == "DIVORCE" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantEtatCivil">Divorcé(e)</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="VEUF(VE)"  {{ member.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="VEUF"  {{ member.etatCivil == "VEUF" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantEtatCivil">Veuf(ve)</label>
                             </div>
                         </div>
@@ -634,7 +634,7 @@
                             <label for="referantTel" class="col-form-label">Telephone :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="referantTel" name="mobile" class="form-control input-mask" aria-labelledby="referantTel" value="{{ member.mobile }}"  data-inputmask="'mask': '9999999999'">
+                            <input type="text" id="referantTel" name="referantTel" class="form-control input-mask" aria-labelledby="referantTel" value="{{ member.phone }}"  data-inputmask="'mask': '9999999999'">
                         </div>
                         <div class="col-auto">
                             <label for="referantEmail" class="col-form-label">Email :</label>

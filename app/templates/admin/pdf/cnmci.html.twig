@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Formulaire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Administration" name="description" />
+    <link href="/var/www/html/public/assets/admin/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <link href="/var/www/html/public/assets/admin/css/bootstrap-print.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <style>
+
+            .head {
+                background-color: #ffd4f9;
+                color: #000000;
+            }
+            #top-row .form-check-input {
+                width: 1.2em;
+                height: 1.2em;
+                margin-top: 0.4em;
+            }
+
+            .form-check-input:checked[type=radio] {
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e")
+            }
+/*
+            .form-label,
+            .col-form-label,
+            .form-check-label {
+                font-size: 14px;
+            }
+*/
+            .form-check-input {
+                width: 0.85em;
+                height: 0.85em;
+                margin-top: 0.4em;
+                background-color: #cecece;
+            }
+
+            .form-check-input:checked {
+                background-color: #101011;
+                border-color: #000000;
+            }
+
+
+            .form-check-input[type=radio] {
+                border-radius: 0.2em;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                border: none;
+                border-bottom: 1px dot-dash #000;
+                background-color: #f1f1f1;
+                height: 2em;
+            }
+
+            .page-header {
+                height: 160px !important;
+            }
+
+            .row {
+                display: -webkit-box;
+                display: flex;
+            }
+
+            .row>div {
+                -webkit-box-flex: 1;
+                -webkit-flex: 1;
+                flex: 1;
+            }
+
+            .row>div:last-child {
+                margin-right: 0;
+            }
+
+            table {
+                border-collapse: separate !important;
+            }
+
+            th,
+            td {
+                border-top: none;
+                border-left: none;
+                border-right: none;
+            }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="row">
+            <div class="d-block d-flex justify-content-center align-content-center">
+                <div>
+                    <img id="imagePreview" src="/var/www/html/public/members/SY1202300001/167575685363e205354fc80.jpg" alt="" width="100" class="rounded-circle">
+                </div>
+            </div>
+        </div>
+        <div class="container pt-5" >
+            <div  id="top-row" class="row border border-1 border-dark py-sm-3 mb-sm-3">
+                <div class="col-lg-6 col-md-6 d-flex justify-content-center py-sm-3">
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" value="metier" name="immatriculation" checked>
+                        <label for="metiers" class="fw-bold">&nbsp; IMMATRICULATION AU REGISTRE DES METIERS</label>
+                        <p class="mt-3" style="font-size: 12px;">(Arrete N° 1053/MA/CAB du 10 Décembre 2020 définissant les <br>modalités d'immatriculation au Registre des Métiers)</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 d-flex justify-content-center py-sm-3">
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" value="artisanal" name="immatriculation">
+                        <label for="artisanale"  class="fw-bold">&nbsp; IMMATRICULATION AU REPERTOIRE DES ENTREPRISES ARTISANALES</label>
+                        <p class="mt-3" style="font-size: 12px;">(Arrete N° 1053/MA/CAB du 10 Janvier 2016 définissant les <br>modalités d'immatriculation au Repertoire des entreprises artisanales)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-sm-3 border border-1 border-dark">
+                <div class="fw-bold text-center border-bottom border-dark" style="background-color: #f2d0e9;">A. RENSEIGNEMENT SUR L'EXPLOITANT</div>
+                    <div class="row align-content-between" style="display: inline-flex; padding: 10px 10px; width: 100%">
+                        <div>Nom : <span class="p-sm-3" style="background-color: #eaeaea;">{{ member.lastName }}</span></div>
+                        <div>Prénoms : <span class="p-sm-3" style="background-color: #eaeaea;">{{ member.firstName }}</span></div>
+                    </div>
+
+                    <div class="row py-sm-3 mb-sm-2" style="display: inline-flex; padding: 10px 10px; width: 100%">
+                        <div class="col-form-label">Né(e) le : <span>{{ member.dateOfBirth | date('d-m-Y') }}</span></div>
+                        <div class="col-form-label">à : <span>{{ member.birthCity }}</span></div>
+                        <div class="col-form-label">Nationalité : <span>{{ member.nationality }}</span></div>
+                    </div>
+
+                    <div class="row mb-sm-2 py-sm-3" style="display:flex; -webkit-justify-content: space-between; padding: 10px 10px; width: 100%">
+                        <div class="col-form-label">Sexe :
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="H" {{ member.sex == 'H' ? 'checked' : ''}}> Homme</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="F" {{ member.sex == 'F' ? 'checked' : ''}}> Femme</span>
+                        </div>
+                        <div class="col-form-label">Domicilié (e) à : <span>{{ member.address }}</span></div>
+                    </div>
+
+                    <div class="row mb-sm-2 py-sm-3" style="display:flex; -webkit-justify-content: space-between; padding: 10px 10px; width: 100%">
+                        <div class="form-check-label">Type de document :
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CNI" {{ member.idType == 'CNI' ? 'checked' : '' }}>CNI</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CC" {{ member.idType == 'CC' ? 'checked' : '' }}>CC</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="PASSEPORT" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>PASSEPORT</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CARTE DE RESIDENT" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>Carte de résident</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="AUTRE" {{ member.idType == 'AUTRE' ? 'checked' : '' }}>Autre</span>
+                            <span class="form-check-label"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-sm-2 py-sm-3" style="display:flex; -webkit-justify-content: space-between; padding: 10px 10px; width: 100%">
+                        <div class="col-sm-2">
+                            N° : {{ member.idNumber }}
+                        </div>
+                        <div class="col-sm-2">
+                            Délivré à : {{ member.idDeliveryPlace }}>
+                        </div>
+                        <div class="col-sm-1">
+                            Le : {{ member.idDeliveryDate| date('d-md-Y') }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-sm-2 py-sm-3">
+                        <div class="col-sm-2">
+                            <label for="exploitantEtatCivil" class="col-form-label">Etat civil :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ member.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="exploitantEtatCivil">Marié</label>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="CELIBATAIRE" {{ member.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="exploitantEtatCivil">Célibataire</label>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE(E)" {{ member.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="exploitantEtatCivil">Divorcé(e)</label>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF(VE)" {{ member.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="exploitantEtatCivil">Veuf(ve)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-sm-2 py-sm-3">
+                        <div class="col-sm-2">
+                            Telephone : {{ member.mobile }}
+                        </div>
+                        <div class="col-sm-1">
+                            Email : {{ member.email }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-1 border-dark">
+                <div class="fw-bold text-center border-bottom border-dark"  style="background-color: #f2d0e9;">B. RENSEIGNEMENT SUR LA FORMATION PROFESSIONNELLE</div>
+                <div class="p-sm-3">
+                    <div class="row align-items-center">
+                        <div class="col-sm-4">
+                            <label for="formationNiveauEtude" class="col-form-label">Niveau d'étude :</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-check form-check-inline row">
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Non Scolarisé">
+                                <label class="form-check-label" for="education">1- Non scolarisé</label>
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Primaire">
+                                <label class="form-check-label" for="education">2- Primaire</label>
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Secondaire">
+                                <label class="form-check-label" for="education">3- Secondaire</label>
+                                <input class="form-check-input" type="radio" id="formationNiveauEtude" name="formationNiveauEtude" value="Superieure">
+                                <label class="form-check-label" for="education">4- Supérieur</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="align-items-center">
+                        <div class="col-sm-1">
+                            <label for="formationClass" class="col-form-label">Précisez la classe(2-3-4) :</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" id="formationClass" name="formationClass" class="form-control" aria-labelledby="formationClass">
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="formationDiplomeObtenu" class="col-form-label">Précisez le diplôme obtenu :</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" id="formationDiplomeObtenu" name="formationDiplomeObtenu" class="form-control" aria-labelledby="formationDiplomeObtenu">
+                        </div>
+                    </div>
+
+                    <div class="align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="formationApprenMetier" class="col-form-label">Apprentissage du métier :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="Sur le tas">
+                                <label class="form-check-label" for="formationApprenMetier">1- Sur le tas</label>
+                                <input class="form-check-input" type="radio" id="formationApprenMetier" name="formationApprenMetier" value="CFP">
+                                <label class="form-check-label" for="training">2- Centre de Formation Professionnelle (CFP)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="formationApprenMetierNiveau" class="col-form-label">Précisez le niveau (2) :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <input type="text" id="formationApprenMetierNiveau" name="formationApprenMetierNiveau" class="form-control" aria-labelledby="formationApprenMetierNiveau">
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="formationApprenMetierDiplomeObtenu" class="col-form-label">Précisez le diplôme obtenu :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <input type="text" id="formationApprenMetierDiplomeObtenu" name="formationApprenMetierDiplomeObtenu" class="form-control" aria-labelledby="formationApprenMetierDiplomeObtenu">
+                        </div>
+                    </div>
+
+                    <div class="align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="formationApprenMetierCNMCI" class="col-form-label">Avez-vous un diplôme delivré par la CNMCI :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="0">
+                                <label class="form-check-label" for="formationApprenMetierCNMCI">NON</label>
+                                <input class="form-check-input" type="radio" id="formationApprenMetierCNMCI" name="formationApprenMetierCNMCI" value="1">
+                                <label class="form-check-label" for="formationApprenMetierCNMCI">OUI</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="formationApprenMetierTypeCNMCI" class="col-form-label">Lequel ?</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="0">
+                                <label class="form-check-label" for="formationApprenMetierTypeCNMCI">Maître Artisan</label>
+                                <input class="form-check-input" type="radio" id="formationApprenMetierTypeCNMCI" name="formationApprenMetierTypeCNMCI" value="1">
+                                <label class="form-check-label" for="formationApprenMetierTypeCNMCI">Fin d'Apprentissage</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-1 border-dark">
+                <div class="fw-bold text-center border-bottom border-dark"  style="background-color: #f2d0e9;">C. RENSEIGNEMENT SUR L'ETABLISSEMENT</div>
+                <div class="p-sm-3">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="principalActiviteEtabl" class="col-form-label">Activité principale exercée :</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="principalActiviteEtabl" name="principalActiviteEtabl" class="form-control" aria-labelledby="principalActiviteEtabl">
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="activiteSecondaireEtabl" class="col-form-label">Activité secondaire :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="activiteSecondaireEtabl" name="activiteSecondaireEtabl" class="form-control" aria-labelledby="activiteSecondaireEtabl">
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="raisonSocialEtabl" class="col-form-label">Raison social :</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" class="form-control" aria-labelledby="raisonSocialEtabl">
+                        </div>
+                        <div class="col-auto">
+                            <label for="sigleEnseigneEtabl" class="col-form-label">Sigle ou Enseigne :</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl" class="form-control" aria-labelledby="sigleEnseigneEtabl">
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="dateDebutActiviteEtabl" class="col-form-label">Date de début d'activité :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" aria-labelledby="dateDebutActiviteEtabl">
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="typeEntrepriseEtabl" class="col-form-label">Type de l'entreprise :</label>
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="Entreprise individuelle">
+                                <label class="form-check-label" for="typeEntrepriseEtabl">Entreprise individuelle</label>
+                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="SARL">
+                                <label class="form-check-label" for="typeEntrepriseEtabl">SARL</label>
+                                <input class="form-check-input" type="radio" id="typeEntrepriseEtabl" name="typeEntrepriseEtabl" value="GIE">
+                                <label class="form-check-label" for="typeEntrepriseEtabl">GIE</label>
+                                <input class="form-check-input" type="radio" id="typeEntreprise" name="typeEntrepriseEtabl" value="Societe cooperative">
+                                <label class="form-check-label" for="typeEntrepriseEtabl">Société coopérative</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="regimeFiscalEtabl" class="col-form-label">Regime fiscal :</label>
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe communale de l'entrepenant">
+                                <label class="form-check-label" for="regimeFiscalEtabl">Taxe communale de l'Entrepenant</label>
+                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Taxe d'Etat de l'Entreprenant">
+                                <label class="form-check-label" for="regimeFiscalEtabl">Taxe d'Etat de l'Entreprenant</label>
+                                <input class="form-check-input" type="radio" id="regimeFiscalEtabl" name="regimeFiscalEtabl" value="Autres">
+                                <label class="form-check-label" for="regimeFiscalEtabl">Autres</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="identifiantCNPSEtabl" class="col-form-label">Identifiant CNPS de l'entreprise ou de l'artisan :</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" id="identifiantCNPSEtabl" name="identifiantCNPSEtabl" class="form-control" aria-labelledby="identifiantCNPSEtabl">
+                        </div>
+                        <div class="col-auto">
+                            <label for="numCompteContribuableEtabl" class="col-form-label">N° Compte contribuable :</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" id="numCompteContribuableEtabl" name="numCompteContribuableEtabl" class="form-control" aria-labelledby="numCompteContribuableEtabl">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="addressPostalEtabl" class="col-form-label">Adresse postale :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="addressPostalEtabl" name="addressPostalEtabl" class="form-control" aria-labelledby="addressPostalEtabl">
+                        </div>
+                        <div class="col-auto">
+                            <label for="TelEtabl" class="col-form-label">Telephone :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="TelEtabl" name="TelEtabl" class="form-control input-mask" aria-labelledby="TelEtabl"  data-inputmask="'mask': '9999999999'">
+                        </div>
+                        <div class="col-auto">
+                            <label for="faxEtabl" class="col-form-label">Fax :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="faxEtabl" name="faxEtabl" class="form-control" aria-labelledby="faxEtabl">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="" class="col-form-label">Adresse géographique :</label>
+                            <label for="deptEtabl" class="col-form-label">Département :</label>
+                        </div>
+                        <div class="col-5">
+                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl">
+                        </div>
+                        <div class="col-auto">
+                            <label for="communeEtabl" class="col-form-label">Commune :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="spEtabl" class="col-form-label">S/P :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="spEtabl" name="spEtabl" class="form-control" aria-labelledby="spEtabl">
+                        </div>
+                        <div class="col-auto">
+                            <label for="quartierEtabl" class="col-form-label">Quartier :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="quartEtabl" name="quartEtabl" class="form-control" aria-labelledby="quartEtabl">
+                        </div>
+                        <div class="col-auto">
+                            <label for="villageEtabl" class="col-form-label">Village :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="villageEtabl" name="villageEtabl" class="form-control" aria-labelledby="villageEtabl">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="lotEtabl" class="col-form-label">Lot N° :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="lotEtabl" name="lotEtabl" class="form-control" aria-labelledby="lotEtabl">
+                        </div>
+                        <div class="col-auto">
+                            <label for="ilotEtabl" class="col-form-label">ILOT N° :</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" id="ilotEtabl" name="ilotEtabl" class="form-control" aria-labelledby="ilotEtabl">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="effectifSalarieEtabl" class="col-form-label">Effectif des salariés :</label>
+                        </div>
+                        <div class="col-auto d-flex">
+                            <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablFemme" class="form-control" aria-labelledby="effectifSalarieEtablFemme">
+                            <div class="small">Femmes</div>
+                        </div>
+                        <div class="col-auto d-flex">
+                            <input style="max-width: 50px;" type="text" id="effectifSalarieEtabl" name="effectifSalarieEtablHomme" class="form-control" aria-labelledby="effectifSalarieEtablHomme">
+                            <div class="small">Hommes</div>
+                        </div>
+                        <div class="col-auto">
+                            <label for="effectifApprenantEtabl" class="col-form-label">Effectif des salariés :</label>
+                        </div>
+                        <div class="col-auto d-flex">
+                            <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablFemme" class="form-control" aria-labelledby="effectifApprenantEtablFemme">
+                            <div class="small">Femmes</div>
+                        </div>
+                        <div class="col-auto d-flex">
+                            <input style="max-width: 50px;" type="text" id="effectifApprenantEtabl" name="effectifApprenantEtablHomme" class="form-control" aria-labelledby="effectifApprenantEtablHomme">
+                            <div class="small">Hommes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-1 border-dark">
+                <div class="fw-bold text-center border-bottom border-dark"  style="background-color: #f2d0e9;">C. RENSEIGNEMENT SUR PERSONNE POUVANT ENGAGER L'ENTREPRISE</div>
+                <div class="p-sm-3">
+                    <div class="g-3 align-items-center">
+                        <div class="col-sm-1 col-xs-6">
+                            <label for="referantNom" class="col-form-label">Nom :</label>
+                        </div>
+                        <div class="col-sm-5 col-xs-6">
+                            <input type="text" id="referantNom" name="referantNom" class="form-control" aria-labelledby="referantNom" value="{{ member.lastName }}">
+                        </div>
+                        <div class="col-sm-1 col-xs-6">
+                            <label for="referantPrenom" class="col-form-label">Prénoms :</label>
+                        </div>
+                        <div class="col-sm-5 col-xs-6">
+                            <input type="text" id="referantPrenom" name="firstname" class="form-control" aria-labelledby="referantPrenom" value="{{ member.firstName }}">
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="referantDateNais" class="col-form-label">Né(e) le :</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="referantDateNais" name="referantDateNais" class="form-control input-mask" aria-labelledby="referantDateNais" value="{{ member.dateOfBirth | date('d-m-Y') }}">
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="referantLieuNais" class="col-form-label">à :</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" id="referantLieuNais" name="referantLieuNais" class="form-control" aria-labelledby="referantLieuNais" value="{{ member.birthCity }}">
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="referantNationalite" class="col-form-label">Nationalité :</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" id="referantNationalite" name="nationality" class="form-control" aria-labelledby="referantNationalite" value="{{ member.nationality }}">
+                        </div>
+                    </div>
+
+                    <div class="g-3 align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="referantSex" class="col-form-label">Sexe :</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="sex" name="referantSex" value="H" {{ member.sex == 'H' ? 'checked' : ''}}>
+                                <label class="form-check-label" for="referantSex">Homme</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantSex" name="referantSex" value="F" {{ member.sex == 'F' ? 'checked' : ''}}>
+                                <label class="form-check-label" for="referantSex">Femme</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="referantDomicile" class="col-form-label">Domicilié (e) à :</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" id="referantDomicile" name="referantDomicile" class="form-control" aria-labelledby="referantDomicile" value="{{ member.city }}">
+                        </div>
+                    </div>
+
+                    <div class="align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="referantTypeDoc" class="col-form-label">Type de document :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cni" {{ member.idType == 'CNI' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantTypeDoc">CNI</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cc" {{ member.idType == 'CC' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantTypeDoc">CC</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="passeport" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantTypeDoc">Passeport</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="Carte de résident" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantTypeDoc">Carte de résident</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="document" name="referantTypeDoc" value="autre"  {{ member.idType == 'AUTRE' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantTypeDoc">Autre</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="referantTypeDocAutre" class="col-form-label">(à preciser) :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <input type="text" id="referantTypeDocAutre" name="referantTypeDocAutre" class="form-control" aria-labelledby="referantTypeDocAutre">
+                        </div>
+                    </div>
+
+                    <div class="align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="referantNumDoc" class="col-form-label">N° :</label>
+                            <input type="text" id="referantNumDoc" name="referantNumDoc" class="form-control" aria-labelledby="referantNumDoc"  value="{{ member.idNumber }}">
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="referantDocLieuDelivrance" class="col-form-label">Délivré à :</label>
+                            <input type="text" id="referantDocLieuDelivrance" name="referantDocLieuDelivrance" class="form-control" aria-labelledby="referantDocLieuDelivrance"   value="{{ member.idDeliveryPlace }}">
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="referantDocDateDelivrance" class="col-form-label">Le :</label>
+                            <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control" aria-labelledby="referantDocDateDelivrance"  value="{{ member.idDeliveryDate| date('d-md-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="referantEtatCivil" class="col-form-label">Etat civil :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="MARIE"  {{ member.etatCivil == "MARIE" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantEtatCivil">Marié</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="CELIBATAIRE" {{ member.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantEtatCivil">Célibataire</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="DIVORCE(E)"  {{ member.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantEtatCivil">Divorcé(e)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="VEUF(VE)"  {{ member.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="referantEtatCivil">Veuf(ve)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center">
+                        <div class="col-sm-auto">
+                            <label for="referantTel" class="col-form-label">Telephone :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <input type="text" id="referantTel" name="mobile" class="form-control input-mask" aria-labelledby="referantTel" value="{{ member.mobile }}"  data-inputmask="'mask': '9999999999'">
+                        </div>
+                        <div class="col-sm-auto">
+                            <label for="referantEmail" class="col-form-label">Email :</label>
+                        </div>
+                        <div class="col-sm-auto">
+                            <input type="text" id="referantEmail" name="referantEmail" class="form-control" aria-labelledby="referantEmail"  value="{{ member.email }}">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="py-sm-2">
+                <div class="col-sm-9 small">(*) Les promoteurs des entreprises artisanales participant personnellement et continuellement à l'actvité et possédant une qualification professionnelle dans le métier exercé peuvent introduire une demande de carte professionnelle d'artisant</div>
+                <div class="col-sm-3 small">
+                    Déclaration certifiée sincère <br>
+                    A ........................... le ........................................
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+

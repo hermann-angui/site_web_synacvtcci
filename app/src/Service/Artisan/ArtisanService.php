@@ -52,7 +52,7 @@ class ArtisanService
         if (isset($row) && !empty($row)) {
             $photo = new File($uploadDir . $row, false);
             if (file_exists($photo->getPathname())) {
-                $fileName = $this->artisanAssetHelper->uploadAsset($photo, $artisan->getMatricule());
+                $fileName = $this->artisanAssetHelper->uploadAsset($photo, $artisan->getReference());
                 if ($fileName) $artisan->setPhoto($fileName);
             }
         }
@@ -157,10 +157,10 @@ class ArtisanService
      */
     public function saveExploitant(Artisan $artisan, $data): void
     {
-        $artisan->setReference(substr(Uuid::v4()->toRfc4122(), 0, 8));
+        $artisan->setReference(str_replace("-","", substr(Uuid::v4()->toRfc4122(), 0, 18)));
 
-        if (isset($data["exploitantNom"])) $artisan->setLastName($data["exploitantNom"]);
-        if (isset($data["exploitantPrenoms"])) $artisan->setFirstName($data["exploitantPrenoms"]);
+        if (isset($data["exploitantNom"])) $artisan->setLastName(strtoupper($data["exploitantNom"]));
+        if (isset($data["exploitantPrenoms"])) $artisan->setFirstName(strtoupper($data["exploitantPrenoms"]));
         if (isset($data["exploitantDateNais"])) {
             try {
                 $date = \DateTime::createFromFormat("d/m/Y", $data["exploitantDateNais"]);
@@ -170,12 +170,12 @@ class ArtisanService
                 $artisan->setDateOfBirth(null);
             }
         }
-        if (isset($data["exploitantLieuNais"])) $artisan->setBirthCity($data["exploitantLieuNais"]);
-        if (isset($data["exploitantNationalite"])) $artisan->setNationality($data["exploitantNationalite"]);
-        if (isset($data["exploitantSex"])) $artisan->setSex($data["exploitantSex"]);
-        if (isset($data["exploitantTypeDocAutre"])) $artisan->setIdType($data["exploitantTypeDocAutre"]);
+        if (isset($data["exploitantLieuNais"])) $artisan->setBirthCity(strtoupper($data["exploitantLieuNais"]));
+        if (isset($data["exploitantNationalite"])) $artisan->setNationality(strtoupper($data["exploitantNationalite"]));
+        if (isset($data["exploitantSex"])) $artisan->setSex(strtoupper($data["exploitantSex"]));
+        if (isset($data["exploitantTypeDocAutre"])) $artisan->setIdType(strtoupper($data["exploitantTypeDocAutre"]));
         if (isset($data["exploitantTypeDocNum"])) $artisan->setIdNumber($data["exploitantTypeDocNum"]);
-        if (isset($data["exploitantDocLieuDelivrance"])) $artisan->setReprIDDeliveryPlace($data["exploitantDocLieuDelivrance"]);
+        if (isset($data["exploitantDocLieuDelivrance"])) $artisan->setReprIDDeliveryPlace(strtoupper($data["exploitantDocLieuDelivrance"]));
         if (isset($data["exploitantDocDateDelivrance"])) {
             try {
                 $date = \DateTime::createFromFormat("d/m/Y", $data["exploitantDocDateDelivrance"]);
@@ -185,7 +185,7 @@ class ArtisanService
                 $artisan->setIdDeliveryDate(null);
             }
         }
-        if (isset($data["exploitantTel"])) $artisan->setMobile($data["exploitantTel"]);
+        if (isset($data["exploitantTel"])) $artisan->setPhone($data["exploitantTel"]);
         if (isset($data["exploitantEmail"])) $artisan->setEmail($data["exploitantEmail"]);
         if (isset($data["exploitantDomicile"])) $artisan->setDomicile($data["exploitantDomicile"]);
     }

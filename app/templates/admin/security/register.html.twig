@@ -69,9 +69,7 @@
                                         {{ form_label(registrationForm.email) }}
                                         {{ form_widget(registrationForm.email, {'attr': {'class': 'required'}}) }}
                                     </div>
-                                    <div class="row mt-2">
-                                         {{ form_widget(registrationForm.password , {'attr': {'class': 'required'}}) }}
-                                    </div>
+                                    {{ form_widget(registrationForm.password , {'attr': {'class': 'required'}}) }}
                                     <div class="row mb-5">
                                         <div class="col-md-7">
                                             <div class="inpt-form-group">

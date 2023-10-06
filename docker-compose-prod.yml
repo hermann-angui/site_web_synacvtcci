@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     ports:
-      - 15432:80
+      - 83:80
     environment:
       UPLOAD_LIMIT: 300M
 
@@ -56,4 +56,4 @@ services:
     depends_on:
       - app
     ports:
-      - 85:80
+      - 82:80

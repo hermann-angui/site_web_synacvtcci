@@ -10,6 +10,8 @@ use App\Form\MemberRegistrationEditType;
 use App\Form\MemberRegistrationType;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
+use App\Helper\MemberAssetHelper;
+use App\Helper\PasswordHelper;
 use App\Mapper\MemberMapper;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
@@ -22,8 +24,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Uid\Uuid;
 
 #[Route('/admin/member')]
 class MemberController extends AbstractController
@@ -41,13 +45,12 @@ class MemberController extends AbstractController
         return $this->render('admin/member/cnmci_show.html.twig', ['member' => $member]);
     }
 
-    #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['GET'])]
-    public function cnmciEdit(Member $member, Request  $request, MemberRepository $memberRepository): Response
+    #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['POST'])]
+    public function cnmciEdit(Member $member, Request  $request, MemberService $memberService): Response
     {
-        $data = $request->request->all();
-        return $this->json([]);
+        $memberService->updateFromCnmciForm($request->request->all(), $member);
+        return $this->redirectToRoute('admin_member_cncmi_show', ['member' => $member]);
     }
-
 
     #[Route('/pdf/{id}', name: 'admin_pdf', methods: ['GET'])]
     public function pdfGenerate(Request $request, Member $member, Pdf $knpSnappyPdf): Response
@@ -55,11 +58,15 @@ class MemberController extends AbstractController
         $html = $this->renderView('admin/pdf/public_profile.html.twig', array(
             'member'  => $member
         ));
-
         return new PdfResponse(
             $knpSnappyPdf->getOutputFromHtml($html),
             'file.pdf'
         );
+    }
+
+    #[Route('/cnmci-pdf/{id}', name: 'admin_download_cnmci_pdf', methods: ['GET'])]
+    public function downloadCnciPdf(Member $member, MemberService $memberService): Response {
+        return $memberService->downloadCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
     }
 
     #[Route('/new-subscription', name: 'admin_member_new_subscription', methods: ['GET'])]
@@ -84,7 +91,6 @@ class MemberController extends AbstractController
             $memberRequestDto->setPhotoPermisBack($form->get('photoPermisBack')->getData());
 
             $data = $request->request->all();
-
             if(is_array($data) && isset($data['child_lastname']))
             {
                 $count = count($data['child_lastname']);
@@ -99,15 +105,14 @@ class MemberController extends AbstractController
             }
 
             $memberService->createMemberFromDto($memberRequestDto);
-            return $this->redirectToRoute('admin_member_index');
 
+            return $this->redirectToRoute('admin_member_index');
         }
         return $this->renderForm('admin/member/new.html.twig', [
             'member' => $memberRequestDto,
             'form' => $form,
         ]);
     }
-
 
     #[Route('/upload', name: 'admin_member_upload', methods: ['GET', 'POST'])]
     public function upload(Request $request, FileUploadHelper $fileUploadHelper): Response
@@ -212,7 +217,7 @@ class MemberController extends AbstractController
                 'dt' => 'id',
                 'formatter' => function( $d, $row ) use ($memberRepository){
                     $member = $memberRepository->find($d);
-                    $imageUrl = $member->getMatricule() . "/" .  $member->getMatricule() . "_card.png";
+                    $imageUrl = $member->getMatricule() . "/" .  $member->getReference() . "_card.png";
                     $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-2 img-thumbnail'>";
                     return $content;
                 }
@@ -268,7 +273,7 @@ class MemberController extends AbstractController
                 'dt' => 'id',
                 'formatter' => function( $d, $row ) use ($memberRepository){
                     $member = $memberRepository->find($d);
-                    $imageUrl = $member->getMatricule() . "/" .  $member->getPhoto();
+                    $imageUrl = $member->getReference() . "/" .  $member->getPhoto();
                     $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
                     return $content;
                 }
@@ -369,7 +374,7 @@ class MemberController extends AbstractController
                 'dt' => 'id',
                 'formatter' => function( $d, $row ) use ($memberRepository){
                     $member = $memberRepository->find($d);
-                    $imageUrl = $member->getMatricule() . "/" .  $member->getPhoto();
+                    $imageUrl = $member->getReference() . "/" .  $member->getPhoto();
                     $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
                     return $content;
                 }
@@ -422,10 +427,15 @@ class MemberController extends AbstractController
                                       <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
                                          <a href='/admin/member/$id/edit' class='btn btn-sm btn-soft-success'><i class='mdi mdi-pencil-outline'></i></a>
                                       </li>
-                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Supprimer'>
-                                         <a href='/admin/member/$id/supprimer' class='btn btn-sm btn-soft-danger'><i class='mdi mdi-delete-alert-outline'></i></a>
+                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
+                                         <a href='/admin/member/cnmci/show/$id' class='btn btn-sm btn-warning'><i class='mdi mdi-account-box'></i></a>
                                       </li>
                                 </ul>";
+/*
+                       <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Supprimer'>
+                            <a href='/admin/member/$id/supprimer' class='btn btn-sm btn-soft-danger'><i class='mdi mdi-delete-alert-outline'></i></a>
+                       </li>
+*/
                     return $content;
                 }
             ]
@@ -493,7 +503,6 @@ class MemberController extends AbstractController
             $member->setIdDeliveryDate($memberRequestDto->getIdDeliveryDate());
             $member->setIdNumber($memberRequestDto->getIdNumber());
             $member->setIdDeliveryPlace($memberRequestDto->getIdDeliveryPlace());
-            $member->setReference($memberRequestDto->getReference());
             $member->setCommune($memberRequestDto->getCommune());
             $member->setDateOfBirth($memberRequestDto->getDateOfBirth());
             $member->setDrivingLicenseNumber($memberRequestDto->getDrivingLicenseNumber());
@@ -530,7 +539,7 @@ class MemberController extends AbstractController
             if($result->getPhotoPieceFront()) $member->setPhotoPieceFront($result->getPhotoPieceFront()->getFilename());
             if($result->getPhotoPieceBack()) $member->setPhotoPieceBack($result->getPhotoPieceBack()->getFilename());
 
-            $memberService->storeMember($member);
+            $memberService->save($member);
 
             return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -546,7 +555,7 @@ class MemberController extends AbstractController
     {
         if ( true /* $this->isCsrfTokenValid('delete'.$member->getId(), $request->request->get('_token')) */ ) {
             $memberRepository->remove($member, true);
-            $fileName = "/var/www/html/public/members/" . $member->getMatricule() . "/";
+            $fileName = "/var/www/html/public/members/" . $member->getReference() . "/";
             if(file_exists($fileName)) {
                 $fs =  new Filesystem();
                 $fs->remove($fileName);
@@ -554,7 +563,6 @@ class MemberController extends AbstractController
         }
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
     }
-
 
 
 }

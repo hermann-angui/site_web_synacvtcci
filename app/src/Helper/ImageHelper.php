@@ -6,6 +6,9 @@ class ImageHelper
 {
 
     public function createThumbnail($filepath, $thumbpath, $thumbnail_width, $thumbnail_height, $background=false) {
+
+        $d = gd_info();
+
         list($original_width, $original_height, $original_type) = getimagesize($filepath);
         if ($original_width > $original_height) {
             $new_width = $thumbnail_width;
@@ -17,15 +20,16 @@ class ImageHelper
         $dest_x = intval(($thumbnail_width - $new_width) / 2);
         $dest_y = intval(($thumbnail_height - $new_height) / 2);
 
+
         if ($original_type === 1) {
             $imgt = "ImageGIF";
-            $imgcreatefrom = "ImageCreateFromGIF";
+            $imgcreatefrom = "imagecreatefromgif";
         } else if ($original_type === 2) {
             $imgt = "ImageJPEG";
-            $imgcreatefrom = "ImageCreateFromJPEG";
+            $imgcreatefrom = "imagecreatefromjpeg";
         } else if ($original_type === 3) {
             $imgt = "ImagePNG";
-            $imgcreatefrom = "ImageCreateFromPNG";
+            $imgcreatefrom = "imagecreatefrompng";
         } else {
             return false;
         }
