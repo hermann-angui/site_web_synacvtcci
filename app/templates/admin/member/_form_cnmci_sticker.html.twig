@@ -1,6 +1,20 @@
 <!-- MAIN SECTION -->
-<form action="{{ path('admin_member_cncmi_edit', {id: member.id}) }}" id="form_member_edit" method="post">
-    <div class="container pt-5" >
+    <div class="container pt-1">
+        <div class="row">
+            <div class="col-md-6 d-flex justify-content-start">
+                <img src="{{ asset('assets/frontend/img/cnmci.png') }}" width="100" height="85" alt="logo cnmci"/>
+                <div class="fw-bolder mt-3">
+                    Chambre Nationale de</br>
+                    Métiers de Côte d'Ivoire
+                </div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+                <img src="{{ asset('assets/frontend/img/logo-synacvtcci.jpg') }}" width="100" height="85" alt="logo synacvtcci"/>
+            </div>
+        </div>
+            <div class="row my-1 border-top border-bottom border-dark d-flex justify-content-center">
+                <h5 class="text-center fw-bolder my-2">FORMULAIRE DE DEMANDE D'IMMATRICULATION</h5>
+            </div>
             <div  id="top-row" class="row border border-1 border-dark">
                 <div class="col-lg-6 col-md-6 d-flex justify-content-center">
                     <div class="form-check">
@@ -172,18 +186,17 @@
                         </div>
                     </div>
 
-                    <div style="position:absolute;top: 80px;right: 20px;width: 142px;height: 166px;border:1px solid #a8a8a8;padding:20px 20px;">
-                        <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
+                    <div style="position:absolute;top:60px;right: 20px;border:1px solid #a8a8a8;">
+                        <div for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
                             <div>
                                 {% if member is defined and member.photo is not empty %}
-                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="100" class="rounded-0">
+                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="150" class="rounded-0">
                                 {% else %}
                                     <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-0">
                                 {% endif %}
-                                <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
                                 <input type="file" id="member_registration_photo" name="member_registration_photo" class="visually-hidden form-control">
                             </div>
-                        </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -661,14 +674,7 @@
                     Déclaration certifiée sincère <br>
                     A ............................................................. le ........................................
                 </div>
-                <p>NB: Toute</p>
-            </div>
-            <div>
-                <div class="row justify-content-center py-3">
-                    <button type="submit" class="btn btn-primary w-25">Enregister</button>
-                </div>
             </div>
     </div>
-</form>
 <!-- END SECTION -->
 

@@ -14,6 +14,7 @@ use App\Helper\MemberAssetHelper;
 use App\Helper\PasswordHelper;
 use App\Mapper\MemberMapper;
 use App\Repository\MemberRepository;
+use App\Service\Artisan\ArtisanService;
 use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -52,6 +53,20 @@ class MemberController extends AbstractController
         return $this->redirectToRoute('admin_member_cncmi_show', ['member' => $member]);
     }
 
+    #[Route('/cnmci/new', name: 'admin_member_cncmi_new', methods: ['GET','POST'])]
+    public function cnmciNew( Request  $request, MemberService $memberService, ArtisanService $artisanService): Response
+    {
+        if($request->getMethod()==="GET"){
+            return $this->render('admin/member/cnmci_new.html.twig');
+        }elseif($request->getMethod()==="POST"){
+            $data = $request->request->all();
+            $artisan = $artisanService->create($data);
+            $artisanService->store($artisan);
+            return $this->redirectToRoute('admin_member_index');
+        }
+        return $this->render('admin/member/cnmci_new.html.twig');
+    }
+
     #[Route('/pdf/{id}', name: 'admin_pdf', methods: ['GET'])]
     public function pdfGenerate(Request $request, Member $member, Pdf $knpSnappyPdf): Response
     {
@@ -83,7 +98,6 @@ class MemberController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-
             $memberRequestDto->setPhoto($form->get('photo')->getData());
             $memberRequestDto->setPhotoPieceFront($form->get('photoPieceFront')->getData());
             $memberRequestDto->setPhotoPieceBack($form->get('photoPieceBack')->getData());

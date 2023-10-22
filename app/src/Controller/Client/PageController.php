@@ -4,6 +4,7 @@ namespace App\Controller\Client;
 
 use App\DTO\ChildDto;
 use App\DTO\MemberRequestDto;
+use App\Entity\Member;
 use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
 use App\Service\Artisan\ArtisanService;
@@ -162,5 +163,12 @@ class PageController extends AbstractController
     {
         $member = $memberRepository->findOneBy(["matricule" => $request->get("matricule")]);
         return $this->render('admin/member/public_profile.html.twig', ["member" => $member]);
+    }
+
+    #[Route('/cnmci/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
+    public function formCnmciShow($id, MemberRepository $memberRepository): Response
+    {
+        $member = $memberRepository->findOneBy(['codeSticker' => $id]);
+        return $this->render('admin/member/cnmci_show_sticker.html.twig', ['member' => $member]);
     }
 }

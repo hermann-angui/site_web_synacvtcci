@@ -1,6 +1,7 @@
 <!-- MAIN SECTION -->
-<form action="{{ path('admin_member_cncmi_edit', {id: member.id}) }}" id="form_member_edit" method="post">
-    <div class="container pt-5" >
+<form action="{{ path('admin_member_cncmi_new') }}" id="form_member_edit" method="post">
+
+    <div class="container pt-5">
             <div  id="top-row" class="row border border-1 border-dark">
                 <div class="col-lg-6 col-md-6 d-flex justify-content-center">
                     <div class="form-check">
@@ -172,7 +173,7 @@
                         </div>
                     </div>
 
-                    <div style="position:absolute;top: 80px;right: 20px;width: 142px;height: 166px;border:1px solid #a8a8a8;padding:20px 20px;">
+                    <div style="position:absolute;top: 80px;right: 20px;width: 140px;height: 134px;border:1px solid #a8a8a8;padding:20px 20px;">
                         <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
                             <div>
                                 {% if member is defined and member.photo is not empty %}
@@ -185,6 +186,7 @@
                             </div>
                         </label>
                     </div>
+
                 </div>
             </div>
             <div class="row border border-1 border-dark">
