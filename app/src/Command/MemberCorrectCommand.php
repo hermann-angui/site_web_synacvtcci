@@ -3,14 +3,10 @@
 namespace App\Command;
 
 use App\Repository\MemberRepository;
-use App\Service\Artisan\ArtisanService;
-use App\Service\Member\MemberService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -20,7 +16,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class MemberCorrectCommand extends Command
 {
-
     /**
      * @var MemberRepository
      */
@@ -44,22 +39,26 @@ class MemberCorrectCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $folder = "/var/www/html/public/members/";
-        $members = $this->memberRepository->findAll();
-        foreach($members as $member){
-            $path = $folder . $member->getReference();
-            if(!file_exists($path)) mkdir($path, 0777, true);
+        try {
+            $folder = "/var/www/html/public/members/";
+            $members = $this->memberRepository->findAll();
+            foreach ($members as $member) {
+                $path = $folder . $member->getReference();
+                if (!file_exists($path)) mkdir($path, 0777, true);
 
-            $photo = $folder . $member->getMatricule(). "/" . $member->getPhoto();
-            copy($photo, $path . "/" . $member->getPhoto());
+                $photo = $folder . $member->getMatricule() . "/" . $member->getPhoto();
+                copy($photo, $path . "/" . $member->getPhoto());
 
-            $cardPhoto = $folder . $member->getMatricule(). "/" . $member->getCardPhoto();
-            copy($cardPhoto, $path . "/" . $member->getCardPhoto());
+                $cardPhoto = $folder . $member->getMatricule() . "/" . $member->getCardPhoto();
+                copy($cardPhoto, $path . "/" . $member->getCardPhoto());
 
-            $barCode = $folder . $member->getMatricule(). "/" . $member->getMatricule() . "_card.png";
-            copy($cardPhoto, $barCode);
+                $barCode = $folder . $member->getMatricule() . "/" . $member->getMatricule() . "_card.png";
+                copy($cardPhoto, $barCode);
+                return 0;
+            }
+        } catch (\Exception $e) {
+             return 0;
         }
-
         return 0;
     }
 }
