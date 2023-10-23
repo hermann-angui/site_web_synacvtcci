@@ -88,15 +88,18 @@
 <body>
     <table style="margin-top:20px;margin-bottom:10px;border-collapse: collapse;border:1px solid white">
         <tr style="border-collapse: collapse;border:1px solid white">
-            <th style="padding:5px 5px;border-collapse: collapse;border:1px solid white">
+            <td style="padding:5px 5px;border-collapse: collapse;border:1px solid white">
                 <img src="/var/www/html/public/assets/frontend/img/cnmci.png" width="100" alt="logo cnmci" style="border-collapse: collapse;border-width:0px 0px;">
-            </th>
-            <th style="border:0px;padding:5px 5px;border-left: 1px solid #000000;">
+            </td>
+            <td style="border:0px;padding:5px 5px;border-left: 1px solid #000000;">
                 <span>Chambre Nationale de<br>Métiers de Cote d'Ivoire</span>
-            </th>
+            </td>
+            <td style="margin-left:850px;padding:5px 5px;border-collapse: collapse;border:1px solid white">
+                <img src="/var/www/html/public/assets/frontend/img/logo-synacvtcci.jpg" width="95" height="85" alt="logo synacvtcci"/>
+            </td>
             <div style="position:absolute;top:-5px;right:20px;">
                 <div>
-                    <img id="imagePreview" src="/var/www/html/public/members/7f2777e4fc5a410d/167575685363e205354fc80.jpg" alt="" width="95" class="rounded-0">
+                    <img id="imagePreview" src="/var/www/html/public/members/{{ member.reference }}/{{ member.photo }}" alt="" width="95" class="rounded-0">
                 </div>
             </div>
         </tr>
@@ -110,20 +113,18 @@
         </tr>
     </table>
 
-    <table class="border border-1 border-dark" style="margin-top:10px; margin-bottom:10px;">
+    <table class="border border-light border-1 w-100">
         <tr>
-            <td class="p-2 border-0">
-                <div style="display:flex">
-                    <input type="radio" class="form-check-input top-row" name="metiers" checked>
-                    <label for="metiers" class="fw-bold">&nbsp; IMMATRICULATION AU REGISTRE DES METIERS</label>
-                </div>
+          <td style="border-collapse: collapse;"><input type="radio" class="form-check-input top-row" name="metiers" checked></td>
+          <td style="border-collapse: collapse;"><span class="fw-bold">IMMATRICULATION AU REGISTRE DES METIERS</span></td>
+          <td style="border-collapse: collapse;"><input type="radio" class="form-check-input top-row" name="artisanale"></td>
+          <td style="border-collapse: collapse;"><span class="fw-bold">IMMATRICULATION AU REPERTOIRE DES ENTREPRISES ARTISANALES</span></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="border-collapse: collapse; border:1px solid white;">
                 <p class="mt-3" style="font-size: 12px;">(Arrete N° 1053/MA/CAB du 10 Décembre 2020 définissant les modalités d'immatriculation au Registre des Métiers)</p>
             </td>
-            <td class="p-2 border-0">
-                <div style="display:flex">
-                    <input type="radio" class="form-check-input top-row" name="artisanale">
-                    <label for="artisanale" class="fw-bold">&nbsp;IMMATRICULATION AU REPERTOIRE DES ENTREPRISES <br> ARTISANALES</label>
-                </div>
+            <td colspan="2" style="border-collapse: collapse; border:1px solid white;">
                 <p class="mt-3" style="font-size: 12px;">(Arrete N° 1053/MA/CAB du 10 Janvier 2016 définissant les modalités d'immatriculation au Repertoire des entreprises artisanales)</p>
             </td>
         </tr>
@@ -135,8 +136,7 @@
         </tr>
         <tr style="border:0;">
             <td>Nom : <span>{{ member.lastName }}</span></td>
-            <td>Prénoms : <span>{{ member.firstName }}</span></td>
-            <td></td>
+            <td colspan="2">Prénoms : <span>{{ member.firstName }}</span></td>
         </tr>
         <tr style="border:0;">
             <td>Né(e) le : <span>{{ member.dateOfBirth | date('d/m/Y') }}</span></td>
@@ -148,8 +148,7 @@
                 <input class="form-check-input" type="radio" {{ member.sex == 'H' ? 'checked' : ''}}> Masculin
                 <input class="form-check-input" type="radio" {{ member.sex == 'F' ? 'checked' : ''}}> Féminin
             </td>
-            <td>Domicilié (e) à : <span>{{ member.address }}</span></td>
-            <td></td>
+            <td colspan="">Domicilié (e) à : <span>{{ member.address }}</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="3">
