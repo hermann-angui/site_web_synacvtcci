@@ -143,7 +143,7 @@
                             <label for="exploitantDocDateDelivrance" class="col-form-label">Le :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantDocDateDelivrance" name="exploitantDocDateDelivrance" class="form-control input-mask" aria-labelledby="exploitantDocDateDelivrance" value="{{ member.idDeliveryDate| date('d-md-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                            <input type="text" id="exploitantDocDateDelivrance" name="exploitantDocDateDelivrance" class="form-control input-mask" aria-labelledby="exploitantDocDateDelivrance" value="{{ member.idDeliveryDate| date('d/m/Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                     </div>
 
@@ -615,7 +615,7 @@
                             <label for="referantDocDateDelivrance" class="col-form-label">Le :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control input-mask" aria-labelledby="referantDocDateDelivrance"  value="{{ member.idDeliveryDate| date('d-m-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                            <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control input-mask" aria-labelledby="referantDocDateDelivrance"  value="{{ member.idDeliveryDate| date('d/m/Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                     </div>
 
