@@ -39,26 +39,27 @@ class MemberCorrectCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        try {
-            $folder = "/var/www/html/public/members/";
-            $members = $this->memberRepository->findAll();
-            foreach ($members as $member) {
+
+        $folder = "/var/www/html/public/members/";
+        $members = $this->memberRepository->findAll();
+        foreach ($members as $member) {
+            try {
                 $path = $folder . $member->getReference();
                 if (!file_exists($path)) mkdir($path, 0777, true);
 
                 $photo = $folder . $member->getMatricule() . "/" . $member->getPhoto();
-                copy($photo, $path . "/" . $member->getPhoto());
+                if (file_exists($photo)) copy($photo, $path . "/" . $member->getPhoto());
 
                 $cardPhoto = $folder . $member->getMatricule() . "/" . $member->getCardPhoto();
-                copy($cardPhoto, $path . "/" . $member->getCardPhoto());
+                if (file_exists($cardPhoto)) copy($cardPhoto, $path . "/" . $member->getCardPhoto());
 
                 $barCode = $folder . $member->getMatricule() . "/" . $member->getMatricule() . "_card.png";
-                copy($cardPhoto, $barCode);
-                return 0;
+                if (file_exists($barCode)) copy($cardPhoto, $barCode);
+            } catch (\Exception $e) {
+                dump($e);
             }
-        } catch (\Exception $e) {
-             return 0;
         }
+
         return 0;
     }
 }

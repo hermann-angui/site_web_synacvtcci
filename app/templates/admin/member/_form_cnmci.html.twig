@@ -100,7 +100,7 @@
                                 <label class="form-check-label" for="exploitantTypeDoc">Carte de résident</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Autre" {{ member.idType not in ['CC'] ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Autre" {{ member.idType not in ['CC','CNI','PASSEPORT','CARTE DE RESIDENT'] ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantTypeDoc">Autre</label>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                             <label for="exploitantDocDateDelivrance" class="col-form-label">Le :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantDocDateDelivrance" name="exploitantDocDateDelivrance" class="form-control input-mask" aria-labelledby="exploitantDocDateDelivrance" value="{{ member.idDeliveryDate| date('d-md-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                            <input type="text" id="exploitantDocDateDelivrance" name="exploitantDocDateDelivrance" class="form-control input-mask" aria-labelledby="exploitantDocDateDelivrance" value="{{ member.idDeliveryDate| date('d-m-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                     </div>
 
@@ -573,7 +573,7 @@
                                 <label class="form-check-label" for="referantTypeDoc">Carte de résident</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="document" name="referantTypeDoc" value="autre"  {{ member.idType == 'AUTRE' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="document" name="referantTypeDoc" value="autre"  {{ member.idType not in ['CC','CNI','PASSEPORT','CARTE DE RESIDENT'] ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantTypeDoc">Autre</label>
                             </div>
                         </div>

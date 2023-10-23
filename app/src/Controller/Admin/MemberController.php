@@ -33,7 +33,6 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/admin/member')]
 class MemberController extends AbstractController
 {
-
     #[Route('', name: 'admin_member_index', methods: ['GET'])]
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
@@ -80,7 +79,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/cnmci-pdf/{id}', name: 'admin_download_cnmci_pdf', methods: ['GET'])]
-    public function downloadCnciPdf(Member $member, MemberService $memberService): Response {
+    public function downloadCnmciPdf(Member $member, MemberService $memberService): Response {
         return $memberService->downloadCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
     }
 
@@ -210,7 +209,6 @@ class MemberController extends AbstractController
         return $this->file($sampleRealPath, 'sample.csv');
     }
 
-
     #[Route('/cards/list', name: 'admin_cards_list', methods: ['GET'])]
     public function showCardsList(Request $request): Response
     {
@@ -270,7 +268,6 @@ class MemberController extends AbstractController
 
         return new JsonResponse($response);
     }
-
 
     #[Route('/new-subscription/datatable', name: 'admin_member_new_subscription_datatable', methods: ['GET'])]
     public function pendingDT(Request $request, Connection $connection, MemberRepository $memberRepository)
@@ -478,7 +475,7 @@ class MemberController extends AbstractController
 
         $whereResult.= " status='VALIDATED'";
     //  $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
-        $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
     }
