@@ -2,7 +2,7 @@
 
 namespace App\Service\Member;
 
-use App\DTO\MemberRequestDto;
+use App\Entity\Member;
 use App\Helper\ImageGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -33,35 +33,35 @@ class MemberCardGeneratorService
     }
 
     /**
-     * @param MemberRequestDto|null $memberDto
+     * @param Member|null $member
      * @return array|null
      */
-    public function mapToCardViewModel(?MemberRequestDto $memberDto): ?array
+    public function mapToCardViewModel(?Member $member): ?array
     {
-        $data['fullname'] = $memberDto->getLastName() . " " . $memberDto->getFirstName();
-        $data['titre'] = $memberDto->getTitre();
-        $data['matricule'] = $memberDto->getMatricule();
-        $data['outputdir'] = "/var/www/html/public/members/" . $memberDto->getReference() . "/";
+        $data['fullname'] = $member->getLastName() . " " . $member->getFirstName();
+        $data['titre'] = $member->getTitre();
+        $data['matricule'] = $member->getMatricule();
+        $data['outputdir'] = "/var/www/html/public/members/" . $member->getReference() . "/";
         if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
         $data['cardbg'] = "/var/www/html/public/assets/files/card_member_front.jpg";
-        $data['photopath'] =  $memberDto->getPhoto()->getRealPath();
-        $data['qrcodepath'] = $data['outputdir'] . $memberDto->getReference() . '_barcode.png' ;
-        $data['cardpath'] = $data['outputdir'] . $memberDto->getReference() . '_card.png' ;
-        $data['qrcodeurl'] = $this->container->getParameter('profile_url')  . "/" . $memberDto->getReference();
-        $data['expiredate'] = "Expire le " . $memberDto->getSubscriptionExpireDate()->format('d/m/Y');
+        $data['photopath'] =  $data['outputdir']. $member->getPhoto();
+        $data['qrcodepath'] = $data['outputdir'] . $member->getReference() . '_barcode.png' ;
+        $data['cardpath'] = $data['outputdir'] . $member->getReference() . '_card.png' ;
+        $data['qrcodeurl'] = $this->container->getParameter('profile_url')  . "/" . $member->getReference();
+        $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
         $data['website'] = "www.synacvtcci.org";
 
         return $data;
     }
 
     /**
-     * @param MemberRequestDto|null $memberDto
+     * @param Member|null $member
      * @return string|null
      */
-    public function generate(?MemberRequestDto $memberDto): ?File
+    public function generate(?Member $member): ?File
     {
-        if(!$memberDto) return null;
-        $cardData = $this->mapToCardViewModel($memberDto);
+        if(!$member) return null;
+        $cardData = $this->mapToCardViewModel($member);
         $cardData['qrcodepath'] = $this->imageGenerator->generateBarCode($cardData['qrcodeurl'], $cardData['qrcodepath'], 50, 50);
         $userData['view_data'] = $cardData;
         $userData['twig_view'] = "admin/print/card.html.twig";

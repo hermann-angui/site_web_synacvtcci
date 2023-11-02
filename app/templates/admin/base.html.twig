@@ -15,10 +15,81 @@
         <link href="{{ asset('assets/admin/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- App Css-->
         <link href="{{ asset('assets/admin/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+
+     <style>
+
+         .btn-group-sm>.btn, .btn-sm {
+              --bs-btn-border-radius: 0.02rem;
+         }
+         .btn-primary {
+             --bs-btn-color: #fff;
+             --bs-btn-bg: #0701b9;
+             --bs-btn-border-color: #0701b9;
+             --bs-btn-hover-color: #fff;
+             --bs-btn-hover-bg: #1f19d7;
+             --bs-btn-hover-border-color: #1f19d7;
+             --bs-btn-focus-shadow-rgb: 111,132,234;
+             --bs-btn-active-color: #fff;
+             --bs-btn-active-bg: #0701b9;
+             --bs-btn-active-border-color: #0701b9;
+             --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+             --bs-btn-disabled-color: #fff;
+             --bs-btn-disabled-bg: #556ee6;
+             --bs-btn-disabled-border-color: #556ee6;
+         }
+         body[data-sidebar=dark] .vertical-menu {
+             background: #0701b9;
+         }
+         body[data-sidebar=dark] .navbar-brand-box {
+             background: #0701b9;
+         }
+
+         body[data-sidebar=dark] #sidebar-menu ul li a i {
+             color: #000000;
+         }
+
+         body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul>li:hover>a {
+             background: #000000;
+             color: #fff;
+         }
+
+         body[data-sidebar=dark] #sidebar-menu ul li ul.sub-menu li a {
+             color: #ffffff;
+             background-color: #080390;
+         }
+
+         body[data-sidebar=dark] #sidebar-menu ul li a {
+             color: #fafafa;
+         }
+
+         body[data-sidebar=dark] .menu-title {
+             color: #ffffff;
+             background-color: #252525;
+         }
+
+         .menu-title {
+             padding: 6px 20px !important;
+         }
+
+         .metismenu .mm-collapse.mm-show {
+             display: block;
+             color: #ffffff;
+             background-color: #080390;
+         }
+
+         body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul>li:hover>ul a {
+             color: #ffffff;
+         }
+
+         body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul ul {
+             background-color: #080390;
+         }
+
+     </style>
     {% endblock %}
 </head>
 
-<body data-sidebar="dark" data-layout-mode="light" class="sidebar-enable vertical-collpsed">
+<body data-sidebar="dark" data-layout-mode="light">
 
 <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 

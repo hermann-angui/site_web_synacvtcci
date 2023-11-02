@@ -2,19 +2,12 @@
 
 namespace App\Controller\Admin;
 
-use App\DTO\ChildDto;
-use App\DTO\MemberRequestDto;
 use App\Entity\Child;
 use App\Entity\Member;
-use App\Form\MemberRegistrationEditType;
 use App\Form\MemberRegistrationType;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
-use App\Helper\MemberAssetHelper;
-use App\Helper\PasswordHelper;
-use App\Mapper\MemberMapper;
 use App\Repository\MemberRepository;
-use App\Service\Artisan\ArtisanService;
 use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -25,10 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Uid\Uuid;
 
 #[Route('/admin/member')]
 class MemberController extends AbstractController
@@ -36,34 +26,40 @@ class MemberController extends AbstractController
     #[Route('', name: 'admin_member_index', methods: ['GET'])]
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
-        return $this->render('admin/member/index.html.twig');
+        return $this->render('admin/member/synacvtcci/index.html.twig');
     }
 
-    #[Route('/cnmci/show/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
-    public function formCnmciShow(Member $member, MemberRepository $memberRepository): Response
+    #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
+    public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
-        return $this->render('admin/member/cnmci_show.html.twig', ['member' => $member]);
+            return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
 
-    #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['POST'])]
+    #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['GET','POST'])]
     public function cnmciEdit(Member $member, Request  $request, MemberService $memberService): Response
     {
-        $memberService->updateFromCnmciForm($request->request->all(), $member);
-        return $this->redirectToRoute('admin_member_cncmi_show', ['member' => $member]);
+        if($request->getMethod() === "GET"){
+            return $this->render('admin/member/cnmci/cnmci_edit.html.twig', ['member' => $member]);
+        }elseif($request->getMethod() === "POST") {
+            $memberService->createCnmiOrUpdate($member, $request->request->all(), 1);
+            return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
+        }
+
+        return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
 
     #[Route('/cnmci/new', name: 'admin_member_cncmi_new', methods: ['GET','POST'])]
-    public function cnmciNew( Request  $request, MemberService $memberService, ArtisanService $artisanService): Response
+    public function cnmciNew( Request  $request, MemberService $memberService): Response
     {
         if($request->getMethod()==="GET"){
-            return $this->render('admin/member/cnmci_new.html.twig');
+            return $this->render('admin/member/cnmci/cnmci_new.html.twig');
         }elseif($request->getMethod()==="POST"){
             $data = $request->request->all();
-            $artisan = $artisanService->create($data);
-            $artisanService->store($artisan);
-            return $this->redirectToRoute('admin_member_index');
+            $member = $memberService->createCnmiOrUpdate(null, $data);
+            $memberService->store($member);
+            return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
         }
-        return $this->render('admin/member/cnmci_new.html.twig');
+        return $this->render('admin/member/cnmci/cnmci_new.html.twig');
     }
 
     #[Route('/pdf/{id}', name: 'admin_pdf', methods: ['GET'])]
@@ -86,43 +82,22 @@ class MemberController extends AbstractController
     #[Route('/new-subscription', name: 'admin_member_new_subscription', methods: ['GET'])]
     public function indexPending(Request $request, MemberRepository $memberRepository): Response
     {
-        return $this->render('admin/member/new-subscription.html.twig');
+        return $this->render('admin/member/synacvtcci/new-subscription.html.twig');
     }
 
     #[Route('/new', name: 'admin_member_new', methods: ['GET', 'POST'])]
     public function new(Request $request, MemberService $memberService): Response
     {
-        $memberRequestDto = new MemberRequestDto();
-        $form = $this->createForm(MemberRegistrationType::class, $memberRequestDto);
+        $member = new Member;
+        $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $memberRequestDto->setPhoto($form->get('photo')->getData());
-            $memberRequestDto->setPhotoPieceFront($form->get('photoPieceFront')->getData());
-            $memberRequestDto->setPhotoPieceBack($form->get('photoPieceBack')->getData());
-            $memberRequestDto->setPhotoPermisFront($form->get('photoPermisFront')->getData());
-            $memberRequestDto->setPhotoPermisBack($form->get('photoPermisBack')->getData());
-
-            $data = $request->request->all();
-            if(is_array($data) && isset($data['child_lastname']))
-            {
-                $count = count($data['child_lastname']);
-                for($i = 0; $i < $count ; $i++){
-                    $childDto =  new ChildDto();
-                    $childDto->setLastName($data['child_lastname'][$i]);
-                    $childDto->setFirstName($data['child_firstname'][$i]);
-                    $childDto->setSex($data['child_sex'][$i]);
-                    $childDto->setParent($memberRequestDto);
-                    $memberRequestDto->addChild($childDto);
-                }
-            }
-
-            $memberService->createMemberFromDto($memberRequestDto);
-
+            $memberService->handleCnmciFormSubmit($request, $form, $member);
             return $this->redirectToRoute('admin_member_index');
         }
-        return $this->renderForm('admin/member/new.html.twig', [
-            'member' => $memberRequestDto,
+        return $this->renderForm('admin/member/synacvtcci/new.html.twig', [
+            'member' => $member,
             'form' => $form,
         ]);
     }
@@ -140,7 +115,7 @@ class MemberController extends AbstractController
                 $fileUploadHelper->upload($file, $uploadDir,true);
             }
         }
-        return $this->renderForm('admin/member/upload.html.twig');
+        return $this->renderForm('admin/member/synacvtcci/upload.html.twig');
     }
 
     #[Route('/import', name: 'admin_member_import', methods: ['GET', 'POST'])]
@@ -153,18 +128,17 @@ class MemberController extends AbstractController
     #[Route('/generate/new/card/{id}', name: 'admin_member_generate_card', methods: ['GET'])]
     public function generateCard(Member $member, MemberService $memberService, MemberRepository $memberRepository): Response
     {
-        $memberRequestDto = $memberService->generateSingleMemberCard(MemberMapper::MapToMemberRequestDto($member));
-        $member->setCardPhoto($memberRequestDto->getCardPhoto()->getFilename());
+        $member = $memberService->generateSingleMemberCard(MemberMapper::MapToMemberRequestDto($member));
+        $member->setCardPhoto($member->getCardPhoto()->getFilename());
         $member->setModifiedAt(new \DateTime());
         $memberRepository->add($member, true);
-        return $this->render('admin/member/show_card.html.twig', ['member' => $memberRequestDto]);
+        return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
     }
 
     #[Route('/show/card/{id}', name: 'admin_member_show_card', methods: ['GET'])]
     public function showCard(Request $request,Member $member): Response
     {
-        $memberRequestDto = MemberMapper::MapToMemberRequestDto($member);
-         return $this->render('admin/member/show_card.html.twig', ['member' => $memberRequestDto]);
+         return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
     }
 
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
@@ -172,9 +146,8 @@ class MemberController extends AbstractController
     {
         date_default_timezone_set("Africa/Abidjan");
         ini_set('max_execution_time', '-1');
-        $memberRequestDto = MemberMapper::MapToMemberRequestDto($member);
-        $memberService->generateSingleMemberCard($memberRequestDto);
-        $zipFile = $memberService->archiveMemberCards([$memberRequestDto]);
+        $memberService->generateSingleMemberCard($member);
+        $zipFile = $memberService->archiveMemberCards([$member]);
         return $this->file($zipFile);
     }
 
@@ -192,13 +165,12 @@ class MemberController extends AbstractController
             foreach($ranges as $matricule){
                 $matricules[] = "SY12023" .   sprintf('%05d', $matricule);
             }
-            $memberDtos = $memberService->generateMultipleMemberCards($matricules);
+            $members = $memberService->generateMultipleMemberCards($matricules);
         }
         else{
-            $memberDtos = $memberService->generateMultipleMemberCards();
+            $members = $memberService->generateMultipleMemberCards();
         }
-
-        $zipFile = $memberService->archiveMemberCards($memberDtos);
+        $zipFile = $memberService->archiveMemberCards($members);
         return $this->file($zipFile);
     }
 
@@ -212,7 +184,7 @@ class MemberController extends AbstractController
     #[Route('/cards/list', name: 'admin_cards_list', methods: ['GET'])]
     public function showCardsList(Request $request): Response
     {
-        return $this->render('admin/member/cards-list.html.twig');
+        return $this->render('admin/member/synacvtcci/cards-list.html.twig');
     }
 
     #[Route('/cardslist/dt', name: 'admin_cards_list_dt', methods: ['GET'])]
@@ -318,26 +290,30 @@ class MemberController extends AbstractController
                 'dt' => 'id_number'
             ],
             [
-                'db' => 'id_type',
-                'dt' => 'id_type'
-            ],
-            [
-                'db' => 'mobile',
-                'dt' => 'mobile'
-            ],
-            [
                 'db'        => 'email',
                 'dt'        => 'email',
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
-                    $content =  "<ul class='list-unstyled hstack gap-1 mb-0'>
-                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
-                                         <a href='/admin/member/$id/edit' class='btn btn-sm btn-dark d-flex'><i class='mdi mdi-18px mdi-pencil-outline'></i> Inscription SYNACVTCCI</a>
-                                      </li>
-                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
-                                         <a href='/admin/member/cnmci/show/$id' class='btn btn-sm btn-warning d-flex'><i class='mdi mdi-18px mdi-pencil-outline'></i> Inscription CNMCCI</a>
-                                      </li>
-                                </ul>";
+                    $content =  "<div class='d-flex gap-2 flex-wrap'>
+                                    <div class='btn-group'>
+                                        <button class='btn btn-info dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                            <small>SYNACVTCCI</small><i class='mdi mdi-chevron-down'></i>
+                                        </button>
+                                        <div class='dropdown-menu' style=''>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Afficher</a>
+                                            <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
+                                        </div>
+                                    </div>
+                                    <div class='btn-group'>
+                                        <button class='btn btn-dark dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                            <small>CNMCI</small><i class='mdi mdi-chevron-down'></i>
+                                        </button>
+                                        <div class='dropdown-menu' style=''>
+                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Afficher</a>
+                                            <a class='dropdown-item' href='/admin/member/cnmci/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
+                                        </div>
+                                    </div>
+                                </div> ";
                     return $content;
                 }
             ]
@@ -349,23 +325,8 @@ class MemberController extends AbstractController
             'db'   => $paramDB['dbname'],
             'host' => $paramDB['host']
         );
-
-        $whereResult = '';
-        if(!empty($params['matricule'])){
-            $whereResult .= " matricule LIKE '%". $params['matricule'] . "%' AND";
-        }
-        if(!empty($params['driving_license_number'])) {
-            $whereResult .= " driving_license_number LIKE '%". $params['driving_license_number']. "%' AND";
-        }
-        if(!empty($params['last_name'])) {
-            $whereResult .= " last_name LIKE '%". $params['last_name']. "%' AND";
-        }
-        if(!empty($params['id_number'])) {
-            $whereResult .= " id_number	LIKE '%". $params['id_number	'] . "%' AND ";
-        }
-
-        $whereResult.= " status='PENDING'";
-        $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+        $whereResult= " status='PENDING'";
+        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
     }
@@ -419,34 +380,32 @@ class MemberController extends AbstractController
                 'dt' => 'id_number'
             ],
             [
-                'db' => 'id_type',
-                'dt' => 'id_type'
-            ],
-            [
-                'db' => 'mobile',
-                'dt' => 'mobile'
-            ],
-            [
                 'db'        => 'email',
                 'dt'        => 'email',
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
-                    $content =  "<ul class='list-unstyled hstack gap-1 mb-0'>
-                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='View'>
-                                          <a href='/admin/member/$id' class='btn btn-sm btn-soft-primary'><i class='mdi mdi-eye-outline'></i></a>
-                                      </li>
-                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
-                                         <a href='/admin/member/$id/edit' class='btn btn-sm btn-soft-success'><i class='mdi mdi-pencil-outline'></i></a>
-                                      </li>
-                                      <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Edit'>
-                                         <a href='/admin/member/cnmci/show/$id' class='btn btn-sm btn-warning'><i class='mdi mdi-account-box'></i></a>
-                                      </li>
-                                </ul>";
-/*
-                       <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='Supprimer'>
-                            <a href='/admin/member/$id/supprimer' class='btn btn-sm btn-soft-danger'><i class='mdi mdi-delete-alert-outline'></i></a>
-                       </li>
-*/
+                    $content =  "<div class='d-flex gap-2 flex-wrap'>
+                                    <div class='btn-group'>
+                                        <button class='btn btn-info dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                            <small>SYNACVTCCI</small><i class='mdi mdi-chevron-down'></i>
+                                        </button>
+                                        <div class='dropdown-menu' style=''>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Afficher</a>
+                                            <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
+                                            <a class='dropdown-item' href='#'><i class='mdi mdi-trash-can'></i>Supprimer</a>
+                                        </div>
+                                    </div>
+                                    <div class='btn-group'>
+                                        <button class='btn btn-dark dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                            <small>CNMCI</small><i class='mdi mdi-chevron-down'></i>
+                                        </button>
+                                        <div class='dropdown-menu' style=''>
+                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Afficher</a>
+                                            <a class='dropdown-item' href='/admin/member/cnmci/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
+                                            <a class='dropdown-item' href='#'><i class='mdi mdi-trash-can'></i> Supprimer</a>
+                                        </div>
+                                    </div>
+                                </div> ";
                     return $content;
                 }
             ]
@@ -483,7 +442,7 @@ class MemberController extends AbstractController
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
     public function show(Member $member): Response
     {
-        return $this->render('admin/member/show.html.twig', [
+        return $this->render('admin/member/synacvtcci/show.html.twig', [
             'member' => $member,
         ]);
     }
@@ -492,70 +451,15 @@ class MemberController extends AbstractController
     public function edit(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
-        $memberRequestDto = MemberMapper::MapToMemberRequestDto($member);
-        $form = $this->createForm(MemberRegistrationEditType::class, $memberRequestDto);
+        $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($form->get('photo')->getData())            $memberRequestDto->setPhoto($form->get('photo')->getData());
-            if($form->get('photoPieceFront')->getData())  $memberRequestDto->setPhotoPieceFront($form->get('photoPieceFront')->getData());
-            if($form->get('photoPieceBack')->getData())   $memberRequestDto->setPhotoPieceBack($form->get('photoPieceBack')->getData());
-            if($form->get('photoPermisFront')->getData()) $memberRequestDto->setPhotoPermisFront($form->get('photoPermisFront')->getData());
-            if($form->get('photoPermisBack')->getData())  $memberRequestDto->setPhotoPermisBack($form->get('photoPermisBack')->getData());
-
-            $member->setStatus($memberRequestDto->getStatus());
-            $member->setCompany($memberRequestDto->getCompany());
-            $member->setTitre($memberRequestDto->getTitre());
-            $member->setEmail($memberRequestDto->getEmail());
-            $member->setSex($memberRequestDto->getSex());
-            $member->setAddress($memberRequestDto->getAddress());
-            $member->setReference($memberRequestDto->getReference());
-            $member->setEtatCivil($memberRequestDto->getEtatCivil());
-            $member->setIdDeliveryDate($memberRequestDto->getIdDeliveryDate());
-            $member->setIdNumber($memberRequestDto->getIdNumber());
-            $member->setIdDeliveryPlace($memberRequestDto->getIdDeliveryPlace());
-            $member->setCommune($memberRequestDto->getCommune());
-            $member->setDateOfBirth($memberRequestDto->getDateOfBirth());
-            $member->setDrivingLicenseNumber($memberRequestDto->getDrivingLicenseNumber());
-            $member->setBirthCity($memberRequestDto->getBirthCity());
-            $member->setIdType($memberRequestDto->getIdType());
-            $member->setCountry($memberRequestDto->getCountry());
-            $member->setCity($memberRequestDto->getCity());
-            $member->setMobile($memberRequestDto->getMobile());
-            $member->setPartnerLastName($memberRequestDto->getPartnerLastName());
-            $member->setPhone($memberRequestDto->getPhone());
-            $member->setFirstName($memberRequestDto->getFirstName());
-            $member->setLastName($memberRequestDto->getLastName());
-            $member->setQuartier($memberRequestDto->getQuartier());
-            $member->setWhatsapp($memberRequestDto->getWhatsapp());
-            $member->setNationality($memberRequestDto->getNationality());
-            $member->setStatus("VALIDATED");
-
-            $data = $request->request->all();
-            if(is_array($data) && isset($data['child_lastname'])) {
-                $count = count($data['child_lastname']);
-                for($i = 0; $i < $count ; $i++){
-                    $child =  new Child();
-                    $child->setLastName(strtoupper($data['child_lastname'][$i]));
-                    $child->setFirstName(strtoupper($data['child_firstname'][$i]));
-                    $child->setSex(strtoupper($data['child_sex'][$i]));
-                    $child->setParent($member);
-                    $member->addChild($child);
-                }
-            }
-            $result = $memberService->saveMemberImages($memberRequestDto);
-            if($result->getPhoto()) $member->setPhoto($result->getPhoto()->getFilename());
-            if($result->getPhotoPermisFront()) $member->setPhotoPermisFront($result->getPhotoPermisFront()->getFilename());
-            if($result->getPhotoPermisBack()) $member->setPhotoPermisBack($result->getPhotoPermisBack()->getFilename());
-            if($result->getPhotoPieceFront()) $member->setPhotoPieceFront($result->getPhotoPieceFront()->getFilename());
-            if($result->getPhotoPieceBack()) $member->setPhotoPieceBack($result->getPhotoPieceBack()->getFilename());
-
-            $memberService->save($member);
-
+            $memberService->updateMember($member, $request->files->all());
             return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/member/edit.html.twig', [
+        return $this->renderForm('admin/member/synacvtcci/edit.html.twig', [
             'member' => $member,
             'form' => $form,
         ]);
@@ -574,6 +478,5 @@ class MemberController extends AbstractController
         }
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
     }
-
 
 }

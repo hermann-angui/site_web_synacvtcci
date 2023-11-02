@@ -2,13 +2,13 @@
 
 namespace App\Form;
 
-use App\DTO\MemberRequestDto;
 use App\Entity\Member;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Intl\Countries;
@@ -52,6 +52,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Titre',
                 'mapped' => true,
                 'required' => false,
+                'attr' => ['class' => 'select2'],
                 'choices' => Member::getTitres(),
                 'empty_data' => null,
             ])
@@ -60,12 +61,19 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Compagnie de VTC',
                 'mapped' => true,
                 'required' => false,
+                'attr' => ['class' => 'select2'],
                 'choices' => [
                     "YANGO" => "YANGO",
                     "UBER" => "UBER",
                     "HEECTH" => "HEECTH",
                     "LE TRANSPORTEUR" => "LE TRANSPORTEUR",
-                    "IZIGO" => "IZIGO"
+                    "IZIGO" => "IZIGO",
+                    "TAXI JET" => "TAXI JET",
+                    "TREIIZE TAXI" => "TREIIZE TAXI",
+                    "GREEN VTC" => "GREEN VTC",
+                    "IVOIRE TAXI" => "IVOIRE TAXI",
+                    "SB DRIVE" => "SB DRIVE",
+                    "AUTRE" => "AUTRE"
                 ],
                 'empty_data' => null,
                 'data' => null,
@@ -76,8 +84,9 @@ class MemberRegistrationType extends AbstractType
                 'required' => false,
                 'data' => 'Ivoirienne'
             ])
-            ->add('whatsapp', TextType::class, [
+            ->add('whatsapp', TelType::class, [
                 'label' => "Whatsapp",
+                'attr' => ['class' => 'input-mask', 'data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
                 'required' => false
             ])
@@ -90,6 +99,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Type de pièce',
                 'mapped' => true,
                 'required' => false,
+                'attr' => ['class' => 'select2'],
                 'choices' => [
                     'CNI' => 'CNI',
                     'CC' => 'CC',
@@ -104,6 +114,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Etat civil',
                 'mapped' => true,
                 'required' => false,
+                'attr' => ['class' => 'select2'],
                 'choices' => [
                     'MARIE(E)' => 'MARIE(E)',
                     'CELIBATAIRE' => 'CELIBATAIRE',
@@ -120,9 +131,12 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('IdDeliveryDate',DateType::class, [
                 'label' => 'Délivré le',
+                'attr' => ['class' => 'js-datepicker'],
+                'widget' => 'single_text',
+                'html5' => false,
                 'mapped' => true,
                 'required' => false,
-                'format' => 'dd-MM-yyyy',
+                'format' => 'dd/MM/yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
             ->add('sex', ChoiceType::class, [
@@ -138,9 +152,12 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('date_of_birth',DateType::class, [
                 'label' => 'Date de naissance',
+                'attr' => ['class' => 'js-datepicker'],
+                'widget' => 'single_text',
+                'html5' => false,
                 'mapped' => true,
                 'required' => false,
-                'format' => 'dd-MM-yyyy',
+                'format' => 'dd/MM/yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
             ->add('birth_city', TextType::class, [
@@ -182,6 +199,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Ville",
                 'mapped' => true,
                 'required' => false,
+                'attr' => ['class' => 'select2'],
                 'choices' => [
                     "ABIDJAN" => "ABIDJAN",
                     "BOUAKE" => "BOUAKE",
@@ -203,6 +221,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Commune",
                 'mapped' => true,
                 'required' => false,
+                'attr' => ['class' => 'select2'],
                 'choices' => [
                     "ABOBO" => "ABOBO",
                     "ANYAMA" => "ANYAMA",
@@ -224,15 +243,18 @@ class MemberRegistrationType extends AbstractType
                 'required' => false
             ])
             ->add('mobile', TextType::class, [
-                'label' => "Tel Mobile",
+                'label' => "Mobile",
+                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
                 'required' => false
             ])
+/*
             ->add('phone', TextType::class, [
                 'label' => "Tel fixe",
                 'mapped' => true,
                 'required' => false
             ])
+*/
             ->add('partner_first_name', TextType::class, [
                 'label' => "Prénoms conjoint",
                 'mapped' => true,
@@ -243,7 +265,8 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false
             ])
-/*            ->add('status', ChoiceType::class, [
+/*
+            ->add('status', ChoiceType::class, [
                 'label' => 'Statut',
                 'required' => true,
                 'mapped' => false,
@@ -253,14 +276,15 @@ class MemberRegistrationType extends AbstractType
                 ],
                 'empty_data' =>  null,
                 'data' => null,
-            ])*/
+            ])
+*/
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => MemberRequestDto::class,
+            'data_class' => Member::class,
         ]);
     }
 }

@@ -35,18 +35,13 @@ class Child
 
     #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'children')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Member $parent = null;
-
-    #[ORM\ManyToOne(targetEntity: Artisan::class, inversedBy: 'children')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Artisan $artisan = null;
+    private ?Member $member = null;
 
     public function __construct()
     {
         $this->created_at = new \DateTime();
         $this->modified_at = new \DateTime();
     }
-
 
 
     /**
@@ -175,22 +170,21 @@ class Child
     }
 
     /**
-     * @return Artisan|null
+     * @return Member|null
      */
-    public function getArtisan(): ?Artisan
+    public function getMember(): ?Member
     {
-        return $this->artisan;
+        return $this->member;
     }
 
     /**
-     * @param Artisan|null $artisan
+     * @param Member|null $member
      * @return Child
      */
-    public function setArtisan(?Artisan $artisan): Child
+    public function setMember(?Member $member): Child
     {
-        $this->artisan = $artisan;
+        $this->member = $member;
         return $this;
     }
-
 
 }

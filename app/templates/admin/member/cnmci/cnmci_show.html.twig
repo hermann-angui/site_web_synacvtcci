@@ -1,0 +1,127 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .head {
+            background-color: #ffd4f9;
+            color: #000000;
+        }
+        #top-row .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.4em;
+        }
+
+        .form-check-input:checked[type=radio] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e")
+        }
+
+        .form-label, .col-form-label, .form-check-label {
+            font-size: 14px;
+        }
+
+        .form-check-input {
+            width: 0.85em;
+            height: 0.85em;
+            margin-top: 0.4em;
+        }
+
+        .form-check-input:checked {
+            background-color: #101011;
+            border-color: #000000;
+        }
+
+        .form-check-input:focus {
+            border-color: none;
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .form-check-input[type=radio] {
+            border-radius: 0.2em;
+        }
+
+        div.input, input[type="text"],input[type="number"] {
+            border: 0;
+            border-bottom: 1px dashed #000;
+            background-color: #f4f5f8;
+            height: 2em;
+        }
+
+        .form-control:focus {
+            background-color: #f4f5f8;
+            border-color: #000;
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .page-header {
+            height: 160px !important;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        {{ include('admin/_partials/header.html.twig') }}
+
+        <!-- ========== Left Sidebar Start ========== -->
+        {{ include('admin/_partials/left-sidebar.html.twig')}}
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="flex-shrink-0">
+                                            {% if member is not null %}
+                                                <a href="{{ path('admin_download_cnmci_pdf', {id: member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" ><span class="fa fa-eye fa-1x"></span>Télécharger le pdf</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Formulaire de la chambre de métiers</h4>
+                                    {{ include('admin/member/cnmci/_form_cnmci.html.twig') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- container-fluid -->
+            </div><!-- End Page-content -->
+
+            {{ include('admin/_partials/footer.html.twig') }}
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right Sidebar -->
+
+    <!-- /Right-bar -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}
+
+

@@ -2,15 +2,12 @@
 
 namespace App\Service\Member;
 
-use App\DTO\MemberRequestDto;
 use App\Entity\Child;
 use App\Entity\Member;
 use App\Helper\CsvReaderHelper;
 use App\Helper\MemberAssetHelper;
 use App\Helper\PasswordHelper;
 use App\Helper\PdfGenerator;
-use App\Mapper\ChildMapper;
-use App\Mapper\MemberMapper;
 use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
 use DateTime;
@@ -22,6 +19,9 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ *
+ */
 class MemberService
 {
     public function __construct(
@@ -36,12 +36,42 @@ class MemberService
     {
     }
 
+    public function handleCnmciFormSubmit($request, $form, &$member, $update = 0): Member {
+
+        $images['photo'] = $form->get('photo')?->getData();
+        $images['photoPieceFront'] = $form->get('photoPieceFront')?->getData();
+        $images['photoPieceBack'] = $form->get('photoPieceBack')?->getData();
+        $images['photoPermisFront'] = $form->get('photoPermisFront')?->getData();
+        $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
+
+        $data = $request->request->all();
+
+        if(isset($data['child'])){
+            foreach($data['child'] as $childItem){
+                $child=  new Child();
+                $child->setLastName($childItem['lastname']);
+                $child->setFirstName($childItem['firstname']);
+                $child->setSex($childItem['sex']);
+                $child->setParent($member);
+                $member->addChild($child);
+            }
+        }
+
+        if(!$update) $this->createMember($member, $images);
+        else $this->updateMember($member, $images);
+
+        $member->setStatus("PENDING");
+        $this->memberRepository->add($member, true);
+
+        return $member;
+    }
+
     /**
      * @param Member $member
      * @return void
      * @throws \Exception
      */
-    public function createMember(Member $member): void
+    public function createMember(Member $member, array $images): Member
     {
         date_default_timezone_set("Africa/Abidjan");
 
@@ -70,87 +100,131 @@ class MemberService
 
         $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
 
-        $this->saveMemberImages(MemberMapper::MapToMemberRequestDto($member));
+        $this->saveMemberImages($member, $images);
 
         $this->memberRepository->add($member, true);
 
-        foreach($member->getChildren() as $childDto){
-            $this->childRepository->add(ChildMapper::MapToChild($member, $childDto), true);
+        foreach($member->getChildren() as $child){
+            $this->childRepository->add($child, true);
         }
+
+        return $member;
 
     }
 
-
     /**
-     * @param MemberRequestDto $memberRequestDto
+     * @param Member $member
      * @return void
      * @throws \Exception
      */
-    public function createMemberFromDto(MemberRequestDto $memberRequestDto, bool $skipMatricule = false): void
+    public function updateMember(Member $member, array $images): Member
     {
         date_default_timezone_set("Africa/Abidjan");
 
-        $memberRequestDto->setRoles(['ROLE_USER']);
-        $date = new DateTime('now');
-        $memberRequestDto->setSubscriptionDate($date);
-
-        if (!$memberRequestDto->getReference()) {
-            $memberRequestDto->setReference(
+        if (!$member->getReference()) {
+            $member->setReference(
                 str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
             );
         }
-        if(!$skipMatricule){
-            $sexCode = null;
-            if($memberRequestDto->getSex() === "H") $sexCode = "SY1";
-            elseif($memberRequestDto->getSex() === "F") $sexCode = "SY2";
 
-            $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
-            $lastRowId = $this->memberRepository->getLastRowId();
+        $this->saveMemberImages($member, $images);
 
-            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $lastRowId+1);
-            $memberRequestDto->setMatricule($matricule);
-
-            $expiredDate = $date->format('Y-12-31');
-            $memberRequestDto->setSubscriptionExpireDate(new \DateTime($expiredDate));
-        }
-
-        $memberRequestDto->setPassword($this->userPasswordHasher->hashPassword($memberRequestDto, PasswordHelper::generate()));
-        $this->saveMemberImages($memberRequestDto);
-        $member = MemberMapper::MapToMember($memberRequestDto);
         $this->memberRepository->add($member, true);
 
-        foreach($memberRequestDto->getChildren() as $childDto){
-            $this->childRepository->add(ChildMapper::MapToChild($member, $childDto), true);
+        foreach($member->getChildren() as $child){
+            $this->childRepository->add($child, true);
         }
+
+        return $member;
 
     }
 
     /**
-     * @param MemberRequestDto|null $memberDto
-     * @return void
+     * @param $data
+     * @return Member
      */
-    public function deleteMember(?MemberRequestDto $memberDto): void
+    public function createCnmiOrUpdate(?Member $member, $data, bool $update = false)
     {
+        if(!$update && !$member) $member =  new Member();
 
+        $member->setCodeSticker(!empty($data["CodeSticker"]) ? $data["CodeSticker"] : null);
+        if (!$member->getReference()) $member->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)));
+        if (!$member->getMatricule()) {
+            $member->setRoles(['ROLE_USER']);
+
+            $date = new \DateTime('now');
+            $member->setSubscriptionDate($date);
+
+            $sexCode = null;
+            if ($member->getSex() === "H") $sexCode = "SY1";
+            elseif ($member->getSex() === "F") $sexCode = "SY2";
+
+            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+            $member->setMatricule($matricule);
+
+            $expiredDate = $date->format('Y-12-31');
+            $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
+
+            $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
+        }
+
+        if (!empty($data["member_registration_photo"])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($data["member_registration_photo"], $member->getReference());
+            if ($fileName) $member->setPhoto($fileName);
+        }
+
+        $this->memberRepository->add($member, true);
+        /***********  MEMBER EXPLOITANT ***/
+        $this->saveExploitant($member, $data);
+
+        /*******FORMATION PROFESSIONNELLE******/
+        $this->saveFormationProfessionnelle($member, $data);
+
+        /***************ETABLISSEMENT ********************/
+        $this->saveEtablissement($member, $data);
+
+        /****  PERSONNE POUVANT ENGAGER L'ENTREPRISE ****/
+        $this->saveReferant($member, $data);
+
+        /*************STORE IMAGE FILES*********************/
+        $this->saveMemberImages($member, $data);
+
+        /**************STORE CHILDREN*****************/
+        $this->saveChildren($member, $data);
+
+        return $member;
     }
 
+
+    /**
+     * @param Member|null $member
+     * @return void
+     */
+    public function deleteMember(?Member $member): void
+    {
+          $this->memberRepository->remove($member, true);
+    }
+
+    /**
+     * @return Member[]
+     */
     public function getAllMembers(){
         return $this->memberRepository->findAll();
     }
 
     /**
-     * @param MemberRequestDto|null $memberRequestDto
-     * @return MemberRequestDto|null
+     * @param Member|null $member
+     * @return Member|null
      */
-    public function generateSingleMemberCard(?MemberRequestDto $memberRequestDto): ?MemberRequestDto
+    public function generateSingleMemberCard(?Member $member): ?Member
     {
         date_default_timezone_set("Africa/Abidjan");
-        if ($memberRequestDto) {
-            if(empty($memberRequestDto->getPhoto())) return null;
-            $cardImage = $this->memberCardGeneratorService->generate($memberRequestDto);
-            $memberRequestDto->setCardPhoto(new File($cardImage));
-            $memberRequestDto->setModifiedAt(new DateTime());
-            return $memberRequestDto;
+        if ($member) {
+            if(empty($member->getPhoto())) return null;
+            $cardImage = $this->memberCardGeneratorService->generate($member);
+            $member->setCardPhoto(new File($cardImage));
+            $member->setModifiedAt(new DateTime());
+            return $member;
         }
         return null;
     }
@@ -161,7 +235,7 @@ class MemberService
     public function generateMultipleMemberCards(array $matricules = []): array
     {
         date_default_timezone_set("Africa/Abidjan");
-        $memberDtos = [];
+        $members = [];
         if(empty($matricules)){
             $members = $this->memberRepository->findAll();
         }else{
@@ -169,18 +243,16 @@ class MemberService
         }
 
         foreach ($members as $member) {
-            $memberDto = MemberMapper::MapToMemberRequestDto($member);
-            $this->generateSingleMemberCard($memberDto);
-            $memberDtos[] = $memberDto;
+            $this->generateSingleMemberCard($member);
         }
-        return $memberDtos;
+        return $members;
     }
 
     /**
-     * @param array $memberDtos
+     * @param array $members
      * @return string|null
      */
-    public function archiveMemberCards(array $memberDtos): ?string
+    public function archiveMemberCards(array $members): ?string
     {
         date_default_timezone_set("Africa/Abidjan");
         set_time_limit(0);
@@ -189,22 +261,20 @@ class MemberService
         if(file_exists($zipFile)) unlink($zipFile);
         if($zipArchive->open($zipFile, \ZipArchive::CREATE) === true)
         {
-            /**@var MemberRequestDto $memberDto **/
-            foreach($memberDtos as $memberDto)
+            /**@var Member $member **/
+            foreach($members as $member)
             {
-                $photoRealPath =  $memberDto->getPhoto();
-                if(is_file($photoRealPath)) {
-                    $zipArchive->addFile($photoRealPath->getRealPath(), $memberDto->getReference() . '_photo.png');
+                if(is_file($member->getPhoto())) {
+                    $zipArchive->addFile($this->getMemberDir($member) . $member->getPhoto(), $member->getReference() . '_photo.png');
                 }
 
-                $cardPhotoRealPath =  $memberDto->getCardPhoto();
-                if(is_file($cardPhotoRealPath)) {
-                    $zipArchive->addFile($cardPhotoRealPath->getRealPath(), $memberDto->getReference() . '_card.png');
+                if(is_file($member->getCardPhoto())) {
+                    $zipArchive->addFile($this->getMemberDir($member) . $member->getCardPhoto(), $member->getReference() . '_card.png');
                 }
 
-                $barCodePhotoRealPath = $this->container->getParameter('kernel.project_dir') . "/public/members/" . $memberDto->getReference() . "/" . $memberDto->getReference() . "_barcode.png";
+                $barCodePhotoRealPath = $this->getMemberDir($member) . $member->getReference() . "_barcode.png";
                 if(is_file($barCodePhotoRealPath)) {
-                    $zipArchive->addFile($barCodePhotoRealPath, $memberDto->getReference() . '_barcode.png');
+                    $zipArchive->addFile($barCodePhotoRealPath, $member->getReference() . '_barcode.png');
                 }
             }
             $zipArchive->close();
@@ -370,39 +440,38 @@ class MemberService
     }
 
     /**
-     * @param MemberRequestDto $memberRequestDto
+     * @param Member $member
      * @return void
      */
-    public function saveMemberImages(MemberRequestDto $memberRequestDto): MemberRequestDto
+    public function saveMemberImages(Member $member, $images): Member
     {
-        if ($memberRequestDto->getPhoto()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhoto(), $memberRequestDto->getReference());
-            if ($fileName) $memberRequestDto->setPhoto($fileName);
+        if (isset($images['photo'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['photo'], $member->getReference());
+            if ($fileName) $member->setPhoto($fileName->getFilename());
         }
 
-        if ($memberRequestDto->getPhotoPieceFront()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceFront(), $memberRequestDto->getReference());
-            if ($fileName) $memberRequestDto->setPhotoPieceFront($fileName);
+        if (isset($images['photoPieceFront'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['photoPieceFront'], $member->getReference());
+            if ($fileName) $member->setPhotoPieceFront($fileName->getFilename());
         }
 
-        if ($memberRequestDto->getPhotoPieceBack()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getReference());
-            if ($fileName) $memberRequestDto->setPhotoPieceBack($fileName);
+        if (isset($images['photoPieceBack'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['photoPieceBack'], $member->getReference());
+            if ($fileName) $member->setPhotoPieceBack($fileName->getFilename());
         }
 
-        if ($memberRequestDto->getPhotoPieceBack()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPieceBack(), $memberRequestDto->getReference());
-            if ($fileName) $memberRequestDto->setPhotoPermisFront($fileName);
+        if (isset($images['photoPermisFront'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['photoPermisFront'], $member->getReference());
+            if ($fileName) $member->setPhotoPermisFront($fileName->getFilename());
         }
 
-        if ($memberRequestDto->getPhotoPermisBack()) {
-            $fileName = $this->memberAssetHelper->uploadAsset($memberRequestDto->getPhotoPermisBack(), $memberRequestDto->getReference());
-            if ($fileName) $memberRequestDto->setPhotoPermisBack($fileName);
+        if (isset($images['photoPermisBack'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['photoPermisBack'], $member->getReference());
+            if ($fileName) $member->setPhotoPermisBack($fileName->getFilename());
         }
 
-        return $memberRequestDto;
+        return $member;
     }
-
 
     /**
      * @param $row
@@ -433,7 +502,6 @@ class MemberService
         return new PdfResponse($content, 'recu_macaron.pdf');
     }
 
-
     /**
      * @param Member|null $member
      * @param string $viewTemplate
@@ -441,115 +509,202 @@ class MemberService
      */
     public function generateCNMCIPdf(?Member $member, string $viewTemplate)
     {
-        $folder = "/var/www/html/public/members/" . $member->getReference() . '/';
         try {
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
-            file_put_contents($folder . "cnmci.pdf", $content);
+            file_put_contents($this->getMemberDir($member) . "cnmci.pdf", $content);
             return $content ?? null;
         }catch(\Exception $e){
             return null;
         }
     }
 
+
     /**
+     * @param File|null $file
      * @param Member $member
+     * @param $width
+     * @param $height
      * @return void
-     * @throws \Exception
      */
-    public function updateFromCnmciForm(array $data, Member $member): ?Member
-    {
-        if(empty($data)) return null;
-//      $data["immatriculation"];
-        $member->setLastName(strtoupper($data["exploitantNom"]));
-        $member->setFirstName(strtoupper($data["exploitantPrenoms"]));
-        $member->setDateOfBirth(new \DateTime($data["exploitantDateNais"]));
-        $member->setBirthCity(strtoupper($data["exploitantLieuNais"]));
-        $member->setNationality(strtoupper($data["exploitantNationalite"]));
-        $member->setSex(strtoupper($data["exploitantSex"]));
-        $member->setAddress(strtoupper($data["exploitantDomicile"]));
-        $member->setIdType(strtoupper($data["exploitantTypeDoc"]));
-        if (!empty($data["exploitantTypeDocAutre"])) $member->setIdType($data["exploitantTypeDocAutre"]);
-        $member->setEtatCivil(strtoupper($data["exploitantEtatCivil"]));
-        $member->setIdNumber($data["exploitantTypeDocNum"]);
-        $member->setIdDeliveryPlace(strtoupper($data["exploitantDocLieuDelivrance"]));
-        $member->setPhone($data["exploitantTel"]);
-        $member->setEmail($data["exploitantEmail"]);
-        $member->setCodeSticker($data["CodeSticker"]);
-        /*
-               $member->setDateOfBirth($data["formationClass"]);
-               $member->setDateOfBirth($data["formationDiplomeObtenu"]);
-               $member->setDateOfBirth($data["formationApprenMetierNiveau"]);
-               $member->setDateOfBirth($data["formationApprenMetierDiplomeObtenu"]);
-               $member->setDateOfBirth($data["principalActiviteEtabl"]);
-               $member->setDateOfBirth($data["activiteSecondaireEtabl"]);
-               $member->setDateOfBirth($data["raisonSocialEtabl"]);
-               $member->setDateOfBirth($data["sigleEnseigneEtabl"] );
-               $member->setDateOfBirth($data["dateDebutActiviteEtabl"]);
-               $member->setDateOfBirth($data["identifiantCNPSEtabl"]) ;
-               $member->setDateOfBirth($data["numCompteContribuableEtabl"]) ;
-               $member->setDateOfBirth($data["addressPostalEtabl"]) ;
-               $member->setDateOfBirth($data["TelEtabl"]);
-               $member->setDateOfBirth($data["faxEtabl"]);
-               $member->setDateOfBirth($data["communeEtabl"]);
-               $member->setDateOfBirth($data["spEtabl"]);
-               $member->setDateOfBirth($data["quartEtabl"]);
-               $member->setDateOfBirth($data["villageEtabl"]);
-               $member->setDateOfBirth($data["lotEtabl"]);
-               $member->setDateOfBirth($data["ilotEtabl"]);
-               $member->setDateOfBirth($data["effectifSalarieEtablFemme"]);
-               $member->setDateOfBirth($data["effectifSalarieEtablHomme"]);
-               $member->setDateOfBirth($data["effectifApprenantEtablFemme"]);
-               $member->setDateOfBirth($data["effectifApprenantEtablHomme"]);
-
-               $member->setLastName($data["referantNom"]);
-               $member->setFirstName($data["firstname"]);
-               $member->setDateOfBirth(new \DateTime($data["referantDateNais"]));
-               $member->setBirthCity($data["referantLieuNais"]);
-               $member->setNationality($data["nationality"]);
-               $member->setSex($data["referantSex"]);
-               $member->setAddress($data["referantDomicile"]);
-               $member->setIdType($data["referantTypeDoc"]);
-               $member->setIdNumber($data["referantNumDoc"]);
-               $member->setIdDeliveryPlace($data["referantDocLieuDelivrance"]);
-               $member->setIdDeliveryDate(new \DateTime($data["referantDocDateDelivrance"]));
-               $member->setEtatCivil($data["referantEtatCivil"] );
-               $member->setMobile($data["mobile"]);
-               $member->setEmail($data["referantEmail"]);
-               $member->setCodeSticker($data["CodeSticker"]);
-       */
-
-        if (!$member->getReference()) $member->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)));
-        if (!$member->getMatricule()) {
-            $member->setRoles(['ROLE_USER']);
-
-            $date = new \DateTime('now');
-            $member->setSubscriptionDate($date);
-
-            $sexCode = null;
-            if ($member->getSex() === "H") $sexCode = "SY1";
-            elseif ($member->getSex() === "F") $sexCode = "SY2";
-
-            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-            $member->setMatricule($matricule);
-
-            $expiredDate = $date->format('Y-12-31');
-            $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
-
-            $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
-        }
-
-        if (!empty($data["member_registration_photo"])) {
-            $fileName = $this->memberAssetHelper->uploadAsset($data["member_registration_photo"], $member->getReference());
-            if ($fileName) $member->setPhoto($fileName);
-        }
-
-        $this->memberRepository->add($member, true);
-
-        return $member;
-    }
-
     public function createThumbnail(?File $file, Member $member, $width, $height){
         $this->memberAssetHelper->createThumbnail($file,  $member->getReference(), $width, $height);
     }
+
+    public function getMemberDir(Member $member){
+        return $this->container->getParameter('kernel.project_dir') . "/public/members/" . $member->getReference() . "/";
+    }
+
+    /**
+     * @param Member $member
+     * @return void
+     */
+    public function store(?Member $member){
+        if(!$member)  return;
+        $this->memberRepository->add($member, true);
+    }
+
+    /**
+     * @param Member $member
+     * @param $data
+     * @return mixed
+     */
+    public function saveChildren(Member $member, $data) : void
+    {
+        if(isset($data['child_lastname'])) {
+            $count = count($data['child_lastname']);
+            for($i = 0; $i < $count ; $i++){
+                $child =  new Child();
+                $child->setLastName($data['child_lastname'][$i]);
+                $child->setFirstName($data['child_firstname'][$i]);
+                $child->setSex($data['child_sex'][$i]);
+                $member->addChild($child);
+            }
+        }
+    }
+
+    /**
+     * @param Member $member
+     * @param $data
+     * @return mixed
+     */
+    public function saveExploitant(Member $member, $data): void
+    {
+        $member->setReference(str_replace("-","", substr(Uuid::v4()->toRfc4122(), 0, 18)));
+
+        if (isset($data["exploitantNom"])) $member->setLastName(strtoupper($data["exploitantNom"]));
+        if (isset($data["exploitantPrenoms"])) $member->setFirstName(strtoupper($data["exploitantPrenoms"]));
+        if (isset($data["exploitantDateNais"])) {
+            try {
+                $date = \DateTime::createFromFormat("d/m/Y", $data["exploitantDateNais"]);
+                if (!$date) throw new \Exception();
+                $member->setDateOfBirth($date);
+            } catch (\Exception $e) {
+                $member->setDateOfBirth(null);
+            }
+        }
+        if (isset($data["exploitantLieuNais"])) $member->setBirthCity(strtoupper($data["exploitantLieuNais"]));
+        if (isset($data["exploitantNationalite"])) $member->setNationality(strtoupper($data["exploitantNationalite"]));
+        if (isset($data["exploitantSex"])) $member->setSex(strtoupper($data["exploitantSex"]));
+        if (isset($data["exploitantTypeDocAutre"])) $member->setIdType(strtoupper($data["exploitantTypeDocAutre"]));
+        if (isset($data["exploitantTypeDocNum"])) $member->setIdNumber($data["exploitantTypeDocNum"]);
+        if (isset($data["exploitantDocLieuDelivrance"])) $member->setReprIDDeliveryPlace(strtoupper($data["exploitantDocLieuDelivrance"]));
+        if (isset($data["exploitantDocDateDelivrance"])) {
+            try {
+                $date = \DateTime::createFromFormat("d/m/Y", $data["exploitantDocDateDelivrance"]);
+                if (!$date) throw new \Exception();
+                $member->setIdDeliveryDate($date);
+            } catch (\Exception $e) {
+                $member->setIdDeliveryDate(null);
+            }
+        }
+        if (isset($data["exploitantTel"])) $member->setPhone($data["exploitantTel"]);
+        if (isset($data["exploitantEmail"])) $member->setEmail($data["exploitantEmail"]);
+        if (isset($data["exploitantDomicile"])) $member->setDomicile($data["exploitantDomicile"]);
+    }
+
+    /**
+    /**
+     * @param Member $member
+     * @param $data
+     * @return mixed
+     */
+    public function saveReferant(Member $member, $data): void
+    {
+        if (isset($data["referantNom"])) $member->setReprLastName($data["referantNom"]);
+        if (isset($data["referantPrenom"])) $member->setReprFirstName($data["referantPrenom"]);
+        if (isset($data["referantNationality"])) $member->setReprFirstName($data["reprNationality"]);
+
+        if (isset($data["referantDateNais"])) {
+            try {
+                $date = \DateTime::createFromFormat("d/m/Y", $data["referantDateNais"]);
+                if (!$date) throw new \Exception();
+                $member->setReprDateNais($date);
+            } catch (\Exception $e) {
+                $member->setReprDateNais(null);
+            }
+        }
+        if (isset($data["referantLieuNais"])) $member->setReprLieuNais($data["referantLieuNais"]);
+        if (isset($data["referantEtatCivil"])) $member->setReprEtatCivil($data["referantEtatCivil"]);
+        if (isset($data["referantDomicile"])) $member->setReprDomicile($data["referantDomicile"]);
+        if (isset($data["referantSex"])) $member->setReprSex($data["referantSex"]);
+        if (isset($data["referantTypeDoc"])) $member->setReprIDType($data["referantTypeDoc"]);
+        if (isset($data["referantTypeDocAutre"])) $member->setReprIDType($data["referantTypeDocAutre"]);
+        if (isset($data["referantNumDoc"])) $member->setReprIDNum($data["referantNumDoc"]);
+        if (isset($data["referantDocLieuDelivrance"])) $member->setReprIDDeliveryPlace($data["referantDocLieuDelivrance"]);
+
+        if (isset($data["referantDocDateDelivrance"])) {
+            try {
+                $date = \DateTime::createFromFormat("d/m/Y", $data["referantDocDateDelivrance"]);
+                if (!$date) throw new \Exception();
+                $member->setReprIDDeliveryDate($date);
+            } catch (\Exception $e) {
+                $member->setReprIDDeliveryDate(null);
+            }
+        }
+
+        if (isset($data["referantTel"])) $member->setReprTel($data["referantTel"]);
+        if (isset($data["referantEmail"])) $member->setReprEmail($data["referantEmail"]);
+    }
+
+    /**
+     * @param Member $member
+     * @param $data
+     * @return mixed
+     */
+    public function saveEtablissement(Member $member, $data): void
+    {
+        if (isset($data["principalActiviteEtabl"])) $member->setCompanyMainActivity($data["principalActiviteEtabl"]);
+        if (isset($data["activiteSecondaireEtabl"])) $member->setCompanySecondaryActivity($data["activiteSecondaireEtabl"]);
+        if (isset($data["raisonSocialEtabl"])) $member->setCompanyName($data["raisonSocialEtabl"]);
+        if (isset($data["sigleEnseigneEtabl"])) $member->setCompanySigle($data["sigleEnseigneEtabl"]);
+
+        if (isset($data["dateDebutActiviteEtabl"])) {
+            try {
+                $date = \DateTime::createFromFormat("d/m/Y", $data["dateDebutActiviteEtabl"]);
+                if (!$date) throw new \Exception();
+                $member->setCompanyStartingDate($date);
+            } catch (\Exception $e) {
+                $member->setCompanyStartingDate(null);
+            }
+        }
+        if (isset($data["identifiantCNPSEtabl"])) $member->setIdentifiantCnps($data["identifiantCNPSEtabl"]);
+        if (isset($data["regimeFiscalEtabl"])) $member->setCompanyFiscalRegime($data["regimeFiscalEtabl"]);
+        if (isset($data["typeEntrepriseEtabl"])) $member->setTypeCompany($data["typeEntrepriseEtabl"]);
+        if (isset($data["numCompteContribuableEtabl"])) $member->setNumCompteContribuableEtabl($data["numCompteContribuableEtabl"]);
+        if (isset($data["addressPostalEtabl"])) $member->setCompanyAdressPostal($data["addressPostalEtabl"]);
+        if (isset($data["TelEtabl"])) $member->setCompanyTel($data["TelEtabl"]);
+        if (isset($data["faxEtabl"])) $member->setCompanyFax($data["faxEtabl"]);
+        if (isset($data["communeEtabl"])) $member->setCompanyCommune($data["communeEtabl"]);
+        if (isset($data["spEtabl"])) $member->setCompanySp($data["spEtabl"]);
+        if (isset($data["quartEtabl"])) $member->setCompanyQuartier($data["quartEtabl"]);
+        if (isset($data["villageEtabl"])) $member->setCompanyVillage($data["villageEtabl"]);
+        if (isset($data["lotEtabl"])) $member->setCompanyLotNum($data["lotEtabl"]);
+        if (isset($data["ilotEtabl"])) $member->setCompanyILotNum($data["ilotEtabl"]);
+        if (isset($data["effectifSalarieEtablFemme"])) $member->setCompanyTotalWomen($data["effectifSalarieEtablFemme"]);
+        if (isset($data["effectifSalarieEtablHomme"])) $member->setCompanyTotalMen($data["effectifSalarieEtablHomme"]);
+        if (isset($data["effectifApprenantEtablFemme"])) $member->setCompanyTotalWomenApprentis($data["effectifApprenantEtablFemme"]);
+        if (isset($data["effectifApprenantEtablHomme"])) $member->setCompanyTotalMenApprentis($data["effectifApprenantEtablHomme"]);
+    }
+
+    /**
+     * @param Member $member
+     * @param $data
+     * @return void
+     */
+    public function saveFormationProfessionnelle(Member $member, $data): void
+    {
+        if (isset($data["formationNiveauEtude"])) $member->setFormationNiveauEtude($data["formationNiveauEtude"]);
+        if (isset($data["formationClass"])) $member->setFormationClass($data["formationClass"]);
+        if (isset($data["formationDiplomeObtenu"])) $member->setFormationDiplomeObtenu($data["formationDiplomeObtenu"]);
+        if (isset($data["formationApprenMetierNiveau"])) $member->setFormationApprenMetierNiveau($data["formationApprenMetierNiveau"]);
+        if (isset($data["formationApprenMetierDiplomeObtenu"])) $member->setFormationApprenMetierDiplomeObtenu($data["formationApprenMetierDiplomeObtenu"]);
+        if (isset($data["exploitantEtatCivil"])) $member->setExploitantEtatCivil($data["exploitantEtatCivil"]);
+        if (isset($data["formationApprenMetier"])) $member->setFormationApprenMetier($data["formationApprenMetier"]);
+        if (isset($data["formationApprenMetierNiveau"])) $member->setFormationApprenMetierNiveau($data["formationApprenMetierNiveau"]);
+        if (isset($data["formationApprenMetierDiplomeObtenu"])) $member->setFormationApprenMetierDiplomeObtenu($data["formationApprenMetierDiplomeObtenu"]);
+        if (isset($data["formationApprenMetierCNMCI"])) $member->setFormationApprenMetierCNMCI($data["formationApprenMetierCNMCI"]);
+        if (isset($data["formationApprenMetierTypeCNMCI"])) $member->setFormationApprenMetierTypeCNMCI($data["formationApprenMetierTypeCNMCI"]);
+    }
+
 }
 

@@ -5,8 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.supported_locales: ['fr','en']
-    wave_success_url: https://pay.fenapalci.org/subscription/wave/checkout/success
-    wave_error_url: https://pay.fenapalci.org/subscription/wave/checkout/error
+    wave_success_url: https://pay.synacvtcci.org/subscription/wave/checkout/success
+    wave_error_url: https://pay.synacvtcci.org/subscription/wave/checkout/error
     profile_url: http://synacvtcci.org/profile
     images_directory: '%kernel.project_dir%/public/uploads'
 
@@ -27,19 +27,7 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\Service\Artisan\ArtisanService:
-        arguments:
-            $container: '@service_container'
-
-    App\Service\Artisan\ArtisanCardGeneratorService:
-        arguments:
-            $container: '@service_container'
-
     App\Service\Member\MemberService:
-        arguments:
-            $container: '@service_container'
-
-    App\Service\Artisan\ArtisanReceiptGeneratorService:
         arguments:
             $container: '@service_container'
 
@@ -58,8 +46,3 @@ services:
     App\Helper\MemberAssetHelper:
         arguments:
             $uploadDirectory: '%kernel.project_dir%'
-
-    App\Helper\ArtisanAssetHelper:
-        arguments:
-            $uploadDirectory: '%kernel.project_dir%'
-

@@ -21,6 +21,29 @@
         <link  href="{{ asset('assets/frontend/css/blog.css') }}" rel="stylesheet" type="text/css" >
         <link  href="{{ asset('assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" >
         <link  href="{{ asset('assets/frontend/css/responsive.css') }}" rel="stylesheet" type="text/css" >
+        <style>
+            .wizard .steps .current a, .wizard .steps .current a:active, .wizard .steps .current a:hover {
+                background-color: transparent !important;
+                color: #0701b9 !important;
+            }
+            .wizard .steps>ul>li a {
+                background-color: transparent !important;
+                cursor: pointer;
+            }
+            .wizard .steps .number{
+                font-size: 16px !important;
+                border: 2px solid #0701b9 !important;
+            }
+            .wizard .steps li.current a span.number{
+                background-color: #0701b9;
+            }
+            .wizard>.actions a, .wizard>.actions a:active, .wizard>.actions a:hover {
+                background-color: #0701b9 !important;
+                border-radius: 0px !important;
+                padding: 6px 24px !important;
+                color: #fff !important;
+            }
+        </style>
     {% endblock %}
 </head>
 
@@ -40,7 +63,6 @@
     <script src="{{ asset('assets/frontend/js/vendor/popper.min.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/vendor/swiper.min.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/vendor/jquery.newsTicker.min.js') }}"></script>
-    <script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/vendor/venobox.min.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/vendor/smooth-scroll.js') }}"></script>
     <script src="{{ asset('assets/frontend/js/vendor/wow.min.js') }}"></script>

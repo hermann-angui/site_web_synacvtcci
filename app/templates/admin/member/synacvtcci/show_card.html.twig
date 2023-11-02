@@ -1,0 +1,121 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .flip-card {
+            background-color: transparent;
+            width: 75%;
+            height: 359px;
+            perspective: 1000px;
+        }
+
+        /* This container is needed to position the front and back side */
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        /* Do an horizontal flip when you move the mouse over the flip box container */
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Position the front and back side */
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+        }
+
+        /* Style the front side (fallback if image is missing) */
+        .flip-card-front {
+        }
+
+        /* Style the back side */
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+
+        {{ include('admin/_partials/header.html.twig') }}
+
+        <!-- ========== Left Sidebar Start ========== -->
+        {{ include('admin/_partials/left-sidebar.html.twig')}}
+        <!-- Left Sidebar End -->
+
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-10">
+                            <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="flex-shrink-0">
+                                            <a href="{{ path('admin_member_show',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" >Revenir</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title mb-5">Fiche membre : <strong class="badge bg-gradient bg-info">{{ member.matricule }}</strong></h4>
+                                    <div class="flip-card d-flex justify-content-center">
+                                        <div class="flip-card-inner">
+                                            <div class="flip-card-front center">
+                                                <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.cardPhoto }}" alt="Avatar" class="w-75">
+                                            </div>
+                                            <div class="flip-card-back">
+                                                <img src="{{ asset('assets/files/card_member_back.jpg')}}" alt="Avatar" class="w-75">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- container-fluid -->
+            </div><!-- End Page-content -->
+
+            {{ include('admin/_partials/footer.html.twig') }}
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+  <script>
+      $('document').ready(function() {
+      });
+
+  </script>
+{% endblock %}
+
+

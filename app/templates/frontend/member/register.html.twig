@@ -5,6 +5,7 @@
 {% block stylesheet %}
     {{ parent() }}
     <link href="{{ asset('assets/admin/css/app.min.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}" type="text/css" rel="stylesheet">
 
     <style>
         .card-header {
@@ -40,7 +41,7 @@
         }
         .form-control, .form-select {
             padding: 0.275rem 0.55rem;
-            font-size: 0.78rem;
+            font-size: 0.95rem;
         }
         .form-control:focus {
             border-color: none;
@@ -51,7 +52,7 @@
             padding-top: calc(0.375rem + 1px);
             padding-bottom: calc(0.375rem + 1px);
             margin-bottom: 0;
-            font-size: 0.82rem;
+            font-size: 0.95rem;
             line-height: 1.5;
         }
         .form-check-label{
@@ -76,6 +77,19 @@
             width: 16px;
             height: 16px;
         }
+
+        .select2 {
+            min-width: 200px;
+        }
+        .select2 span.select2-selection__rendered,
+        li.select2-results__option{
+            font-size: 0.75rem;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #0701b9;
+            font-size: 0.75rem;
+        }
     </style>
 {% endblock %}
 
@@ -95,7 +109,7 @@
         </div>
     </section>
 
-    <div class="taxi-booking bg-grey mb-3">
+    <div class="taxi-booking bg-white mb-3">
         <div class="d-flex justify-content-center">
             <div class="col-lg-10 px-5">
                 {{ include('frontend/member/_form_stepper.html.twig') }}
@@ -109,16 +123,17 @@
 
 {% block javascript %}
   {{ parent() }}
+  <script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
   <script src="{{ asset('assets/admin/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
   <script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
   <script src="{{ asset('assets/admin/libs/jquery.validation/jquery.validate.min.js') }}"></script>
   <script src="{{ asset('assets/admin/libs/jquery.validation/additional-methods.min.js') }}"></script>
-{#  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>#}
+  <script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
+  <script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
   <script>
       $('document').ready(function() {
 
-        var form = $("#basic-example");
+        var form = $("#stepperform");
         form.steps({
             headerTag: "h3",
             bodyTag: "fieldset",
@@ -215,12 +230,22 @@
               }
           });
 
+          var i = 0;
           $('#newChild').click(function(){
-            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";
+            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child[" + i + "][firstname]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child[" + i + "][lastname]' value='' class='form-control' /></label><div style='display: flex;align-items: center;justify-content: space-between;width: 158px;'>Sexe <input type='radio' style='margin: 10px 10px;' name='child[" + i + "][sex]' value='M' checked/>Masculin <input style='margin: 10px 10px;' type='radio' name='child[" + i + "][sex]' value='F'/> Feminin</div></div>";
             $('#children_bock').append(row);
+            i=+1;
           });
 
+          $('.js-datepicker').datetimepicker({
+             timepicker:false,
+             format: 'd/m/Y',
+             mask: true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
+          });
 
+         $(".input-mask").inputmask();
+
+         $(".select2").select2();
       });
 
   </script>
