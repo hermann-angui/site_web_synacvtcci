@@ -2,8 +2,160 @@
 
 {% block stylesheet %}
     {{ parent() }}
-{% endblock %}
+    <link href="{{ asset('assets/admin/css/app.min.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}" type="text/css" rel="stylesheet">
+    <style>
+        .card-header {
+            padding: 0;
+        }
 
+        .accordion-button {
+            background-color: #fff;
+            color: #222;
+            font-size: 13px;
+            line-height: 28px;
+            letter-spacing: -.5px;
+            font-weight: 500;
+            text-transform: capitalize;
+            border: 1px solid #eee;
+            padding: 3px 3px;
+        }
+
+        .card-body {
+            padding: 0.2rem 0.2rem;
+        }
+
+        .accordion-body {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .form-control:focus {
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        .wizard .steps > ul > li a {
+            font-size: 12px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .form-control, .form-select {
+            padding: 0.275rem 0.55rem;
+            font-size: 0.95rem;
+            border-radius: 0rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            outline: 0;
+            box-shadow: none;
+            border-color: #0701b9;
+        }
+
+        .col-form-label {
+            padding-top: calc(0.375rem + 1px);
+            padding-bottom: calc(0.375rem + 1px);
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .form-check-label {
+            font-size: 0.82rem;
+        }
+
+        .form-check-input {
+            margin-top: 0.4em;
+        }
+
+        #field {
+            margin-left: .5em;
+            float: left;
+        }
+
+        #field, label {
+            float: left;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: small;
+        }
+
+        br {
+            clear: both;
+        }
+
+        input {
+            border: 1px solid black;
+            margin-bottom: .5em;
+        }
+
+        input.error {
+            border: 1px solid red;
+        }
+
+        label.error {
+            padding-left: 0px;
+            margin-left: 0em;
+        }
+
+        label.valid {
+            display: block;
+            width: 16px;
+            height: 16px;
+        }
+
+        .select2 {
+            min-width: 200px;
+        }
+
+        .select2 span.select2-selection__rendered,
+        li.select2-results__option {
+            font-size: 0.75rem;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #0701b9;
+            font-size: 0.75rem;
+        }
+
+        input.select2-search__field {
+            border: 1px solid black;
+            margin-bottom: 0.0em;
+        }
+
+        @media (max-width: 768px) {
+            .page-header-info h2 {
+                font-size: 26px;
+                line-height: 36px;
+            }
+        }
+
+        label.required:after {
+            content: " *";
+            color: red;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 32px;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0px;
+        }
+
+        #stepperform h3{
+            background-color: #112ba8;
+            padding: 10px 10px;
+            color: white;
+        }
+
+        fieldset > div {
+            padding: 10px 25px;
+            margin-top: 5px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
     <!-- <body data-layout="horizontal" data-topbar="dark"> -->
@@ -29,7 +181,8 @@
                             <div class="card">
                                 <div class="card-body px-5">
                                     <h4 class="card-title mb-4">Enregistrer un nouveau membre</h4>
-                                    {{ include('admin/member/synacvtcci/_form_new.html.twig') }}
+{#                                    {{ include('admin/member/synacvtcci/_form_new.html.twig') }}#}
+                                    {{ include('admin/member/synacvtcci/_form_stepper.html.twig') }}
                                 </div>
                             </div>
                         </div>
@@ -51,8 +204,100 @@
 
 {% block javascript %}
 {{ parent() }}
-  <script>
+<script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery.validation/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery.validation/additional-methods.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
+<script>
       $('document').ready(function() {
+
+          var children = [];
+
+          var child = document.querySelector("input[name='has_child']")
+          child.addEventListener('onchange', function(){
+              alert();
+              if($(this).val() === "0"){
+                  $('#child-row').hide();
+              }else{
+                  $('#child-row').show();
+              }
+          });
+
+          $('#newChild').click(function(){
+            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";
+            $('#children_bock').append(row);
+          });
+
+
+
+            var form = $("#stepperform");
+
+            form.steps({
+                headerTag: "h3",
+                bodyTag: "fieldset",
+                transitionEffect: "slide",
+                stepsOrientation: "horizontal",
+                labels: {
+                    cancel: "Annuler",
+                    current: "Etape en cours:",
+                    pagination: "Pagination",
+                    finish: "Terminer",
+                    next: "Suivant",
+                    previous: "Précédent",
+                    loading: "Chargement ..."
+                },
+                onStepChanging: function (event, currentIndex, newIndex){
+                    // Always allow previous action even if the current form is not valid!
+                    if (currentIndex > newIndex){
+                        return true;
+                    }
+                    // Needed in some cases if the user went back (clean up)
+                    if (currentIndex < newIndex){
+                        // To remove error styles
+                        form.find(".body:eq(" + newIndex + ") label.error").remove();
+                        form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+                    }
+                    form.validate().settings.ignore = ":disabled,:hidden";
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex){
+                },
+                onFinishing: function (event, currentIndex){
+                    form.validate().settings.ignore = ":disabled";
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex){
+                     form.submit();
+                }
+            }).validate({
+                errorPlacement: function errorPlacement(error, element) { element.before(error); },
+                rules: {
+                },
+            });
+
+             jQuery.extend(jQuery.validator.messages, {
+                required: "Ce champ est obligatoire.",
+                remote: "Please fix this field.",
+                email: "Veuillez entrer une adresse email valide.",
+                url: "Please enter a valid URL.",
+                date: "Date invalide.",
+                dateISO: "Please enter a valid date (ISO).",
+                number: "Please enter a valid number.",
+                digits: "Please enter only digits.",
+                creditcard: "Please enter a valid credit card number.",
+                equalTo: "Please enter the same value again.",
+                accept: "Please enter a value with a valid extension.",
+                maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
+                minlength: jQuery.validator.format("Please enter at least {0} characters."),
+                rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
+                range: jQuery.validator.format("Please enter a value between {0} and {1}."),
+                max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
+                min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
+            });
+
 
           $("#member_registration_photo").change(function(data){
               var imageFile = data.target.files[0];
@@ -65,42 +310,71 @@
               }
           });
 
-                  var children = [];
-          $("input[name='is_married']").change(function(){
-             if($(this).val() === "0"){
-                $('#partner_bock').hide();
-             }else{
-                  $('#partner_bock').show();
-             }
-          });
-          $("input[name='has_child']").change(function(){
-              if($(this).val() === "0"){
-                  $('#child-row').hide();
-              }else{
-                  $('#child-row').show();
+          $("label[for='member_registration_photoPieceFront']").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#member_registration_photoPieceFrontPreview').attr('src', evt.target.result);
+                  $('#member_registration_photoPieceFrontPreview').attr('width', 100);
+                  $("label[for='member_registration_photoPieceFront'] .upload-icon").hide();
+                  $('#member_registration_photoPieceFrontPreview').fadeIn(650);
               }
           });
-          $( "#step1" ).click(function() {
-              //close accordion 1 and open accordion 3
-              $("#collapseOne, #collapseTwo").collapse('toggle');
-              $( "#documents").focus();
-           });
-          $( "#step2" ).click(function() {
-              //close accordion 1 and open accordion 3
-              $("#collapseTwo, #collapseThree").collapse('toggle');
-              $( "#info_familiales").focus();
-           });
 
-          var i = 0;
-          $('#newChild').click(function(){
-            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[" + i + "][firstname]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[" + i + "][lastname]' value='' class='form-control' /></label><div style='display: flex;align-items: center;justify-content: space-between;width: 158px;'>Sexe <input type='radio' style='margin: 10px 10px;' name='child_sex[" + i + "][sex]' value='M' checked/>Masculin <input style='margin: 10px 10px;' type='radio' name='child_sex[" + i + "][sex]' value='F'/> Feminin</div></div>";
-            $('#children_bock').append(row);
-            i=+1;
+          $("label[for='member_registration_photoPieceBack']").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#member_registration_photoPieceBackPreview').attr('src', evt.target.result);
+                  $('#member_registration_photoPieceBackPreview').attr('width', 100);
+                  $("label[for='member_registration_photoPieceBack'] .upload-icon").hide();
+                  $('#member_registration_photoPieceBackPreview').fadeIn(650);
+              }
           });
 
-      });
+          $("label[for='member_registration_photoPermisFront']").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
 
+              reader.onload = function(evt){
+                  $('#member_registration_photoPermisFrontPreview').attr('src', evt.target.result);
+                  $('#member_registration_photoPermisFrontPreview').attr('width', 100);
+                  $("label[for='member_registration_photoPermisFront'] .upload-icon").hide();
+                  $('#member_registration_photoPermisFrontPreview').fadeIn(650);
+              }
+          });
+
+          $("label[for='member_registration_photoPermisBack']").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#member_registration_photoPermisBackPreview').attr('src', evt.target.result);
+                  $('#member_registration_photoPermisBackPreview').attr('width', 100);
+                  $("label[for='member_registration_photoPermisBack'] .upload-icon").hide();
+                  $('#member_registration_photoPermisBackPreview').fadeIn(650);
+              }
+          });
+
+
+          $('.js-datepicker').datetimepicker({
+                 timepicker:false,
+                 format:  'd/m/Y',
+                // mask: true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
+          });
+
+          $(".input-mask").inputmask();
+
+          $(".select2").select2();
+      });
   </script>
+
 {% endblock %}
 
 

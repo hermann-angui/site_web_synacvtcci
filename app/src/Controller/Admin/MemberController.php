@@ -14,6 +14,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -100,7 +101,7 @@ class MemberController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $memberService->handleCnmciFormSubmit($request, $form, $member);
+            $this->handleFormCreation($request, $form, $member, $memberService);
             return $this->redirectToRoute('admin_member_index');
         }
         return $this->renderForm('admin/member/synacvtcci/new.html.twig', [
@@ -495,5 +496,34 @@ class MemberController extends AbstractController
         }
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    private function handleFormCreation(Request $request, FormInterface $form, Member &$member, MemberService $memberService): Member {
+
+        $images = [];
+
+        if($form->has('photo'))  $images['photo'] = $form->get('photo')?->getData();
+        if($form->has('photoPieceFront'))  $images['photoPieceFront'] = $form->get('photoPieceFront')?->getData();
+        if($form->has('photoPieceBack'))  $images['photoPieceBack'] = $form->get('photoPieceBack')?->getData();
+        if($form->has('photoPermisFront'))  $images['photoPermisFront'] = $form->get('photoPermisFront')?->getData();
+        if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
+
+        if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
+        if($form->has('paymentReceiptSynacvtcci'))  $images['paymentReceiptSynacvtcci'] = $form->get('paymentReceiptSynacvtcci')?->getData();
+
+        $data = $request->request->all();
+        if(isset($data['child'])){
+            foreach($data['child'] as $childItem){
+                $child=  new Child();
+                $child->setLastName($childItem['lastname']);
+                $child->setFirstName($childItem['firstname']);
+                $child->setSex($childItem['sex']);
+                $child->setParent($member);
+                $member->addChild($child);
+            }
+        }
+        $memberService->createMember($member, $images);
+        return $member;
+    }
+
 
 }
