@@ -49,7 +49,7 @@ class MemberService
     {
         try {
             date_default_timezone_set("Africa/Abidjan");
-            $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
+          //  $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
             $lastRowId = $this->memberRepository->getLastRowId();
             $member->setRoles(['ROLE_USER']);
             $date = new DateTime('now');
