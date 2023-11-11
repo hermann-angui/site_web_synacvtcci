@@ -2,7 +2,7 @@
 
 namespace App\Service\Wave;
 
-use App\Entity\Demande;
+use App\Entity\Member;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -10,8 +10,8 @@ class WaveService
 {
     const API_KEY = 'wave_ci_prod_4XND3J1y63CypaAeQqqWSMkK8foUdvw8mMbDZEyH0gmi5KfzERABL8RZaTgjaG-mH3K9-whXTQWE7f-vyk3AqPV04dq1JTPGdw';
     const CHECKOUT_URL = "https://api.wave.com/v1/checkout/sessions";
-    const SUCCESS_URL = "https://transecureafrica.com/payment/wave/checkout/success?ref=";
-    const ERROR_URL = "https://transecureafrica.com/payment/wave/checkout/error";
+    const SUCCESS_URL = "https://synacvtcci.org/payment/wave/checkout/success?ref=";
+    const ERROR_URL = "https://synacvtcci.org/payment/wave/checkout/error";
 
     public function checkOutRequest(?WaveCheckoutRequest $request) : ?WaveCheckoutResponse
     {
@@ -72,12 +72,12 @@ class WaveService
      * @param UserInterface|null $user
      * @return string|void
      */
-    public function makePayment(?Demande $demande) : ?WaveCheckoutResponse
+    public function makePayment(?Member $member) : ?WaveCheckoutResponse
     {
         try{
             $waveCheckoutRequest = new WaveCheckoutRequest();
             $waveCheckoutRequest->setCurrency("XOF")
-                ->setAmount($demande->getMontant())
+                ->setAmount("100")
                 ->setClientReference(Uuid::v4()->toRfc4122())
                 ->setSuccessUrl(self::SUCCESS_URL);
 

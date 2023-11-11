@@ -15,8 +15,9 @@ class PageController extends AbstractController
     #[Route(path: '', name: 'admin_index')]
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
-        $members = $memberRepository->findAll();
-        return $this->render('admin/pages/index.html.twig', ["members" => $members]);
+//        $members = $memberRepository->findAll();
+//        return $this->render('admin/pages/index.html.twig', ["members" => $members]);
+        return $this->render('admin/member/synacvtcci/index.html.twig');
     }
     #[Route(path: '/search', name: 'admin_index_search')]
     public function chooseMain(Request $request, MemberRepository $memberRepository): Response
