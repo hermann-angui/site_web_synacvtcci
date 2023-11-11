@@ -548,7 +548,7 @@ class MemberService
         }catch(\Exception $e){
             if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
             if(file_exists($folder . "_receipt.pdf")) \unlink($folder . "_receipt.pdf");
-            return null;
+            return $e->getTraceAsString();
         }
     }
 

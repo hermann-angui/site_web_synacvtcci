@@ -60,7 +60,10 @@ class PageController extends AbstractController
             "La SYNACVTCCI apporte son assistance au chauffeur bastonné ..",
             "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
         ];
-        $memberService->generateRegistrationReceipt($member);
+        $message = $memberService->generateRegistrationReceipt($member);
+
+        dump($message);
+        die;
         return $this->render('frontend/member/success.html.twig', ["flashInfos" => $flashInfos, 'member' => $member]);
     }
 
