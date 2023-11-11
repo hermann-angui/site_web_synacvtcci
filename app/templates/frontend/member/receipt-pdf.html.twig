@@ -1,0 +1,73 @@
+<div style="display:flex;justify-content:center;align-items:center">
+    <table>
+        <tr style="border-collapse: collapse;">
+            <th colspan="2" style="border-collapse: collapse;">
+                <p style="font-weight: bolder; font-size: 20px; text-transform: capitalize;">RECU D'INSCRIPTION SYNACVTCCI </p>
+            </th>
+        </tr>
+        <tr style="border-bottom: 2px solid #211f1f;border-collapse: collapse;">
+            <td style="display:-webkit-flex;-webkit-justify-content:center" colspan="2">
+                <img src="/var/www/html/public/assets/frontend/img/logo-synacvtcci.jpg" width="100">
+            </td>
+            <td style="display:-webkit-flex;-webkit-justify-content:center" colspan="2">
+                <img src="/var/www/html/public/assets/frontend/img/cnmci.png" width="90">
+            </td>
+        </tr>
+        <tr  style="border-collapse: collapse;">
+            <td style="padding:15px 15px;display:flex;justify-content:center">
+                <p style="font-weight: bolder">Num Re&ccedil;u:   {{ member.reference|upper }}</p>
+            </td>
+            <td style="padding:15px 15px;display:flex;justify-content:center">
+                <p style="font-weight: bolder"> Date de la demande : {{ member.CreatedAt | date('d/m/Y')}}</p>
+            </td>
+        </tr>
+
+    </table>
+    <br>
+    <table style="margin-top: 65px;border-collapse:collapse;table-layout:fixed;width: 100%;">
+        <tr style="border-collapse: collapse;">
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Nom</th>
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Pr&eacute;noms</th>
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Num&eacute;ro du permis</th>
+        </tr>
+        <tr  style="border-collapse: collapse;">
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ member.lastName }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ member.firstName }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ member.drivingLicenseNumber }}</td>
+        </tr>
+        <tr  style="border-collapse: collapse;">
+            <td colspan="3" style="padding: 15px 15px; text-align: center">
+                <p>Pour plus d'informations, contactez le service d'assistance : </p>
+                <div>
+                    <ul style="text-align: center; list-style: none">
+                        <li>T&eacute;l&eacute;phone: (+225) 05 96 72 70 71 / 07 68 39 88 47 / 01 02 68 87 88 </li>
+                        <li>Email: info@synacvtcci.com</li>
+                    </ul>
+                </div>
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <div style="margin-top: 75px;padding: 30px 5px 0px 30px; border:1px solid red; color:red">
+                <div>Nous vous prions de vous rendre &agrave; notre agence pour le paiement des frais d'inscription &agrave; la chambre nationale des m&eacute;tiers et au synacvtcci</div>
+                <div style="font-weight: bold;margin-top:20px;">
+                    NB: Les frais d'inscription sont repartis comme suit:
+                    <ul style="list-style: disc">
+                        <li>Chambre Nationale des Metiers : 15000 fcfa </li>
+                        <li>Photos + sticker + photocopies : 3500 fcfa </li>
+                    </ul>
+                </div>
+                <div style="padding: 20px 20px;">
+                    <div style="margin-top:20px;">Documents obligatoires pour l'inscription &agrave; la chambre nationale des métiers:</div>
+                    <ul style="list-style: disc">
+                        <li>Une copie de votre re&ccedil;u d'inscription</li>
+                        <li>L'original ou une copie de la carte grise ou du r&eacute;c&eacute;piss&eacute; d'immatriculation</li>
+                        <li>L'original ou une copie de document d'identit&eacute; (CNI, Certificat de nationalit&eacute;, carte consulaire ou de s&eacute;jour)</li>
+                    </ul>
+                </div>
+            </div>
+        </tr>
+    </table>
+</div>

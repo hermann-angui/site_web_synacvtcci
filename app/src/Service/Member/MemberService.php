@@ -2,8 +2,8 @@
 
 namespace App\Service\Member;
 
-use App\Entity\Child;
 use App\Entity\Member;
+use App\Entity\Payment;
 use App\Helper\CsvReaderHelper;
 use App\Helper\MemberAssetHelper;
 use App\Helper\PasswordHelper;
@@ -24,6 +24,10 @@ use Symfony\Component\Uid\Uuid;
  */
 class MemberService
 {
+
+    private const WEBSITE_URL = "https://synacvtcci.org";
+    private const MEDIA_DIR = "/var/www/html/public/frontend/media/";
+    private const MONTANT = 10100;
     public function __construct(
         private ContainerInterface             $container,
         private MemberCardGeneratorService     $memberCardGeneratorService,
@@ -36,34 +40,55 @@ class MemberService
     {
     }
 
-    public function handleCnmciFormSubmit($request, $form, &$member, $update = 0): Member {
-
-        $images['photo'] = $form->get('photo')?->getData();
-        $images['photoPieceFront'] = $form->get('photoPieceFront')?->getData();
-        $images['photoPieceBack'] = $form->get('photoPieceBack')?->getData();
-        $images['photoPermisFront'] = $form->get('photoPermisFront')?->getData();
-        $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
-
-        $data = $request->request->all();
-
-        if(isset($data['child'])){
-            foreach($data['child'] as $childItem){
-                $child=  new Child();
-                $child->setLastName($childItem['lastname']);
-                $child->setFirstName($childItem['firstname']);
-                $child->setSex($childItem['sex']);
-                $child->setParent($member);
-                $member->addChild($child);
+    /**
+     * @param Member $member
+     * @return void
+     * @throws \Exception
+     */
+    public function createMember(Member $member, array $images): ?Member
+    {
+        try {
+            date_default_timezone_set("Africa/Abidjan");
+            $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
+            $lastRowId = $this->memberRepository->getLastRowId();
+            $member->setRoles(['ROLE_USER']);
+            $date = new DateTime('now');
+            $member->setSubscriptionDate($date);
+            if (!$member->getReference()) {
+                $member->setReference(
+                    str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
+                );
             }
+
+            $sexCode = null;
+            if($member->getSex() === "H") $sexCode = "SY1";
+            elseif($member->getSex() === "F") $sexCode = "SY2";
+            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $lastRowId+1);
+            $member->setMatricule($matricule);
+
+            $expiredDate = $date->format('Y-12-31');
+            $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
+
+            $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
+
+            if(!empty($images)) $this->storeMemberImages($member, $images);
+
+            $member->setStatus("PENDING");
+            $member->setTitre("Chauffeur");
+
+            $this->memberRepository->add($member, true);
+
+            foreach($member->getChildren() as $child){
+                $this->childRepository->add($child, true);
+            }
+
+            $this->memberRepository->add($member, true);
+
+            return $member;
+
+        }catch(\Exception $e){
+            return null;
         }
-
-        if(!$update) $this->createMember($member, $images);
-        else $this->updateMember($member, $images);
-
-        $member->setStatus("PENDING");
-        $this->memberRepository->add($member, true);
-
-        return $member;
     }
 
     /**
@@ -71,72 +96,37 @@ class MemberService
      * @return void
      * @throws \Exception
      */
-    public function createMember(Member $member, array $images): Member
+    public function updateMember(Member $member, array $images): ?Member
     {
-        date_default_timezone_set("Africa/Abidjan");
+        try {
+            date_default_timezone_set("Africa/Abidjan");
 
-        $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
-        $lastRowId = $this->memberRepository->getLastRowId();
-        $member->setRoles(['ROLE_USER']);
+            if (!$member->getReference()) {
+                $member->setReference(
+                    str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
+                );
+            }
 
-        $date = new DateTime('now');
-        $member->setSubscriptionDate($date);
+            if(!empty($images)) $this->storeMemberImages($member, $images);
 
-        if (!$member->getReference()) {
-            $member->setReference(
-                str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
-            );
+
+            $member->setTitre("Chauffeur");
+
+            $this->saveMember($member);
+
+            if($children = $member->getChildren()){
+                foreach($children as $child){
+                    $this->childRepository->add($child, true);
+                }
+            }
+
+            $this->saveMember($member);
+
+            return $member;
+
+        }catch(\Exception $e){
+            return $member;
         }
-
-        $sexCode = null;
-        if($member->getSex() === "H") $sexCode = "SY1";
-        elseif($member->getSex() === "F") $sexCode = "SY2";
-
-        $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $lastRowId+1);
-        $member->setMatricule($matricule);
-
-        $expiredDate = $date->format('Y-12-31');
-        $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
-
-        $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
-
-        $this->saveMemberImages($member, $images);
-
-        $this->memberRepository->add($member, true);
-
-        foreach($member->getChildren() as $child){
-            $this->childRepository->add($child, true);
-        }
-
-        return $member;
-
-    }
-
-    /**
-     * @param Member $member
-     * @return void
-     * @throws \Exception
-     */
-    public function updateMember(Member $member, array $images): Member
-    {
-        date_default_timezone_set("Africa/Abidjan");
-
-        if (!$member->getReference()) {
-            $member->setReference(
-                str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
-            );
-        }
-
-        $this->saveMemberImages($member, $images);
-
-        $this->memberRepository->add($member, true);
-
-        foreach($member->getChildren() as $child){
-            $this->childRepository->add($child, true);
-        }
-
-        return $member;
-
     }
 
     /**
@@ -173,28 +163,15 @@ class MemberService
             if ($fileName) $member->setPhoto($fileName);
         }
 
-        $this->memberRepository->add($member, true);
-        /***********  MEMBER EXPLOITANT ***/
-        $this->saveExploitant($member, $data);
-
-        /*******FORMATION PROFESSIONNELLE******/
-        $this->saveFormationProfessionnelle($member, $data);
-
-        /***************ETABLISSEMENT ********************/
-        $this->saveEtablissement($member, $data);
-
-        /****  PERSONNE POUVANT ENGAGER L'ENTREPRISE ****/
-        $this->saveReferant($member, $data);
+        $this->saveMember($member);
 
         /*************STORE IMAGE FILES*********************/
-        $this->saveMemberImages($member, $data);
+        $this->storeMemberImages($member, $data);
 
-        /**************STORE CHILDREN*****************/
-        $this->saveChildren($member, $data);
+        $this->saveMember($member);
 
         return $member;
     }
-
 
     /**
      * @param Member|null $member
@@ -287,19 +264,10 @@ class MemberService
      * @return void
      */
     public function getMemberCardsList(){
-        $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';;
+        $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';
          if(!file_exists($zipFile)){
              $this->generateMultipleMemberCards();
          }
-    }
-
-    /**
-     * @param Member $member
-     * @return void
-     */
-    public function save(Member $member): void
-    {
-         $this->memberRepository->add($member, true);
     }
 
     /**
@@ -443,7 +411,7 @@ class MemberService
      * @param Member $member
      * @return void
      */
-    public function saveMemberImages(Member $member, $images): Member
+    public function storeMemberImages(Member $member, $images): Member
     {
         if (isset($images['photo'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['photo'], $member->getReference());
@@ -469,6 +437,16 @@ class MemberService
             $fileName = $this->memberAssetHelper->uploadAsset($images['photoPermisBack'], $member->getReference());
             if ($fileName) $member->setPhotoPermisBack($fileName->getFilename());
         }
+
+        if (isset($images['paymentReceiptCnmci'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptCnmci'], $member->getReference());
+            if ($fileName) $member->setPaymentReceiptCnmci($fileName->getFilename());
+        }
+        if (isset($images['paymentReceiptSynacvtcci'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptSynacvtcci'], $member->getReference());
+            if ($fileName) $member->setPaymentReceiptCnmci($fileName->getFilename());
+        }
+
 
         return $member;
     }
@@ -518,7 +496,6 @@ class MemberService
         }
     }
 
-
     /**
      * @param File|null $file
      * @param Member $member
@@ -530,6 +507,11 @@ class MemberService
         $this->memberAssetHelper->createThumbnail($file,  $member->getReference(), $width, $height);
     }
 
+
+    /**
+     * @param Member $member
+     * @return string
+     */
     public function getMemberDir(Member $member){
         return $this->container->getParameter('kernel.project_dir') . "/public/members/" . $member->getReference() . "/";
     }
@@ -538,172 +520,36 @@ class MemberService
      * @param Member $member
      * @return void
      */
-    public function store(?Member $member){
+    public function saveMember(?Member $member){
         if(!$member)  return;
         $this->memberRepository->add($member, true);
     }
 
+
     /**
-     * @param Member $member
-     * @param $data
-     * @return mixed
+     * @param Payment|null $payment
+     * @param string $viewTemplate
+     * @return string|null
      */
-    public function saveChildren(Member $member, $data) : void
+    public function generateRegistrationReceipt(?Member $member)
     {
-        if(isset($data['child_lastname'])) {
-            $count = count($data['child_lastname']);
-            for($i = 0; $i < $count ; $i++){
-                $child =  new Child();
-                $child->setLastName($data['child_lastname'][$i]);
-                $child->setFirstName($data['child_firstname'][$i]);
-                $child->setSex($data['child_sex'][$i]);
-                $member->addChild($child);
-            }
+        try {
+            $qrCodeData = self::WEBSITE_URL . "/admin/member/" . $member->getId();
+            $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
+            $folder = self::MEDIA_DIR . $member->getReference();
+            if(!file_exists(self::MEDIA_DIR)) mkdir(self::MEDIA_DIR, 0777, true);
+            file_put_contents( $folder . "_barcode.png", $content);
+            $viewTemplate = 'frontend/member/receipt-pdf.html.twig';
+            $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
+            file_put_contents($folder . "_receipt.pdf", $content);
+            if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
+            return $content ?? null;
+
+        }catch(\Exception $e){
+            if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
+            if(file_exists($folder . "_receipt.pdf")) \unlink($folder . "_receipt.pdf");
+            return null;
         }
-    }
-
-    /**
-     * @param Member $member
-     * @param $data
-     * @return mixed
-     */
-    public function saveExploitant(Member $member, $data): void
-    {
-        $member->setReference(str_replace("-","", substr(Uuid::v4()->toRfc4122(), 0, 18)));
-
-        if (isset($data["exploitantNom"])) $member->setLastName(strtoupper($data["exploitantNom"]));
-        if (isset($data["exploitantPrenoms"])) $member->setFirstName(strtoupper($data["exploitantPrenoms"]));
-        if (isset($data["exploitantDateNais"])) {
-            try {
-                $date = \DateTime::createFromFormat("d/m/Y", $data["exploitantDateNais"]);
-                if (!$date) throw new \Exception();
-                $member->setDateOfBirth($date);
-            } catch (\Exception $e) {
-                $member->setDateOfBirth(null);
-            }
-        }
-        if (isset($data["exploitantLieuNais"])) $member->setBirthCity(strtoupper($data["exploitantLieuNais"]));
-        if (isset($data["exploitantNationalite"])) $member->setNationality(strtoupper($data["exploitantNationalite"]));
-        if (isset($data["exploitantSex"])) $member->setSex(strtoupper($data["exploitantSex"]));
-        if (isset($data["exploitantTypeDocAutre"])) $member->setIdType(strtoupper($data["exploitantTypeDocAutre"]));
-        if (isset($data["exploitantTypeDocNum"])) $member->setIdNumber($data["exploitantTypeDocNum"]);
-        if (isset($data["exploitantDocLieuDelivrance"])) $member->setReprIDDeliveryPlace(strtoupper($data["exploitantDocLieuDelivrance"]));
-        if (isset($data["exploitantDocDateDelivrance"])) {
-            try {
-                $date = \DateTime::createFromFormat("d/m/Y", $data["exploitantDocDateDelivrance"]);
-                if (!$date) throw new \Exception();
-                $member->setIdDeliveryDate($date);
-            } catch (\Exception $e) {
-                $member->setIdDeliveryDate(null);
-            }
-        }
-        if (isset($data["exploitantTel"])) $member->setPhone($data["exploitantTel"]);
-        if (isset($data["exploitantEmail"])) $member->setEmail($data["exploitantEmail"]);
-        if (isset($data["exploitantDomicile"])) $member->setDomicile($data["exploitantDomicile"]);
-    }
-
-    /**
-    /**
-     * @param Member $member
-     * @param $data
-     * @return mixed
-     */
-    public function saveReferant(Member $member, $data): void
-    {
-        if (isset($data["referantNom"])) $member->setReprLastName($data["referantNom"]);
-        if (isset($data["referantPrenom"])) $member->setReprFirstName($data["referantPrenom"]);
-        if (isset($data["referantNationality"])) $member->setReprFirstName($data["reprNationality"]);
-
-        if (isset($data["referantDateNais"])) {
-            try {
-                $date = \DateTime::createFromFormat("d/m/Y", $data["referantDateNais"]);
-                if (!$date) throw new \Exception();
-                $member->setReprDateNais($date);
-            } catch (\Exception $e) {
-                $member->setReprDateNais(null);
-            }
-        }
-        if (isset($data["referantLieuNais"])) $member->setReprLieuNais($data["referantLieuNais"]);
-        if (isset($data["referantEtatCivil"])) $member->setReprEtatCivil($data["referantEtatCivil"]);
-        if (isset($data["referantDomicile"])) $member->setReprDomicile($data["referantDomicile"]);
-        if (isset($data["referantSex"])) $member->setReprSex($data["referantSex"]);
-        if (isset($data["referantTypeDoc"])) $member->setReprIDType($data["referantTypeDoc"]);
-        if (isset($data["referantTypeDocAutre"])) $member->setReprIDType($data["referantTypeDocAutre"]);
-        if (isset($data["referantNumDoc"])) $member->setReprIDNum($data["referantNumDoc"]);
-        if (isset($data["referantDocLieuDelivrance"])) $member->setReprIDDeliveryPlace($data["referantDocLieuDelivrance"]);
-
-        if (isset($data["referantDocDateDelivrance"])) {
-            try {
-                $date = \DateTime::createFromFormat("d/m/Y", $data["referantDocDateDelivrance"]);
-                if (!$date) throw new \Exception();
-                $member->setReprIDDeliveryDate($date);
-            } catch (\Exception $e) {
-                $member->setReprIDDeliveryDate(null);
-            }
-        }
-
-        if (isset($data["referantTel"])) $member->setReprTel($data["referantTel"]);
-        if (isset($data["referantEmail"])) $member->setReprEmail($data["referantEmail"]);
-    }
-
-    /**
-     * @param Member $member
-     * @param $data
-     * @return mixed
-     */
-    public function saveEtablissement(Member $member, $data): void
-    {
-        if (isset($data["principalActiviteEtabl"])) $member->setCompanyMainActivity($data["principalActiviteEtabl"]);
-        if (isset($data["activiteSecondaireEtabl"])) $member->setCompanySecondaryActivity($data["activiteSecondaireEtabl"]);
-        if (isset($data["raisonSocialEtabl"])) $member->setCompanyName($data["raisonSocialEtabl"]);
-        if (isset($data["sigleEnseigneEtabl"])) $member->setCompanySigle($data["sigleEnseigneEtabl"]);
-
-        if (isset($data["dateDebutActiviteEtabl"])) {
-            try {
-                $date = \DateTime::createFromFormat("d/m/Y", $data["dateDebutActiviteEtabl"]);
-                if (!$date) throw new \Exception();
-                $member->setCompanyStartingDate($date);
-            } catch (\Exception $e) {
-                $member->setCompanyStartingDate(null);
-            }
-        }
-        if (isset($data["identifiantCNPSEtabl"])) $member->setIdentifiantCnps($data["identifiantCNPSEtabl"]);
-        if (isset($data["regimeFiscalEtabl"])) $member->setCompanyFiscalRegime($data["regimeFiscalEtabl"]);
-        if (isset($data["typeEntrepriseEtabl"])) $member->setTypeCompany($data["typeEntrepriseEtabl"]);
-        if (isset($data["numCompteContribuableEtabl"])) $member->setNumCompteContribuableEtabl($data["numCompteContribuableEtabl"]);
-        if (isset($data["addressPostalEtabl"])) $member->setCompanyAdressPostal($data["addressPostalEtabl"]);
-        if (isset($data["TelEtabl"])) $member->setCompanyTel($data["TelEtabl"]);
-        if (isset($data["faxEtabl"])) $member->setCompanyFax($data["faxEtabl"]);
-        if (isset($data["communeEtabl"])) $member->setCompanyCommune($data["communeEtabl"]);
-        if (isset($data["spEtabl"])) $member->setCompanySp($data["spEtabl"]);
-        if (isset($data["quartEtabl"])) $member->setCompanyQuartier($data["quartEtabl"]);
-        if (isset($data["villageEtabl"])) $member->setCompanyVillage($data["villageEtabl"]);
-        if (isset($data["lotEtabl"])) $member->setCompanyLotNum($data["lotEtabl"]);
-        if (isset($data["ilotEtabl"])) $member->setCompanyILotNum($data["ilotEtabl"]);
-        if (isset($data["effectifSalarieEtablFemme"])) $member->setCompanyTotalWomen($data["effectifSalarieEtablFemme"]);
-        if (isset($data["effectifSalarieEtablHomme"])) $member->setCompanyTotalMen($data["effectifSalarieEtablHomme"]);
-        if (isset($data["effectifApprenantEtablFemme"])) $member->setCompanyTotalWomenApprentis($data["effectifApprenantEtablFemme"]);
-        if (isset($data["effectifApprenantEtablHomme"])) $member->setCompanyTotalMenApprentis($data["effectifApprenantEtablHomme"]);
-    }
-
-    /**
-     * @param Member $member
-     * @param $data
-     * @return void
-     */
-    public function saveFormationProfessionnelle(Member $member, $data): void
-    {
-        if (isset($data["formationNiveauEtude"])) $member->setFormationNiveauEtude($data["formationNiveauEtude"]);
-        if (isset($data["formationClass"])) $member->setFormationClass($data["formationClass"]);
-        if (isset($data["formationDiplomeObtenu"])) $member->setFormationDiplomeObtenu($data["formationDiplomeObtenu"]);
-        if (isset($data["formationApprenMetierNiveau"])) $member->setFormationApprenMetierNiveau($data["formationApprenMetierNiveau"]);
-        if (isset($data["formationApprenMetierDiplomeObtenu"])) $member->setFormationApprenMetierDiplomeObtenu($data["formationApprenMetierDiplomeObtenu"]);
-        if (isset($data["exploitantEtatCivil"])) $member->setExploitantEtatCivil($data["exploitantEtatCivil"]);
-        if (isset($data["formationApprenMetier"])) $member->setFormationApprenMetier($data["formationApprenMetier"]);
-        if (isset($data["formationApprenMetierNiveau"])) $member->setFormationApprenMetierNiveau($data["formationApprenMetierNiveau"]);
-        if (isset($data["formationApprenMetierDiplomeObtenu"])) $member->setFormationApprenMetierDiplomeObtenu($data["formationApprenMetierDiplomeObtenu"]);
-        if (isset($data["formationApprenMetierCNMCI"])) $member->setFormationApprenMetierCNMCI($data["formationApprenMetierCNMCI"]);
-        if (isset($data["formationApprenMetierTypeCNMCI"])) $member->setFormationApprenMetierTypeCNMCI($data["formationApprenMetierTypeCNMCI"]);
     }
 
 }

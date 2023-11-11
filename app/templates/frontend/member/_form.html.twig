@@ -36,9 +36,9 @@
                 {{ form_row(form.company) }}
                 {{ form_row(form.nationality) }}
                 {{ form_row(form.mobile) }}
-{#                {{ form_row(form.phone) }}#}
+                {{ form_row(form.phone) }}
                 {{ form_row(form.whatsapp) }}
-{#                {{ form_row(form.country) }}#}
+                {{ form_row(form.country) }}
                 {{ form_row(form.city) }}
                 {{ form_row(form.commune) }}
                 {{ form_row(form.quartier) }}
@@ -83,8 +83,6 @@
             <div class="accordion-body">
                 <div class="py-3">
                     Etes-vous marié ? &nbsp;&nbsp;
-                    <input type="radio" name="is_married" value="0" checked /> Non &nbsp;&nbsp;
-                    <input type="radio" name="is_married" value="1"/> Oui
                     <div id="partner_bock" style="display:none;" class="my-3">
                         {{ form_row(form.partner_first_name) }}
                         {{ form_row(form.partner_last_name) }}

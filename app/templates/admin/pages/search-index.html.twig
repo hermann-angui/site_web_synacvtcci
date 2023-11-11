@@ -1,0 +1,55 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .app-search span {
+            position: absolute;
+            z-index: 10;
+            font-size: 26px;
+            line-height: 75px;
+            left: 15px;
+            top: 0;
+            color: var(--bs-gray-600);
+        }
+        .app-search .form-control {
+            padding-left: 77px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        {{ include('admin/_partials/simple-header.html.twig') }}
+        <div class="page-content">
+            <div class="container">
+                <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
+                    <div class="col-lg-12 mx-3">
+                            <div class="d-flex border border-2 border-dark p-2 rounded align-items-center">
+                                <span class="bx bx-search-alt fs-3"></span>
+                                 <form method="post" action="{{ path('admin_index_search') }}">
+                                     <input name="searchTerm" id="quick-search" type="text" class="form-control form-control-lg border-0 bg-transparent" style="height:70px;" placeholder="Recherche  rapide (Saisir Nom & prénoms ou numéro de mobile ou numéro permis ou numéro de reçu )" />
+                                 </form>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END layout-wrapper -->
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+      $(document).on('keydown', '#quick-search', function (e) {
+            if (e.which === 13) {
+                $("form").submit(function(){
+                });
+            }
+      });
+    });
+</script>
+{% endblock %}

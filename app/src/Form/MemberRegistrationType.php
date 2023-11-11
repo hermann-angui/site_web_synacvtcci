@@ -28,7 +28,7 @@ class MemberRegistrationType extends AbstractType
 
         $builder
             ->add('photo',FileType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => 'Photo',
                 'data_class' =>  null,
                 'mapped' => false,
@@ -48,20 +48,11 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-            ->add('titre', ChoiceType::class, [
-                'label' => 'Titre',
-                'mapped' => true,
-                'required' => false,
-                'attr' => ['class' => 'select2'],
-                'choices' => Member::getTitres(),
-                'empty_data' => null,
-            ])
-
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
                 'mapped' => true,
-                'required' => false,
-                'attr' => ['class' => 'select2'],
+                'required' => true,
+//                'attr' => ['class' => 'select2'],
                 'choices' => [
                     "YANGO" => "YANGO",
                     "UBER" => "UBER",
@@ -81,25 +72,34 @@ class MemberRegistrationType extends AbstractType
             ->add('nationality', TextType::class, [
                 'label' => "Nationalité",
                 'mapped' => true,
-                'required' => false,
+                'required' => true,
                 'data' => 'Ivoirienne'
             ])
             ->add('whatsapp', TelType::class, [
                 'label' => "Whatsapp",
                 'attr' => ['class' => 'input-mask', 'data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
-                'required' => false
+                'required' => true,
             ])
-            ->add('IdNumber', TextType::class, [
-                'label' => "N° Pièce d'identité (CNI, Passeport ou Carte consulaire)",
+            ->add('etatCivil', ChoiceType::class, [
+                'label' => 'Etat civil',
                 'mapped' => true,
-                'required' => false
+                'required' => true,
+//                'attr' => ['class' => 'select2'],
+                'choices' => [
+                    'MARIE(E)' => 'MARIE(E)',
+                    'CELIBATAIRE' => 'CELIBATAIRE',
+                    'DIVORCE(E)' => 'DIVORCE(E)',
+                    'VEUF(VE)' => 'VEUF(VE)',
+                ],
+                'empty_data' => null,
+                'data' => null,
             ])
             ->add('IdType', ChoiceType::class, [
-                'label' => 'Type de pièce',
+                'label' => 'Type de la pièce d\'identite (CNI ou Carte consulaire)',
                 'mapped' => true,
-                'required' => false,
-                'attr' => ['class' => 'select2'],
+                'required' => true,
+//                'attr' => ['class' => 'select2'],
                 'choices' => [
                     'CNI' => 'CNI',
                     'CC' => 'CC',
@@ -110,24 +110,20 @@ class MemberRegistrationType extends AbstractType
                 'empty_data' => null,
                 'data' => null,
             ])
-            ->add('etatCivil', ChoiceType::class, [
-                'label' => 'Etat civil',
+            ->add('IdNumber', TextType::class, [
+                'label' => "N° Pièce d'identité",
                 'mapped' => true,
-                'required' => false,
-                'attr' => ['class' => 'select2'],
-                'choices' => [
-                    'MARIE(E)' => 'MARIE(E)',
-                    'CELIBATAIRE' => 'CELIBATAIRE',
-                    'DIVORCE(E)' => 'DIVORCE(E)',
-                    'VEUF(VE)' => 'VEUF(VE)',
-                ],
-                'empty_data' => null,
-                'data' => null,
+                'required' => true,
             ])
             ->add('IdDeliveryPlace',TextType::class, [
-                'label' => "Délivré à",
+                'label' => "Lieu d'établissement de la pièce d'identité",
                 'mapped' => true,
-                'required' => false
+                'required' => true,
+            ])
+            ->add('IdDeliveryAuthority',TextType::class, [
+                'label' => "Autorité délivrant la pièce d'identité",
+                'mapped' => true,
+                'required' => true,
             ])
             ->add('IdDeliveryDate',DateType::class, [
                 'label' => 'Délivré le',
@@ -135,7 +131,7 @@ class MemberRegistrationType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false,
                 'mapped' => true,
-                'required' => false,
+                'required' => true,
                 'format' => 'dd/MM/yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
@@ -156,49 +152,76 @@ class MemberRegistrationType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false,
                 'mapped' => true,
-                'required' => false,
+                'required' => true,
                 'format' => 'dd/MM/yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
-            ->add('birth_city', TextType::class, [
-                'label' => 'Lieu de naissance',
+            ->add('birth_country', TextType::class, [
+                'label' => 'Pays de naissance',
                 'mapped' => true,
-                'required' => false
+                'required' => true,
+            ])
+            ->add('birth_city', TextType::class, [
+                'label' => 'Ville de naissance',
+                'mapped' => true,
+                'required' => true,
+            ])
+            ->add('birth_locality', TextType::class, [
+                'label' => 'Localité de naissance',
+                'mapped' => true,
+                'required' => true,
             ])
             ->add('drivingLicenseNumber', TextType::class, [
                 'label' => 'Numéro du permis de conduire',
                 'mapped' => true,
-                'required' => false
+                'required' => true,
             ])
             ->add('photoPieceFront',FileType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => "Copie scannée de la pièce (recto)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPieceBack',FileType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => "Copie scannée de la pièce (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisFront',FileType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => "Copie scannée du permis de conduire (recto)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisBack',FileType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => "Copie scannée du  de conduire (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
-
+            ->add('paymentReceiptCnmci',FileType::class, [
+                'required' => true,
+                'label' => "Reçu de paiement CNMCI",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+//            ->add('paymentReceiptSynacvtcci',FileType::class, [
+//                'required' => false,
+//                'label' => "Reçu de paiement SYNACVTCCI",
+//                'data_class' =>  null,
+//                'mapped' => true,
+//            ])
+            ->add('payment_receipt_cnmci_code',TextType::class, [
+                'required' => true,
+                'label' => "Code reçu de paiement Orange money",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
             ->add('city', ChoiceType::class, [
                 'label' => "Ville",
                 'mapped' => true,
-                'required' => false,
+                'required' => true,
                 'attr' => ['class' => 'select2'],
                 'choices' => [
                     "ABIDJAN" => "ABIDJAN",
@@ -220,7 +243,7 @@ class MemberRegistrationType extends AbstractType
             ->add('commune', ChoiceType::class, [
                 'label' => "Commune",
                 'mapped' => true,
-                'required' => false,
+                'required' => true,
                 'attr' => ['class' => 'select2'],
                 'choices' => [
                     "ABOBO" => "ABOBO",
@@ -240,21 +263,22 @@ class MemberRegistrationType extends AbstractType
             ->add('quartier', TextType::class, [
                 'label' => "Quartier",
                 'mapped' => true,
-                'required' => false
+                'required' => true
             ])
             ->add('mobile', TextType::class, [
                 'label' => "Mobile",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
-                'required' => false
+                'required' => true
             ])
-/*
+
             ->add('phone', TextType::class, [
-                'label' => "Tel fixe",
+                'label' => "Téléphone",
+                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
-                'required' => false
+                'required' => true
             ])
-*/
+
             ->add('partner_first_name', TextType::class, [
                 'label' => "Prénoms conjoint",
                 'mapped' => true,
@@ -265,19 +289,46 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => false
             ])
-/*
-            ->add('status', ChoiceType::class, [
-                'label' => 'Statut',
-                'required' => true,
-                'mapped' => false,
-                'choices' => [
-                    'PENDING' => 'EN ATTENTE',
-                    'VALIDATED' => 'VALIDER',
-                ],
-                'empty_data' =>  null,
-                'data' => null,
+            ->add('activity_geo_location', TextType::class, [
+                'label' => "Situation géographique d'activité",
+                'mapped' => true,
+                'required' => true
             ])
-*/
+            ->add('activity_country_location', TextType::class, [
+                'label' => "Pays d'activité",
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('activity_city_location', TextType::class, [
+                'label' => "Ville d'activité",
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('activity_quartier_location', TextType::class, [
+                'label' => "Quartier d'activité",
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('socioprofessionnelle_category', TextType::class, [
+                'label' => "Catégorie socioprofessionnelle",
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('activity', TextType::class, [
+                'label' => "Activité",
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('activity_date_debut', DateType::class, [
+                'label' => "Date debut d'activité",
+                'attr' => ['class' => 'js-datepicker'],
+                'widget' => 'single_text',
+                'html5' => false,
+                'mapped' => true,
+                'required' => true,
+                'format' => 'dd/MM/yyyy',
+                'years' => range($past->format('Y'), $end->format('Y')),
+            ])
         ;
     }
 

@@ -2,11 +2,17 @@
 
 namespace App\Controller\Client;
 
+use App\Entity\Child;
 use App\Entity\Member;
+use App\Entity\Payment;
+use App\Form\MemberOnlineRegistrationType;
 use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
+use App\Service\Payment\PaymentService;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,15 +52,22 @@ class PageController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/success', name: 'success')]
-    public function success(Request $request): Response
+    #[Route(path: '/success/{id}', name: 'success')]
+    public function success(Member $member, MemberService $memberService): Response
     {
         $flashInfos = [
             "Suite à la bastonnade d'un chauffeur à ..",
             "La SYNACVTCCI apporte son assistance au chauffeur bastonné ..",
             "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
         ];
-        return $this->render('frontend/member/success.html.twig', ["flashInfos" => $flashInfos]);
+        $memberService->generateRegistrationReceipt($member);
+        return $this->render('frontend/member/success.html.twig', ["flashInfos" => $flashInfos, 'member' => $member]);
+    }
+
+    #[Route(path: '/recap', name: 'register_member_recap')]
+    public function registerRecap (Request $request, MemberService $memberService): Response
+    {
+        return $this->json("");
     }
 
     #[Route(path: '/register', name: 'register_member')]
@@ -66,12 +79,12 @@ class PageController extends AbstractController
             "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
         ];
         $member = new Member;
-        $form = $this->createForm(MemberRegistrationType::class, $member);
+        $form = $this->createForm(MemberOnlineRegistrationType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $result = $memberService->handleCnmciFormSubmit($request,$form, $member );
-            return $this->redirectToRoute('success',[], Response::HTTP_SEE_OTHER);
+            $this->handleFormCreation($request, $form, $member, $memberService);
+           return $this->redirectToRoute('success',["id" => $member->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('frontend/member/register.html.twig', [
             "flashInfos" => $flashInfos,
@@ -92,5 +105,41 @@ class PageController extends AbstractController
     {
         $member = $memberRepository->findOneBy(['codeSticker' => $id]);
         return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
+    }
+
+    private function handleFormCreation(Request $request, FormInterface $form, Member &$member, MemberService $memberService): Member {
+
+        $images = [];
+
+        if($form->has('photo'))  $images['photo'] = $form->get('photo')?->getData();
+        if($form->has('photoPieceFront'))  $images['photoPieceFront'] = $form->get('photoPieceFront')?->getData();
+        if($form->has('photoPieceBack'))  $images['photoPieceBack'] = $form->get('photoPieceBack')?->getData();
+        if($form->has('photoPermisFront'))  $images['photoPermisFront'] = $form->get('photoPermisFront')?->getData();
+        if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
+
+        if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
+        if($form->has('paymentReceiptSynacvtcci'))  $images['paymentReceiptSynacvtcci'] = $form->get('paymentReceiptSynacvtcci')?->getData();
+
+        $data = $request->request->all();
+        if(isset($data['child'])){
+            foreach($data['child'] as $childItem){
+                $child=  new Child();
+                $child->setLastName($childItem['lastname']);
+                $child->setFirstName($childItem['firstname']);
+                $child->setSex($childItem['sex']);
+                $child->setParent($member);
+                $member->addChild($child);
+            }
+        }
+        $memberService->createMember($member, $images);
+        return $member;
+    }
+
+    #[Route('/download/receipt/{id}', name: 'download_receipt_pdf', methods: ['GET'])]
+    public function pdfGenerate(Member $member, MemberService $memberService): Response
+    {
+        set_time_limit(0);
+        $content = $memberService->generateRegistrationReceipt($member);
+        return new PdfResponse($content, 'recu_macaron.pdf');
     }
 }

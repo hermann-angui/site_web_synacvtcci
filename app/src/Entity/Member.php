@@ -60,6 +60,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $date_of_birth = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $birth_country = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $birth_locality = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $birth_city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -74,8 +80,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $IdDeliveryPlace = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $IdDeliveryAuthority = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $IdDeliveryDate = null;
+
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $etatCivil = null;
 
@@ -99,6 +109,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $quartier = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $postal_code = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $mobile = null;
@@ -130,125 +143,17 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photoPermis_front = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPermis_back = null;              // domicilie a
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
+    private ?string $payment_receipt_cnmci;
 
-    /******************* FORMATION PROFESSIONNELLE *******************/
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $formationNiveauEtude = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $formationClass = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $formationDiplomeObtenu = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $formationDiplomeNiveau = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $formationApprenMetierNiveau = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $formationApprenMetierDiplomeObtenu = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $exploitantEtatCivil = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $formationApprenMetier = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $formationApprenMetierCNMCI = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $formationApprenMetierTypeCNMCI = null;
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
+    private ?string $payment_receipt_cnmci_code;
 
-
-    /******************* ETABLISSEMENT *******************/
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
+    private ?string $payment_receipt_synacvtcci;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $companyMainActivity = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $companySecondaryActivity = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $companyName = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $companySigle = null;
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $companyStartingDate = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $typeCompany = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $companyFiscalRegime = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $identifiantCnps = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $companyAdressPostal = null;
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private ?string $companyTel = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $companyFax = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $companyDepartement = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $companyCommune = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $companySp = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $companyQuartier = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $companyVillage = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $companyLotNum = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $companyILotNum = null;
-    #[ORM\Column(type: 'string', length: 12, nullable: true)]
-    private ?string $companyTotalMen = null;
-    #[ORM\Column(type: 'string', length: 12, nullable: true)]
-    private ?string $companyTotalWomen = null;
-    #[ORM\Column(type: 'string', length: 12, nullable: true)]
-    private ?string $companyTotalMenApprentis = null;
-    #[ORM\Column(type: 'string', length: 12, nullable: true)]
-    private ?string $companyTotalWomenApprentis = null;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $numCompteContribuableEtabl = null;
-
-
-    /*******  PERSONNE POUVANT ENGAGER l'ENTREPRISE *******/
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprLastName = null;
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $reprFirstName = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprQualification= null;
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private ?string $reprSex = null;
-
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprIDType = null;
-
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprIDNum = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprIDDeliveryPlace = null;
-
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $reprNationality = null;
-
-    #[ORM\Column(type: 'string', length: 25, nullable: true)]
-    private ?string $reprTitle = null;
-    #[ORM\Column(type: 'string', length: 12, nullable: true)]
-    private ?string $reprTel = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprEmail = null;
-
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $reprLieuNais = null;
-
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprEtatCivil = null;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $reprDomicile = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $reprIDDeliveryDate = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $reprDateNais = null;
-
-    /***********************************/
+    private ?string $photoPermis_back = null;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -258,20 +163,45 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $plain_password;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $activity_geo_location = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $activity_country_location = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $activity_city_location = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $activity_quartier_location = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $socioprofessionnelle_category = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $activity = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $activity_date_debut = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created_at;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
-    #[ORM\OneToMany(mappedBy: 'artisan', targetEntity: Child::class, cascade: ["remove", "persist"], orphanRemoval: true)]
-    private Collection $children;
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: Child::class, cascade: ["remove", "persist"], orphanRemoval: true)]
+    private ?Collection $children;
+
+    #[ORM\OneToMany(mappedBy: 'payment_for', targetEntity: Payment::class)]
+    private ?Collection $payments;
 
     public function __construct()
     {
         $this->created_at = new \DateTime();
         $this->modified_at = new \DateTime();
         $this->children = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -367,7 +297,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->date_of_birth;
     }
 
-    public function setDateOfBirth(?\DateTimeInterface $date_of_birth): self
+    public function setDateOfBirth(?\DateTimeInterface $date_of_birth = null): self
     {
         $this->date_of_birth = $date_of_birth;
 
@@ -727,7 +657,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Child>
      */
-    public function getChildren(): Collection
+    public function getChildren(): ?Collection
     {
         return $this->children;
     }
@@ -784,7 +714,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      * @param \DateTimeInterface|null $IdDeliveryDate
      * @return Member
      */
-    public function setIdDeliveryDate(?\DateTimeInterface $IdDeliveryDate): Member
+    public function setIdDeliveryDate(?\DateTimeInterface $IdDeliveryDate = null): self
     {
         $this->IdDeliveryDate = $IdDeliveryDate;
         return $this;
@@ -811,846 +741,108 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getFormationNiveauEtude(): ?string
+    public function getCodeSticker(): ?string
     {
-        return $this->formationNiveauEtude;
+        return $this->codeSticker;
     }
 
     /**
-     * @param string|null $formationNiveauEtude
+     * @param string|null $codeSticker
      * @return Member
      */
-    public function setFormationNiveauEtude(?string $formationNiveauEtude): Member
+    public function setCodeSticker(?string $codeSticker): Member
     {
-        $this->formationNiveauEtude = $formationNiveauEtude;
+        $this->codeSticker = $codeSticker;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getFormationClass(): ?string
+    public function getEtatCivil(): ?string
     {
-        return $this->formationClass;
+        return $this->etatCivil;
     }
 
     /**
-     * @param string|null $formationClass
+     * @param string|null $etatCivil
      * @return Member
      */
-    public function setFormationClass(?string $formationClass): Member
+    public function setEtatCivil(?string $etatCivil): Member
     {
-        $this->formationClass = $formationClass;
+        $this->etatCivil = $etatCivil;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getFormationDiplomeObtenu(): ?string
+    public function getReference(): ?string
     {
-        return $this->formationDiplomeObtenu;
+        return $this->reference;
     }
 
     /**
-     * @param string|null $formationDiplomeObtenu
+     * @param string|null $reference
      * @return Member
      */
-    public function setFormationDiplomeObtenu(?string $formationDiplomeObtenu): Member
+    public function setReference(?string $reference): Member
     {
-        $this->formationDiplomeObtenu = $formationDiplomeObtenu;
+        $this->reference = $reference;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getFormationApprenMetierNiveau(): ?string
+    public function getBirthLocality(): ?string
     {
-        return $this->formationApprenMetierNiveau;
+        return $this->birth_locality;
     }
 
     /**
-     * @param string|null $formationApprenMetierNiveau
+     * @param string|null $birth_locality
      * @return Member
      */
-    public function setFormationApprenMetierNiveau(?string $formationApprenMetierNiveau): Member
+    public function setBirthLocality(?string $birth_locality): Member
     {
-        $this->formationApprenMetierNiveau = $formationApprenMetierNiveau;
+        $this->birth_locality = $birth_locality;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getFormationApprenMetierDiplomeObtenu(): ?string
+    public function getIdDeliveryPlace(): ?string
     {
-        return $this->formationApprenMetierDiplomeObtenu;
+        return $this->IdDeliveryPlace;
     }
 
     /**
-     * @param string|null $formationApprenMetierDiplomeObtenu
+     * @param string|null $IdDeliveryPlace
      * @return Member
      */
-    public function setFormationApprenMetierDiplomeObtenu(?string $formationApprenMetierDiplomeObtenu): Member
+    public function setIdDeliveryPlace(?string $IdDeliveryPlace): Member
     {
-        $this->formationApprenMetierDiplomeObtenu = $formationApprenMetierDiplomeObtenu;
+        $this->IdDeliveryPlace = $IdDeliveryPlace;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getExploitantEtatCivil(): ?string
+    public function getIdDeliveryAuthority(): ?string
     {
-        return $this->exploitantEtatCivil;
+        return $this->IdDeliveryAuthority;
     }
 
     /**
-     * @param string|null $exploitantEtatCivil
+     * @param string|null $IdDeliveryAuthority
      * @return Member
      */
-    public function setExploitantEtatCivil(?string $exploitantEtatCivil): Member
+    public function setIdDeliveryAuthority(?string $IdDeliveryAuthority): Member
     {
-        $this->exploitantEtatCivil = $exploitantEtatCivil;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFormationApprenMetier(): ?string
-    {
-        return $this->formationApprenMetier;
-    }
-
-    /**
-     * @param string|null $formationApprenMetier
-     * @return Member
-     */
-    public function setFormationApprenMetier(?string $formationApprenMetier): Member
-    {
-        $this->formationApprenMetier = $formationApprenMetier;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFormationApprenMetierCNMCI(): ?string
-    {
-        return $this->formationApprenMetierCNMCI;
-    }
-
-    /**
-     * @param string|null $formationApprenMetierCNMCI
-     * @return Member
-     */
-    public function setFormationApprenMetierCNMCI(?string $formationApprenMetierCNMCI): Member
-    {
-        $this->formationApprenMetierCNMCI = $formationApprenMetierCNMCI;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFormationApprenMetierTypeCNMCI(): ?string
-    {
-        return $this->formationApprenMetierTypeCNMCI;
-    }
-
-    /**
-     * @param string|null $formationApprenMetierTypeCNMCI
-     * @return Member
-     */
-    public function setFormationApprenMetierTypeCNMCI(?string $formationApprenMetierTypeCNMCI): Member
-    {
-        $this->formationApprenMetierTypeCNMCI = $formationApprenMetierTypeCNMCI;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyMainActivity(): ?string
-    {
-        return $this->companyMainActivity;
-    }
-
-    /**
-     * @param string|null $companyMainActivity
-     * @return Member
-     */
-    public function setCompanyMainActivity(?string $companyMainActivity): Member
-    {
-        $this->companyMainActivity = $companyMainActivity;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanySecondaryActivity(): ?string
-    {
-        return $this->companySecondaryActivity;
-    }
-
-    /**
-     * @param string|null $companySecondaryActivity
-     * @return Member
-     */
-    public function setCompanySecondaryActivity(?string $companySecondaryActivity): Member
-    {
-        $this->companySecondaryActivity = $companySecondaryActivity;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyName(): ?string
-    {
-        return $this->companyName;
-    }
-
-    /**
-     * @param string|null $companyName
-     * @return Member
-     */
-    public function setCompanyName(?string $companyName): Member
-    {
-        $this->companyName = $companyName;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanySigle(): ?string
-    {
-        return $this->companySigle;
-    }
-
-    /**
-     * @param string|null $companySigle
-     * @return Member
-     */
-    public function setCompanySigle(?string $companySigle): Member
-    {
-        $this->companySigle = $companySigle;
-        return $this;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getCompanyStartingDate(): ?\DateTimeInterface
-    {
-        return $this->companyStartingDate;
-    }
-
-    /**
-     * @param \DateTimeInterface|null $companyStartingDate
-     * @return Member
-     */
-    public function setCompanyStartingDate(?\DateTimeInterface $companyStartingDate): Member
-    {
-        $this->companyStartingDate = $companyStartingDate;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTypeCompany(): ?string
-    {
-        return $this->typeCompany;
-    }
-
-    /**
-     * @param string|null $typeCompany
-     * @return Member
-     */
-    public function setTypeCompany(?string $typeCompany): Member
-    {
-        $this->typeCompany = $typeCompany;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyFiscalRegime(): ?string
-    {
-        return $this->companyFiscalRegime;
-    }
-
-    /**
-     * @param string|null $companyFiscalRegime
-     * @return Member
-     */
-    public function setCompanyFiscalRegime(?string $companyFiscalRegime): Member
-    {
-        $this->companyFiscalRegime = $companyFiscalRegime;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getIdentifiantCnps(): ?string
-    {
-        return $this->identifiantCnps;
-    }
-
-    /**
-     * @param string|null $identifiantCnps
-     * @return Member
-     */
-    public function setIdentifiantCnps(?string $identifiantCnps): Member
-    {
-        $this->identifiantCnps = $identifiantCnps;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyAdressPostal(): ?string
-    {
-        return $this->companyAdressPostal;
-    }
-
-    /**
-     * @param string|null $companyAdressPostal
-     * @return Member
-     */
-    public function setCompanyAdressPostal(?string $companyAdressPostal): Member
-    {
-        $this->companyAdressPostal = $companyAdressPostal;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyTel(): ?string
-    {
-        return $this->companyTel;
-    }
-
-    /**
-     * @param string|null $companyTel
-     * @return Member
-     */
-    public function setCompanyTel(?string $companyTel): Member
-    {
-        $this->companyTel = $companyTel;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyFax(): ?string
-    {
-        return $this->companyFax;
-    }
-
-    /**
-     * @param string|null $companyFax
-     * @return Member
-     */
-    public function setCompanyFax(?string $companyFax): Member
-    {
-        $this->companyFax = $companyFax;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyDepartement(): ?string
-    {
-        return $this->companyDepartement;
-    }
-
-    /**
-     * @param string|null $companyDepartement
-     * @return Member
-     */
-    public function setCompanyDepartement(?string $companyDepartement): Member
-    {
-        $this->companyDepartement = $companyDepartement;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyCommune(): ?string
-    {
-        return $this->companyCommune;
-    }
-
-    /**
-     * @param string|null $companyCommune
-     * @return Member
-     */
-    public function setCompanyCommune(?string $companyCommune): Member
-    {
-        $this->companyCommune = $companyCommune;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanySp(): ?string
-    {
-        return $this->companySp;
-    }
-
-    /**
-     * @param string|null $companySp
-     * @return Member
-     */
-    public function setCompanySp(?string $companySp): Member
-    {
-        $this->companySp = $companySp;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyQuartier(): ?string
-    {
-        return $this->companyQuartier;
-    }
-
-    /**
-     * @param string|null $companyQuartier
-     * @return Member
-     */
-    public function setCompanyQuartier(?string $companyQuartier): Member
-    {
-        $this->companyQuartier = $companyQuartier;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyVillage(): ?string
-    {
-        return $this->companyVillage;
-    }
-
-    /**
-     * @param string|null $companyVillage
-     * @return Member
-     */
-    public function setCompanyVillage(?string $companyVillage): Member
-    {
-        $this->companyVillage = $companyVillage;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyLotNum(): ?string
-    {
-        return $this->companyLotNum;
-    }
-
-    /**
-     * @param string|null $companyLotNum
-     * @return Member
-     */
-    public function setCompanyLotNum(?string $companyLotNum): Member
-    {
-        $this->companyLotNum = $companyLotNum;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyILotNum(): ?string
-    {
-        return $this->companyILotNum;
-    }
-
-    /**
-     * @param string|null $companyILotNum
-     * @return Member
-     */
-    public function setCompanyILotNum(?string $companyILotNum): Member
-    {
-        $this->companyILotNum = $companyILotNum;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyTotalMen(): ?string
-    {
-        return $this->companyTotalMen;
-    }
-
-    /**
-     * @param string|null $companyTotalMen
-     * @return Member
-     */
-    public function setCompanyTotalMen(?string $companyTotalMen): Member
-    {
-        $this->companyTotalMen = $companyTotalMen;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyTotalWomen(): ?string
-    {
-        return $this->companyTotalWomen;
-    }
-
-    /**
-     * @param string|null $companyTotalWomen
-     * @return Member
-     */
-    public function setCompanyTotalWomen(?string $companyTotalWomen): Member
-    {
-        $this->companyTotalWomen = $companyTotalWomen;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyTotalMenApprentis(): ?string
-    {
-        return $this->companyTotalMenApprentis;
-    }
-
-    /**
-     * @param string|null $companyTotalMenApprentis
-     * @return Member
-     */
-    public function setCompanyTotalMenApprentis(?string $companyTotalMenApprentis): Member
-    {
-        $this->companyTotalMenApprentis = $companyTotalMenApprentis;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCompanyTotalWomenApprentis(): ?string
-    {
-        return $this->companyTotalWomenApprentis;
-    }
-
-    /**
-     * @param string|null $companyTotalWomenApprentis
-     * @return Member
-     */
-    public function setCompanyTotalWomenApprentis(?string $companyTotalWomenApprentis): Member
-    {
-        $this->companyTotalWomenApprentis = $companyTotalWomenApprentis;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNumCompteContribuableEtabl(): ?string
-    {
-        return $this->numCompteContribuableEtabl;
-    }
-
-    /**
-     * @param string|null $numCompteContribuableEtabl
-     * @return Member
-     */
-    public function setNumCompteContribuableEtabl(?string $numCompteContribuableEtabl): Member
-    {
-        $this->numCompteContribuableEtabl = $numCompteContribuableEtabl;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprLastName(): ?string
-    {
-        return $this->reprLastName;
-    }
-
-    /**
-     * @param string|null $reprLastName
-     * @return Member
-     */
-    public function setReprLastName(?string $reprLastName): Member
-    {
-        $this->reprLastName = $reprLastName;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprFirstName(): ?string
-    {
-        return $this->reprFirstName;
-    }
-
-    /**
-     * @param string|null $reprFirstName
-     * @return Member
-     */
-    public function setReprFirstName(?string $reprFirstName): Member
-    {
-        $this->reprFirstName = $reprFirstName;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprQualification(): ?string
-    {
-        return $this->reprQualification;
-    }
-
-    /**
-     * @param string|null $reprQualification
-     * @return Member
-     */
-    public function setReprQualification(?string $reprQualification): Member
-    {
-        $this->reprQualification = $reprQualification;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprSex(): ?string
-    {
-        return $this->reprSex;
-    }
-
-    /**
-     * @param string|null $reprSex
-     * @return Member
-     */
-    public function setReprSex(?string $reprSex): Member
-    {
-        $this->reprSex = $reprSex;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprIDType(): ?string
-    {
-        return $this->reprIDType;
-    }
-
-    /**
-     * @param string|null $reprIDType
-     * @return Member
-     */
-    public function setReprIDType(?string $reprIDType): Member
-    {
-        $this->reprIDType = $reprIDType;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprIDNum(): ?string
-    {
-        return $this->reprIDNum;
-    }
-
-    /**
-     * @param string|null $reprIDNum
-     * @return Member
-     */
-    public function setReprIDNum(?string $reprIDNum): Member
-    {
-        $this->reprIDNum = $reprIDNum;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprIDDeliveryPlace(): ?string
-    {
-        return $this->reprIDDeliveryPlace;
-    }
-
-    /**
-     * @param string|null $reprIDDeliveryPlace
-     * @return Member
-     */
-    public function setReprIDDeliveryPlace(?string $reprIDDeliveryPlace): Member
-    {
-        $this->reprIDDeliveryPlace = $reprIDDeliveryPlace;
-        return $this;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getReprIDDeliveryDate(): ?\DateTimeInterface
-    {
-        return $this->reprIDDeliveryDate;
-    }
-
-    /**
-     * @param \DateTimeInterface|null $reprIDDeliveryDate
-     * @return Member
-     */
-    public function setReprIDDeliveryDate(?\DateTimeInterface $reprIDDeliveryDate): Member
-    {
-        $this->reprIDDeliveryDate = $reprIDDeliveryDate;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprTitle(): ?string
-    {
-        return $this->reprTitle;
-    }
-
-    /**
-     * @param string|null $reprTitle
-     * @return Member
-     */
-    public function setReprTitle(?string $reprTitle): Member
-    {
-        $this->reprTitle = $reprTitle;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprTel(): ?string
-    {
-        return $this->reprTel;
-    }
-
-    /**
-     * @param string|null $reprTel
-     * @return Member
-     */
-    public function setReprTel(?string $reprTel): Member
-    {
-        $this->reprTel = $reprTel;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprEmail(): ?string
-    {
-        return $this->reprEmail;
-    }
-
-    /**
-     * @param string|null $reprEmail
-     * @return Member
-     */
-    public function setReprEmail(?string $reprEmail): Member
-    {
-        $this->reprEmail = $reprEmail;
-        return $this;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getReprDateNais(): ?\DateTimeInterface
-    {
-        return $this->reprDateNais;
-    }
-
-    /**
-     * @param \DateTimeInterface|null $reprDateNais
-     * @return Member
-     */
-    public function setReprDateNais(?\DateTimeInterface $reprDateNais): Member
-    {
-        $this->reprDateNais = $reprDateNais;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprLieuNais(): ?string
-    {
-        return $this->reprLieuNais;
-    }
-
-    /**
-     * @param string|null $reprLieuNais
-     * @return Member
-     */
-    public function setReprLieuNais(?string $reprLieuNais): Member
-    {
-        $this->reprLieuNais = $reprLieuNais;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprEtatCivil(): ?string
-    {
-        return $this->reprEtatCivil;
-    }
-
-    /**
-     * @param string|null $reprEtatCivil
-     * @return Member
-     */
-    public function setReprEtatCivil(?string $reprEtatCivil): Member
-    {
-        $this->reprEtatCivil = $reprEtatCivil;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReprDomicile(): ?string
-    {
-        return $this->reprDomicile;
-    }
-
-    /**
-     * @param string|null $reprDomicile
-     * @return Member
-     */
-    public function setReprDomicile(?string $reprDomicile): Member
-    {
-        $this->reprDomicile = $reprDomicile;
+        $this->IdDeliveryAuthority = $IdDeliveryAuthority;
         return $this;
     }
 
@@ -1669,6 +861,24 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setQuartier(?string $quartier): Member
     {
         $this->quartier = $quartier;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPostalCode(): ?string
+    {
+        return $this->postal_code;
+    }
+
+    /**
+     * @param string|null $postal_code
+     * @return Member
+     */
+    public function setPostalCode(?string $postal_code): Member
+    {
+        $this->postal_code = $postal_code;
         return $this;
     }
 
@@ -1765,108 +975,230 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getReference(): ?string
+    public function getActivityGeoLocation(): ?string
     {
-        return $this->reference;
+        return $this->activity_geo_location;
     }
 
     /**
-     * @param string|null $reference
+     * @param string|null $activity_geo_location
      * @return Member
      */
-    public function setReference(?string $reference): Member
+    public function setActivityGeoLocation(?string $activity_geo_location): Member
     {
-        $this->reference = $reference;
+        $this->activity_geo_location = $activity_geo_location;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getIdDeliveryPlace(): ?string
+    public function getActivityCountryLocation(): ?string
     {
-        return $this->IdDeliveryPlace;
+        return $this->activity_country_location;
     }
 
     /**
-     * @param string|null $IdDeliveryPlace
+     * @param string|null $activity_country_location
      * @return Member
      */
-    public function setIdDeliveryPlace(?string $IdDeliveryPlace): Member
+    public function setActivityCountryLocation(?string $activity_country_location): Member
     {
-        $this->IdDeliveryPlace = $IdDeliveryPlace;
+        $this->activity_country_location = $activity_country_location;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getFormationDiplomeNiveau(): ?string
+    public function getActivityCityLocation(): ?string
     {
-        return $this->formationDiplomeNiveau;
+        return $this->activity_city_location;
     }
 
     /**
-     * @param string|null $formationDiplomeNiveau
+     * @param string|null $activity_city_location
      * @return Member
      */
-    public function setFormationDiplomeNiveau(?string $formationDiplomeNiveau): Member
+    public function setActivityCityLocation(?string $activity_city_location): Member
     {
-        $this->formationDiplomeNiveau = $formationDiplomeNiveau;
+        $this->activity_city_location = $activity_city_location;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getReprNationality(): ?string
+    public function getActivityQuartierLocation(): ?string
     {
-        return $this->reprNationality;
+        return $this->activity_quartier_location;
     }
 
     /**
-     * @param string|null $reprNationality
+     * @param string|null $activity_quartier_location
      * @return Member
      */
-    public function setReprNationality(?string $reprNationality): Member
+    public function setActivityQuartierLocation(?string $activity_quartier_location): Member
     {
-        $this->reprNationality = $reprNationality;
-        return $this;
-    }
-    /**
-     * @return string|null
-     */
-    public function getCodeSticker(): ?string
-    {
-        return $this->codeSticker;
-    }
-
-    /**
-     * @param string|null $codeSticker
-     * @return Member
-     */
-    public function setCodeSticker(?string $codeSticker): Member
-    {
-        $this->codeSticker = $codeSticker;
+        $this->activity_quartier_location = $activity_quartier_location;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getEtatCivil(): ?string
+    public function getSocioprofessionnelleCategory(): ?string
     {
-        return $this->etatCivil;
+        return $this->socioprofessionnelle_category;
     }
 
     /**
-     * @param string|null $etatCivil
+     * @param string|null $socioprofessionnelle_category
      * @return Member
      */
-    public function setEtatCivil(?string $etatCivil): Member
+    public function setSocioprofessionnelleCategory(?string $socioprofessionnelle_category): Member
     {
-        $this->etatCivil = $etatCivil;
+        $this->socioprofessionnelle_category = $socioprofessionnelle_category;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getActivity(): ?string
+    {
+        return $this->activity;
+    }
+
+    /**
+     * @param string|null $activity
+     * @return Member
+     */
+    public function setActivity(?string $activity): Member
+    {
+        $this->activity = $activity;
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getActivityDateDebut(): ?\DateTimeInterface
+    {
+        return $this->activity_date_debut;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $activity_date_debut
+     * @return Member
+     */
+    public function setActivityDateDebut(?\DateTimeInterface $activity_date_debut): Member
+    {
+        $this->activity_date_debut = $activity_date_debut;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBirthCountry(): ?string
+    {
+        return $this->birth_country;
+    }
+
+    /**
+     * @param string|null $birth_country
+     * @return Member
+     */
+    public function setBirthCountry(?string $birth_country): Member
+    {
+        $this->birth_country = $birth_country;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Payment>
+     */
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function addPayment(Payment $payment): self
+    {
+        if (!$this->payments->contains($payment)) {
+            $this->payments[] = $payment;
+            $payment->setPaymentFor($this);
+        }
+
+        return $this;
+    }
+
+    public function removePayment(Payment $payment): self
+    {
+        if ($this->payments->removeElement($payment)) {
+            // set the owning side to null (unless already changed)
+            if ($payment->getPaymentFor() === $this) {
+                $payment->setPaymentFor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaymentReceiptCnmci(): ?string
+    {
+        return $this->payment_receipt_cnmci;
+    }
+
+    /**
+     * @param string|null $payment_receipt_cnmci
+     * @return Member
+     */
+    public function setPaymentReceiptCnmci(?string $payment_receipt_cnmci): Member
+    {
+        $this->payment_receipt_cnmci = $payment_receipt_cnmci;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaymentReceiptSynacvtcci(): ?string
+    {
+        return $this->payment_receipt_synacvtcci;
+    }
+
+    /**
+     * @param string|null $payment_receipt_synacvtcci
+     * @return Member
+     */
+    public function setPaymentReceiptSynacvtcci(?string $payment_receipt_synacvtcci): Member
+    {
+        $this->payment_receipt_synacvtcci = $payment_receipt_synacvtcci;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaymentReceiptCnmciCode(): ?string
+    {
+        return $this->payment_receipt_cnmci_code;
+    }
+
+    /**
+     * @param string|null $payment_receipt_cnmci_code
+     * @return Member
+     */
+    public function setPaymentReceiptCnmciCode(?string $payment_receipt_cnmci_code): Member
+    {
+        $this->payment_receipt_cnmci_code = $payment_receipt_cnmci_code;
+        return $this;
+    }
+
 
 }

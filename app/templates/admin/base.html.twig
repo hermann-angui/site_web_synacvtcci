@@ -7,17 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Administration" name="description" />
     <meta content="synactvcci" name="author" />
-
     {% block stylesheet %}
-        <!-- Bootstrap Css -->
         <link href="{{ asset('assets/admin/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
-        <!-- Icons Css -->
         <link href="{{ asset('assets/admin/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-        <!-- App Css-->
+        <link  href="{{ asset('assets/frontend/css/jquery.datetimepicker.min.css') }}" rel="stylesheet" type="text/css" >
         <link href="{{ asset('assets/admin/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-
      <style>
-
          .btn-group-sm>.btn, .btn-sm {
               --bs-btn-border-radius: 0.02rem;
          }
@@ -43,69 +38,55 @@
          body[data-sidebar=dark] .navbar-brand-box {
              background: #0701b9;
          }
-
          body[data-sidebar=dark] #sidebar-menu ul li a i {
              color: #000000;
          }
-
          body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul>li:hover>a {
              background: #000000;
              color: #fff;
          }
-
          body[data-sidebar=dark] #sidebar-menu ul li ul.sub-menu li a {
              color: #ffffff;
              background-color: #080390;
          }
-
          body[data-sidebar=dark] #sidebar-menu ul li a {
              color: #fafafa;
          }
-
          body[data-sidebar=dark] .menu-title {
              color: #ffffff;
              background-color: #252525;
          }
-
          .menu-title {
              padding: 6px 20px !important;
          }
-
          .metismenu .mm-collapse.mm-show {
-             display: block;
              color: #ffffff;
              background-color: #080390;
          }
-
          body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul>li:hover>ul a {
              color: #ffffff;
          }
-
          body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul ul {
              background-color: #080390;
          }
-
      </style>
     {% endblock %}
 </head>
 
-<body data-sidebar="dark" data-layout-mode="light">
+<body data-sidebar="dark" data-layout-mode="light" class="sidebar-enable vertical-collpsed">
 
 <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
 {% block body %}
-
 {% endblock %}
 
 
 {% block javascript %}
-
 <script src="{{ asset('assets/admin/libs/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/metismenu/metisMenu.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/simplebar/simplebar.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/node-waves/waves.min.js') }}"></script>
-
 
 <!-- App js -->
 <script src="{{ asset('assets/admin/js/app.js') }}"></script>

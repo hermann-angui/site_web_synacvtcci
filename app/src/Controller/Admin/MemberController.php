@@ -32,12 +32,19 @@ class MemberController extends AbstractController
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
     public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
-            return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
+        if(!in_array($member->getStatus() , ["PAYED", "COMPLETED"])){
+            return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
+        }
+        return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
 
     #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['GET','POST'])]
     public function cnmciEdit(Member $member, Request  $request, MemberService $memberService): Response
     {
+        if(!in_array($member->getStatus() , ["PAYED", "COMPLETED"])){
+            return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
+        }
+
         if($request->getMethod() === "GET"){
             return $this->render('admin/member/cnmci/cnmci_edit.html.twig', ['member' => $member]);
         }elseif($request->getMethod() === "POST") {
@@ -297,20 +304,12 @@ class MemberController extends AbstractController
                     $content =  "<div class='d-flex gap-2 flex-wrap'>
                                     <div class='btn-group'>
                                         <button class='btn btn-info dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
-                                            <small>SYNACVTCCI</small><i class='mdi mdi-chevron-down'></i>
+                                            <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Afficher</a>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
+                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
-                                        </div>
-                                    </div>
-                                    <div class='btn-group'>
-                                        <button class='btn btn-dark dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
-                                            <small>CNMCI</small><i class='mdi mdi-chevron-down'></i>
-                                        </button>
-                                        <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Afficher</a>
-                                            <a class='dropdown-item' href='/admin/member/cnmci/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
                                         </div>
                                     </div>
                                 </div> ";
@@ -387,22 +386,13 @@ class MemberController extends AbstractController
                     $content =  "<div class='d-flex gap-2 flex-wrap'>
                                     <div class='btn-group'>
                                         <button class='btn btn-info dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
-                                            <small>SYNACVTCCI</small><i class='mdi mdi-chevron-down'></i>
+                                            <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Afficher</a>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
+                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
                                             <a class='dropdown-item' href='#'><i class='mdi mdi-trash-can'></i>Supprimer</a>
-                                        </div>
-                                    </div>
-                                    <div class='btn-group'>
-                                        <button class='btn btn-dark dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
-                                            <small>CNMCI</small><i class='mdi mdi-chevron-down'></i>
-                                        </button>
-                                        <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Afficher</a>
-                                            <a class='dropdown-item' href='/admin/member/cnmci/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
-                                            <a class='dropdown-item' href='#'><i class='mdi mdi-trash-can'></i> Supprimer</a>
                                         </div>
                                     </div>
                                 </div> ";
@@ -432,8 +422,8 @@ class MemberController extends AbstractController
             $whereResult .= " id_number	LIKE '%". $params['id_number	'] . "%' AND";
         }
 
-        $whereResult.= " status='VALIDATED'";
-    //  $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+      //  $whereResult.= " status='VALIDATED'";
+      $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -455,11 +445,38 @@ class MemberController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $memberService->updateMember($member, $request->files->all());
+            $images = [];
+            if($form->has('photo'))  $images['photo'] = $form->get('photo')?->getData();
+            if($form->has('photoPieceFront'))  $images['photoPieceFront'] = $form->get('photoPieceFront')?->getData();
+            if($form->has('photoPieceBack'))  $images['photoPieceBack'] = $form->get('photoPieceBack')?->getData();
+            if($form->has('photoPermisFront'))  $images['photoPermisFront'] = $form->get('photoPermisFront')?->getData();
+            if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
+
+            if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
+            if($form->has('paymentReceiptSynacvtcci'))  $images['paymentReceiptSynacvtcci'] = $form->get('paymentReceiptSynacvtcci')?->getData();
+
+            $data = $request->request->all();
+            if(isset($data['child'])){
+                foreach($data['child'] as $childItem){
+                    $child=  new Child();
+                    $child->setLastName($childItem['lastname']);
+                    $child->setFirstName($childItem['firstname']);
+                    $child->setSex($childItem['sex']);
+                    $child->setParent($member);
+                    $member->addChild($child);
+                }
+            }
+            $memberService->updateMember($member, $images);
+            if($member->getStatus()=== "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+                $member->setStatus("INFORMATION_VALIDATED");
+                $memberService->saveMember($member);
+                return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
+            }
+
             return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/member/synacvtcci/edit.html.twig', [
+        return $this->renderForm('admin/member/edit.html.twig', [
             'member' => $member,
             'form' => $form,
         ]);

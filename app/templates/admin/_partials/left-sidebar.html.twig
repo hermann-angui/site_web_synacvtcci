@@ -10,41 +10,30 @@
                 <li>
                     <a href="{{ path('admin_index') }}" class="waves-effect" aria-expanded="false">
                         <i class="bx bx-chat"></i>
-                        <span key="t-chat">Tableau de bord</span>
+                        <span key="t-t0">Tableau de bord</span>
                     </a>
                 </li>
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
                         <i class="bx bx-calendar"></i>
                         <span>Le syndicat</span>
                     </a>
                     <ul class="sub-menu mm-collapse mm-show" aria-expanded="false">
-                        <li><a href="{{ path('admin_member_new_subscription') }}" key="t1">Nouveaux inscrits</a></li>
-                        <li><a href="{{ path('admin_member_index') }}" key="t2">Membres</a></li>
-                        <li><a href="{{ path('admin_cards_list') }}" key="t3">Cartes</a></li>
+                        <li><a href="{{ path('admin_member_new_subscription') }}" key="t-s1">Nouveaux inscrits</a></li>
+                        <li><a href="{{ path('admin_member_index') }}" key="t-s2">Membres</a></li>
+                        <li><a href="{{ path('admin_cards_list') }}" key="t-s3">Cartes</a></li>
                     </ul>
                 </li>
-{#                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bx-data"></i>
-                        <span>Chambre des metiers</span>
-                    </a>
-                    <ul class="sub-menu mm-collapse mm-show" aria-expanded="false">
-                        <li><a href="{{ path('admin_member_index') }}" key="t2">Inscrits</a></li>
-                    </ul>
-                </li>
-#}
-
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bxs-factory"></i>
-                        <span key="t-dashboards">Activités</span>
+                        <span key="t-a0">Activités</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
-                        <li><a href="{{ path('admin_index') }}" key="t-u">Flash infos</a></li>
-                        <li><a href="{{ path('admin_index') }}" key="t-u">Activités en images</a></li>
-                        <li><a href="{{ path('admin_index') }}" key="t-u">Activités en vidéos</a></li>
-                        <li><a href="{{ path('admin_index') }}" key="t-t">Galerie</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-a1">Flash infos</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-a2">Activités en images</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-a3">Activités en vidéos</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-a4">Galerie</a></li>
                     </ul>
                 </li>
 
@@ -52,12 +41,12 @@
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-lock"></i>
-                        <span key="t-dashboards">Securité</span>
+                        <span key="t-s0">Securité</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
-                        <li><a href="{{ path('admin_index') }}" key="t-u">Utilisateurs</a></li>
-                        <li><a href="{{ path('admin_index') }}" key="t-t">Roles</a></li>
-                        <li><a href="{{ path('admin_index') }}" key="t-a">API</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-s1">Utilisateurs</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-s2">Roles</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-s3">API</a></li>
                     </ul>
                 </li>
             </ul>

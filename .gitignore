@@ -4,7 +4,10 @@ res
 db
 app/var
 app/vendor
-
+app/*.zip
+app/*.tar.gz
+*.tar.gz
+*.zip
 /app/public/users/
 /app/public/uploads/
 /app/public/members
