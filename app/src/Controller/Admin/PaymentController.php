@@ -76,10 +76,8 @@ class PaymentController extends AbstractController
             $payment->setReceiptNumber(PaymentService::generateReference());
             $payment->setCreatedAt(new \DateTime('now'));
             $payment->setModifiedAt(new \DateTime('now'));
+            $payment->setPaymentFor($member);
             $paymentRepository->add($payment, true);
-
-            $member->setStatus(strtoupper($response->getPaymentStatus()));
-            $memberRepository->add($member, true);
             return $this->redirect($response->getWaveLaunchUrl());
         }
         else return $this->redirectToRoute('home');
