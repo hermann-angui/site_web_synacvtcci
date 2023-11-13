@@ -109,7 +109,7 @@ class MemberOnlineRegistrationType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false,
                 'mapped' => true,
-                'required' => true,
+                'required' => false,
                 'format' =>  'dd/MM/yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
@@ -172,19 +172,19 @@ class MemberOnlineRegistrationType extends AbstractType
 //                'required' => false
 //            ])
             ->add('mobile', TextType::class, [
-                'label' => "Mobile",
+                'label' => "Numéro Tél Mobile",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
                 'required' => true
             ])
             ->add('phone', TextType::class, [
-                'label' => "Tel fixe",
+                'label' => "Numéro Téléphone Fixe",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
                 'required' => false
             ])
             ->add('whatsapp', TelType::class, [
-                'label' => "Whatsapp",
+                'label' => "Numéro Whatsapp",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
                 'required' => true
