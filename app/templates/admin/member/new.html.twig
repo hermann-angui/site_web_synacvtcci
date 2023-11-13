@@ -250,7 +250,7 @@
                         form.find(".body:eq(" + newIndex + ") label.error").remove();
                         form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
                     }
-                    form.validate().settings.ignore = ":disabled,:hidden";
+                    form.validate().settings.ignore = ":disabled,:hidden,.ignore";
                     return form.valid();
                 },
                 onStepChanged: function (event, currentIndex, priorIndex){
@@ -264,6 +264,7 @@
                 }
             }).validate({
                 errorPlacement: function errorPlacement(error, element) { element.before(error); },
+                ignore: ".ignore",
                 rules: {
                 }
             });

@@ -31,7 +31,7 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'label' => 'Photo',
                 'data_class' =>  null,
-                'mapped' => false,
+                'mapped' => true,
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
@@ -43,16 +43,19 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-            ->add('email', EmailType::class, [
+            ->add('email', TextType::class, [
                 'label' => 'Email',
+         //       'attr' => ['class' => 'ignore'],
                 'mapped' => true,
-                'required' => true
+                'required' => false,
+                'empty_data' => '',
+                'data' => 'n/a',
             ])
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
                 'mapped' => true,
                 'required' => true,
-//                'attr' => ['class' => 'select2'],
+                'attr' => ['class' => 'select2-multiple'],
                 'choices' => [
                     "YANGO" => "YANGO",
                     "UBER" => "UBER",
@@ -124,6 +127,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Autorité délivrant la pièce d'identité",
                 'mapped' => true,
                 'required' => true,
+                'data' => 'ONECI'
             ])
             ->add('IdDeliveryDate',DateType::class, [
                 'label' => 'Délivré le',
@@ -160,6 +164,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Pays de naissance',
                 'mapped' => true,
                 'required' => true,
+                'data' => 'Côte d\'Ivoire'
             ])
             ->add('birth_city', TextType::class, [
                 'label' => 'Ville de naissance',
@@ -219,7 +224,7 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
             ])
             ->add('city', ChoiceType::class, [
-                'label' => "Ville",
+                'label' => "Ville de résidence",
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
@@ -241,7 +246,7 @@ class MemberRegistrationType extends AbstractType
                 'data' => null,
             ])
             ->add('commune', ChoiceType::class, [
-                'label' => "Commune",
+                'label' => "Commune de résidence",
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
@@ -261,7 +266,7 @@ class MemberRegistrationType extends AbstractType
                 'data' => null,
             ])
             ->add('quartier', TextType::class, [
-                'label' => "Quartier",
+                'label' => "Quartier de résidence",
                 'mapped' => true,
                 'required' => true
             ])
@@ -292,7 +297,8 @@ class MemberRegistrationType extends AbstractType
             ->add('activity_geo_location', TextType::class, [
                 'label' => "Situation géographique d'activité",
                 'mapped' => true,
-                'required' => true
+                'required' => true,
+                'data' => 'ABIDJAN'
             ])
             ->add('activity_country_location', TextType::class, [
                 'label' => "Pays d'activité",
@@ -312,12 +318,14 @@ class MemberRegistrationType extends AbstractType
             ->add('socioprofessionnelle_category', TextType::class, [
                 'label' => "Catégorie socioprofessionnelle",
                 'mapped' => true,
-                'required' => true
+                'required' => true,
+                'data' => 'ARTISAN'
             ])
             ->add('activity', TextType::class, [
                 'label' => "Activité",
                 'mapped' => true,
-                'required' => true
+                'required' => true,
+                'data' => 'CHAUFFEUR VTC'
             ])
             ->add('activity_date_debut', DateType::class, [
                 'label' => "Date debut d'activité",

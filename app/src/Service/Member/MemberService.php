@@ -48,9 +48,13 @@ class MemberService
     public function createMember(Member $member, array $images): ?Member
     {
         try {
+
             date_default_timezone_set("Africa/Abidjan");
-            $this->memberRepository->setAutoIncrementToLast($this->memberRepository->getLastRowId());
+
             $lastRowId = $this->memberRepository->getLastRowId();
+            if($lastRowId === null) $lastRowId = 1;
+            $this->memberRepository->setAutoIncrementToLast($lastRowId);
+
             $member->setRoles(['ROLE_USER']);
             $date = new DateTime('now');
             $member->setSubscriptionDate($date);

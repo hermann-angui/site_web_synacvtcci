@@ -1,261 +1,270 @@
 <div class="col-lg-12 py-5">
-    <div class="card">
-        <div class="card-body p-4">
-                {{ form_start(form, {'method': 'POST', 'method':'POST', 'attr': {'id': 'stepperform'}}) }}
-                <h3>INFORMATIONS PERSONNELLES</h3>
-                <fieldset>
-                    <div id="step0">
-                        <div class="my-custom-class-for-errors">
-                            {{ form_errors(form) }}
-                        </div>
-                        <div class="row mb-4 mt-4">
-                            <div class="d-flex justify-content-center">
-                                <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
-                                    <div class="d-flex flex-column justify-content-center align-items-center">
-                                        {% if member.photo %}
-                                            <img id="imagePreview" src="/members/{{ member.reference }}/{{ member.photo }}" alt="" width="100" class="rounded-circle">
-                                        {% else %}
-                                            <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
-                                        {% endif %}
-                                        <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
-                                        {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
-                                        <div style="margin-top:-25px">Télécharger une photo</div>
+    {{ form_start(form, {'method': 'POST', 'method':'POST', 'attr': {'id': 'stepperform'}}) }}
+        <h3>INFORMATIONS PERSONNELLES</h3>
+        <fieldset>
+            <div id="step0">
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                </div>
+                <div class="row mb-4 mt-4">
+                    <div class="d-flex justify-content-center">
+                        <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                {% if member.photo %}
+{#                                    <img id="imagePreview" src="/members/{{ member.reference }}/{{ member.photo }}" alt="" width="150">#}
+                                    <img id="imagePreview" src="/members/{{ member.reference }}/{{ member.photo|image_path }}" alt="" width="150">
+                                {% else %}
+                                    <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="150">
+                                {% endif %}
+                                <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
+                                {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+                                <div>Télécharger une photo</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row mb-3 mt-4">
+                    <div class="col-md-2">
+                        {{ form_row(form.sex) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.lastName) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.firstName) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.mobile) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.whatsapp) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.phone) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.birth_city) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.birth_country) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.date_of_birth) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.birth_locality) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.nationality) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.city) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.commune) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.quartier) }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h3>DOC D'IDENTITE</h3>
+        <fieldset>
+            <div id="step1">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form_row(form.company) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.IdType) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.IdNumber) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.IdDeliveryAuthority) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.IdDeliveryDate) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.IdDeliveryPlace) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.drivingLicenseNumber) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="member_registration_photoPieceFront" class="form-label">Copie scannée de la pièce (recto)
+                            {% if member.photoPieceFront %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPieceFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPieceFront }}" alt="" width="100" style="width:50px;">
+                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
+                                </div>
+                            {% else %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPieceFrontPreview" src="" alt="">
+                                    <div style="margin-top:0px"  class="upload-icon">
+                                        <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
-                                </label>
-                            </div>
-                        </div>
+                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="member_registration_photoPieceBack" class="form-label">Copie scannée de la pièce (verso)
+                            {% if member.photoPieceBack %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPieceBackPreview" src="/members/{{ member.reference }}/{{ member.photoPieceBack }}" alt="" width="100" style="width:50px;">
+                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
+                                </div>
+                            {% else %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPieceBackPreview" src="" alt="">
+                                    <div style="margin-top:0px"  class="upload-icon">
+                                        <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
+                                    </div>
+                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="member_registration_photoPermisFront" class="form-label">Copie scannée du permis (recto)
+                            {% if member.photoPermisFront %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPermisFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPermisFront }}" alt="" width="100" style="width:50px;">
+                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
+                                </div>
+                            {% else %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPermisFrontPreview" src="" alt="">
+                                    <div style="margin-top:0px"  class="upload-icon">
+                                        <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
+                                    </div>
+                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
 
-                        <div class="row mb-3 mt-4">
-                            <div class="col-md-2">
-                                {{ form_row(form.sex) }}
-                            </div>
-                            <div class="col-md-4">
-                                {{ form_row(form.lastName) }}
-                            </div>
-                            <div class="col-md-6">
-                                {{ form_row(form.firstName) }}
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="member_registration_photoPermisBack" class="form-label">Copie scannée de la permis (verso)
+                            {% if member.photoPermisBack %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPermisBackPreview" src="/members/{{ member.reference }}/{{ member.photoPermisBack }}" alt="" width="100" style="width:50px;">
+                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>
+                                </div>
+                            {% else %}
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                    <img id="member_registration_photoPermisBackPreview" src="" alt="">
+                                    <div style="margin-top:0px"  class="upload-icon">
+                                        <i class="fa fa-upload fa-4x d-block"></i>Télécharger une image
+                                    </div>
+                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h3>ACTIVITES</h3>
+        <fieldset>
+            <div id="step2">
+                <div class="py-3">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            {{ form_row(form.activity) }}
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                {{ form_row(form.email) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.mobile) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.whatsapp) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.phone) }}
-                            </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.activity_date_debut) }}
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                {{ form_row(form.birth_city) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.birth_country) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.date_of_birth) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.birth_locality) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.nationality) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.city) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.commune) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.quartier) }}
-                            </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.socioprofessionnelle_category) }}
                         </div>
                     </div>
-                </fieldset>
-
-                <h3>DOC D'IDENTITE</h3>
-                <fieldset>
-                    <div id="step1">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                {{ form_row(form.company) }}
-                            </div>
-                            <div class="col-md-4">
-                                {{ form_row(form.IdType) }}
-                            </div>
-                            <div class="col-md-4">
-                                {{ form_row(form.IdNumber) }}
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                {{ form_row(form.IdDeliveryAuthority) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.IdDeliveryDate) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.IdDeliveryPlace) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.drivingLicenseNumber) }}
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="member_registration_photoPieceFront" class="form-label">Copie scannée de la pièce (recto)
-                                    {% if member.photoPieceFront %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPieceFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPieceFront }}" alt="" width="100" style="width:50px;">
-                                            {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
-                                            <div style="margin-top:0px">Télécharger une image</div>
-                                        </div>
-                                    {% else %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPieceFrontPreview" src="" alt="">
-                                            <div style="margin-top:0px"  class="upload-icon">
-                                                <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
-                                            </div>
-                                            {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
-                                        </div>
-                                    {% endif %}
-                                </label>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="member_registration_photoPieceBack" class="form-label">Copie scannée de la pièce (verso)
-                                    {% if member.photoPieceBack %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPieceBackPreview" src="/members/{{ member.reference }}/{{ member.photoPieceBack }}" alt="" width="100" style="width:50px;">
-                                            {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
-                                            <div style="margin-top:0px">Télécharger une image</div>
-                                        </div>
-                                    {% else %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPieceBackPreview" src="" alt="">
-                                            <div style="margin-top:0px"  class="upload-icon">
-                                                <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
-                                            </div>
-                                            {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
-                                        </div>
-                                    {% endif %}
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="member_registration_photoPermisFront" class="form-label">Copie scannée du permis (recto)
-                                    {% if member.photoPermisFront %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPermisFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPermisFront }}" alt="" width="100" style="width:50px;">
-                                            {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
-                                            <div style="margin-top:0px">Télécharger une image</div>
-                                        </div>
-                                    {% else %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPermisFrontPreview" src="" alt="">
-                                            <div style="margin-top:0px"  class="upload-icon">
-                                                <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
-                                            </div>
-                                            {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
-                                        </div>
-                                    {% endif %}
-                                </label>
-
-                            </div>
-                            <div class="col-md-6">
-                                <label for="member_registration_photoPermisBack" class="form-label">Copie scannée de la permis (verso)
-                                    {% if member.photoPermisBack %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPermisBackPreview" src="/members/{{ member.reference }}/{{ member.photoPermisBack }}" alt="" width="100" style="width:50px;">
-                                            {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
-                                            <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>
-                                        </div>
-                                    {% else %}
-                                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                            <img id="member_registration_photoPermisBackPreview" src="" alt="">
-                                            <div style="margin-top:0px"  class="upload-icon">
-                                                <i class="fa fa-upload fa-4x d-block"></i>Télécharger une image
-                                            </div>
-                                            {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
-                                        </div>
-                                    {% endif %}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <h3>ACTIVITES</h3>
-                <fieldset>
-                    <div id="step2">
-                        <div class="py-3">
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    {{ form_row(form.activity) }}
-                                </div>
-                                <div class="col-md-4">
-                                    {{ form_row(form.activity_date_debut) }}
-                                </div>
-                                <div class="col-md-4">
-                                    {{ form_row(form.socioprofessionnelle_category) }}
-                                </div>
-                            </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
                             {{ form_row(form.activity_geo_location) }}
+                        </div>
+                        <div class="col-md-3">
                             {{ form_row(form.activity_country_location) }}
+                        </div>
+                        <div class="col-md-3">
                             {{ form_row(form.activity_city_location) }}
+                        </div>
+                        <div class="col-md-3">
                             {{ form_row(form.activity_quartier_location) }}
                         </div>
                     </div>
-                </fieldset>
+                </div>
+            </div>
+        </fieldset>
 
-                <h3>DONNEES FAMILLES</h3>
-                <fieldset>
-                    <div id="step3">
-                        <div class="py-3">
-                            <div id="partner_bock" class="my-3">
-                                {{ form_row(form.etatCivil) }}
-                                {{ form_row(form.partner_first_name) }}
-                                {{ form_row(form.partner_last_name) }}
-                            </div>
+        <h3>DONNEES FAMILLES</h3>
+        <fieldset>
+            <div id="step3">
+                <div class="py-3">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            {{ form_row(form.etatCivil) }}
                         </div>
-                        <div class="py-3">
-                            Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
-                            <input type="radio" name="has_child" value="0" checked /> Non &nbsp;&nbsp;
-                            <input type="radio" name="has_child" value="1"/> Oui
-                            <br>
-                            <div id="child-row" style="display:none;">
-                                <div id="children_bock"  class="pt-2">
-                                </div>
-                                <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Enregistrer un enfant </span>
+                        <div class="col-md-8">
+                            <div id="partner_bock" class="my-3">
+                            {{ form_row(form.partner_first_name) }}
+                            {{ form_row(form.partner_last_name) }}
                             </div>
                         </div>
                     </div>
-                </fieldset>
-
-                <h3>CHAMBRE DES METIERS</h3>
-                <fieldset>
-                    <div id="step3">
-                        <div class="py-3">
-                            <div id="partner_bock" class="my-3">
-                                {{ form_row(form.payment_receipt_cnmci_code) }}
-                                {{ form_row(form.paymentReceiptCnmci) }}
-{#                                {{ form_row(form.paymentReceiptSynacvtcci) }}#}
-                            </div>
+                </div>
+                <div class="py-3">
+                    Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
+                    <input type="radio" name="has_child" value="0" checked /> Non &nbsp;&nbsp;
+                    <input type="radio" name="has_child" value="1"/> Oui
+                    <br>
+                    <div id="child-row" style="display:none;">
+                        <div id="children_bock"  class="pt-2">
                         </div>
+                        <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Enregistrer un enfant </span>
                     </div>
-                </fieldset>
-                <hr>
+                </div>
+            </div>
+        </fieldset>
 
-            {{ form_end(form) }}
-        </div>
-        <!-- end card body -->
-    </div>
-    <!-- end card -->
+        <h3>CHAMBRE DES METIERS</h3>
+        <fieldset>
+            <div id="step3">
+                <div class="py-3">
+                    <div id="partner_bock" class="my-3">
+                        {{ form_row(form.payment_receipt_cnmci_code) }}
+                        {{ form_row(form.paymentReceiptCnmci) }}
+    {#                   {{ form_row(form.paymentReceiptSynacvtcci) }} #}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <hr>
+    {{ form_end(form) }}
 </div>
-<!-- end col -->

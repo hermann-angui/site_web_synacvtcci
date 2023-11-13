@@ -69,6 +69,28 @@
          body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul ul {
              background-color: #080390;
          }
+
+         .wizard .steps .current a, .wizard .steps .current a:active, .wizard .steps .current a:hover {
+             background-color: transparent !important;
+             color: #0701b9 !important;
+         }
+         .wizard .steps>ul>li a {
+             background-color: transparent !important;
+             cursor: pointer;
+         }
+         .wizard .steps .number{
+             font-size: 16px !important;
+             border: 2px solid #0701b9 !important;
+         }
+         .wizard .steps li.current a span.number{
+             background-color: #0701b9;
+         }
+         .wizard>.actions a, .wizard>.actions a:active, .wizard>.actions a:hover {
+             background-color: #0701b9 !important;
+             border-radius: 0px !important;
+             padding: 16px 47px !important;
+             color: #fff !important;
+         }
      </style>
     {% endblock %}
 </head>

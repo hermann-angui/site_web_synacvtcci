@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -104,7 +105,7 @@ class MemberController extends AbstractController
             $this->handleFormCreation($request, $form, $member, $memberService);
             return $this->redirectToRoute('admin_member_index');
         }
-        return $this->renderForm('admin/member/synacvtcci/new.html.twig', [
+        return $this->renderForm('admin/member/new.html.twig', [
             'member' => $member,
             'form' => $form,
         ]);
@@ -442,6 +443,9 @@ class MemberController extends AbstractController
     public function edit(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
+
+        $member->setPhoto(new File($memberService->getMemberDir($member) . $member->getPhoto() ));
+
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 

@@ -68,7 +68,7 @@ class MemberRepository extends ServiceEntityRepository
             ;
     }
 
-    public function getLastRowId(): int
+    public function getLastRowId(): ?int
     {
         return $this->createQueryBuilder('m')
             ->select('MAX(m.id)')
@@ -76,7 +76,7 @@ class MemberRepository extends ServiceEntityRepository
             ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
             ;
     }
-    public function setAutoIncrementToLast(int $value): int
+    public function setAutoIncrementToLast(int $value): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "ALTER TABLE `member` AUTO_INCREMENT = $value";
