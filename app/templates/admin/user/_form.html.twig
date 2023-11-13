@@ -1,0 +1,7 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-primary mx-2" data-href={{ path('admin_user_edit', {id: user.id}) }} id="btnSaveUser">Enregistrer</button>
+    </div>
+{{ form_end(form) }}

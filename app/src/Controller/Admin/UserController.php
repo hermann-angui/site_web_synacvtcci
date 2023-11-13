@@ -23,7 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/admin/user')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'app_user_index', methods: ['GET'])]
+    #[Route('/', name: 'admin_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
         return $this->render('admin/user/index.html.twig', [
@@ -31,7 +31,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'admin_user_new', methods: ['GET', 'POST'])]
     public function new(Request                              $request,
                         UserPasswordHasherInterface          $userPasswordHasher,
                         UserAuthenticatorInterface           $userAuthenticator,
@@ -92,7 +92,7 @@ class UserController extends AbstractController
         return $this->render('admin/user/new.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'admin_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
         return $this->render('admin/user/show.html.twig', [
@@ -100,7 +100,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserFormType::class, $user);
@@ -109,7 +109,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/user/edit.html.twig', [
@@ -118,7 +118,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
@@ -126,10 +126,10 @@ class UserController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/user/dt', name: 'app_user_dt', methods: ['GET'])]
+    #[Route('/user/dt', name: 'admin_user_dt', methods: ['GET'])]
     public function datatable(Request $request, Connection $connection, PaymentRepository $paymentRepository)
     {
         date_default_timezone_set("Africa/Abidjan");

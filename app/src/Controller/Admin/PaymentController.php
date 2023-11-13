@@ -28,7 +28,7 @@ class PaymentController extends AbstractController
     #[Route(path: '/choose/{id}', name: 'admin_payment_choose')]
     public function searchMain(Member $member): Response
     {
-        if(in_array($member->getStatus() , ["PAYED", "COMPLETED"])){
+        if (in_array($member->getStatus(), ["PAID", "COMPLETED"])) {
             return $this->redirectToRoute('admin_member_cncmi_edit', ['id' => $member->getId()]);
         }
         return $this->render('admin/payment/choose.html.twig', ['member' => $member]);
@@ -37,7 +37,7 @@ class PaymentController extends AbstractController
     #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
     public function cashin(Member $member, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
     {
-        if(!in_array($member->getStatus() , ["PAYED", "COMPLETED"])){
+        if (!in_array($member->getStatus(), ["PAID", "COMPLETED"])) {
             $payment = new Payment();
             $payment->setUser($this->getUser())
                 ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
@@ -47,10 +47,10 @@ class PaymentController extends AbstractController
                 ->setPaymentFor($member)
                 ->setCodePaymentOperateur(null)
                 ->setReceiptFile(null)
-                ->setStatus("PAYED");
+                ->setStatus("PAID");
             $paymentRepository->add($payment, true);
 
-            $member->setStatus("PAYED");
+            $member->setStatus("PAID");
             $memberRepository->add($member, true);
 
         }
@@ -59,14 +59,13 @@ class PaymentController extends AbstractController
 
 
     #[Route(path: '/do/{id}', name: 'do_payment')]
-    public function doPayment(Request $request, Member $member,
-                              WaveService $waveService,
-                              MemberRepository $memberRepository,
+    public function doPayment(Request           $request, Member $member,
+                              WaveService       $waveService,
+                              MemberRepository  $memberRepository,
                               PaymentRepository $paymentRepository): Response
     {
         $response = $waveService->makePayment($member);
-
-        if($response ) {
+        if ($response) {
             $payment = new Payment();
             $payment->setStatus(strtoupper($response->getPaymentStatus()));
             $payment->setReference($response->getClientReference());
@@ -79,9 +78,9 @@ class PaymentController extends AbstractController
             $payment->setPaymentFor($member);
             $paymentRepository->add($payment, true);
             return $this->redirect($response->getWaveLaunchUrl());
-        }
-        else return $this->redirectToRoute('home');
+        } else return $this->redirectToRoute('admin_index');
     }
+
     #[Route(path: '/wave/checkout/{status}', name: 'wave_payment_callback')]
     public function wavePaymentCheckoutStatusCallback($status,
                                                       Request $request,
@@ -89,41 +88,50 @@ class PaymentController extends AbstractController
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
-            try{
+            try {
                 $path = "/var/www/html/var/log/wave_payment_callback/$status/";
-                if(!file_exists($path)) mkdir($path, 0777, true);
+                if (!file_exists($path)) mkdir($path, 0777, true);
                 $data = ["reference" => $request->get("ref"), "date" => date("Ymd H:i:s")];
-                file_put_contents($path . "log_". date("Ymd") . ".log", json_encode($data), FILE_APPEND);
-            }catch(\Exception $e){
+                file_put_contents($path . "log_" . date("Ymd") . ".log", json_encode($data), FILE_APPEND);
+            } catch (\Exception $e) {
             }
+            return $this->redirectToRoute('member_display_receipt', ["id" => $payment->getId(), "status" => $status]);
         }
         return $this->redirectToRoute('home');
-}
+    }
 
     #[Route(path: '/wave', name: 'wave_payment_checkout_webhook')]
-    public function callbackWavePayment(Request $request,  PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
+    public function callbackWavePayment(Request $request, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
     {
-        $payload =  json_decode($request->getContent(), true);
-        if(!empty($payload) && array_key_exists("data", $payload)) {
-            $data =  $payload['data'];
+        $payload = json_decode($request->getContent(), true);
+        if (!empty($payload) && array_key_exists("data", $payload)) {
+            $data = $payload['data'];
             if (!empty($data) && array_key_exists("client_reference", $data)) {
                 $payment = $paymentRepository->findOneBy(["reference" => $data["client_reference"]]);
-                if($payment) {
-                    $payment->setStatus("PAID");
-                    $paymentRepository->add($payment, true);
-
-                    $member = $payment->getPaymentFor();
-                    if($member){
-                        $member->setStatus("PAID");
-                        $memberRepository->add($member, true);
+                if ($payment) {
+                    if (array_key_exists("payment_status", $data) && (strtoupper($data["payment_status"]) === "SUCCEEDED")) {
+                        $payment->setCodePaymentOperateur($data["transaction_id"]);
+                        $payment->setStatus("PAID");
+                        $paymentRepository->add($payment, true);
+                        $member = $payment->getPaymentFor();
+                        if ($member) {
+                            $member->setStatus("PAID");
+                            $memberRepository->add($member, true);
+                        }
                     }
-
                 }
             }
         }
-
         return $this->json($payload);
     }
 
-
+    #[Route(path: '/receipt/{id}', name: 'member_display_receipt', methods: ['POST', 'GET'])]
+    public function demandeShowReceipt(?Payment $payment, PaymentService $paymentService): Response
+    {
+        if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
+            $paymentService->generateRegistrationReceipt($payment->getPaymentFor());
+            return $this->render('admin/member/receipt.html.twig', ['payment' => $payment]);
+        }
+        return $this->redirectToRoute('admin_index');
+    }
 }

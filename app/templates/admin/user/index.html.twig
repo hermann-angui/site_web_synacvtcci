@@ -1,0 +1,204 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Création de compte{% endblock %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+
+    </style>
+{% endblock %}
+
+
+{% block body %}
+
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        {{ include('admin/_partials/header.html.twig') }}
+
+        <!-- ========== Left Sidebar Start ========== -->
+        {#        {{ include('admin/_partials/left-sidebar.html.twig')}}#}
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center p-3">
+                                        <h5 class="mb-0 card-title flex-grow-1">Utilisateurs</h5>
+                                        <div class="flex-shrink-0">
+                                            <button data-href="{{  path('admin_user_new') }}" class="btn btn-primary btn-sm waves-effect waves-light" id="btnNewUser"><span class="fa fa-plus-circle fa-1x"></span> Créer un utilisateur</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table align-middle table-nowrap mb-0">
+                                            <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Photo</th>
+                                                <th>Email</th>
+                                                <th>Roles</th>
+                                                <th>Prenoms</th>
+                                                <th>Nom</th>
+                                                <th>Dernière connexion</th>
+                                                <th>actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for user in users %}
+                                                <tr>
+                                                    <td>{{ user.id }}</td>
+                                                    <td>{{ user.photo }}</td>
+                                                    <td>{{ user.email }}</td>
+                                                    <td>{{ user.roles[1] is defined ? user.roles[1] : "ROLE_USER" }}</td>
+                                                    <td>{{ user.firstname }}</td>
+                                                    <td>{{ user.lastname }}</td>
+                                                    <td>{{ user.lastConnection ? user.lastConnection|date('Y-m-d H:i:s') : '' }}</td>
+                                                    <td>
+                                                        <button class="btn btn-warning btn-sm btn-rounded  btnshow" data-href="{{ path('admin_user_show', {'id': user.id}) }}">Afficher</button>
+                                                        <button class="btn btn-success btn-sm btn-rounded btnedit" data-href="{{ path('admin_user_edit', {'id': user.id}) }}">Modifier</button>
+                                                    </td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="11">no records found</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- end table-responsive -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div><!-- End Page-content -->
+            {{ include('admin/_partials/footer.html.twig') }}
+
+            <div class="modal fade" id="showUserModal" tabindex="-1" aria-labelledby="showUserModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modifier les informations de l'utilisateur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Informations de l'utilisateur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="registerUserModal" tabindex="-1" aria-labelledby="registerUserModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Nouvel utilisateur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- end main content-->
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right Sidebar -->
+
+    <!-- /Right-bar -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+  <script>
+      $('document').ready(function() {
+
+        $("#user_form_photo").change(function(data){
+          var imageFile = data.target.files[0];
+          var reader = new FileReader();
+          reader.readAsDataURL(imageFile);
+
+          reader.onload = function(evt){
+              $('#imagePreview').attr('src', evt.target.result);
+              $('#imagePreview').fadeIn(650);
+          }
+        });
+
+
+        $('#btnNewUser').click(function(e){
+            e.preventDefault();
+            var url = '{{ path('admin_user_new') }}';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response){
+                    $('#registerUserModal .modal-body').html(response);
+                    $('#registerUserModal').modal('show');
+                }
+            });
+        });
+
+        $('.btnshow').click(function(){
+            var url = $(this).data('href');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response){
+                    $('#showUserModal .modal-body').html(response);
+                    $('#showUserModal').modal('show');
+                }
+            });
+        });
+
+        $('.btnedit').click(function(){
+            var url = $(this).data('href');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response){
+                    // Add response in Modal body
+                    $('#editUserModal .modal-body').html(response);
+
+                    // Display Modal
+                    $('#editUserModal').modal('show');
+                }
+            });
+        });
+      });
+  </script>
+{% endblock %}

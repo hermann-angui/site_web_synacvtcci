@@ -1,0 +1,42 @@
+<table class="table table-bordered table-striped">
+    <tbody>
+        <tr>
+            <th>Nom</th>
+            <td>{{ user.lastname }}</td>
+        </tr>
+        <tr>
+            <th>Prénoms</th>
+            <td>{{ user.firstname }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th>Roles</th>
+            <td>{{ user.roles[1] is defined ? user.roles[1] : "ROLE_USER" }}</td>
+        </tr>
+{#
+        <tr>
+            <th>Password</th>
+            <td>{{ user.password }}</td>
+        </tr>
+#}
+        <tr>
+            <th>Photo</th>
+            <td><img src="{{ user.photo ? asset("backend/users/") ~ user.id ~ "/" ~ user.photo : '' }}"> </td>
+        </tr>
+        <tr>
+            <th>Créé le</th>
+            <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Modifié le</th>
+            <td>{{ user.modifiedAt ? user.modifiedAt|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Date Dernière connexion</th>
+            <td>{{ user.lastConnection ? user.lastConnection|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+    </tbody>
+</table>

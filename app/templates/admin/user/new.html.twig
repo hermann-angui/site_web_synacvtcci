@@ -1,0 +1,33 @@
+<div class="row mt-4 px-2">
+    {{ form_start(form, {action: '/admin/user/new'}) }}
+    {% if error is defined %}
+        <div class="alert alert-danger">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+    <div class="row mb-1">
+        <div class="d-flex justify-content-center">
+            <label for="user_form_photo" class="d-block d-flex justify-content-center align-content-center">
+                <div>
+                    <img id="imagePreview" src="{{ asset('frontend/assets/img/avatar/avatar.jpg') }}" alt="" width="100"
+                         class="rounded-circle">
+                    <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i
+                                class="mdi mdi-camera mdi-36px"></i></span>
+                    {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+                </div>
+            </label>
+        </div>
+    </div>
+    {{ form_row(form.lastname) }}
+    {{ form_row(form.firstname) }}
+    {{ form_row(form.email, {'attr': {'class': 'required'}}) }}
+    {{ form_row(form.role) }}
+    {{ form_widget(form.password , {'attr': {'class': 'required'}}) }}
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-primary mx-2">Enregistrer</button>
+    </div>
+    {{ form_end(form) }}
+</div>
+
+

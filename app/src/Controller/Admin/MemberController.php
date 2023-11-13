@@ -34,7 +34,7 @@ class MemberController extends AbstractController
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
     public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
-        if(!in_array($member->getStatus() , ["PAYED", "COMPLETED"])){
+        if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
             return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
         }
         return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
@@ -43,7 +43,7 @@ class MemberController extends AbstractController
     #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['GET','POST'])]
     public function cnmciEdit(Member $member, Request  $request, MemberService $memberService): Response
     {
-        if(!in_array($member->getStatus() , ["PAYED", "COMPLETED"])){
+        if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
             return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
         }
 
