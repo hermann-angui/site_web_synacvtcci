@@ -1,0 +1,112 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .card-body{
+            border: 2px solid #f8f8fb;
+            cursor: pointer;
+        }
+        .card-body:hover {
+            border: 2px solid #556ee6;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        {{ include('admin/_partials/simple-header.html.twig') }}
+            <div class="page-content">
+                <div class="container-fluid">
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Users Grid</h4>
+
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Contacts</a></li>
+                                        <li class="breadcrumb-item active">Users Grid</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+
+                    <div class="row">
+                        {% for member in members) %}
+                        <div class="col-xl-3 col-sm-6">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <img class="rounded-circle avatar-sm" src="{{  asset('/members/{{ member.reference }}/{{ member.photo }}') }}" alt="">
+                                    </div>
+                                    <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ member.firstName ~ ' ' ~ member.lastName}}</a></h5>
+                                    <p class="text-muted">{{ member.dateCreated }}</p>
+
+                                    <div>
+                                        <div class="table-responsive">
+                                            <table class="table table-nowrap mb-0">
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">Montant payé :</th>
+                                                    <td>{{ member.payment.montant }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Mobile :</th>
+                                                    <td>{{  member.mobile }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">E-mail :</th>
+                                                    <td>{{  member.email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Ville :</th>
+                                                    <td>{{  member.ville }}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-transparent border-top">
+                                    <div class="contact-links d-flex font-size-20">
+                                        <div class="flex-fill">
+                                            <a href="{{ path("admin_member_cncmi_edit", {id: member.id  }) }}"><i class="bx bx-message-square-dots"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!-- end row -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="text-center my-3">
+                                <a href="javascript:void(0);" class="text-success"><i class="bx bx-hourglass bx-spin me-2"></i> chargement </a>
+                            </div>
+                        </div> <!-- end col-->
+                    </div>
+                    <!-- end row -->
+
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+
+        });
+    </script>
+{% endblock %}

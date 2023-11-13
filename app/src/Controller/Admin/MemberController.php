@@ -550,4 +550,11 @@ class MemberController extends AbstractController
         }
         return $this->render('admin/pages/search-index.html.twig',["data" => null]);
     }
+
+    #[Route(path: '/verification-list', name: 'admin_member-verification-list')]
+    public function verificationList(Request $request, MemberRepository $memberRepository): Response
+    {
+            $members = $memberRepository->findBy(['status' => 'PAID']);
+            return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
+    }
 }

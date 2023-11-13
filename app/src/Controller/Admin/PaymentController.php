@@ -52,10 +52,9 @@ class PaymentController extends AbstractController
 
             $member->setStatus("PAID");
             $memberRepository->add($member, true);
-
+            return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
         }
-       // return $this->redirectToRoute('admin_member_index', ['id' => $member->getId()]);
-        return $this->redirectToRoute('admin_index', ['id' => $member->getId()]);
+        return $this->redirectToRoute('admin_index');
     }
 
 
@@ -130,19 +129,25 @@ class PaymentController extends AbstractController
     public function showPaymentReceipt(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generatePaymentReceipt($payment->getPaymentFor());
+            $paymentService->generatePaymentReceipt($payment);
             return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
         }
         return $this->redirectToRoute('admin_index');
     }
 
-    #[Route(path: '/successpage', name: 'payment_succes_page', methods: ['POST', 'GET'])]
+    #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
+    public function pdfGenerate(Payment $payment, PaymentService $paymentService): Response
+    {
+        return $paymentService->downloadMemberPaymentReceipt($payment);
+    }
+
+    #[Route(path: '/successpage/{id}', name: 'payment_succes_page', methods: ['POST', 'GET'])]
     public function paymentSuccesPage(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generatePaymentReceipt($payment->getPaymentFor());
+           // $paymentService->generatePaymentReceipt($payment);
             return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
         }
-        return $this->redirectToRoute('admin_member_search');
+        return $this->redirectToRoute('admin_index');
     }
 }
