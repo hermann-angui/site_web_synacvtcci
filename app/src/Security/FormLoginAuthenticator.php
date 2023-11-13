@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class FormLoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'admin_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator, private UserRepository $userRepository)
     {
     }
 
@@ -44,6 +45,12 @@ class FormLoginAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
+
+        $user =  $token->getUser();
+        $user->setLastConnection(new \DateTime());
+        $this->userRepository->add($user, true);
+        if(in_array("ROLE_DISTRICT", $token->getUser()->getRoles() )) return new RedirectResponse($this->urlGenerator->generate('admin_district_index'));
+
         return new RedirectResponse($this->urlGenerator->generate('admin_index'));
        // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }

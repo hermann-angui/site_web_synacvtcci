@@ -86,6 +86,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $modified_at;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $last_connection;
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ActivityLogs::class)]
     private Collection $activityLogs;
 
@@ -516,6 +519,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastConnection(): ?\DateTime
+    {
+        return $this->last_connection;
+    }
+
+    /**
+     * @param \DateTime|null $last_connection
+     * @return User
+     */
+    public function setLastConnection(?\DateTime $last_connection): User
+    {
+        $this->last_connection = $last_connection;
         return $this;
     }
 
