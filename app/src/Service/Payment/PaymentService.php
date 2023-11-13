@@ -66,6 +66,32 @@ class PaymentService
     }
 
     /**
+     * @param Payment|null $payment
+     * @param string $viewTemplate
+     * @return string|null
+     */
+    public function generatePaymentReceipt(?Member $member)
+    {
+        try {
+            $qrCodeData = self::WEBSITE_URL . "/admin/member/" . $member->getId();
+            $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
+            $folder = self::MEDIA_DIR . $member->getReference();
+            if(!file_exists(self::MEDIA_DIR)) mkdir(self::MEDIA_DIR, 0777, true);
+            file_put_contents( $folder . "_barcode.png", $content);
+            $viewTemplate = 'admin/member/payment-receipt-pdf.html.twig';
+            $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
+            file_put_contents($folder . "_payment_receipt.pdf", $content);
+            if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
+            return $content ?? null;
+
+        }catch(\Exception $e){
+            if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
+            if(file_exists($folder . "_receipt.pdf")) \unlink($folder . "_receipt.pdf");
+            return null;
+        }
+    }
+
+    /**
      * @param Payment $payment
      * @return void
      */

@@ -95,7 +95,7 @@ class PaymentController extends AbstractController
                 file_put_contents($path . "log_" . date("Ymd") . ".log", json_encode($data), FILE_APPEND);
             } catch (\Exception $e) {
             }
-            return $this->redirectToRoute('member_display_receipt', ["id" => $payment->getId(), "status" => $status]);
+            return $this->redirectToRoute('pa', ["id" => $payment->getId(), "status" => $status]);
         }
         return $this->redirectToRoute('home');
     }
@@ -126,12 +126,22 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/receipt/{id}', name: 'member_display_receipt', methods: ['POST', 'GET'])]
-    public function demandeShowReceipt(?Payment $payment, PaymentService $paymentService): Response
+    public function showPaymentReceipt(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generateRegistrationReceipt($payment->getPaymentFor());
-            return $this->render('admin/member/receipt.html.twig', ['payment' => $payment]);
+            $paymentService->generatePaymentReceipt($payment->getPaymentFor());
+            return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
         }
         return $this->redirectToRoute('admin_index');
+    }
+
+    #[Route(path: '/successpage', name: 'member_display_receipt', methods: ['POST', 'GET'])]
+    public function paymentSuccesPage(?Payment $payment, PaymentService $paymentService): Response
+    {
+        if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
+            $paymentService->generatePaymentReceipt($payment->getPaymentFor());
+            return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
+        }
+        return $this->redirectToRoute('admin_member_search');
     }
 }

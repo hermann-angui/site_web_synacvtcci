@@ -529,5 +529,18 @@ class MemberController extends AbstractController
         return $member;
     }
 
-
+    #[Route(path: '/search', name: 'admin_member_search')]
+    public function chooseMain(Request $request, MemberRepository $memberRepository): Response
+    {
+        $searchTerm = $request->get('searchTerm');
+        if($searchTerm){
+            $member = $memberRepository->findOneBy(['reference' => strtolower($searchTerm)]);
+            if($member) return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
+            else{
+                $data = ['result' => 'error'];
+                return $this->render('admin/pages/search-index.html.twig', ["data" => $data]);
+            }
+        }
+        return $this->render('admin/pages/search-index.html.twig',["data" => null]);
+    }
 }
