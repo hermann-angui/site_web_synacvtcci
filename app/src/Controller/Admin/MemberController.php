@@ -103,7 +103,13 @@ class MemberController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $this->handleFormCreation($request, $form, $member, $memberService);
-            return $this->redirectToRoute('admin_member_index');
+            if($member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+                $member->setStatus("INFORMATION_VALIDATED");
+                $memberService->saveMember($member);
+                return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('admin/member/new.html.twig', [
             'member' => $member,
@@ -478,7 +484,8 @@ class MemberController extends AbstractController
                 return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
             }
 
-            return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
+            // return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/member/edit.html.twig', [

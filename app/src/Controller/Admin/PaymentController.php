@@ -54,7 +54,8 @@ class PaymentController extends AbstractController
             $memberRepository->add($member, true);
 
         }
-        return $this->redirectToRoute('admin_member_cncmi_edit', ['id' => $member->getId()]);
+       // return $this->redirectToRoute('admin_member_index', ['id' => $member->getId()]);
+        return $this->redirectToRoute('admin_index', ['id' => $member->getId()]);
     }
 
 
@@ -95,7 +96,7 @@ class PaymentController extends AbstractController
                 file_put_contents($path . "log_" . date("Ymd") . ".log", json_encode($data), FILE_APPEND);
             } catch (\Exception $e) {
             }
-            return $this->redirectToRoute('pa', ["id" => $payment->getId(), "status" => $status]);
+            return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
         }
         return $this->redirectToRoute('home');
     }
@@ -135,7 +136,7 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('admin_index');
     }
 
-    #[Route(path: '/successpage', name: 'member_display_receipt', methods: ['POST', 'GET'])]
+    #[Route(path: '/successpage', name: 'payment_succes_page', methods: ['POST', 'GET'])]
     public function paymentSuccesPage(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
