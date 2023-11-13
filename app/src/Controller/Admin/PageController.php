@@ -16,14 +16,18 @@ class PageController extends AbstractController
     #[Route(path: '', name: 'admin_index')]
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
-        $user = $this->getUser();
-        $roles = $user->getRoles();
-        if(in_array("ROLE_AGENT", $roles ))  {
-            return $this->render('admin/pages/agent-index.html.twig');
+        if(in_array("ROLE_AGENT", $this->getUser()->getRoles() ))  {
+            return $this->redirectToRoute('admin_index_agent');
         } else {
             $members = $memberRepository->findAll();
             return $this->render('admin/pages/index.html.twig', ["members" => $members]);
         }
+    }
+
+    #[Route(path: '/agent', name: 'admin_index_agent')]
+    public function indexAgent(Request $request, MemberRepository $memberRepository): Response
+    {
+            return $this->render('admin/pages/agent-index.html.twig');
     }
 
 }
