@@ -29,7 +29,7 @@ class PaymentController extends AbstractController
     public function searchMain(Member $member): Response
     {
         if (in_array($member->getStatus(), ["PAID", "COMPLETED"])) {
-            return $this->redirectToRoute('admin_member_cncmi_edit', ['id' => $member->getId()]);
+            return $this->redirectToRoute('admin_index', ['id' => $member->getId()]);
         }
         return $this->render('admin/payment/choose.html.twig', ['member' => $member]);
     }

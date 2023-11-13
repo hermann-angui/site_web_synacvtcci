@@ -26,7 +26,7 @@
                                     <h4 class="card-title">PAYEMENT EFFECTUE AVEC SUCCES</h4>
                                     <img src="{{ asset('public/assets/admin/images/success.gif') }}" alt="" width="230" height="200">
                                 <p class="card-text">Votre paiement de <strong>{{ payment.montant }}</strong> CFA a été effectué avec succès. Veuillez rédiriger le client vers le service de vérification</p>
-                                    <a href="{{ path('admin_member_search')}}"  id="mobilemoneybtn" class="btn btn-primary w-75 waves-effect waves-light">FERMER</a>
+                                    <a href="{{ path('admin_index')}}" class="btn btn-primary w-75 waves-effect waves-light">FERMER</a>
                             </div>
                         </div>
                     </div>
@@ -34,37 +34,12 @@
             </div>
     </div>
 
-    <div class="modal fade modal-cash" tabindex="-1" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Veuillez saisir le montant</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{{ path('admin_payment_cash', {id: member.id}) }}">
-                        <div class="form-group">
-                            <label for="selection_type" class="form-label col-md-2">Montant:</label>
-                            <input type="text" name="amount" class="form-control form-control-lg col-md-5 fs-2" checked placeholder="3500"/>  &nbsp;&nbsp;
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary w-md" data-bs-dismiss="modal">Enregistrer</button>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
 {% endblock %}
 
 {% block javascript %}
     {{ parent() }}
     <script type="text/javascript">
         jQuery(document).ready(function ($) {
-
-            $("#cashbtn").click(function(){
-                $('.modal-cash').modal('show');
-            });
 
         });
     </script>
