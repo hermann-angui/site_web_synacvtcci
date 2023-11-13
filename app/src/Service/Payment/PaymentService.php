@@ -91,7 +91,7 @@ class PaymentService
             $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
             file_put_contents($folder . "_payment_receipt.pdf", $content);
-          //  if(file_exists($folder . "_payment_barcode.png")) \unlink($folder . "_payment_barcode.png");
+            if(file_exists($folder . "_payment_barcode.png")) \unlink($folder . "_payment_barcode.png");
             return $content ?? null;
 
         }catch(\Exception $e){
