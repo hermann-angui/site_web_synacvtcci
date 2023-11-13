@@ -31,6 +31,13 @@ class MemberController extends AbstractController
         return $this->render('admin/member/synacvtcci/index.html.twig');
     }
 
+    #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
+    public function verificationList(Request $request, MemberRepository $memberRepository): Response
+    {
+        $members = $memberRepository->findBy(['status' => 'PAID']);
+        return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
+    }
+
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
     public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
@@ -551,10 +558,5 @@ class MemberController extends AbstractController
         return $this->render('admin/pages/search-index.html.twig',["data" => null]);
     }
 
-    #[Route(path: '/verification-list', name: 'admin_member-verification-list')]
-    public function verificationList(Request $request, MemberRepository $memberRepository): Response
-    {
-            $members = $memberRepository->findBy(['status' => 'PAID']);
-            return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
-    }
+
 }
