@@ -40,31 +40,32 @@
                                             </div>
                                         </label>
                                     </div>
-                                    <div class="row mt-2">
-                                         {{ form_label(registrationForm.firstname) }}
-                                          {{ form_widget(registrationForm.firstname) }}
-                                    </div>
-                                    <div class="row mt-2">
+                                    <div class="row mb-2">
                                         {{ form_label(registrationForm.lastname) }}
                                         {{ form_widget(registrationForm.lastname) }}
                                     </div>
-                                    <div class="row mt-2">
+                                    <div class="row mb-2">
+                                         {{ form_label(registrationForm.firstname) }}
+                                          {{ form_widget(registrationForm.firstname) }}
+                                    </div>
+
+                                    <div class="row mb-2">
                                         {{ form_label(registrationForm.sex) }}
                                         {{ form_widget(registrationForm.sex, {'attr': {'class': 'form-select required'}}) }}
                                     </div>
-                                    <div class="row mt-2">
+                                    <div class="row mb-2">
                                         {{ form_label(registrationForm.nationality) }}
                                         {{ form_widget(registrationForm.nationality, {'attr': {'class': 'form-select required'}}) }}
                                     </div>
-                                    <div class="row mt-2">
+                                    <div class="row mb-2">
                                          {{ form_label(registrationForm.phoneNumber) }}
                                          {{ form_widget(registrationForm.phoneNumber, {'attr': {'class': 'required'}}) }}
                                     </div>
-                                    <div class="row mt-2">
+                                    <div class="row mb-2">
                                         {{ form_label(registrationForm.dateofBirth) }}
                                         {{ form_widget(registrationForm.dateofBirth) }}
                                     </div>
-                                    <div class="row mt-2">
+                                    <div class="row mb-2">
                                         {{ form_label(registrationForm.email) }}
                                         {{ form_widget(registrationForm.email, {'attr': {'class': 'required'}}) }}
                                     </div>
@@ -94,6 +95,10 @@
 
 {% block javascript %}
 {{ parent() }}
+{{ parent() }}
+<script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
   <script>
       $('document').ready(function() {
           $("#user_form_photo").change(function(data){
@@ -105,6 +110,12 @@
                   $('#imagePreview').attr('src', evt.target.result);
                   $('#imagePreview').fadeIn(650);
               }
+          });
+
+          $('.js-datepicker').datetimepicker({
+                 timepicker:false,
+                 format:  'd/m/Y',
+                // mask: true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
           });
       });
 

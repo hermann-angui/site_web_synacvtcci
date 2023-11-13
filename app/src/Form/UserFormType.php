@@ -39,6 +39,7 @@ class UserFormType extends AbstractType
 
         $builder
             ->add('sex', ChoiceType::class, [
+                'label' => 'Sexe',
                 'required' => false,
                 'mapped' => true,
                 'choices' => [
@@ -65,7 +66,12 @@ class UserFormType extends AbstractType
             ])
             ->add('dateofBirth', DateType::class, [
                 'label' => 'Date de naissance',
+                'attr' => ['class' => 'js-datepicker'],
+                'widget' => 'single_text',
+                'html5' => false,
                 'mapped' => true,
+                'required' => false,
+                'format' =>  'dd/MM/yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
             ->add('email', EmailType::class, [
