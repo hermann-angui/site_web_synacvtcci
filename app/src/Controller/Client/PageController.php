@@ -4,12 +4,9 @@ namespace App\Controller\Client;
 
 use App\Entity\Child;
 use App\Entity\Member;
-use App\Entity\Payment;
 use App\Form\MemberOnlineRegistrationType;
-use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
-use App\Service\Payment\PaymentService;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -64,12 +61,6 @@ class PageController extends AbstractController
         return $this->render('frontend/member/success.html.twig', ["flashInfos" => $flashInfos, 'member' => $member]);
     }
 
-    #[Route(path: '/recap', name: 'register_member_recap')]
-    public function registerRecap (Request $request, MemberService $memberService): Response
-    {
-        return $this->json("");
-    }
-
     #[Route(path: '/register', name: 'register_member')]
     public function registerMember (Request $request, MemberService $memberService): Response
     {
@@ -107,7 +98,10 @@ class PageController extends AbstractController
         return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
     }
 
-    private function handleFormCreation(Request $request, FormInterface $form, Member &$member, MemberService $memberService): Member {
+    private function handleFormCreation(Request $request,
+                                        FormInterface $form,
+                                        Member &$member,
+                                        MemberService $memberService): Member {
 
         $images = [];
 

@@ -7,6 +7,7 @@ use App\Form\UserFormType;
 use App\Helper\UserHelper;
 use App\Security\FormLoginAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,6 +38,7 @@ class SecurityController extends AbstractController
 
 
     #[Route('/register', name: 'admin_register')]
+    #[IsGranted('ROLE_ADMIN')]
     public function register(Request $request,
                              UserPasswordHasherInterface $userPasswordHasher,
                              UserAuthenticatorInterface $userAuthenticator,

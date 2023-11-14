@@ -6,7 +6,6 @@ use App\Entity\Member;
 use App\Entity\Payment;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
-use App\Service\Member\MemberService;
 use App\Service\Payment\PaymentService;
 use App\Service\Wave\WaveService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -84,12 +83,18 @@ class PaymentController extends AbstractController
     #[Route(path: '/wave/checkout/{status}', name: 'wave_payment_callback')]
     public function wavePaymentCheckoutStatusCallback($status,
                                                       Request $request,
+                                                      MemberRepository $memberRepository,
                                                       PaymentRepository $paymentRepository): Response
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
-            $payment->setStatus("SUCCEEDED");
+            $payment->setStatus("PAID");
             $paymentRepository->add($payment, true);
+            $member = $payment->getPaymentFor();
+            if ($member) {
+                $member->setStatus("PAID");
+                $memberRepository->add($member, true);
+            }
             return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
         }
         return $this->redirectToRoute('admin_index');
@@ -136,12 +141,6 @@ class PaymentController extends AbstractController
             return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
         }
         return $this->redirectToRoute('admin_index');
-    }
-
-    #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
-    public function pdfGenerate(Payment $payment, PaymentService $paymentService): Response
-    {
-        return $paymentService->downloadMemberPaymentReceipt($payment);
     }
 
     #[Route(path: '/successpage/{id}', name: 'payment_succes_page', methods: ['POST', 'GET'])]

@@ -2,7 +2,6 @@
 
 namespace App\Service\Payment;
 
-use App\Entity\Member;
 use App\Entity\Payment;
 use App\Helper\PdfGenerator;
 use App\Repository\PaymentRepository;

@@ -5,8 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.supported_locales: ['fr','en']
-    wave_success_url: https://synacvtcci.org/admin/wave/checkout/success
-    wave_error_url: https://synacvtcci.org/admin/wave/checkout/error
+    wave_success_url: https://synacvtcci.org/wave/checkout/success
+    wave_error_url: https://synacvtcci.org/wave/checkout/error
     profile_url: http://synacvtcci.org/profile
     images_directory: '%kernel.project_dir%/public/uploads'
 

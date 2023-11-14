@@ -1,0 +1,56 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .card-body{
+            border: 2px solid #f8f8fb;
+            cursor: pointer;
+        }
+        .card-body:hover {
+            border: 2px solid #556ee6;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        {% if app.user is not null %}
+        {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
+            <div class="page-content">
+                <div class="container">
+                    <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
+                        <div class="col-lg-8">
+                            <div class="card card-body d-flex align-items-center">
+                                    <h2 class="card-title mb-2">PAYEMENT EFFECTUE AVEC SUCCES</h2>
+                                    <img src="{{ asset('assets/admin/images/success.gif') }}" alt="" width="150" height="150">
+                                <p class="card-text fs-5 text-center py-3">Votre paiement de <strong>{{ payment.montant }}</strong> CFA a été effectué avec succès. Veuillez rédiriger le souscripteur vers l'équipe de vérification</p>
+                                <div class="d-flex py-4">
+                                    <a href="{{ path('download_payment_receipt_pdf', {id: payment.id })}}" class="btn btn-primary waves-effect waves-light mx-3">Télécharger le reçu</a>
+                                    {% if app.user is not null %}
+                                        <a href="{{ path('admin_index')}}" class="btn btn-primary waves-effect waves-light">Quitter</a>
+                                    {% else %}
+                                        <a href="{{ path('home')}}" class="btn btn-primary waves-effect waves-light">Quitter</a>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+
+        });
+    </script>
+{% endblock %}

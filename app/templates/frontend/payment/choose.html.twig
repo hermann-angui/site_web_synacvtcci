@@ -1,0 +1,79 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .card-body{
+            border: 2px solid #f8f8fb;
+            cursor: pointer;
+        }
+        .card-body:hover {
+            border: 2px solid #556ee6;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        {{ include('admin/_partials/simple-header.html.twig') }}
+            <div class="page-content">
+                <div class="container">
+                    <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
+                        <div class="col-lg-4 mx-3">
+                            <div class="card card-body d-flex align-items-center">
+                                    <h4 class="card-title">REGLEMENT PAR CASH</h4>
+                                    <img src="{{ asset('assets/frontend/img/cash-payment.png') }}" alt="" width="200">
+                                    <p class="card-text">Veuillez encaisser le somme en espèce du client.</p>
+                                    <a href="javascript: void(0);" id="cashbtn" class="btn btn-primary w-75 waves-effect waves-light">CASH</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 ">
+                            <div class="card card-body d-flex align-items-center">
+                                    <h4 class="card-title">REGLEMENT PAR MOBILE MONEY</h4>
+                                    <img src="{{ asset('assets/frontend/img/mobile-payment-01.webp') }}" alt="" width="230" height="200">
+                                    <p class="card-text">Paiement électronique via paiement mobile wave.</p>
+                                    <a href="{{ path('do_payment', {id: member.id})}}"  id="mobilemoneybtn" class="btn btn-primary w-75 waves-effect waves-light">MOBILE MONEY</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="modal fade modal-cash" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Veuillez saisir le montant</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{{ path('admin_payment_cash', {id: member.id}) }}">
+                        <div class="form-group">
+                            <label for="selection_type" class="form-label col-md-2">Montant:</label>
+                            <input type="text" name="amount" class="form-control form-control-lg col-md-5 fs-2" checked placeholder="3500"/>  &nbsp;&nbsp;
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-md" data-bs-dismiss="modal">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+
+            $("#cashbtn").click(function(){
+                $('.modal-cash').modal('show');
+            });
+
+        });
+    </script>
+{% endblock %}
