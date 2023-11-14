@@ -67,12 +67,8 @@ class WaveService
         }
     }
 
-    /**
-     * @param string $amount
-     * @param UserInterface|null $user
-     * @return string|void
-     */
-    public function makePayment(?Member $member) : ?WaveCheckoutResponse
+
+    public function makePayment() : ?WaveCheckoutResponse
     {
         try{
             $waveCheckoutRequest = new WaveCheckoutRequest();

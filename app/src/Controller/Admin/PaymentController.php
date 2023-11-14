@@ -61,12 +61,12 @@ class PaymentController extends AbstractController
     #[Route(path: '/do/{id}', name: 'do_payment')]
     public function doPayment(Request           $request, Member $member,
                               WaveService       $waveService,
-                              MemberRepository  $memberRepository,
                               PaymentRepository $paymentRepository): Response
     {
-        $response = $waveService->makePayment($member);
+        $response = $waveService->makePayment();
         if ($response) {
             $payment = new Payment();
+            $payment->setUser($this->getUser());
             $payment->setStatus(strtoupper($response->getPaymentStatus()));
             $payment->setReference($response->getClientReference());
             $payment->setOperateur("WAVE");
@@ -88,28 +88,32 @@ class PaymentController extends AbstractController
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
-            try {
-                $path = "/var/www/html/var/log/wave_payment_callback/$status/";
-                if (!file_exists($path)) mkdir($path, 0777, true);
-                $data = ["reference" => $request->get("ref"), "date" => date("Ymd H:i:s")];
-                file_put_contents($path . "log_" . date("Ymd") . ".log", json_encode($data), FILE_APPEND);
-            } catch (\Exception $e) {
-            }
+            $payment->setStatus("SUCCEEDED");
+            $paymentRepository->add($payment, true);
             return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
         }
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('admin_index');
     }
 
     #[Route(path: '/wave', name: 'wave_payment_checkout_webhook')]
     public function callbackWavePayment(Request $request, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
     {
         $payload = json_decode($request->getContent(), true);
+
+        try {
+            $path = "/var/www/html/var/log/wave_payment_checkout_webhook";
+            if (!file_exists($path)) mkdir($path, 0777, true);
+            $data = ["reference" => $request->get("ref"), "date" => date("Ymd H:i:s")];
+            file_put_contents($path . "log_" . date("Ymd") . ".log", json_encode($data), FILE_APPEND);
+        } catch (\Exception $e) {
+        }
+
+
         if (!empty($payload) && array_key_exists("data", $payload)) {
             $data = $payload['data'];
             if (!empty($data) && array_key_exists("client_reference", $data)) {
                 $payment = $paymentRepository->findOneBy(["reference" => $data["client_reference"]]);
-                if ($payment) {
-                    if (array_key_exists("payment_status", $data) && (strtoupper($data["payment_status"]) === "SUCCEEDED")) {
+                if ($payment && (array_key_exists("payment_status", $data) && (strtoupper($data["payment_status"]) === "SUCCEEDED"))) {
                         $payment->setCodePaymentOperateur($data["transaction_id"]);
                         $payment->setStatus("PAID");
                         $paymentRepository->add($payment, true);
@@ -118,7 +122,6 @@ class PaymentController extends AbstractController
                             $member->setStatus("PAID");
                             $memberRepository->add($member, true);
                         }
-                    }
                 }
             }
         }

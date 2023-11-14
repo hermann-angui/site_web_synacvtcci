@@ -11,6 +11,7 @@ use App\Repository\PaymentRepository;
 use App\Repository\UserRepository;
 use App\Security\FormLoginAuthenticator;
 use Doctrine\DBAL\Connection;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class UserController extends AbstractController
 {
     #[Route('/', name: 'admin_user_index', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(UserRepository $userRepository): Response
     {
         return $this->render('admin/user/index.html.twig', [
@@ -32,6 +34,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'admin_user_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request                              $request,
                         UserPasswordHasherInterface          $userPasswordHasher,
                         UserAuthenticatorInterface           $userAuthenticator,
@@ -93,6 +96,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'admin_user_show', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function show(User $user): Response
     {
         return $this->render('admin/user/show.html.twig', [
@@ -101,6 +105,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserFormType::class, $user);
@@ -119,6 +124,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {

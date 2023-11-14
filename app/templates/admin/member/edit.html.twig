@@ -205,16 +205,19 @@
 <script>
       $('document').ready(function() {
 
-          var children = [];
+          // var children = [];
+          // var child = document.querySelector("input[name='has_child']")
+          // child.addEventListener('onchange', function(){
+          //     alert();
+          //     if($(this).val() === "0"){
+          //         $('#child-row').hide();
+          //     }else{
+          //         $('#child-row').show();
+          //     }
+          // });
 
-          var child = document.querySelector("input[name='has_child']")
-          child.addEventListener('onchange', function(){
-              alert();
-              if($(this).val() === "0"){
-                  $('#child-row').hide();
-              }else{
-                  $('#child-row').show();
-              }
+          $("input[name='has_child']").on('change.bootstrapSwitch', function(e) {
+                console.log(e.target.checked);
           });
 
           $('#newChild').click(function(){

@@ -231,20 +231,18 @@
                         <div class="col-md-3">
                             {{ form_row(form.etatCivil) }}
                         </div>
-                        <div class="col-md-8">
-                            <div class="col-md-3">
-                                {{ form_row(form.partner_first_name) }}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form_row(form.partner_last_name) }}
-                            </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.partner_first_name) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.partner_last_name) }}
                         </div>
                     </div>
                 </div>
                 <div class="py-3">
                     Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
-                    <input type="radio" name="has_child" value="0" checked /> Non &nbsp;&nbsp;
-                    <input type="radio" name="has_child" value="1"/> Oui
+                    <input type="checkbox" name="has_child" id="has_child" switch="none" checked />
+                    <label for="has_child" data-on-label="Oui" data-off-label="Non"></label>
                     <br>
                     <div id="child-row" style="display:none;">
                         <div id="children_bock"  class="pt-2">

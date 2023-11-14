@@ -49,7 +49,7 @@ class MemberController extends AbstractController
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
-        $members = $memberRepository->findBy(['status' => 'PAID']);
+        $members = $memberRepository->findBy(['status' => ['PAID','SUCCEEDED']]);
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
