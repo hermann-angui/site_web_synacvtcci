@@ -16,9 +16,9 @@
                                 {% else %}
                                     <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="150">
                                 {% endif %}
-                                <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
-                                {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
-                                <div>Télécharger une photo</div>
+{#                                <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>#}
+{#                                {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}#}
+{#                                <div>Télécharger une photo</div>#}
                             </div>
                         </label>
                     </div>
@@ -115,8 +115,8 @@
                             {% if member.photoPieceFront %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPieceFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPieceFront|image_path }}" alt="" width="80%" style="width:80%;">
-                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
-                                    <div style="margin-top:0px">Télécharger une image</div>
+{#                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}#}
+{#                                    <div style="margin-top:0px">Télécharger une image</div>#}
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
@@ -124,7 +124,7 @@
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
-                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
+{#                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}#}
                                 </div>
                             {% endif %}
                         </label>
@@ -134,8 +134,8 @@
                             {% if member.photoPieceBack %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPieceBackPreview" src="/members/{{ member.reference }}/{{ member.photoPieceBack|image_path }}" alt="" width="80%" style="width:80%;">
-                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
-                                    <div style="margin-top:0px">Télécharger une image</div>
+{#                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}#}
+{#                                    <div style="margin-top:0px">Télécharger une image</div>#}
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
@@ -143,7 +143,7 @@
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
-                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
+{#                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}#}
                                 </div>
                             {% endif %}
                         </label>
@@ -155,8 +155,8 @@
                             {% if member.photoPermisFront %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPermisFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPermisFront|image_path }}" alt="" width="80%" style="width:80%;">
-                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
-                                    <div style="margin-top:0px">Télécharger une image</div>
+{#                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}#}
+{#                                    <div style="margin-top:0px">Télécharger une image</div>#}
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
@@ -164,7 +164,7 @@
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
-                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
+{#                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}#}
                                 </div>
                             {% endif %}
                         </label>
@@ -175,8 +175,8 @@
                             {% if member.photoPermisBack %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPermisBackPreview" src="/members/{{ member.reference }}/{{ member.photoPermisBack|image_path }}" alt="" width="100" style="width:80%">
-                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
-                                    <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>
+{#                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}#}
+{#                                    <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>#}
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
@@ -184,7 +184,7 @@
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une image
                                     </div>
-                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
+{#                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}#}
                                 </div>
                             {% endif %}
                         </label>
@@ -276,7 +276,7 @@
                 <div class="py-3">
                     <div id="partner_bock" class="my-3">
                         {{ form_row(form.payment_receipt_cnmci_code) }}
-                        {{ form_row(form.paymentReceiptCnmci) }}
+{#                        {{ form_row(form.paymentReceiptCnmci) }}#}
     {#                   {{ form_row(form.paymentReceiptSynacvtcci) }} #}
                     </div>
                 </div>

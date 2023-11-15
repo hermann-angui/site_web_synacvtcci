@@ -146,12 +146,12 @@ class MemberRegistrationType extends AbstractType
         ];
 
         $builder
-            ->add('photo',FileType::class, [
-                'required' => false,
-                'label' => 'Photo',
-                'data_class' =>  null,
-                'mapped' => true,
-            ])
+//            ->add('photo',FileType::class, [
+//                'required' => false,
+//                'label' => 'Photo',
+//                'data_class' =>  null,
+//                'mapped' => true,
+//            ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
                 'mapped' => true,
@@ -174,6 +174,7 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('referantMobile', TextType::class, [
                 'label' => 'Numéro Téléphone personne à contacter',
+                'attr' => ['class' => 'input-mask', 'data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
                 'required' => true
             ])
@@ -319,36 +320,36 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true,
             ])
-            ->add('photoPieceFront',FileType::class, [
-                'required' => false,
-                'label' => "Copie scannée de la pièce (recto)",
-                'data_class' =>  null,
-                'mapped' => true,
-            ])
-            ->add('photoPieceBack',FileType::class, [
-                'required' => false,
-                'label' => "Copie scannée de la pièce (verso)",
-                'data_class' =>  null,
-                'mapped' => true,
-            ])
-            ->add('photoPermisFront',FileType::class, [
-                'required' => false,
-                'label' => "Copie scannée du permis de conduire (recto)",
-                'data_class' =>  null,
-                'mapped' => true,
-            ])
-            ->add('photoPermisBack',FileType::class, [
-                'required' => false,
-                'label' => "Copie scannée du  de conduire (verso)",
-                'data_class' =>  null,
-                'mapped' => true,
-            ])
-            ->add('paymentReceiptCnmci',FileType::class, [
-                'required' => false,
-                'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
-                'data_class' =>  null,
-                'mapped' => true,
-            ])
+//            ->add('photoPieceFront',FileType::class, [
+//                'required' => false,
+//                'label' => "Copie scannée de la pièce (recto)",
+//                'data_class' =>  null,
+//                'mapped' => true,
+//            ])
+//            ->add('photoPieceBack',FileType::class, [
+//                'required' => false,
+//                'label' => "Copie scannée de la pièce (verso)",
+//                'data_class' =>  null,
+//                'mapped' => true,
+//            ])
+//            ->add('photoPermisFront',FileType::class, [
+//                'required' => false,
+//                'label' => "Copie scannée du permis de conduire (recto)",
+//                'data_class' =>  null,
+//                'mapped' => true,
+//            ])
+//            ->add('photoPermisBack',FileType::class, [
+//                'required' => false,
+//                'label' => "Copie scannée du  de conduire (verso)",
+//                'data_class' =>  null,
+//                'mapped' => true,
+//            ])
+//            ->add('paymentReceiptCnmci',FileType::class, [
+//                'required' => false,
+//                'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
+//                'data_class' =>  null,
+//                'mapped' => true,
+//            ])
 //            ->add('paymentReceiptSynacvtcci',FileType::class, [
 //                'required' => false,
 //                'label' => "Reçu de paiement SYNACVTCCI",
@@ -424,8 +425,8 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Pays d'activité",
                 'mapped' => true,
                 'required' => true,
-                'empty_data' => "COTE D\' IVOIRE",
-                'data' => null,
+                'empty_data' => "COTE D'IVOIRE",
+                'data' => "COTE D'IVOIRE",
             ])
             ->add('activity_city_location', ChoiceType::class, [
                 'label' => "Ville d'activité",
@@ -433,19 +434,22 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'choices' => $villes,
                 'empty_data' => "ABIDJAN",
-                'data' => null,
+                'data' => "ABIDJAN",
 
             ])
             ->add('activity_quartier_location', TextType::class, [
                 'label' => "Quartier d'activité",
                 'mapped' => true,
-                'required' => true
+                'required' => true,
+                'empty_data' => "ABIDJAN",
+                'data' =>  "ABIDJAN",
             ])
             ->add('socioprofessionnelle_category', TextType::class, [
                 'label' => "Catégorie socioprofessionnelle",
                 'mapped' => true,
                 'required' => true,
-                'data' => 'ARTISAN'
+                'data' => 'ARTISAN',
+                'empty_data' => "ARTISAN",
             ])
             ->add('activity', TextType::class, [
                 'label' => "Activité",

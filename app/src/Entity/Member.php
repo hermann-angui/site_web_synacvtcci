@@ -203,7 +203,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
-    #[ORM\OneToMany(mappedBy: 'child', targetEntity: Child::class, cascade: ["remove", "persist"], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'member', targetEntity: Child::class, cascade: ["remove", "persist"], orphanRemoval: true)]
     private ?Collection $children;
 
     #[ORM\OneToMany(mappedBy: 'payment_for', targetEntity: Payment::class)]

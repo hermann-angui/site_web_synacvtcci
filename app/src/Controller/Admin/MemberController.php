@@ -37,7 +37,8 @@ class MemberController extends AbstractController
     {
         $searchTerm = $request->get('searchTerm');
         if($searchTerm){
-            $member = $memberRepository->findOneBy(['reference' => strtolower($searchTerm)]);
+          //  $member = $memberRepository->findOneBy(['reference' => strtolower($searchTerm)]);
+            $member = $memberRepository->findOneBy(['tracking_code' => strtolower($searchTerm)]);
             if($member) return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
             else{
                 $data = ['result' => 'error'];
@@ -492,14 +493,14 @@ class MemberController extends AbstractController
     {
         date_default_timezone_set("Africa/Abidjan");
 
-        $member->setPhoto(new File($memberService->getMemberDir($member) . $member->getPhoto() ));
-        $member->setPaymentReceiptCnmci(new File($memberService->getMemberDir($member) . $member->getPaymentReceiptCnmci() ));
-
-        $member->setPhotoPieceFront(new File($memberService->getMemberDir($member) . $member->getPhotoPieceFront() ));
-        $member->setPhotoPieceBack(new File($memberService->getMemberDir($member) . $member->getPhotoPieceBack() ));
-
-        $member->setPhotoPermisFront(new File($memberService->getMemberDir($member) . $member->getPhotoPermisFront() ));
-        $member->setPhotoPermisBack(new File($memberService->getMemberDir($member) . $member->getPhotoPermisBack() ));
+//        $member->setPhoto(new File($memberService->getMemberDir($member) . $member->getPhoto()));
+//        $member->setPaymentReceiptCnmci(new File($memberService->getMemberDir($member) . $member->getPaymentReceiptCnmci() ));
+//
+//        $member->setPhotoPieceFront(new File($memberService->getMemberDir($member) . $member->getPhotoPieceFront() ));
+//        $member->setPhotoPieceBack(new File($memberService->getMemberDir($member) . $member->getPhotoPieceBack() ));
+//
+//        $member->setPhotoPermisFront(new File($memberService->getMemberDir($member) . $member->getPhotoPermisFront() ));
+//        $member->setPhotoPermisBack(new File($memberService->getMemberDir($member) . $member->getPhotoPermisBack() ));
 
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
