@@ -5,6 +5,7 @@
     <link href="{{ asset('assets/admin/css/app.min.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}" type="text/css" rel="stylesheet">
     <style>
+
         .wizard .steps > ul > li a {
             font-size: 12px;
             font-weight: bold;
@@ -159,10 +160,11 @@
             justify-content: center;
             align-items: center;
             width: 450px;
-            height: auto;
+            height: 200px;
             margin: auto;border: 1px dashed #adb5bd;
             padding: 10px 10px;
         }
+
     </style>
 {% endblock %}
 
@@ -188,8 +190,8 @@
                 <div class="container-fluid">
                     <div class="card">
                         <div class="card-body px-5">
-                            <h4 class="card-title mb-4">Enregistrer un nouveau membre</h4>
-                            {{ include('admin/member/_form.html.twig') }}
+                            <h4 class="card-title mb-2">Enregistrer un nouveau membre</h4>
+                            {{ include('admin/member/_form_etape_photo.html.twig') }}
                         </div>
                     </div>
                 </div> <!-- container-fluid -->
@@ -210,7 +212,6 @@
 {% block javascript %}
 {{ parent() }}
 <script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
-<script src="{{ asset('assets/admin/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/jquery.validation/jquery.validate.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/jquery.validation/additional-methods.min.js') }}"></script>
@@ -220,6 +221,7 @@
       $('document').ready(function() {
 
           // var children = [];
+          //
           // var child = document.querySelector("input[name='has_child']")
           // child.addEventListener('onchange', function(){
           //     alert();
@@ -233,12 +235,9 @@
           $("input").keyup(function() {
               this.value = this.value.toUpperCase();
           });
-          $("input[name='has_child']").on('change.bootstrapSwitch', function(e) {
-              if(!e.target.checked){
-                  $('#child-row').hide();
-              }else{
-                  $('#child-row').show();
-              }
+
+          $("#has_child").on('change.bootstrapSwitch', function(e) {
+                console.log(e.target.checked);
           });
 
           $('#newChild').click(function(){
@@ -246,28 +245,7 @@
             $('#children_bock').append(row);
           });
 
-             jQuery.extend(jQuery.validator.messages, {
-                required: "Ce champ est obligatoire.",
-                remote: "Please fix this field.",
-                email: "Veuillez entrer une adresse email valide.",
-                url: "Please enter a valid URL.",
-                date: "Date invalide.",
-                dateISO: "Please enter a valid date (ISO).",
-                number: "Please enter a valid number.",
-                digits: "Please enter only digits.",
-                creditcard: "Please enter a valid credit card number.",
-                equalTo: "Please enter the same value again.",
-                accept: "Please enter a value with a valid extension.",
-                maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
-                minlength: jQuery.validator.format("Please enter at least {0} characters."),
-                rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
-                range: jQuery.validator.format("Please enter a value between {0} and {1}."),
-                max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
-                min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
-            });
-
-
-          $("#member_registration_photo").change(function(data){
+          $("#member_photo_step_photo").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
@@ -278,55 +256,55 @@
               }
           });
 
-          $("label[for='member_registration_photoPieceFront']").change(function(data){
+          $("label[for='member_photo_step_photoPieceFront']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_registration_photoPieceFrontPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPieceFrontPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPieceFront'] .upload-icon").hide();
-                  $('#member_registration_photoPieceFrontPreview').fadeIn(650);
+                  $('#member_photo_step_photoPieceFrontPreview').attr('src', evt.target.result);
+                  $('#member_photo_step_photoPieceFrontPreview').attr('width', '85%');
+                  $("label[for='member_photo_step_photoPieceFront'] .upload-icon").hide();
+                  $('#member_photo_step_photoPieceFrontPreview').fadeIn(650);
               }
           });
 
-          $("label[for='member_registration_photoPieceBack']").change(function(data){
+          $("label[for='member_photo_step_photoPieceBack']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_registration_photoPieceBackPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPieceBackPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPieceBack'] .upload-icon").hide();
-                  $('#member_registration_photoPieceBackPreview').fadeIn(650);
+                  $('#member_photo_step_photoPieceBackPreview').attr('src', evt.target.result);
+                  $('#member_photo_step_photoPieceBackPreview').attr('width','85%');
+                  $("label[for='member_photo_step_photoPieceBack'] .upload-icon").hide();
+                  $('#member_photo_step_photoPieceBackPreview').fadeIn(650);
               }
           });
 
-          $("label[for='member_registration_photoPermisFront']").change(function(data){
+          $("label[for='member_photo_step_photoPermisFront']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_registration_photoPermisFrontPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPermisFrontPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPermisFront'] .upload-icon").hide();
-                  $('#member_registration_photoPermisFrontPreview').fadeIn(650);
+                  $('#member_photo_step_photoPermisFrontPreview').attr('src', evt.target.result);
+                  $('#member_photo_step_photoPermisFrontPreview').attr('width','85%');
+                  $("label[for='member_photo_step_photoPermisFront'] .upload-icon").hide();
+                  $('#member_photo_step_photoPermisFrontPreview').fadeIn(650);
               }
           });
 
-          $("label[for='member_registration_photoPermisBack']").change(function(data){
+          $("label[for='member_photo_step_photoPermisBack']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_registration_photoPermisBackPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPermisBackPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPermisBack'] .upload-icon").hide();
-                  $('#member_registration_photoPermisBackPreview').fadeIn(650);
+                  $('#member_photo_step_photoPermisBackPreview').attr('src', evt.target.result);
+                  $('#member_photo_step_photoPermisBackPreview').attr('width','85%');
+                  $("label[for='member_photo_step_photoPermisBack'] .upload-icon").hide();
+                  $('#member_photo_step_photoPermisBackPreview').fadeIn(650);
               }
           });
 

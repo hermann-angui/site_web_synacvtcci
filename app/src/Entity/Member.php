@@ -7,14 +7,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: '`member`')]
-#[UniqueEntity(fields: ['matricule','drivingLicenseNumber','IdNumber'], message: 'There is already an account with this email')]
+ #[UniqueEntity(fields: ['matricule','phone','mobile','IdNumber','drivingLicenseNumber', 'email'])]
 class Member implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /******* FORMATION PROFESSIONNELLE ********/
@@ -23,8 +24,11 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $email = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tracking_code = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $reference = null;
@@ -36,6 +40,15 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $referant_firstName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $referant_lastName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $referant_mobile = null;
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $matricule = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -68,13 +81,13 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $birth_city = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $drivingLicenseNumber = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $IdNumber = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $codeSticker = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -113,13 +126,13 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $postal_code = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $mobile = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $whatsapp = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -143,13 +156,13 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photoPermis_front = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $payment_receipt_cnmci;
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private ?string $payment_receipt_cnmci_code;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $payment_receipt_synacvtcci;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -1200,5 +1213,76 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getTrackingCode(): ?string
+    {
+        return $this->tracking_code;
+    }
+
+    /**
+     * @param string|null $tracking_code
+     * @return Member
+     */
+    public function setTrackingCode(?string $tracking_code): Member
+    {
+        $this->tracking_code = $tracking_code;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReferantFirstName(): ?string
+    {
+        return $this->referant_firstName;
+    }
+
+    /**
+     * @param string|null $referant_firstName
+     * @return Member
+     */
+    public function setReferantFirstName(?string $referant_firstName): Member
+    {
+        $this->referant_firstName = $referant_firstName;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReferantLastName(): ?string
+    {
+        return $this->referant_lastName;
+    }
+
+    /**
+     * @param string|null $referant_lastName
+     * @return Member
+     */
+    public function setReferantLastName(?string $referant_lastName): Member
+    {
+        $this->referant_lastName = $referant_lastName;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReferantMobile(): ?string
+    {
+        return $this->referant_mobile;
+    }
+
+    /**
+     * @param string|null $referant_mobile
+     * @return Member
+     */
+    public function setReferantMobile(?string $referant_mobile): Member
+    {
+        $this->referant_mobile = $referant_mobile;
+        return $this;
+    }
 
 }

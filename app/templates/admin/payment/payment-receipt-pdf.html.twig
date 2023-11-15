@@ -29,11 +29,11 @@
         </tr>
         <tr>
             <th style="width:25%; border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Mode de paiment</th>
-            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.Montant }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.type|upper }}</td>
         </tr>
         <tr>
             <th style="width:25%; border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Montant (CFA)</th>
-            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.type|upper }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.Montant }}</td>
         </tr>
         <tr  style="border-collapse: collapse;">
             <td colspan="2" style="margin-top:50px;padding: 10px 10px;text-align: center">

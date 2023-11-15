@@ -6,7 +6,6 @@ use App\Entity\Member;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,6 +25,126 @@ class MemberRegistrationType extends AbstractType
             array_values(Countries::getNames())
         );
 
+        $villes = [
+            "ABIDJAN" => "ABIDJAN",
+            "ABENGOUROU" => "ABENGOUROU",
+            "ALEPE" => "ALEPE",
+            "GAGNOA" => "GAGNOA",
+            "ADIAKE" => "ADIAKE",
+            "ADJAME" => "ADJAME",
+            "BETTIE" => "BETTIE",
+            "AZAGUIE" => "AZAGUIE",
+            "ATTINGUE" => "ATTINGUE",
+            "ADZOPE" => "ADZOPE",
+            "ADJOVILLE" => "ADJOVILLE",
+            "AGNIBILEKRO" => "AGNIBILEKRO",
+            "AKOUPE" => "AKOUPE",
+            "BASSAM" => "BASSAM",
+            "BONDOUKOU" => "BONDOUKOU",
+            "NIAKARAMADOUGOU" => "NIAKARAMADOUGOU",
+            "DIKODOUGOU" => "DIKODOUGOU",
+            "BONOUA" => "BONOUA",
+            "BOUNA" => "BOUNA",
+            "NASSIAN" => "NASSIAN",
+            "SANDEGUE" => "SANDEGUE",
+            "BOUAKE" => "BOUAKE",
+            "BIANKOUMA" => "BIANKOUMA",
+            "BOUNDIALI" => "BOUNDIALI",
+            "MBENGUE" => "MBENGUE",
+            "MANKONO" => "MANKONO",
+            "TEHINI" => "TEHINI",
+            "DROPO" => "DROPO",
+            "OUANGOLODOUGOU" => "OUANGOLODOUGOU",
+            "BANGOLO" => "BANGOLO",
+            "DAOUKRO" => "DAOUKRO",
+            "DIANRA" => "DIANRA",
+            "DUEKOUE" => "DUEKOUE",
+            "DIDIEVI" => "DIDIEVI",
+            "KATIOLA" => "KATIOLA",
+            "KOUIBLY" => "KOUIBLY",
+            "KONG" => "KONG",
+            "FAKOBLY" => "FAKOBLY",
+            "GRAND-BASSAM" => "GRAND-BASSAM",
+            "ISSIA" => "ISSIA",
+            "OUANINOU" => "ISSIA",
+            "KORO" => "KORO",
+            "BOTRO" => "BOTRO",
+            "KOUNAHIRI" => "KOUNAHIRI",
+            "BEOUMI" => "BEOUMI",
+            "PRIKRO" => "PRIKRO",
+            "TANDA" => "TANDA",
+            "KOUNFAO" => "KOUNFAO",
+            "TRANSUA" => "TRANSUA",
+            "OUELLE" => "OUELLE",
+            "ARRAH" => "ARRAH",
+            "BONGOUANOU" => "BONGOUANOU",
+            "BOCANDA" => "BOCANDA",
+            "TIEBISSOU" => "TIEBISSOU",
+            "SAKASSOU" => "SAKASSOU",
+            "BOUAFLE" => "BOUAFLE",
+            "SINFRA" => "SINFRA",
+            "OUME" => "OUME",
+            "DJEKANOU" => "DJEKANOU",
+            "ATTIE" => "ATTIE",
+            "M\'BATO" => "MBATO",
+            "TAABO" => "TAABO",
+            "TIAPOUM" => "TIAPOUM",
+            "KANI" => "KANI",
+            "KANIASSO" => "KANIASSO",
+            "KOUTO" => "KOUTO",
+            "MADINANI" => "MADINANI",
+            "GBELEBAN" => "GBELEBAN",
+            "MINIGNAN" => "MINIGNAN",
+            "GRAND-LAHOU" => "GRAND-LAHOU",
+            "ODIENNE" => "ODIENNE",
+            "DABAKALA" => "DABAKALA",
+            "FERKE" => "FERKE",
+            "SIKENSI" => "SIKENSI",
+            "SEGUELA" => "SEGUELA",
+            "SEGUELON" => "SEGUELON",
+            "SOUBRE" => "SOUBRE",
+            "KOUASSI-KOUASSIKRO" => "KOUASSI-KOUASSIKRO",
+            "TOUMODI" => "TOUMODI",
+            "TOULEPLEU" => "TOULEPLEU",
+            "SIPILOU" => "SIPILOU",
+            "TOUBA" => "TOUBA",
+            "TABOU" => "TABOU",
+            "JACQUEVILLE" => "JACQUEVILLE",
+            "TAI" => "TAI",
+            "TAFIRE" => "TAFIRE",
+            "MEAGUI" => "MEAGUI",
+            "LAKOTA" => "LAKOTA",
+            "ZIENOULA" => "ZIENOULA",
+            "DIVO" => "DIVO",
+            "FRESCO" => "FRESCO",
+            "GUITRY" => "GUITRY",
+            "ABOISSO" => "ABOISSO",
+            "DALOA" => "DALOA",
+            "KORHOGO" => "KORHOGO",
+            "DABOU" => "DABOU",
+            "MAN" => "MAN",
+            "VAVOUA" => "VAVOUA",
+            "SAMATIGUILA" => "SAMATIGUILA",
+            "SAN-PEDRO" => "SAN-PEDRO",
+            "SASSANDRA" => "SASSANDRA",
+            "SINEMATIALI" => "SINEMATIALI",
+            "YAMOUSSOUKRO" => "YAMOUSSOUKRO",
+        ];
+        $communes = [
+            "ABOBO" => "ABOBO",
+            "ANYAMA" => "ANYAMA",
+            "ADJAME" => "ADJAME",
+            "ATTECOUBE" => "ATTECOUBE",
+            "MARCORY" => "MARCORY",
+            "BINGERVILLE" => "BINGERVILLE",
+            "COCODY" => "COCODY",
+            "PLATEAU" => "PLATEAU",
+            "KOUMASSI" => "KOUMASSI",
+            "PORT-BOUET" => "PORT-BOUET",
+            "TREICHVILLE" => "TREICHVILLE",
+            "YOPOUGON" => "YOPOUGON",
+        ];
+
         $builder
             ->add('photo',FileType::class, [
                 'required' => true,
@@ -40,6 +159,21 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénoms',
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('referantLastName', TextType::class, [
+                'label' => 'Nom personne à contacter',
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('referantFirstName', TextType::class, [
+                'label' => 'Prénoms personne à contacter',
+                'mapped' => true,
+                'required' => true
+            ])
+            ->add('referantMobile', TextType::class, [
+                'label' => 'Numéro Téléphone personne à contacter',
                 'mapped' => true,
                 'required' => true
             ])
@@ -76,7 +210,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Nationalité",
                 'mapped' => true,
                 'required' => true,
-                'data' => 'Ivoirienne'
+                'data' => 'IVOIRIENNE'
             ])
             ->add('whatsapp', TelType::class, [
                 'label' => "Whatsapp",
@@ -85,7 +219,7 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
             ])
             ->add('etatCivil', ChoiceType::class, [
-                'label' => 'Etat civil',
+                'label' => 'Situation matrimoniale',
                 'mapped' => true,
                 'required' => true,
 //                'attr' => ['class' => 'select2'],
@@ -166,10 +300,14 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'data' => 'Côte d\'Ivoire'
             ])
-            ->add('birth_city', TextType::class, [
+            ->add('birth_city', ChoiceType::class, [
                 'label' => 'Ville de naissance',
                 'mapped' => true,
+                'attr' => ['class' => 'select2'],
                 'required' => true,
+                'choices' => $villes,
+                'empty_data' => "ABIDJAN",
+                'data' => null,
             ])
             ->add('birth_locality', TextType::class, [
                 'label' => 'Localité de naissance',
@@ -207,7 +345,7 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('paymentReceiptCnmci',FileType::class, [
                 'required' => true,
-                'label' => "Reçu de paiement CNMCI",
+                'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
@@ -220,50 +358,32 @@ class MemberRegistrationType extends AbstractType
             ->add('payment_receipt_cnmci_code',TextType::class, [
                 'required' => true,
                 'label' => "Code reçu de paiement Orange money",
+                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': 'PP999999.9999.*99999'"],
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('city', ChoiceType::class, [
+                'label' => "Situation géographique de résidence",
+                'mapped' => true,
+                'required' => true,
+                'attr' => ['class' => 'select2'],
+                'choices' => $villes,
+                'empty_data' => "ABIDJAN",
+                'data' => null,
+            ])
+            ->add('commune', ChoiceType::class, [
                 'label' => "Ville de résidence",
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
-                'choices' => [
-                    "ABIDJAN" => "ABIDJAN",
-                    "BOUAKE" => "BOUAKE",
-                    "YAMOUSSOUKRO" => "YAMOUSSOUKRO",
-                    "ABENGOUROU" => "ABENGOUROU",
-                    "BONDOUKOU" => "BONDOUKOU",
-                    "VAVOUA" => "VAVOUA",
-                    "KORHOGO" => "KORHOGO",
-                    "MAN" => "MAN",
-                    "SAN-PEDRO" => "SAN-PEDRO",
-                    "BASSAM" => "BASSAM",
-                    "BONOUA" => "BONOUA",
-                    "DALOA" => "DALOA"
-                ],
+                'choices' => $communes,
                 'empty_data' => null,
                 'data' => null,
             ])
-            ->add('commune', ChoiceType::class, [
-                'label' => "Commune de résidence",
+            ->add('postal_code', TextType::class, [
+                'label' => "Boite postale",
                 'mapped' => true,
-                'required' => true,
-                'attr' => ['class' => 'select2'],
-                'choices' => [
-                    "ABOBO" => "ABOBO",
-                    "ANYAMA" => "ANYAMA",
-                    "ATTECOUBE" => "ATTECOUBE",
-                    "MARCORY" => "MARCORY",
-                    "BINGERVILLE" => "BINGERVILLE",
-                    "COCODY" => "COCODY",
-                    "PLATEAU" => "PLATEAU",
-                    "KOUMASSI" => "KOUMASSI",
-                    "PORT-BOUET" => "PORT-BOUET",
-                    "TREICHVILLE" => "TREICHVILLE",
-                ],
-                'empty_data' => null,
-                'data' => null,
+                'required' => false
             ])
             ->add('quartier', TextType::class, [
                 'label' => "Quartier de résidence",
@@ -281,7 +401,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Téléphone",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
-                'required' => true
+                'required' => false
             ])
 
             ->add('partner_first_name', TextType::class, [
@@ -303,12 +423,18 @@ class MemberRegistrationType extends AbstractType
             ->add('activity_country_location', TextType::class, [
                 'label' => "Pays d'activité",
                 'mapped' => true,
-                'required' => true
+                'required' => true,
+                'empty_data' => "COTE D\' IVOIRE",
+                'data' => null,
             ])
-            ->add('activity_city_location', TextType::class, [
+            ->add('activity_city_location', ChoiceType::class, [
                 'label' => "Ville d'activité",
                 'mapped' => true,
-                'required' => true
+                'required' => true,
+                'choices' => $villes,
+                'empty_data' => "ABIDJAN",
+                'data' => null,
+
             ])
             ->add('activity_quartier_location', TextType::class, [
                 'label' => "Quartier d'activité",

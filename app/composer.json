@@ -6,6 +6,7 @@
     "require": {
         "php": ">=8.0.2",
         "ext-ctype": "*",
+        "ext-gd": "*",
         "ext-iconv": "*",
         "ext-zip": "*",
         "doctrine/annotations": "^1.13",
@@ -51,8 +52,7 @@
         "tecnickcom/tcpdf": "^6.4",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0",
-        "vich/uploader-bundle": "^1.21",
-      "ext-gd": "*"
+        "vich/uploader-bundle": "^1.21"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",

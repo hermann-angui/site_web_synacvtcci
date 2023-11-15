@@ -30,7 +30,11 @@
                                 <p class="card-text fs-5 text-center py-3">Votre paiement de <strong>{{ payment.montant }}</strong> CFA a été effectué avec succès. Veuillez rédiriger le souscripteur vers l'équipe de vérification</p>
                                 <div class="d-flex py-4">
                                     <a href="{{ path('download_payment_receipt_pdf', {id: payment.id })}}" class="btn btn-primary waves-effect waves-light mx-3">Télécharger le reçu</a>
-                                    <a href="{{ path('admin_index')}}" class="btn btn-primary waves-effect waves-light">Quitter</a>
+                                    {% if app.user is defined and app.user is not null %}
+                                        <a href="{{ path('admin_index')}}" class="btn btn-primary waves-effect waves-light">Quitter</a>
+                                    {% else %}
+                                        <a href="{{ path('home')}}" class="btn btn-primary waves-effect waves-light">Quitter</a>
+                                    {% endif %}
                                 </div>
 
                             </div>

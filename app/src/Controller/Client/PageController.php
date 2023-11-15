@@ -74,8 +74,8 @@ class PageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $this->handleFormCreation($request, $form, $member, $memberService);
-           return $this->redirectToRoute('success',["id" => $member->getId()], Response::HTTP_SEE_OTHER);
+            $res = $this->handleFormCreation($request, $form, $member, $memberService);
+            if($res) return $this->redirectToRoute('success',["id" => $member->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('frontend/member/register.html.twig', [
             "flashInfos" => $flashInfos,

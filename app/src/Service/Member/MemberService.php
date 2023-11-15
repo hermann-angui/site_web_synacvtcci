@@ -51,12 +51,10 @@ class MemberService
 
             date_default_timezone_set("Africa/Abidjan");
 
-            $lastRowId = $this->memberRepository->getLastRowId();
-            if($lastRowId === null) $lastRowId = 1;
-            $this->memberRepository->setAutoIncrementToLast($lastRowId);
-
+            $this->memberRepository->add($member, true);
             $member->setRoles(['ROLE_USER']);
             $date = new DateTime('now');
+
             $member->setSubscriptionDate($date);
             if (!$member->getReference()) {
                 $member->setReference(
@@ -67,7 +65,7 @@ class MemberService
             $sexCode = null;
             if($member->getSex() === "H") $sexCode = "SY1";
             elseif($member->getSex() === "F") $sexCode = "SY2";
-            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $lastRowId+1);
+            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
             $member->setMatricule($matricule);
 
             $expiredDate = $date->format('Y-12-31');
@@ -78,7 +76,7 @@ class MemberService
             if(!empty($images)) $this->storeMemberImages($member, $images);
 
             $member->setStatus("PENDING");
-            $member->setTitre("Chauffeur");
+            $member->setTitre("CHAUFFEUR");
 
             $this->memberRepository->add($member, true);
 
@@ -104,7 +102,6 @@ class MemberService
     {
         try {
             date_default_timezone_set("Africa/Abidjan");
-
             if (!$member->getReference()) {
                 $member->setReference(
                     str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
@@ -112,10 +109,7 @@ class MemberService
             }
 
             if(!empty($images)) $this->storeMemberImages($member, $images);
-
-
             $member->setTitre("Chauffeur");
-
             $this->saveMember($member);
 
             if($children = $member->getChildren()){

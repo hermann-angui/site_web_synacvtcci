@@ -14,3 +14,4 @@ invalid_password: Mot de passe est invalide
 general_term_gdpr: J'accepte les termes et conditions d'utilisation (GDPR).
 agreement: J'accepte les termes conditions.
 Invalid credentials: Votre mot de passe n'est pas valide.
+This value is already used : Cette valeur est déjà utilisée

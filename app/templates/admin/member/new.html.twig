@@ -14,7 +14,7 @@
 
         .form-control, .form-select {
             padding: 0.5rem 0.55rem;
-            font-size: 1.35rem;
+            font-size: 0.95rem;
             color: #4f01b9;
             font-weight: bolder;
             border-radius: 0rem;
@@ -37,7 +37,7 @@
 
         .form-label {
             margin-bottom: 0.5rem;
-            font-size: 1.0rem;
+            font-size: 0.8rem;
             font-weight: bold;
             color: #2a3042;
         }
@@ -96,8 +96,13 @@
             background-color: #0701b9;
             /*font-size: 0.75rem;*/
             font-size: 1.05rem;
-            color: #4f01b9;
+            color: #fff;
             font-weight: bolder;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #4f01b9;
+            line-height: 28px;
         }
 
         .select2-container--default .select2-selection--multiple {
@@ -109,7 +114,7 @@
         }
 
         .select2-container .select2-selection--single {
-            height: 50px;
+            height: 41px;
         }
 
         .select2-container--default .select2-selection--single {
@@ -148,7 +153,16 @@
             margin-top: 5px;
         }
 
-
+        .image-upload-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 450px;
+            height: 200px;
+            margin: auto;border: 1px dashed #adb5bd;
+            padding: 10px 10px;
+        }
     </style>
 {% endblock %}
 
@@ -175,7 +189,7 @@
                     <div class="card">
                         <div class="card-body px-5">
                             <h4 class="card-title mb-4">Enregistrer un nouveau membre</h4>
-                            {{ include('admin/member/_form_stepper.html.twig') }}
+                            {{ include('admin/member/_form.html.twig') }}
                         </div>
                     </div>
                 </div> <!-- container-fluid -->
@@ -217,6 +231,9 @@
           //     }
           // });
 
+            $("input").keyup(function() {
+                this.value = this.value.toUpperCase();
+            });
           $("#has_child").on('change.bootstrapSwitch', function(e) {
                 console.log(e.target.checked);
           });
@@ -226,73 +243,73 @@
             $('#children_bock').append(row);
           });
 
-
-            var form = $("#stepperform");
-
-            form.steps({
-                headerTag: "h3",
-                bodyTag: "fieldset",
-                transitionEffect: "slide",
-                stepsOrientation: "horizontal",
-                labels: {
-                    cancel: "Annuler",
-                    current: "Etape en cours:",
-                    pagination: "Pagination",
-                    finish: "Enregistrer",
-                    next: "Suivant",
-                    previous: "Précédent",
-                    loading: "Chargement ..."
-                },
-                onStepChanging: function (event, currentIndex, newIndex){
-                    // Always allow previous action even if the current form is not valid!
-                    if (currentIndex > newIndex){
-                        return true;
-                    }
-                    // Needed in some cases if the user went back (clean up)
-                    if (currentIndex < newIndex){
-                        // To remove error styles
-                        form.find(".body:eq(" + newIndex + ") label.error").remove();
-                        form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
-                    }
-                    form.validate().settings.ignore = ":disabled,:hidden,.ignore";
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex){
-                },
-                onFinishing: function (event, currentIndex){
-                    form.validate().settings.ignore = ":disabled,.ignore";
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex){
-                     form.submit();
-                }
-            }).validate({
-                errorPlacement: function errorPlacement(error, element) { element.before(error); },
-                ignore: ".ignore",
-                rules: {
-                }
-            });
-
-             jQuery.extend(jQuery.validator.messages, {
-                required: "Ce champ est obligatoire.",
-                remote: "Please fix this field.",
-                email: "Veuillez entrer une adresse email valide.",
-                url: "Please enter a valid URL.",
-                date: "Date invalide.",
-                dateISO: "Please enter a valid date (ISO).",
-                number: "Please enter a valid number.",
-                digits: "Please enter only digits.",
-                creditcard: "Please enter a valid credit card number.",
-                equalTo: "Please enter the same value again.",
-                accept: "Please enter a value with a valid extension.",
-                maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
-                minlength: jQuery.validator.format("Please enter at least {0} characters."),
-                rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
-                range: jQuery.validator.format("Please enter a value between {0} and {1}."),
-                max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
-                min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
-            });
-
+            //
+            // var form = $("#stepperform");
+            //
+            // form.steps({
+            //     headerTag: "h3",
+            //     bodyTag: "fieldset",
+            //     transitionEffect: "slide",
+            //     stepsOrientation: "horizontal",
+            //     labels: {
+            //         cancel: "Annuler",
+            //         current: "Etape en cours:",
+            //         pagination: "Pagination",
+            //         finish: "Enregistrer",
+            //         next: "Suivant",
+            //         previous: "Précédent",
+            //         loading: "Chargement ..."
+            //     },
+            //     onStepChanging: function (event, currentIndex, newIndex){
+            //         // Always allow previous action even if the current form is not valid!
+            //         if (currentIndex > newIndex){
+            //             return true;
+            //         }
+            //         // Needed in some cases if the user went back (clean up)
+            //         if (currentIndex < newIndex){
+            //             // To remove error styles
+            //             form.find(".body:eq(" + newIndex + ") label.error").remove();
+            //             form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+            //         }
+            //         form.validate().settings.ignore = ":disabled,:hidden,.ignore";
+            //         return form.valid();
+            //     },
+            //     onStepChanged: function (event, currentIndex, priorIndex){
+            //     },
+            //     onFinishing: function (event, currentIndex){
+            //         form.validate().settings.ignore = ":disabled,.ignore";
+            //         return form.valid();
+            //     },
+            //     onFinished: function (event, currentIndex){
+            //          form.submit();
+            //     }
+            // }).validate({
+            //     errorPlacement: function errorPlacement(error, element) { element.before(error); },
+            //     ignore: ".ignore",
+            //     rules: {
+            //     }
+            // });
+            //
+            //  jQuery.extend(jQuery.validator.messages, {
+            //     required: "Ce champ est obligatoire.",
+            //     remote: "Please fix this field.",
+            //     email: "Veuillez entrer une adresse email valide.",
+            //     url: "Please enter a valid URL.",
+            //     date: "Date invalide.",
+            //     dateISO: "Please enter a valid date (ISO).",
+            //     number: "Please enter a valid number.",
+            //     digits: "Please enter only digits.",
+            //     creditcard: "Please enter a valid credit card number.",
+            //     equalTo: "Please enter the same value again.",
+            //     accept: "Please enter a value with a valid extension.",
+            //     maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
+            //     minlength: jQuery.validator.format("Please enter at least {0} characters."),
+            //     rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
+            //     range: jQuery.validator.format("Please enter a value between {0} and {1}."),
+            //     max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
+            //     min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
+            // });
+            //
 
           $("#member_registration_photo").change(function(data){
               var imageFile = data.target.files[0];
@@ -312,7 +329,7 @@
 
               reader.onload = function(evt){
                   $('#member_registration_photoPieceFrontPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPieceFrontPreview').attr('width', 100);
+                  $('#member_registration_photoPieceFrontPreview').attr('width','85%');
                   $("label[for='member_registration_photoPieceFront'] .upload-icon").hide();
                   $('#member_registration_photoPieceFrontPreview').fadeIn(650);
               }
@@ -325,7 +342,7 @@
 
               reader.onload = function(evt){
                   $('#member_registration_photoPieceBackPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPieceBackPreview').attr('width', 100);
+                  $('#member_registration_photoPieceBackPreview').attr('width','85%');
                   $("label[for='member_registration_photoPieceBack'] .upload-icon").hide();
                   $('#member_registration_photoPieceBackPreview').fadeIn(650);
               }
@@ -338,7 +355,7 @@
 
               reader.onload = function(evt){
                   $('#member_registration_photoPermisFrontPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPermisFrontPreview').attr('width', 100);
+                  $('#member_registration_photoPermisFrontPreview').attr('width','85%');
                   $("label[for='member_registration_photoPermisFront'] .upload-icon").hide();
                   $('#member_registration_photoPermisFrontPreview').fadeIn(650);
               }
@@ -351,7 +368,7 @@
 
               reader.onload = function(evt){
                   $('#member_registration_photoPermisBackPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPermisBackPreview').attr('width', 100);
+                  $('#member_registration_photoPermisBackPreview').attr('width','85%');
                   $("label[for='member_registration_photoPermisBack'] .upload-icon").hide();
                   $('#member_registration_photoPermisBackPreview').fadeIn(650);
               }

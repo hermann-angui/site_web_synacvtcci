@@ -1,5 +1,5 @@
 <div class="col-lg-12 py-5">
-    {{ form_start(form, {'method': 'POST', 'method':'POST', 'attr': {'id': 'stepperform'}}) }}
+    {{ form_start(form, {'method': 'POST', 'attr': {'id': 'stepperform'}}) }}
         <h3>INFORMATIONS PERSONNELLES</h3>
         <fieldset>
             <div id="step0">
@@ -74,6 +74,9 @@
                     <div class="col-md-3">
                         {{ form_row(form.quartier) }}
                     </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.postal_code) }}
+                    </div>
                 </div>
             </div>
         </fieldset>
@@ -110,13 +113,13 @@
                     <div class="col-md-6">
                         <label for="member_registration_photoPieceFront" class="form-label">Copie scannée de la pièce (recto)
                             {% if member.photoPieceFront %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                    <img id="member_registration_photoPieceFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPieceFront }}" alt="" width="100" style="width:50px;">
+                                <div class="image-upload-container">
+                                    <img id="member_registration_photoPieceFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPieceFront|image_path }}" alt="" width="80%" style="width:80%;">
                                     {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                <div class="image-upload-container">
                                     <img id="member_registration_photoPieceFrontPreview" src="" alt="">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
@@ -129,13 +132,13 @@
                     <div class="col-md-6">
                         <label for="member_registration_photoPieceBack" class="form-label">Copie scannée de la pièce (verso)
                             {% if member.photoPieceBack %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                    <img id="member_registration_photoPieceBackPreview" src="/members/{{ member.reference }}/{{ member.photoPieceBack }}" alt="" width="100" style="width:50px;">
+                                <div class="image-upload-container">
+                                    <img id="member_registration_photoPieceBackPreview" src="/members/{{ member.reference }}/{{ member.photoPieceBack|image_path }}" alt="" width="80%" style="width:80%;">
                                     {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                <div class="image-upload-container">
                                     <img id="member_registration_photoPieceBackPreview" src="" alt="">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
@@ -150,13 +153,13 @@
                     <div class="col-md-6">
                         <label for="member_registration_photoPermisFront" class="form-label">Copie scannée du permis (recto)
                             {% if member.photoPermisFront %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                    <img id="member_registration_photoPermisFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPermisFront }}" alt="" width="100" style="width:50px;">
+                                <div class="image-upload-container">
+                                    <img id="member_registration_photoPermisFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPermisFront|image_path }}" alt="" width="80%" style="width:80%;">
                                     {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                <div class="image-upload-container">
                                     <img id="member_registration_photoPermisFrontPreview" src="" alt="">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
@@ -170,13 +173,13 @@
                     <div class="col-md-6">
                         <label for="member_registration_photoPermisBack" class="form-label">Copie scannée de la permis (verso)
                             {% if member.photoPermisBack %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;height: 100%;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
-                                    <img id="member_registration_photoPermisBackPreview" src="/members/{{ member.reference }}/{{ member.photoPermisBack }}" alt="" width="100" style="width:50px;">
+                                <div class="image-upload-container">
+                                    <img id="member_registration_photoPermisBackPreview" src="/members/{{ member.reference }}/{{ member.photoPermisBack|image_path }}" alt="" width="100" style="width:80%">
                                     {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>
                                 </div>
                             {% else %}
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width:200px;height: 150px;margin: auto;border: 1px dashed #adb5bd;padding: 10px 10px;">
+                                <div class="image-upload-container">
                                     <img id="member_registration_photoPermisBackPreview" src="" alt="">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une image
@@ -239,10 +242,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="py-3">
+                <div class="row mb-3">
                     Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
-                    <input type="checkbox" name="has_child" id="has_child" switch="none" checked />
-                    <label for="has_child" data-on-label="Oui" data-off-label="Non"></label>
+                    <div class="d-flex">
+                        <input type="checkbox" name="has_child" id="has_child" switch="none" />
+                        <label for="has_child" data-on-label="Oui" data-off-label="Non"></label>
+                    </div>
                     <br>
                     <div id="child-row" style="display:none;">
                         <div id="children_bock"  class="pt-2">
@@ -250,6 +255,18 @@
                         <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Enregistrer un enfant </span>
                     </div>
                 </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.referant_lastName) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.referant_lastName) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.referant_mobile) }}
+                    </div>
+                </div>
+            </div>
             </div>
         </fieldset>
 
@@ -266,5 +283,9 @@
             </div>
         </fieldset>
         <hr>
+    <hr>
+    <div class="row justify-content-center">
+        <div class="text-center"><button type="submit" class="btn btn-success btn-lg">Enregister</button></div>
+    </div>
     {{ form_end(form) }}
 </div>

@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Unique;
 
 class MemberOnlineRegistrationType extends AbstractType
 {
@@ -40,13 +41,23 @@ class MemberOnlineRegistrationType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new Unique([
+                        'message' => 'Email en doublon'
+                    ]),
+                ]
             ])
 
             ->add('IdNumber', TextType::class, [
                 'label' => "N° Pièce d'identité",
                 'mapped' => true,
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new Unique([
+                        'message' => 'Numero de piece en doublon'
+                    ]),
+                ]
             ])
             ->add('IdType', ChoiceType::class, [
                 'label' => 'Type de pièce',
@@ -121,7 +132,7 @@ class MemberOnlineRegistrationType extends AbstractType
             ->add('drivingLicenseNumber', TextType::class, [
                 'label' => 'Numéro du permis de conduire',
                 'mapped' => true,
-                'required' => false
+                'required' => false,
             ])
 
 //            ->add('city', ChoiceType::class, [
@@ -172,22 +183,22 @@ class MemberOnlineRegistrationType extends AbstractType
 //                'required' => false
 //            ])
             ->add('mobile', TextType::class, [
-                'label' => "Numéro Tél Mobile",
+                'label' => "Numéro Téléphone mobile",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
-                'required' => true
+                'required' => true,
             ])
             ->add('phone', TextType::class, [
                 'label' => "Numéro Téléphone Fixe",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
-                'required' => false
+                'required' => false,
             ])
             ->add('whatsapp', TelType::class, [
                 'label' => "Numéro Whatsapp",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '9999999999'"],
                 'mapped' => true,
-                'required' => true
+                'required' => true,
             ])
 
             ->add('birth_locality', TextType::class, [

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Child;
 use App\Entity\Member;
+use App\Form\MemberPhotoStepType;
 use App\Form\MemberRegistrationType;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
@@ -116,6 +117,25 @@ class MemberController extends AbstractController
         return $this->render('admin/member/synacvtcci/new-subscription.html.twig');
     }
 
+    #[Route('/photostep', name: 'admin_member_photostep', methods: ['GET', 'POST'])]
+    public function photoStep(Request $request, MemberService $memberService): Response
+    {
+        $member = new Member;
+        $form = $this->createForm(MemberPhotoStepType::class, $member);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $this->handleFormCreation($request, $form, $member, $memberService);
+            $member->setStatus("PHOTO_VALID");
+            $memberService->saveMember($member);
+            return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
+        }
+        return $this->renderForm('admin/member/etape-photo.html.twig', [
+            'member' => $member,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/new', name: 'admin_member_new', methods: ['GET', 'POST'])]
     public function new(Request $request, MemberService $memberService): Response
     {
@@ -125,7 +145,7 @@ class MemberController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $this->handleFormCreation($request, $form, $member, $memberService);
-            if($member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+            if($member->getStatus() === "PENDING" || $member->getStatus() === "PHOTO_VALID" || $member->getStatus() === "INFORMATION_VALIDATED"){
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
                 return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
@@ -473,6 +493,13 @@ class MemberController extends AbstractController
         date_default_timezone_set("Africa/Abidjan");
 
         $member->setPhoto(new File($memberService->getMemberDir($member) . $member->getPhoto() ));
+        $member->setPaymentReceiptCnmci(new File($memberService->getMemberDir($member) . $member->getPaymentReceiptCnmci() ));
+
+        $member->setPhotoPieceFront(new File($memberService->getMemberDir($member) . $member->getPhotoPieceFront() ));
+        $member->setPhotoPieceBack(new File($memberService->getMemberDir($member) . $member->getPhotoPieceBack() ));
+
+        $member->setPhotoPermisFront(new File($memberService->getMemberDir($member) . $member->getPhotoPermisFront() ));
+        $member->setPhotoPermisBack(new File($memberService->getMemberDir($member) . $member->getPhotoPermisBack() ));
 
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
@@ -500,13 +527,11 @@ class MemberController extends AbstractController
                 }
             }
             $memberService->updateMember($member, $images);
-            if($member->getStatus()=== "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+            if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus()=== "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
                 return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
             }
-
-            // return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
             return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
