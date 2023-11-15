@@ -243,6 +243,17 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.referantLastName) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.referantFirstName) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.referantMobile) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
                     Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
                     <div class="d-flex">
                         <input type="checkbox" name="has_child" id="has_child" switch="none" />
@@ -255,18 +266,7 @@
                         <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Enregistrer un enfant </span>
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        {{ form_row(form.referant_lastName) }}
-                    </div>
-                    <div class="col-md-3">
-                        {{ form_row(form.referant_lastName) }}
-                    </div>
-                    <div class="col-md-3">
-                        {{ form_row(form.referant_mobile) }}
-                    </div>
-                </div>
-            </div>
+
             </div>
         </fieldset>
 
