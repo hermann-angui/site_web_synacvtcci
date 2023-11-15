@@ -147,7 +147,7 @@ class MemberRegistrationType extends AbstractType
 
         $builder
             ->add('photo',FileType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'Photo',
                 'data_class' =>  null,
                 'mapped' => true,
@@ -320,31 +320,31 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
             ])
             ->add('photoPieceFront',FileType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => "Copie scannée de la pièce (recto)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPieceBack',FileType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => "Copie scannée de la pièce (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisFront',FileType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => "Copie scannée du permis de conduire (recto)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('photoPermisBack',FileType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => "Copie scannée du  de conduire (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('paymentReceiptCnmci',FileType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
                 'data_class' =>  null,
                 'mapped' => true,

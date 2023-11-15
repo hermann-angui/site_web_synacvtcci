@@ -219,17 +219,12 @@
 <script>
       $('document').ready(function() {
 
-          // var children = [];
-          // var child = document.querySelector("input[name='has_child']")
-          // child.addEventListener('onchange', function(){
-          //     alert();
-          //     if($(this).val() === "0"){
-          //         $('#child-row').hide();
-          //     }else{
-          //         $('#child-row').show();
-          //     }
-          // });
 
+          $("form").submit(function(e){
+              alert("Submitted");
+          });
+
+          var children = [];
           $("input").keyup(function() {
               this.value = this.value.toUpperCase();
           });
