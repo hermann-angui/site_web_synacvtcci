@@ -183,8 +183,8 @@ class MemberRegistrationType extends AbstractType
          //     'attr' => ['class' => 'ignore'],
                 'mapped' => true,
                 'required' => false,
-                'empty_data' => '',
-                'data' => 'n/a',
+                'empty_data' => null,
+                'data' => null,
             ])
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',

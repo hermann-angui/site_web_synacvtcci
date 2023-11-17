@@ -35,17 +35,7 @@ class MemberController extends AbstractController
     #[Route(path: '/search', name: 'admin_member_search')]
     public function chooseMain(Request $request, MemberRepository $memberRepository): Response
     {
-        $searchTerm = $request->get('searchTerm');
-        if($searchTerm){
-          //  $member = $memberRepository->findOneBy(['reference' => strtolower($searchTerm)]);
-            $member = $memberRepository->findOneBy(['tracking_code' => strtolower($searchTerm)]);
-            if($member) return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
-            else{
-                $data = ['result' => 'error'];
-                return $this->render('admin/pages/search-index.html.twig', ["data" => $data]);
-            }
-        }
-        return $this->render('admin/pages/search-index.html.twig',["data" => null]);
+        return $this->render('admin/pages/search-index.html.twig');
     }
 
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
@@ -470,12 +460,82 @@ class MemberController extends AbstractController
             $whereResult .= " last_name LIKE '%". $params['last_name']. "%' AND";
         }
         if(!empty($params['id_number'])) {
-            $whereResult .= " id_number	LIKE '%". $params['id_number	'] . "%' AND";
+            $whereResult .= " id_number	LIKE '%". $params['id_number'] . "%' AND";
         }
 
       //  $whereResult.= " status='VALIDATED'";
       $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+
+        return new JsonResponse($response);
+    }
+
+    #[Route('/pending/souscripteur', name: 'admin_member_pending_souscripteur_datatable', methods: ['GET'])]
+    public function pendingSouscripteur(Request $request, Connection $connection, MemberRepository $memberRepository)
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        $params = $request->query->all();
+        $paramDB = $connection->getParams();
+        $table = 'member';
+        $primaryKey = 'id';
+        $columns = [
+            [
+                'db' => 'id',
+                'dt' => 'id',
+                'formatter' => function( $d, $row ) use ($memberRepository){
+                    $member = $memberRepository->find($d);
+                    $imageUrl = $member->getReference() . "/" .  $member->getPhoto();
+                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
+                    return $content;
+                }
+            ],
+            [
+                'db' => 'tracking_code',
+                'dt' => 'tracking_code',
+            ],
+            [
+                'db' => 'last_name',
+                'dt' => 'last_name',
+            ],
+            [
+                'db' => 'first_name',
+                'dt' => 'first_name',
+            ],
+            [
+                'db' => 'status',
+                'dt' => 'status'
+            ],
+            [
+                'db'        => 'matricule',
+                'dt'        => 'matricule',
+                'formatter' => function($d, $row) {
+                    $id = $row['id'];
+                    $content =  "<div class='d-flex gap-2 flex-wrap'>
+                                   <a  href='/admin/member/$id/edit'><i class='mdi mdi-eye'></i>Traiter</a>                                    
+                                </div> ";
+                    return $content;
+                }
+            ]
+        ];
+
+        $sql_details = array(
+            'user' => $paramDB['user'],
+            'pass' => $paramDB['password'],
+            'db'   => $paramDB['dbname'],
+            'host' => $paramDB['host']
+        );
+
+        $whereResult = null;
+
+
+        if(!empty($params['searchTerm'])) {
+            $whereResult .= " (tracking_code LIKE '%". $params['searchTerm']. "%' OR ";
+            $whereResult .= " first_name LIKE '%". $params['searchTerm']. "%' OR ";
+            $whereResult .= " last_name LIKE '%". $params['searchTerm']. "%') AND ";
+        }
+
+        $whereResult.= " status='INFORMATION_VALIDATED' ";
+        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult, null);
 
         return new JsonResponse($response);
     }
@@ -583,7 +643,6 @@ class MemberController extends AbstractController
         $memberService->createMember($member, $images);
         return $member;
     }
-
 
 
 }

@@ -1,4 +1,4 @@
-<div class="col-lg-12 py-5">
+
     {{ form_start(form, {'method': 'POST', 'attr': {'id': 'stepperform'}}) }}
         <h3>INFORMATIONS PERSONNELLES</h3>
         <fieldset>
@@ -6,7 +6,7 @@
                 <div class="my-custom-class-for-errors">
                     {{ form_errors(form) }}
                 </div>
-                <div class="row mb-4 mt-4">
+                <div class="row mb-4 mt-2">
                     <div class="d-flex justify-content-center">
                         <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
                             <div class="d-flex flex-column justify-content-center align-items-center">
@@ -276,6 +276,10 @@
                 <div class="py-3">
                     <div id="partner_bock" class="my-3">
                         {{ form_row(form.payment_receipt_cnmci_code) }}
+                        {% if member.paymentReceiptCnmci %}
+                            <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmci|image_path }}" width="500" height="375" type="application/pdf">
+                        {% endif %}
+
 {#                        {{ form_row(form.paymentReceiptCnmci) }}#}
     {#                   {{ form_row(form.paymentReceiptSynacvtcci) }} #}
                     </div>
@@ -288,4 +292,4 @@
         <div class="text-center"><button type="submit" class="btn btn-success btn-lg">Enregister</button></div>
     </div>
     {{ form_end(form) }}
-</div>
+

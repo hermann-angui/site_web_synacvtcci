@@ -64,20 +64,23 @@ class UserFormType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-            ->add('dateofBirth', DateType::class, [
-                'label' => 'Date de naissance',
-                'attr' => ['class' => 'js-datepicker'],
-                'widget' => 'single_text',
-                'html5' => false,
-                'mapped' => true,
-                'required' => false,
-                'format' =>  'dd/MM/yyyy',
-                'years' => range($past->format('Y'), $end->format('Y')),
-            ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'mapped' => true,
                 'required' => true
+            ])
+            ->add('role', ChoiceType::class, [
+                'label' => 'Role',
+                'mapped' => false,
+                'required' => false,
+                'choices' => [
+                    "AGENT" => "ROLE_AGENT",
+                    "DISTRICT" => "ROLE_DISTRICT",
+                    "ADMININISTRATEUR" => "ROLE_ADMIN",
+                    "SUPER ADMINISTRATEUR" => "ROLE_SUPER_ADMIN",
+                ],
+                'empty_data' => null,
+                'data' => null,
             ])
             ->add('password', RepeatedType::class, [
                 'label' => 'Mot de passe',
@@ -99,28 +102,10 @@ class UserFormType extends AbstractType
                     ]),
                 ],
             ])
-
-            ->add('nationality', CountryType::class, [
-                'label' => 'Votre nationalité',
-                'mapped' => true,
-                'required' => true,
-                'choices' => $countries,
-                'choice_loader' => null
-            ])
             ->add('photo', FileType::class, [
                 'label' => 'Photo',
                 'mapped' => true,
                 'required' => false
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'label' => $this->translator->trans('general_term_gdpr'),
-                'mapped' => false,
-                'required' => true,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => $this->translator->trans('invalid_password'),
-                    ]),
-                ],
             ])
         ;
     }

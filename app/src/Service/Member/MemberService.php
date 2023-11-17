@@ -65,8 +65,11 @@ class MemberService
             $sexCode = null;
             if($member->getSex() === "H") $sexCode = "SY1";
             elseif($member->getSex() === "F") $sexCode = "SY2";
-            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-            $member->setMatricule($matricule);
+            if($sexCode){
+                $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+                $member->setMatricule($matricule);
+            }
+
 
             $expiredDate = $date->format('Y-12-31');
             $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
@@ -106,6 +109,17 @@ class MemberService
                 $member->setReference(
                     str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
                 );
+            }
+
+            if (!$member->getMatricule()) {
+                $date = new DateTime('now');
+                $sexCode = null;
+                if($member->getSex() === "H") $sexCode = "SY1";
+                elseif($member->getSex() === "F") $sexCode = "SY2";
+                if($sexCode){
+                    $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+                    $member->setMatricule($matricule);
+                }
             }
 
             if(!empty($images)) $this->storeMemberImages($member, $images);

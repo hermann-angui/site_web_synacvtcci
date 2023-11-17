@@ -160,7 +160,7 @@
             justify-content: center;
             align-items: center;
             width: 450px;
-            height: 200px;
+            min-height: 200px;
             margin: auto;border: 1px dashed #adb5bd;
             padding: 10px 10px;
         }
@@ -188,9 +188,22 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Enregistrement membre</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="{{ path("admin_index")}}">Accueil</a></li>
+                                        <li class="breadcrumb-item active">Enregistrement</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     <div class="card">
-                        <div class="card-body px-5">
-                            <h4 class="card-title mb-2">Enregistrer un nouveau membre</h4>
+                        <div class="card-body">
                             {{ include('admin/member/_form_etape_photo.html.twig') }}
                         </div>
                     </div>
@@ -232,17 +245,13 @@
           //     }
           // });
 
+          $("form").submit(function(e){
+              form.validate().settings.ignore = ":disabled,.ignore";
+              return form.valid();
+          });
+
           $("input").keyup(function() {
               this.value = this.value.toUpperCase();
-          });
-
-          $("#has_child").on('change.bootstrapSwitch', function(e) {
-                console.log(e.target.checked);
-          });
-
-          $('#newChild').click(function(){
-            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";
-            $('#children_bock').append(row);
           });
 
           $("#member_photo_step_photo").change(function(data){

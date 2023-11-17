@@ -55,7 +55,6 @@ class UserController extends AbstractController
                 )
             );
 
-
             $roles[] = 'ROLE_USER';
 
             switch($form->get('role')->getData()){

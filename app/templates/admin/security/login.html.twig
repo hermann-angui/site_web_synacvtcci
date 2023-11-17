@@ -51,20 +51,12 @@
                                     </div>
 
                                     <div class="mt-4 text-center">
-                                        <a href="{{  path('admin_register') }}" class="text-muted"><i class="mdi mdi-lock me-1"></i> Mot de passe oublié?</a>
                                     </div>
 
                                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                                 </form>
                             </div>
 
-                        </div>
-                    </div>
-                    <div class="mt-5 text-center">
-
-                        <div>
-                            <p>Vous n'avez pas de compte ? <a href="{{ path('admin_register') }}" class="fw-medium text-primary"> Créer un compte</a> </p>
-                            <p>© <script>document.write(new Date().getFullYear())</script>synactvtcci.org. créé <i class="mdi mdi-heart text-danger"></i> par pommgroup</p>
                         </div>
                     </div>
 

@@ -159,8 +159,9 @@
             justify-content: center;
             align-items: center;
             width: 450px;
-            height: auto;
-            margin: auto;border: 1px dashed #adb5bd;
+            min-height: 200px;
+            margin: auto;
+            border: 1px dashed #adb5bd;
             padding: 10px 10px;
         }
     </style>
@@ -186,9 +187,22 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Enregistrement membre</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="{{ path("admin_index")}}">Accueil</a></li>
+                                        <li class="breadcrumb-item active">Enregistrement</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     <div class="card">
-                        <div class="card-body px-5">
-                            <h4 class="card-title mb-4">Enregistrer un nouveau membre</h4>
+                        <div class="card-body">
                             {{ include('admin/member/_form.html.twig') }}
                         </div>
                     </div>
@@ -219,28 +233,35 @@
 <script>
       $('document').ready(function() {
 
-
-          $("form").submit(function(e){
+          $("#stepperform").submit(function(e){
+                $("#stepperform").validate().settings.ignore = ":disabled,.ignore";
+                return $("#stepperform").valid();
+          }).validate({
+                errorPlacement: function errorPlacement(error, element) { element.before(error); },
+                rules: {
+                }
           });
 
-          var children = [];
           $("input").keyup(function() {
-              this.value = this.value.toUpperCase();
+                this.value = this.value.toUpperCase();
           });
+
           $("input[name='has_child']").on('change.bootstrapSwitch', function(e) {
-              if(!e.target.checked){
+                if(!e.target.checked){
                   $('#child-row').hide();
-              }else{
+                }else{
                   $('#child-row').show();
-              }
+                }
           });
 
+          var index = 0;
           $('#newChild').click(function(){
-            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child[firstname][]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child[lastname][]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child[sex][]' value='' class='form-control' /></label></div>";
-            $('#children_bock').append(row);
+                var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' onkeyup='this.value=this.value.toUpperCase();'  name='child[" + index + "][firstname]' value='' class='form-control' /></label><label class='my-1'>Prénoms <input type='text' onkeyup='this.value=this.value.toUpperCase();' name='child[" + index + "][lastname]' value='' class='form-control' /></label><label class='my-2'>Sexe <select name='child[" + index + "][sex]' class='form-select' style='min-width:150px;'><option value='MASCULIN'>MASCULIN</option><option value='FEMME'>FEMME</option></select></label></div>";
+                $('#children_bock').append(row);
+                index++;
           });
 
-             jQuery.extend(jQuery.validator.messages, {
+          jQuery.extend(jQuery.validator.messages, {
                 required: "Ce champ est obligatoire.",
                 remote: "Please fix this field.",
                 email: "Veuillez entrer une adresse email valide.",
@@ -258,76 +279,69 @@
                 range: jQuery.validator.format("Please enter a value between {0} and {1}."),
                 max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
                 min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
-            });
-
+          });
 
           $("#member_registration_photo").change(function(data){
-              var imageFile = data.target.files[0];
-              var reader = new FileReader();
-              reader.readAsDataURL(imageFile);
-
-              reader.onload = function(evt){
+                var imageFile = data.target.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(imageFile);
+                reader.onload = function(evt){
                   $('#imagePreview').attr('src', evt.target.result);
                   $('#imagePreview').fadeIn(650);
-              }
+                }
           });
 
           $("label[for='member_registration_photoPieceFront']").change(function(data){
-              var imageFile = data.target.files[0];
-              var reader = new FileReader();
-              reader.readAsDataURL(imageFile);
-
-              reader.onload = function(evt){
+                var imageFile = data.target.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(imageFile);
+                reader.onload = function(evt){
                   $('#member_registration_photoPieceFrontPreview').attr('src', evt.target.result);
                   $('#member_registration_photoPieceFrontPreview').attr('width','85%');
                   $("label[for='member_registration_photoPieceFront'] .upload-icon").hide();
                   $('#member_registration_photoPieceFrontPreview').fadeIn(650);
-              }
+                }
           });
 
           $("label[for='member_registration_photoPieceBack']").change(function(data){
-              var imageFile = data.target.files[0];
-              var reader = new FileReader();
-              reader.readAsDataURL(imageFile);
-
-              reader.onload = function(evt){
+                var imageFile = data.target.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(imageFile);
+                reader.onload = function(evt){
                   $('#member_registration_photoPieceBackPreview').attr('src', evt.target.result);
                   $('#member_registration_photoPieceBackPreview').attr('width','85%');
                   $("label[for='member_registration_photoPieceBack'] .upload-icon").hide();
                   $('#member_registration_photoPieceBackPreview').fadeIn(650);
-              }
+                }
           });
 
           $("label[for='member_registration_photoPermisFront']").change(function(data){
-              var imageFile = data.target.files[0];
-              var reader = new FileReader();
-              reader.readAsDataURL(imageFile);
-
-              reader.onload = function(evt){
+                var imageFile = data.target.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(imageFile);
+                reader.onload = function(evt){
                   $('#member_registration_photoPermisFrontPreview').attr('src', evt.target.result);
                   $('#member_registration_photoPermisFrontPreview').attr('width','85%');
                   $("label[for='member_registration_photoPermisFront'] .upload-icon").hide();
                   $('#member_registration_photoPermisFrontPreview').fadeIn(650);
-              }
+                }
           });
 
           $("label[for='member_registration_photoPermisBack']").change(function(data){
-              var imageFile = data.target.files[0];
-              var reader = new FileReader();
-              reader.readAsDataURL(imageFile);
-
-              reader.onload = function(evt){
+                var imageFile = data.target.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(imageFile);
+                reader.onload = function(evt){
                   $('#member_registration_photoPermisBackPreview').attr('src', evt.target.result);
                   $('#member_registration_photoPermisBackPreview').attr('width','85%');
                   $("label[for='member_registration_photoPermisBack'] .upload-icon").hide();
                   $('#member_registration_photoPermisBackPreview').fadeIn(650);
-              }
+                }
           });
 
-
           $('.js-datepicker').datetimepicker({
-                 timepicker:false,
-                 format:  'd/m/Y',
+                timepicker:false,
+                format:  'd/m/Y',
                 // mask: true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
           });
 
@@ -335,7 +349,7 @@
 
           $(".select2").select2();
           $(".select2-multiple").select2({
-             multiple: true
+                multiple: true
           });
       });
   </script>

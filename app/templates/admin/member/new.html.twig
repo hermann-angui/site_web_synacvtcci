@@ -159,7 +159,7 @@
             justify-content: center;
             align-items: center;
             width: 450px;
-            height: 200px;
+            min-height: 200px;
             margin: auto;border: 1px dashed #adb5bd;
             padding: 10px 10px;
         }
@@ -186,9 +186,22 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Enregistrement membre</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="{{ path("admin_index")}}">Accueil</a></li>
+                                        <li class="breadcrumb-item active">Enregistrement</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     <div class="card">
-                        <div class="card-body px-5">
-                            <h4 class="card-title mb-4">Enregistrer un nouveau membre</h4>
+                        <div class="card-body">
                             {{ include('admin/member/_form.html.twig') }}
                         </div>
                     </div>
@@ -219,30 +232,33 @@
 <script>
       $('document').ready(function() {
 
-          // var children = [];
-          //
-          // var child = document.querySelector("input[name='has_child']")
-          // child.addEventListener('onchange', function(){
-          //     alert();
-          //     if($(this).val() === "0"){
-          //         $('#child-row').hide();
-          //     }else{
-          //         $('#child-row').show();
-          //     }
-          // });
+          $("#stepperform").submit(function(e){
+                $("#stepperform").validate().settings.ignore = ":disabled,.ignore";
+                return $("#stepperform").valid();
+          }).validate({
+                errorPlacement: function errorPlacement(error, element) { element.before(error); },
+                rules: {
+                }
+          });
 
-            $("input").keyup(function() {
+          $("input").keyup(function() {
                 this.value = this.value.toUpperCase();
-            });
-          $("#has_child").on('change.bootstrapSwitch', function(e) {
-                console.log(e.target.checked);
           });
 
+          $("input[name='has_child']").on('change.bootstrapSwitch', function(e) {
+                if(!e.target.checked){
+                  $('#child-row').hide();
+                }else{
+                  $('#child-row').show();
+                }
+          });
+
+          var index = 0;
           $('#newChild').click(function(){
-            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";
-            $('#children_bock').append(row);
+                var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child[" + index + "][firstname]' value='' class='form-control' /></label><label class='my-1'>Prénoms <input type='text' name='child[" + index + "][lastname]' value='' class='form-control' /></label><label class='my-2'>Sexe <select name='child[" + index + "][sex]' class='form-select' style='min-width:150px;'><option value='MASCULIN'>MASCULIN</option><option value='FEMME'>FEMME</option></select></label></div>";
+                $('#children_bock').append(row);
+                index++;
           });
-
             //
             // var form = $("#stepperform");
             //

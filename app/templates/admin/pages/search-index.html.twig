@@ -2,6 +2,8 @@
 
 {% block stylesheet %}
     {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/select.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .app-search span {
             position: absolute;
@@ -15,6 +17,9 @@
         .app-search .form-control {
             padding-left: 77px;
         }
+        .dataTables_filter {
+            display: none;
+        }
     </style>
 {% endblock %}
 
@@ -24,15 +29,32 @@
         {{ include('admin/_partials/simple-header.html.twig') }}
         <div class="page-content">
             <div class="container">
-                <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
-                    <div class="col-lg-12 mx-3">
-                            <div class="d-flex border border-2 border-dark p-2 rounded align-items-center">
-                                <span class="bx bx-search-alt fs-3"></span>
-                                 <form method="post" action="{{ path('admin_member_search') }}" style="width: 100%;">
-                                     <input name="searchTerm" id="quick-search" type="text" class="form-control form-control-lg border-0 bg-transparent" style="height:70px;" placeholder="Recherche  rapide (Saisir Nom & prénoms ou numéro de mobile ou numéro permis ou numéro de reçu )" />
-                                 </form>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">Recherche rapide de souscripteur</h4>
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="{{ path("admin_index")}}">Accueil</a></li>
+                                    <li class="breadcrumb-item active">Recherche rapide</li>
+                                </ol>
                             </div>
+
+                        </div>
                     </div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center align-content-center mt-1">
+                    <div class="col-lg-12 mx-3">
+                        <div class="d-flex border border-2 border-dark p-1 rounded align-items-center">
+                            <span class="bx bx-search-alt fs-3"></span>
+                             <form method="post" action="{{ path('admin_member_search') }}" style="width: 100%;">
+                                 <input name="searchTerm" id="searchTerm" type="text" class="form-control border-0 bg-transparent" placeholder="Recherche rapide (Saisir le nom & prénoms ou numéro de suivi de dossier )" />
+                             </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-4">
+                    {{ include('admin/pages/_souscripteur_pending_datatable.html.twig') }}
                 </div>
             </div>
         </div>
@@ -42,14 +64,52 @@
 
 {% block javascript %}
 {{ parent() }}
+<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-      $(document).on('keydown', '#quick-search', function (e) {
-            if (e.which === 13) {
-                $("form").submit(function(){
-                });
-            }
-      });
+
+        var datatable = initDatatable();
+
+        $("#searchTerm").keyup(function (e) {
+            datatable.draw();
+        });
+
+
+        // $('#searchTerm').keyup(function(){
+        //      datatable.search($(this).val()).draw() ;
+        // });
+
+        function initDatatable(){
+            var dt = $('#datatable').DataTable( {
+                "responsive": true,
+                 "pageLength": 50,
+                "language": {
+                    url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                    processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
+                    sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />"
+                },
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": '{{ path('admin_member_pending_souscripteur_datatable') }}',
+                    "data": function (d) {
+                        d.searchTerm = $("#searchTerm").val();
+                    }
+                },
+                "columns": [
+                    {"data":  "id"},
+                    {"data":  "tracking_code"},
+                    {"data":  "last_name"},
+                    {"data":  "first_name"},
+                    { "data": "status" },
+                    { "data": "matricule" }
+                ],
+                "paging": false,
+                "order": [[4, 'desc']]
+            } );
+            return dt;
+        }
     });
 </script>
 {% endblock %}

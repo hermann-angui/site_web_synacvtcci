@@ -24,10 +24,10 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $tracking_code = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -48,7 +48,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $referant_mobile = null;
 
-    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $matricule = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -88,7 +88,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $IdNumber = null;
 
     #[ORM\Column(length: 255, nullable: true, unique: true)]
-    private ?string $codeSticker = null;
+    private ?string $code_sticker = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $IdDeliveryPlace = null;
@@ -760,12 +760,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param string|null $codeSticker
+     * @param string|null $code_sticker
      * @return Member
      */
-    public function setCodeSticker(?string $codeSticker): Member
+    public function setCodeSticker(?string $code_sticker): Member
     {
-        $this->codeSticker = $codeSticker;
+        $this->code_sticker = $code_sticker;
         return $this;
     }
 
