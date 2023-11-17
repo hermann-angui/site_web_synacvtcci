@@ -515,7 +515,7 @@ class MemberController extends AbstractController
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
                     $content =  "<div class='d-flex gap-2 flex-wrap'>
-                                   <a  href='/admin/member/$id/edit'><i class='mdi mdi-eye'></i>Traiter</a>                                    
+                                   <a class='btn btn-primary btn-sm btn-rounded' href='/admin/member/$id/edit'><i class='mdi mdi-eye'></i>Traiter</a>                                    
                                 </div> ";
                     return $content;
                 }
