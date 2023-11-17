@@ -172,9 +172,11 @@
               $( "#info_familiales").focus();
            });
 
+          var index = 0;
           $('#newChild').click(function(){
-            var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' name='child_firstname[]' value='' class='form-control' /></label><label class='my-2'>Prénoms <input type='text' name='child_lastname[]' value='' class='form-control' /></label><label class='my-2'>Sexe <input type='text' name='child_sex[]' value='' class='form-control' /></label></div>";
-            $('#children_bock').append(row);
+                var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' onkeyup='this.value=this.value.toUpperCase();'  name='child[" + index + "][firstname]' value='' class='form-control' /></label><label class='my-1'>Prénoms <input type='text' onkeyup='this.value=this.value.toUpperCase();' name='child[" + index + "][lastname]' value='' class='form-control' /></label><label class='my-2'>Sexe <select name='child[" + index + "][sex]' class='form-select' style='min-width:150px;'><option value='MASCULIN'>MASCULIN</option><option value='FEMME'>FEMME</option></select></label></div>";
+                $('#children_bock').append(row);
+                index++;
           });
 
       });

@@ -652,7 +652,7 @@
                     <label for="CodeSticker" class="col-form-label">Code de sticker :</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" id="CodeSticker" name="CodeSticker" class="form-control py-4" aria-labelledby="CodeSticker"  value="{{ member.codeSticker }}">
+                    <input type="text" id="CodeSticker" name="CodeSticker" class="form-control py-4" aria-labelledby="CodeSticker"  value="{{ member.codeSticker?:'999999' }}">
                 </div>
             </div>
             <div class="row py-2">
