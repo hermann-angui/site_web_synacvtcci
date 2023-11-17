@@ -119,7 +119,7 @@ class MemberController extends AbstractController
             $this->handleFormCreation($request, $form, $member, $memberService);
             $member->setStatus("PHOTO_VALID");
             $memberService->saveMember($member);
-            return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('admin/member/etape-photo.html.twig', [
             'member' => $member,
@@ -365,7 +365,7 @@ class MemberController extends AbstractController
             'db'   => $paramDB['dbname'],
             'host' => $paramDB['host']
         );
-        $whereResult= " status='PENDING'";
+        $whereResult= " status IN ('PENDING', 'PHOTO_VALID')";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -534,7 +534,7 @@ class MemberController extends AbstractController
             $whereResult .= " last_name LIKE '%". $params['searchTerm']. "%') AND ";
         }
 
-        $whereResult.= " status='INFORMATION_VALIDATED' ";
+        $whereResult.= " status IN ('INFORMATION_VALIDATED', 'PHOTO_VALID') ";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult, null);
 
         return new JsonResponse($response);
