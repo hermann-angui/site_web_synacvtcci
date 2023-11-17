@@ -29,7 +29,11 @@ class MemberController extends AbstractController
     #[Route('', name: 'admin_member_index', methods: ['GET'])]
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
-        return $this->render('admin/member/synacvtcci/index.html.twig');
+        if(in_array("ROLE_AGENT", $this->getUser()->getRoles() ))  {
+            return $this->redirectToRoute('admin_index_agent');
+        } else {
+            return $this->render('admin/member/synacvtcci/index.html.twig');
+        }
     }
 
     #[Route(path: '/search', name: 'admin_member_search')]
