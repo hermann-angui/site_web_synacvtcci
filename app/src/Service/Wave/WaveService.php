@@ -68,12 +68,12 @@ class WaveService
     }
 
 
-    public function makePayment() : ?WaveCheckoutResponse
+    public function makePayment($montant) : ?WaveCheckoutResponse
     {
         try{
             $waveCheckoutRequest = new WaveCheckoutRequest();
             $waveCheckoutRequest->setCurrency("XOF")
-                ->setAmount("100")
+                ->setAmount($montant)
                 ->setClientReference(Uuid::v4()->toRfc4122())
                 ->setSuccessUrl(self::SUCCESS_URL);
 

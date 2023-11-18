@@ -18,6 +18,8 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/admin/payment')]
 class PaymentController extends AbstractController
 {
+    private const MONTANT = 25;
+
     #[Route(path: '', name: 'admin_payment_index')]
     public function index(Request $request,
                           MemberRepository $memberRepository): Response
@@ -68,7 +70,7 @@ class PaymentController extends AbstractController
                               ActivityLogger $activityLogger,
                               PaymentRepository $paymentRepository): Response
     {
-        $response = $waveService->makePayment();
+        $response = $waveService->makePayment(self::MONTANT);
         if ($response) {
             $payment = new Payment();
             $payment->setUser($this->getUser());
