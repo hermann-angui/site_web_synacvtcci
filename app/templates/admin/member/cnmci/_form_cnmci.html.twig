@@ -153,7 +153,7 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE" {{ member.etatCivil == "MARIE" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ member.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Marié</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -560,7 +560,7 @@
                             <label for="referantDomicile" class="col-form-label">Domicilié (e) à :</label>
                         </div>
                         <div class="col-5">
-                            <div class="input">{{ member.domicile }}</div>
+                            <div class="input">{{ member.quartier }}</div>
                         </div>
                     </div>
 
@@ -625,7 +625,7 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="MARIE"  {{ member.etatCivil == "MARIE" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="MARIE(E)"  {{ member.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantEtatCivil">Marié</label>
                             </div>
                             <div class="form-check form-check-inline">

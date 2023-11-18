@@ -6,6 +6,7 @@ use App\Entity\Child;
 use App\Entity\Member;
 use App\Form\MemberPhotoStepType;
 use App\Form\MemberRegistrationType;
+use App\Helper\ActivityLogger;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
 use App\Repository\MemberRepository;
@@ -59,7 +60,10 @@ class MemberController extends AbstractController
     }
 
     #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['GET','POST'])]
-    public function cnmciEdit(Member $member, Request  $request, MemberService $memberService): Response
+    public function cnmciEdit(Member $member,
+                              Request  $request,
+                              MemberService $memberService,
+                              ActivityLogger $activityLogger): Response
     {
         if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
             return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
@@ -69,6 +73,7 @@ class MemberController extends AbstractController
             return $this->render('admin/member/cnmci/cnmci_edit.html.twig', ['member' => $member]);
         }elseif($request->getMethod() === "POST") {
             $memberService->createCnmiOrUpdate($member, $request->request->all(), 1);
+            $activityLogger->update($member, "Mise à jour des données du formulaire de la chambre nationale de métiers");
             return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
         }
 
@@ -76,14 +81,17 @@ class MemberController extends AbstractController
     }
 
     #[Route('/cnmci/new', name: 'admin_member_cncmi_new', methods: ['GET','POST'])]
-    public function cnmciNew( Request  $request, MemberService $memberService): Response
+    public function cnmciNew( Request  $request,
+                              MemberService $memberService,
+                              ActivityLogger $activityLogger): Response
     {
         if($request->getMethod()==="GET"){
             return $this->render('admin/member/cnmci/cnmci_new.html.twig');
         }elseif($request->getMethod()==="POST"){
             $data = $request->request->all();
             $member = $memberService->createCnmiOrUpdate(null, $data);
-            $memberService->store($member);
+            $activityLogger->create($member, "Création de formulaire de la chambre nationale de métiers");
+            $memberService->saveMember($member);
             return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
         }
         return $this->render('admin/member/cnmci/cnmci_new.html.twig');
@@ -102,7 +110,10 @@ class MemberController extends AbstractController
     }
 
     #[Route('/cnmci-pdf/{id}', name: 'admin_download_cnmci_pdf', methods: ['GET'])]
-    public function downloadCnmciPdf(Member $member, MemberService $memberService): Response {
+    public function downloadCnmciPdf(Member $member,
+                                     MemberService $memberService,
+                                    ActivityLogger $activityLogger): Response {
+        $activityLogger->create($member, "Téléchargement fiche de la chambre nationale de métier");
         return $memberService->downloadCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
     }
 
@@ -113,7 +124,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/photostep', name: 'admin_member_photostep', methods: ['GET', 'POST'])]
-    public function photoStep(Request $request, MemberService $memberService): Response
+    public function photoStep(Request $request, MemberService $memberService, ActivityLogger $activityLogger): Response
     {
         $member = new Member;
         $form = $this->createForm(MemberPhotoStepType::class, $member);
@@ -123,6 +134,7 @@ class MemberController extends AbstractController
             $this->handleFormCreation($request, $form, $member, $memberService);
             $member->setStatus("PHOTO_VALID");
             $memberService->saveMember($member);
+            $activityLogger->create($member, "Création d'un nouveau dossier souscripteur et upload des fichiers (photo, scan des documents d'identités et reçu orange money)");
             return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('admin/member/etape-photo.html.twig', [
@@ -553,7 +565,9 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Member $member, MemberService $memberService): Response
+    public function edit(Request $request, Member $member,
+                         MemberService $memberService,
+                        ActivityLogger $activityLogger): Response
     {
         date_default_timezone_set("Africa/Abidjan");
 
@@ -592,6 +606,9 @@ class MemberController extends AbstractController
                 }
             }
             $memberService->updateMember($member, $images);
+
+            $activityLogger->update($member, "Mise à jour des données du souscripteur");
+
             if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus()=== "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
@@ -609,7 +626,7 @@ class MemberController extends AbstractController
     #[Route('/{id}/supprimer', name: 'admin_member_delete', methods: ['GET','POST'])]
     public function delete(Request $request, Member $member, MemberRepository $memberRepository): Response
     {
-        if ( true /* $this->isCsrfTokenValid('delete'.$member->getId(), $request->request->get('_token')) */ ) {
+        if ( false /* $this->isCsrfTokenValid('delete'.$member->getId(), $request->request->get('_token')) */ ) {
             $memberRepository->remove($member, true);
             $fileName = "/var/www/html/public/members/" . $member->getReference() . "/";
             if(file_exists($fileName)) {

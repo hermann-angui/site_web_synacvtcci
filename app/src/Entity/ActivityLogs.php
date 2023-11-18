@@ -14,14 +14,15 @@ class ActivityLogs
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $htmlContent = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $source = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
+
+    #[ORM\Column(type:'text', length: 255, nullable: true)]
+    private ?string $message = null;
 
     #[ORM\Column]
     private ?int $entity = null;
@@ -58,18 +59,6 @@ class ActivityLogs
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getHtmlContent(): ?string
-    {
-        return $this->htmlContent;
-    }
-
-    public function setHtmlContent(?string $htmlContent): static
-    {
-        $this->htmlContent = $htmlContent;
-
-        return $this;
     }
 
     public function getSource(): ?string
@@ -119,4 +108,24 @@ class ActivityLogs
 
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string|null $message
+     * @return ActivityLogs
+     */
+    public function setMessage(?string $message): ActivityLogs
+    {
+        $this->message = $message;
+        return $this;
+    }
+
+
 }

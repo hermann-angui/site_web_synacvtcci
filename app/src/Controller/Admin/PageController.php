@@ -25,7 +25,7 @@ class PageController extends AbstractController
     }
 
     #[Route(path: '/agent', name: 'admin_index_agent')]
-    public function indexAgent(Request $request, MemberRepository $memberRepository): Response
+    public function indexAgent(Request $request): Response
     {
             return $this->render('admin/pages/agent-index.html.twig');
     }

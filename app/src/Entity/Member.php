@@ -10,12 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: '`member`')]
- #[UniqueEntity(fields: ['matricule','phone','mobile','IdNumber','drivingLicenseNumber', 'email'])]
+#[ORM\HasLifecycleCallbacks()]
+#[UniqueEntity(fields: ['matricule','phone','mobile','IdNumber','drivingLicenseNumber', 'email', 'tracking_code'])]
 class Member implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /******* FORMATION PROFESSIONNELLE ********/
@@ -197,10 +197,10 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $activity_date_debut = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created_at;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
     #[ORM\OneToMany(mappedBy: 'member', targetEntity: Child::class, cascade: ["remove", "persist"], orphanRemoval: true)]
@@ -430,7 +430,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -756,7 +756,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getCodeSticker(): ?string
     {
-        return $this->codeSticker;
+        return $this->code_sticker;
     }
 
     /**

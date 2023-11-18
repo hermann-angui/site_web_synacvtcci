@@ -4,6 +4,7 @@ namespace App\Service\Member;
 
 use App\Entity\Member;
 use App\Entity\Payment;
+use App\Helper\ActivityLogger;
 use App\Helper\CsvReaderHelper;
 use App\Helper\MemberAssetHelper;
 use App\Helper\PasswordHelper;
@@ -36,6 +37,7 @@ class MemberService
         private ChildRepository                $childRepository,
         private UserPasswordHasherInterface    $userPasswordHasher,
         private PdfGenerator                   $pdfGenerator,
+        private ActivityLogger                 $activityLogger,
         private CsvReaderHelper                $csvReaderHelper)
     {
     }
@@ -70,7 +72,6 @@ class MemberService
                 $member->setMatricule($matricule);
             }
 
-
             $expiredDate = $date->format('Y-12-31');
             $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
 
@@ -81,14 +82,13 @@ class MemberService
             $member->setStatus("PENDING");
             $member->setTitre("CHAUFFEUR");
 
-            $this->memberRepository->add($member, true);
+         //   $this->memberRepository->add($member, true);
 
             foreach($member->getChildren() as $child){
                 $this->childRepository->add($child, true);
             }
 
             $this->memberRepository->add($member, true);
-
             return $member;
 
         }catch(\Exception $e){
@@ -133,7 +133,6 @@ class MemberService
             }
 
             $this->saveMember($member);
-
             return $member;
 
         }catch(\Exception $e){

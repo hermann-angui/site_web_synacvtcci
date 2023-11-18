@@ -359,7 +359,7 @@ class MemberRegistrationType extends AbstractType
             ->add('payment_receipt_cnmci_code',TextType::class, [
                 'required' => true,
                 'label' => "Code reçu de paiement Orange money",
-                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': 'PP999999.9999.*99999'"],
+                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '**999999.9999.*99999'"],
                 'data_class' =>  null,
                 'mapped' => true,
             ])

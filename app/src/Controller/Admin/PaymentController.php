@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Member;
 use App\Entity\Payment;
+use App\Helper\ActivityLogger;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
 use App\Service\Payment\PaymentService;
@@ -18,7 +19,8 @@ use Symfony\Component\Uid\Uuid;
 class PaymentController extends AbstractController
 {
     #[Route(path: '', name: 'admin_payment_index')]
-    public function index(Request $request, MemberRepository $memberRepository): Response
+    public function index(Request $request,
+                          MemberRepository $memberRepository): Response
     {
         $members = $memberRepository->findAll();
         return $this->render('admin/pages/index.html.twig', ["members" => $members]);
@@ -34,9 +36,12 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
-    public function cashin(Member $member, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
+    public function cashin(Member $member,
+                           PaymentRepository $paymentRepository,
+                           MemberRepository $memberRepository,
+                           ActivityLogger $activityLogger): Response
     {
-        if (!in_array($member->getStatus(), ["PAID", "COMPLETED"])) {
+        if ($member->getStatus() === 'INFORMATION_VALIDATED') {
             $payment = new Payment();
             $payment->setUser($this->getUser())
                 ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
@@ -58,8 +63,9 @@ class PaymentController extends AbstractController
 
 
     #[Route(path: '/do/{id}', name: 'do_payment')]
-    public function doPayment(Request           $request, Member $member,
+    public function doPayment(Member $member,
                               WaveService       $waveService,
+                              ActivityLogger $activityLogger,
                               PaymentRepository $paymentRepository): Response
     {
         $response = $waveService->makePayment();

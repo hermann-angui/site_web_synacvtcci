@@ -77,12 +77,12 @@ class PaymentService
      * @return Payment
      * @throws \Exception
      */
-    public function create(array $data): Payment {
+    public function create($montant, $operateur = "WAVE", $type = "MOBILE_MONEY"): Payment {
         $payment = new Payment();
-        $payment->setMontant($data["montant"]);
-        $payment->setOperateur("WAVE");
+        $payment->setMontant($montant);
+        $payment->setOperateur($operateur);
         $payment->setReceiptNumber($this->generateReference());
-        $payment->setType(strtoupper($data["type"]));
+        $payment->setType(strtoupper($type));
         $this->paymentRepository->add($payment, true);
         return $payment;
     }

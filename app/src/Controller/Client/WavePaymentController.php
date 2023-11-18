@@ -3,6 +3,7 @@
 namespace App\Controller\Client;
 
 use App\Entity\Payment;
+use App\Helper\ActivityLogger;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
 use App\Service\Payment\PaymentService;
@@ -82,8 +83,11 @@ class WavePaymentController extends AbstractController
     }
 
     #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
-    public function pdfGenerate(Payment $payment, PaymentService $paymentService): Response
+    public function pdfGenerate(Payment $payment,
+                                PaymentService $paymentService,
+                                ActivityLogger $activityLogger): Response
     {
+        $activityLogger->create($payment, "Téléchargement de reçu");
         return $paymentService->downloadMemberPaymentReceipt($payment);
     }
 }

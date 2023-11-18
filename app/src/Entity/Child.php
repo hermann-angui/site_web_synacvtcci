@@ -109,7 +109,7 @@ class Child
      * @param mixed $first_name
      * @return Child
      */
-    public function setFirstName($first_name)
+    public function setFirstName(?string $first_name)
     {
         $this->first_name = $first_name;
         return $this;
@@ -127,7 +127,7 @@ class Child
      * @param mixed $last_name
      * @return Child
      */
-    public function setLastName($last_name)
+    public function setLastName(?string $last_name)
     {
         $this->last_name = $last_name;
         return $this;
@@ -145,7 +145,7 @@ class Child
      * @param mixed $sex
      * @return Child
      */
-    public function setSex($sex)
+    public function setSex(?string $sex)
     {
         $this->sex = $sex;
         return $this;
@@ -163,7 +163,7 @@ class Child
      * @param mixed $lieu_naissance
      * @return Child
      */
-    public function setLieuNaissance($lieu_naissance)
+    public function setLieuNaissance(?string $lieu_naissance)
     {
         $this->lieu_naissance = $lieu_naissance;
         return $this;
