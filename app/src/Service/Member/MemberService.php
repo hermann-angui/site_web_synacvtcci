@@ -11,6 +11,7 @@ use App\Helper\PasswordHelper;
 use App\Helper\PdfGenerator;
 use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
+use Clegginabox\PDFMerger\PDFMerger;
 use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -50,7 +51,6 @@ class MemberService
     public function createMember(Member $member, array $images): ?Member
     {
         try {
-
             date_default_timezone_set("Africa/Abidjan");
 
             $this->memberRepository->add($member, true);
@@ -82,7 +82,7 @@ class MemberService
             $member->setStatus("PENDING");
             $member->setTitre("CHAUFFEUR");
 
-         //   $this->memberRepository->add($member, true);
+         // $this->memberRepository->add($member, true);
 
             foreach($member->getChildren() as $child){
                 $this->childRepository->add($child, true);
@@ -458,6 +458,11 @@ class MemberService
             if ($fileName) $member->setPaymentReceiptCnmci($fileName->getFilename());
         }
 
+        if (isset($images['document_scan_pdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['document_scan_pdf'], $member->getReference());
+            if ($fileName) $member->setDocumentScanPdf($fileName->getFilename());
+        }
+
 
         return $member;
     }
@@ -488,7 +493,7 @@ class MemberService
     public function downloadCNMCIPdf(?Member $member, string $viewTemplate){
         set_time_limit(0);
         $content = $this->generateCNMCIPdf($member, $viewTemplate);
-        return new PdfResponse($content, 'recu_macaron.pdf');
+        return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
 
     /**
@@ -560,6 +565,20 @@ class MemberService
             if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
             if(file_exists($folder . "_receipt.pdf")) \unlink($folder . "_receipt.pdf");
         }
+    }
+
+    public function generatePdfForPrint(){
+        $pdf = new PDFMerger;
+
+        $pdf->addPDF('samplepdfs/one.pdf', '1, 3, 4');
+        $pdf->addPDF('samplepdfs/two.pdf', '1-2');
+        $pdf->addPDF('samplepdfs/three.pdf', 'all');
+
+//You can optionally specify a different orientation for each PDF
+        $pdf->addPDF('samplepdfs/one.pdf', '1, 3, 4', 'L');
+        $pdf->addPDF('samplepdfs/two.pdf', '1-2', 'P');
+
+        $pdf->merge('file', 'samplepdfs/TEST2.pdf', 'P');
     }
 
 }

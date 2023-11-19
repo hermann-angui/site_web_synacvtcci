@@ -13,30 +13,31 @@
                 <img src="/var/www/html/public/assets/frontend/img/cnmci.png" width="90">
             </td>
         </tr>
-        <tr  style="border-collapse: collapse;">
+        <tr style="border-collapse: collapse;">
             <td style="padding:15px 15px;display:flex;justify-content:center">
-                <p style="font-weight: bolder">Num Re&ccedil;u:   {{ member.reference|upper }}</p>
+                <p>Num Re&ccedil;u:   <span style="font-weight: bolder">{{ member.reference|upper }}</span></p>
             </td>
             <td style="padding:15px 15px;display:flex;justify-content:center">
                 <p style="font-weight: bolder"> Date de la demande : {{ member.CreatedAt | date('d/m/Y')}}</p>
             </td>
         </tr>
-
     </table>
     <br>
     <table style="margin-top: 65px;border-collapse:collapse;table-layout:fixed;width: 100%;">
         <tr style="border-collapse: collapse;">
             <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Nom</th>
-            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Pr&eacute;noms</th>
-            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Num&eacute;ro du permis</th>
-        </tr>
-        <tr  style="border-collapse: collapse;">
             <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ member.lastName }}</td>
+        </tr>
+        <tr style="border-collapse: collapse;">
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Pr&eacute;noms</th>
             <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ member.firstName }}</td>
+        </tr>
+        <tr style="border-collapse: collapse;">
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Num&eacute;ro du permis</th>
             <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ member.drivingLicenseNumber }}</td>
         </tr>
         <tr  style="border-collapse: collapse;">
-            <td colspan="3" style="padding: 15px 15px; text-align: center">
+            <td colspan="2" style="padding: 15px 15px; text-align: center">
                 <p>Pour plus d'informations, contactez le service d'assistance : </p>
                 <div>
                     <ul style="text-align: center; list-style: none">

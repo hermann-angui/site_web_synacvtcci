@@ -17,13 +17,13 @@
         box-sizing: border-box;
         height: 100%;
         background-color: #000000;
-        background-image: radial-gradient(#cb2640, #041607), url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif");
+        background-image: radial-gradient(#11581E, #041607), url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif");
         background-repeat: no-repeat;
         background-size: cover;
         font-family: "Inconsolata", Helvetica, sans-serif;
         font-size: 1.5rem;
-        color: rgba(239, 72, 72, 0.8);
-        text-shadow: 0 0 1ex #ff0707, 0 0 2px rgba(255, 255, 255, 0.8);
+        color: rgba(128, 255, 128, 0.8);
+        text-shadow: 0 0 1ex #33ff33, 0 0 2px rgba(255, 255, 255, 0.8);
     }
 
     .noise {
@@ -59,7 +59,7 @@
         bottom: 0;
         width: 100%;
         height: 100%;
-        background-image: linear-gradient(0deg, transparent 0%, rgba(252, 42, 42, 0.2) 2%, rgba(61, 0, 15, 0.8) 3%, rgba(224, 1, 1, 0.2) 3%, transparent 100%);
+        background-image: linear-gradient(0deg, transparent 0%, rgba(32, 128, 32, 0.2) 2%, rgba(32, 128, 32, 0.8) 3%, rgba(32, 128, 32, 0.2) 3%, transparent 100%);
         background-repeat: no-repeat;
         -webkit-animation: scan 7.5s linear 0s infinite;
         animation: scan 7.5s linear 0s infinite;
@@ -93,8 +93,8 @@
     }
 
     .output {
-        color: rgba(241, 96, 96, 0.8);
-        text-shadow: 0 0 1px rgba(255, 0, 19, 0.4), 0 0 2px rgba(255, 255, 255, 0.8);
+        color: rgba(128, 255, 128, 0.8);
+        text-shadow: 0 0 1px rgba(51, 255, 51, 0.4), 0 0 2px rgba(255, 255, 255, 0.8);
     }
 
     .output::before {
@@ -134,8 +134,9 @@
 <div class="noise"></div>
 <div class="overlay"></div>
 <div class="terminal">
-    <h1>OUPS!! une erreur est survenue sur le site.</h1>
-    <p class="output">Cliquez ici pour revenir sur la <a href="{{ path('home') }}">page d'accueil</a>.</p>
+    <h1>OUPS!! une erreur <span class="errorcode">403</span> est survenue sur le site.</h1>
+    <p class="output">The page you are looking for might have been removed, had its name changed or is temporarily unavailable.</p>
+    <p class="output">Cliquez ici pour revenir à la page d'accueil <a href="{{ path('home') }}"></a>.</p>
     <p class="output">Bonne chance.</p>
 </div>
 </body>

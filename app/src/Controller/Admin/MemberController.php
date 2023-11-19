@@ -46,7 +46,7 @@ class MemberController extends AbstractController
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
-        $members = $memberRepository->findBy(['status' => ['PAID','SUCCEEDED']]);
+        $members = $memberRepository->findBy(['status' => 'PAID']);
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
@@ -54,7 +54,7 @@ class MemberController extends AbstractController
     public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
         if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
-            return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
+            return $this->redirectToRoute('admin_member_show', ['id' => $member->getId()]);
         }
         return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
@@ -545,12 +545,12 @@ class MemberController extends AbstractController
 
 
         if(!empty($params['searchTerm'])) {
-            $whereResult .= " (tracking_code LIKE '%". $params['searchTerm']. "%' OR ";
-            $whereResult .= " first_name LIKE '%". $params['searchTerm']. "%' OR ";
-            $whereResult .= " last_name LIKE '%". $params['searchTerm']. "%') AND ";
+            $whereResult .= " tracking_code LIKE '%". $params['searchTerm']. "%' AND ";
+//            $whereResult .= " first_name LIKE '%". $params['searchTerm']. "%' OR ";
+//            $whereResult .= " last_name LIKE '%". $params['searchTerm']. "%') AND ";
         }
 
-        $whereResult.= " status IN ('INFORMATION_VALIDATED', 'PHOTO_VALID') ";
+        $whereResult.= " status IN ('PHOTO_VALID') ";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult, null);
 
         return new JsonResponse($response);
@@ -570,7 +570,6 @@ class MemberController extends AbstractController
                         ActivityLogger $activityLogger): Response
     {
         date_default_timezone_set("Africa/Abidjan");
-
 //        $member->setPhoto(new File($memberService->getMemberDir($member) . $member->getPhoto()));
 //        $member->setPaymentReceiptCnmci(new File($memberService->getMemberDir($member) . $member->getPaymentReceiptCnmci() ));
 //
@@ -592,7 +591,7 @@ class MemberController extends AbstractController
             if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
 
             if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
-            if($form->has('paymentReceiptSynacvtcci'))  $images['paymentReceiptSynacvtcci'] = $form->get('paymentReceiptSynacvtcci')?->getData();
+            if($form->has('documentScanPdf'))  $images['document_scan_pdf'] = $form->get('documentScanPdf')?->getData();
 
             $data = $request->request->all();
             if(isset($data['child'])){
@@ -649,6 +648,7 @@ class MemberController extends AbstractController
 
         if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
         if($form->has('paymentReceiptSynacvtcci'))  $images['paymentReceiptSynacvtcci'] = $form->get('paymentReceiptSynacvtcci')?->getData();
+        if($form->has('documentScanPdf'))  $images['document_scan_pdf'] = $form->get('documentScanPdf')?->getData();
 
         $data = $request->request->all();
         if(isset($data['child'])){

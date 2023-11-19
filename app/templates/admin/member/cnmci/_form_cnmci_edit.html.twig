@@ -22,153 +22,153 @@
                 <div class="p-3">
                     <div class="row g-3 align-items-center">
                         <div class="col-1">
-                            <label for="exploitantNom" class="col-form-label">Nom :</label>
+                            <label for="lastName" class="col-form-label">Nom :</label>
                         </div>
                         <div class="col-5">
-                            <input type="text" id="exploitantNom" name="exploitantNom" class="form-control" aria-labelledby="exploitantNom" value="{{ member.lastName }}">
+                            <input type="text" id="lastName" name="lastName" class="form-control" aria-labelledby="lastName" value="{{ member.lastName }}">
                         </div>
                         <div class="col-1">
-                            <label for="exploitantPrenoms" class="col-form-label">Prénoms :</label>
+                            <label for="firstName" class="col-form-label">Prénoms :</label>
                         </div>
                         <div class="col-5">
-                            <input type="text" id="exploitantPrenoms" name="exploitantPrenoms" class="form-control" aria-labelledby="passwordHelpInline" value="{{ member.firstName }}">
+                            <input type="text" id="firstName" name="firstName" class="form-control" aria-labelledby="firstName" value="{{ member.firstName }}">
                         </div>
                     </div>
 
                     <div class="row align-items-center">
                         <div class="col-auto">
-                            <label for="exploitantDateNais" class="col-form-label">Né(e) le :</label>
+                            <label for="dateOfBirth" class="col-form-label">Né(e) le :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantDateNais" name="exploitantDateNais" class="form-control input-mask" aria-labelledby="exploitantDateNais" value="{{ member.dateOfBirth|date('d-m-Y')  }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                            <input type="text" id="dateOfBirth" name="dateOfBirth" class="form-control input-mask" aria-labelledby="dateOfBirth" value="{{ member.dateOfBirth|date('d-m-Y')  }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                         <div class="col-auto">
-                            <label for="exploitantLieuNais" class="col-form-label">à :</label>
+                            <label for="birthCity" class="col-form-label">à :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantLieuNais" name="exploitantLieuNais" class="form-control" aria-labelledby="exploitantLieuNais" value="{{ member.birthCity }}">
+                            <input type="text" id="birthCity" name="birthCity" class="form-control" aria-labelledby="birthCity" value="{{ member.birthCity }}">
                         </div>
                         <div class="col-auto">
-                            <label for="exploitantNationalite" class="col-form-label">Nationalité :</label>
+                            <label for="nationality" class="col-form-label">Nationalité :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantNationalite" name="exploitantNationalite" class="form-control" aria-labelledby="exploitantNationalite" value="{{ member.nationality }}">
+                            <input type="text" id="nationality" name="nationality" class="form-control" aria-labelledby="nationality" value="{{ member.nationality }}">
                         </div>
                     </div>
 
                     <div class="row g-3 align-items-center">
                         <div class="col-auto">
-                            <label for="exploitantSex" class="col-form-label">Sexe :</label>
+                            <label for="sex" class="col-form-label">Sexe :</label>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="H" {{ member.sex == 'H' ? 'checked' : ''}}>
-                                <label class="form-check-label" for="exploitantSex">Homme</label>
+                                <input class="form-check-input" type="radio" id="sex" name="sex" value="H" {{ member.sex == 'H' ? 'checked' : ''}}>
+                                <label class="form-check-label" for="sex">Homme</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="F" {{ member.sex == 'F' ? 'checked' : ''}}>
-                                <label class="form-check-label" for="exploitantSex">Femme</label>
+                                <input class="form-check-input" type="radio" id="sex" name="sex" value="F" {{ member.sex == 'F' ? 'checked' : ''}}>
+                                <label class="form-check-label" for="sex">Femme</label>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <label for="exploitantDomicile" class="col-form-label">Domicilié (e) à :</label>
+                            <label for="commune" class="col-form-label">Domicilié (e) à :</label>
                         </div>
                         <div class="col-5">
-                            <input type="text" id="exploitantDomicile" name="exploitantDomicile" class="form-control" aria-labelledby="exploitantDomicile" value="{{ member.domicile }}">
+                            <input type="text" id="commune" name="city" class="form-control" aria-labelledby="commune" value="{{ member.commune }}">
                         </div>
                     </div>
 
                     <div class="row g-3 align-items-center">
                         <div class="col-auto">
-                            <label for="exploitantTypeDoc" class="col-form-label">Type de document :</label>
+                            <label for="idType" class="col-form-label">Type de document :</label>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="cni" {{ member.idType == 'CNI' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantTypeDoc">CNI</label>
+                                <input class="form-check-input" type="radio" id="idType" name="idType" value="cni" {{ member.idType == 'CNI' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="idType">CNI</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="cc" {{ member.idType == 'CC' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantTypeDoc">CC</label>
+                                <input class="form-check-input" type="radio" id="idType" name="idType" value="cc" {{ member.idType == 'CC' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="idType">CC</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="passeport" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantTypeDoc">Passeport</label>
+                                <input class="form-check-input" type="radio" id="idType" name="idType" value="passeport" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="idType">Passeport</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Carte de résident" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantTypeDoc">Carte de résident</label>
+                                <input class="form-check-input" type="radio" id="idType" name="idType" value="Carte de résident" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="idType">Carte de résident</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="Autre" {{ member.idType not in ['CC','CNI','PASSEPORT','CARTE DE RESIDENT'] ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantTypeDoc">Autre</label>
+                                <input class="form-check-input" type="radio" id="idType" name="idType" value="Autre" {{ member.idType not in ['CC','CNI','PASSEPORT','CARTE DE RESIDENT'] ? 'checked' : '' }}>
+                                <label class="form-check-label" for="idType">Autre</label>
                             </div>
                         </div>
                         <div class="col-auto">
                             <label for="document_other" class="col-form-label">(à preciser) :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantTypeDocAutre" name="exploitantTypeDocAutre" class="form-control" aria-labelledby="exploitantTypeDocAutre">
+                            <input type="text" id="idTypeAutre" name="idTypeAutre" class="form-control" aria-labelledby="idTypeAutre">
                         </div>
                     </div>
 
                     <div class="row align-items-center">
                         <div class="col-auto">
-                            <label for="exploitantTypeDocNum" class="col-form-label">N° :</label>
+                            <label for="idNumber" class="col-form-label">N° :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantTypeDocNum" name="exploitantTypeDocNum" class="form-control" aria-labelledby="exploitantTypeDocNum" value="{{ member.idNumber }}">
+                            <input type="text" id="idNumber" name="idNumber" class="form-control" aria-labelledby="idNumber" value="{{ member.idNumber }}">
                         </div>
                         <div class="col-auto">
-                            <label for="exploitantDocLieuDelivrance" class="col-form-label">Délivré à :</label>
+                            <label for="idDeliveryPlace" class="col-form-label">Délivré à :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantDocLieuDelivrance" name="exploitantDocLieuDelivrance" class="form-control" aria-labelledby="exploitantDocLieuDelivrance"  value="{{ member.idDeliveryPlace }}">
+                            <input type="text" id="idDeliveryPlace" name="idDeliveryPlace" class="form-control" aria-labelledby="idDeliveryPlace"  value="{{ member.idDeliveryPlace }}">
                         </div>
                         <div class="col-auto">
-                            <label for="exploitantDocDateDelivrance" class="col-form-label">Le :</label>
+                            <label for="idDeliveryDate" class="col-form-label">Le :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantDocDateDelivrance" name="exploitantDocDateDelivrance" class="form-control input-mask" aria-labelledby="exploitantDocDateDelivrance" value="{{ member.idDeliveryDate|date('d-m-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                            <input type="text" id="idDeliveryDate" name="idDeliveryDate" class="form-control input-mask" aria-labelledby="idDeliveryDate" value="{{ member.idDeliveryDate|date('d-m-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                     </div>
 
                     <div class="row g-3 align-items-center">
                         <div class="col-auto">
-                            <label for="exploitantEtatCivil" class="col-form-label">Etat civil :</label>
+                            <label for="etatCivil" class="col-form-label">Etat civil :</label>
                         </div>
                         <div class="col-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ member.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantEtatCivil">Marié</label>
+                                <input class="form-check-input" type="radio" id="etatCivil" name="etatCivil" value="MARIE(E)" {{ member.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="etatCivil">Marié</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="CELIBATAIRE" {{ member.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantEtatCivil">Célibataire</label>
+                                <input class="form-check-input" type="radio" id="etatCivil" name="etatCivil" value="CELIBATAIRE" {{ member.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="etatCivil">Célibataire</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE" {{ member.etatCivil == "DIVORCE" ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantEtatCivil">Divorcé(e)</label>
+                                <input class="form-check-input" type="radio" id="etatCivil" name="etatCivil" value="DIVORCE" {{ member.etatCivil == "DIVORCE" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="etatCivil">Divorcé(e)</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF" {{ member.etatCivil == "VEUF" ? 'checked' : '' }}>
-                                <label class="form-check-label" for="exploitantEtatCivil">Veuf(ve)</label>
+                                <input class="form-check-input" type="radio" id="etatCivil" name="etatCivil" value="VEUF" {{ member.etatCivil == "VEUF" ? 'checked' : '' }}>
+                                <label class="form-check-label" for="etatCivil">Veuf(ve)</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="row align-items-center">
                         <div class="col-auto">
-                            <label for="exploitantTel" class="col-form-label">Telephone :</label>
+                            <label for="mobile" class="col-form-label">Telephone :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantTel" name="exploitantTel" class="form-control input-mask" aria-labelledby="exploitantTel" value="{{ member.phone }}"  data-inputmask="'mask': '9999999999'">
+                            <input type="text" id="mobile" name="mobile" class="form-control input-mask" aria-labelledby="mobile" value="{{ member.mobile }}"  data-inputmask="'mask': '9999999999'">
                         </div>
                         <div class="col-auto">
-                            <label for="exploitantEmail" class="col-form-label">Email :</label>
+                            <label for="email" class="col-form-label">Email :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="exploitantEmail" name="exploitantEmail" class="form-control" aria-labelledby="exploitantEmail" value="{{ member.email }}">
+                            <input type="text" id="email" name="email" class="form-control" aria-labelledby="email" value="{{ member.email }}">
                         </div>
                     </div>
 
@@ -547,7 +547,7 @@
                             <label for="referantDomicile" class="col-form-label">Domicilié (e) à :</label>
                         </div>
                         <div class="col-5">
-                            <input type="text" id="referantDomicile" name="referantDomicile" class="form-control" aria-labelledby="referantDomicile" value="{{ member.city }}">
+                            <input type="text" id="referantDomicile" name="referantDomicile" class="form-control" aria-labelledby="referantDomicile" value="{{ member.commune }}">
                         </div>
                     </div>
 
@@ -635,7 +635,7 @@
                             <label for="referantTel" class="col-form-label">Telephone :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="referantTel" name="referantTel" class="form-control input-mask" aria-labelledby="referantTel" value="{{ member.phone }}"  data-inputmask="'mask': '9999999999'">
+                            <input type="text" id="referantTel" name="referantTel" class="form-control input-mask" aria-labelledby="referantTel" value="{{ member.mobile }}"  data-inputmask="'mask': '9999999999'">
                         </div>
                         <div class="col-auto">
                             <label for="referantEmail" class="col-form-label">Email :</label>
@@ -644,9 +644,9 @@
                             <input type="text" id="referantEmail" name="referantEmail" class="form-control" aria-labelledby="referantEmail"  value="{{ member.email }}">
                         </div>
                     </div>
-
                 </div>
             </div>
+{#
             <div class="row mt-3 py-4 border border-dark bg-grey">
                 <div class="col-auto">
                     <label for="CodeSticker" class="col-form-label">Code de sticker :</label>
@@ -655,6 +655,7 @@
                     <input type="text" id="CodeSticker" name="CodeSticker" class="form-control py-4" aria-labelledby="CodeSticker"  value="{{ member.codeSticker?:'999999' }}">
                 </div>
             </div>
+#}
             <div class="row py-2">
                 <div class="col-9 small">(*) Les promoteurs des entreprises artisanales participant personnellement et continuellement à l'actvité et possédant une qualification professionnelle dans le métier exercé peuvent introduire une demande de carte professionnelle d'artisant</div>
                 <div class="col-3 small">

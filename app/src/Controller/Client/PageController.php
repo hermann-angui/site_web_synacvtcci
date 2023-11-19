@@ -88,7 +88,8 @@ class PageController extends AbstractController
     public function memberProfile(Request $request, MemberRepository $memberRepository): Response
     {
         $member = $memberRepository->findOneBy(["matricule" => $request->get("matricule")]);
-        return $this->render('admin/member/synacvtcci/public_profile.html.twig', ["member" => $member]);
+        if($member)  return $this->render('admin/member/synacvtcci/public_profile.html.twig', ["member" => $member]);
+        else return $this->redirectToRoute('home');
     }
 
     #[Route('/cnmci/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
@@ -134,6 +135,6 @@ class PageController extends AbstractController
     {
         set_time_limit(0);
         $content = $memberService->generateRegistrationReceipt($member);
-        return new PdfResponse($content, 'recu_macaron.pdf');
+        return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
 }

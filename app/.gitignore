@@ -15,6 +15,7 @@
 /public/build/
 
 /public/users/
+/public/frontend/media
 public/uploads/
 public/members/
 npm-debug.log

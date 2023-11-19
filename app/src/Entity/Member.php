@@ -159,6 +159,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $payment_receipt_cnmci;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $document_scan_pdf;
+
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private ?string $payment_receipt_cnmci_code;
 
@@ -1284,5 +1287,24 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         $this->referant_mobile = $referant_mobile;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getDocumentScanPdf(): ?string
+    {
+        return $this->document_scan_pdf;
+    }
+
+    /**
+     * @param string|null $document_scan_pdf
+     * @return Member
+     */
+    public function setDocumentScanPdf(?string $document_scan_pdf): Member
+    {
+        $this->document_scan_pdf = $document_scan_pdf;
+        return $this;
+    }
+
 
 }

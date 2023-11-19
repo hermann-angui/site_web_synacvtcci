@@ -38,26 +38,17 @@ class MemberOnlineRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-            ->add('email', EmailType::class, [
+            ->add('email', TextType::class, [
                 'label' => 'Email',
                 'mapped' => true,
                 'required' => false,
-                'constraints' => [
-                    new Unique([
-                        'message' => 'Email en doublon'
-                    ]),
-                ]
+                'empty_data' => null,
+                'data' => null,
             ])
-
             ->add('IdNumber', TextType::class, [
                 'label' => "N° Pièce d'identité",
                 'mapped' => true,
                 'required' => false,
-                'constraints' => [
-                    new Unique([
-                        'message' => 'Numero de piece en doublon'
-                    ]),
-                ]
             ])
             ->add('IdType', ChoiceType::class, [
                 'label' => 'Type de pièce',

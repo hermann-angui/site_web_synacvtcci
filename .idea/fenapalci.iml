@@ -129,6 +129,9 @@
       <excludeFolder url="file://$MODULE_DIR$/app/templates/themeforest" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/h4cc/wkhtmltopdf-amd64" />
       <excludeFolder url="file://$MODULE_DIR$/sfp/db" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/clegginabox/pdf-merger" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/setasign/fpdf" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/setasign/fpdi" />
     </content>
     <content url="file://$MODULE_DIR$/app/templates" />
     <orderEntry type="inheritedJdk" />

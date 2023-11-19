@@ -77,12 +77,12 @@ class MemberPhotoStepType extends AbstractType
                 'data_class' =>  null,
                 'mapped' => true,
             ])
-//            ->add('paymentReceiptSynacvtcci',FileType::class, [
-//                'required' => false,
-//                'label' => "Reçu de paiement SYNACVTCCI",
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
+            ->add('documentScanPdf',FileType::class, [
+                'required' => true,
+                'label' => "Documents scannés (format .pdf) ",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
             ->add('payment_receipt_cnmci_code',TextType::class, [
                 'required' => true,
                 'label' => "Code reçu de paiement Orange money",

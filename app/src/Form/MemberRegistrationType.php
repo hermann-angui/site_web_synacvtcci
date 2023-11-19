@@ -180,7 +180,6 @@ class MemberRegistrationType extends AbstractType
             ])
             ->add('email', TextType::class, [
                 'label' => 'Email',
-         //     'attr' => ['class' => 'ignore'],
                 'mapped' => true,
                 'required' => false,
                 'empty_data' => null,

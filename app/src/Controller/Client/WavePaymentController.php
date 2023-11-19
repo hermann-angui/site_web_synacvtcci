@@ -32,7 +32,7 @@ class WavePaymentController extends AbstractController
             }
             return $this->redirectToRoute('wave_success_page', ["id" => $payment->getId(), "status" => $status]);
         }
-        if($this->getUser()) return $this->redirectToRoute('admin_index');
+        if($this->isGranted("ROLE_USER")) return $this->redirectToRoute('admin_index');
         else return $this->redirectToRoute('home');
     }
 
@@ -42,14 +42,6 @@ class WavePaymentController extends AbstractController
                                         MemberRepository $memberRepository): Response
     {
         $payload = json_decode($request->getContent(), true);
-
-        try {
-            $path = "/var/www/html/var/log/wave_payment_checkout_webhook";
-            if (!file_exists($path)) mkdir($path, 0777, true);
-            $data = ["reference" => $request->get("ref"), "date" => date("Ymd H:i:s")];
-            file_put_contents($path . "log_" . date("Ymd") . ".log", json_encode($data), FILE_APPEND);
-        } catch (\Exception $e) {
-        }
 
         if (!empty($payload) && array_key_exists("data", $payload)) {
             $data = $payload['data'];
@@ -78,8 +70,9 @@ class WavePaymentController extends AbstractController
             return $this->render('frontend/payment/payment-success.html.twig', ['payment' => $payment]);
         }
 
-        if(!$this->getUser()) return $this->redirectToRoute('home');
-        else return $this->redirectToRoute('admin_index');
+        if($this->isGranted('ROLE_USER')) return $this->redirectToRoute('admin_index');
+        else return $this->redirectToRoute('home');
+
     }
 
     #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]

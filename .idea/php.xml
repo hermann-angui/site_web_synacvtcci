@@ -128,6 +128,9 @@
       <path value="$PROJECT_DIR$/app/vendor/liip/test-fixtures-bundle" />
       <path value="$PROJECT_DIR$/app/vendor/symfony/web-profiler-bundle" />
       <path value="$PROJECT_DIR$/app/vendor/h4cc/wkhtmltopdf-amd64" />
+      <path value="$PROJECT_DIR$/app/vendor/clegginabox/pdf-merger" />
+      <path value="$PROJECT_DIR$/app/vendor/setasign/fpdf" />
+      <path value="$PROJECT_DIR$/app/vendor/setasign/fpdi" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0">

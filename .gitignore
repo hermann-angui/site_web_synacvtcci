@@ -9,5 +9,6 @@ app/*.tar.gz
 *.tar.gz
 *.zip
 /app/public/users/
+/app/public/frontend/media
 /app/public/uploads/
-/app/public/members
+/app/public/members/

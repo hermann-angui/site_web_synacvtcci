@@ -152,10 +152,10 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/successpage/{id}', name: 'payment_succes_page', methods: ['POST', 'GET'])]
-    public function paymentSuccesPage(?Payment $payment, PaymentService $paymentService): Response
+    public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
-           // $paymentService->generatePaymentReceipt($payment);
+            $paymentService->generatePaymentReceipt($payment);
             return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
         }
         return $this->redirectToRoute('admin_index');

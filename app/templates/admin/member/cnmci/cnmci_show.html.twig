@@ -71,9 +71,11 @@
 
         {{ include('admin/_partials/header.html.twig') }}
 
-        <!-- ========== Left Sidebar Start ========== -->
-        {{ include('admin/_partials/left-sidebar.html.twig')}}
-        <!-- Left Sidebar End -->
+        {% if is_granted('ROLE_ADMIN') %}
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
+        {% endif %}
 
         <!-- ============================================================== -->
         <!-- Start right Content here -->

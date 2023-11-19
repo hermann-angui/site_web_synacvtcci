@@ -4,6 +4,7 @@ namespace App\Service\Payment;
 
 use App\Entity\Payment;
 use App\Helper\PdfGenerator;
+use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\Uid\Uuid;
@@ -12,13 +13,11 @@ class PaymentService
 {
     private const WEBSITE_URL = "https://synacvtcci.org";
     private const MEDIA_DIR = "/var/www/html/public/members/";
-    private const MONTANT = 10100;
 
-    public function __construct(
-        private PdfGenerator     $pdfGenerator,
-        private PaymentRepository $paymentRepository)
-    {
-    }
+    public function __construct(private PdfGenerator $pdfGenerator,
+                                private MemberRepository $memberRepository, 
+                                private PaymentRepository $paymentRepository)
+    {}
 
     public static function generateReference() {
         $now = new \DateTime();
@@ -34,7 +33,7 @@ class PaymentService
     public function downloadMemberPaymentReceipt(?Payment $payment){
         set_time_limit(0);
         $content = $this->generatePaymentReceipt($payment);
-        return new PdfResponse($content, 'recu_macaron.pdf');
+        return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
 
      /**
@@ -45,20 +44,31 @@ class PaymentService
     public function generatePaymentReceipt(?Payment $payment)
     {
         try {
-            $qrCodeData = self::WEBSITE_URL . "/admin/payment/" . $payment->getId();
+            $member = $payment->getPaymentFor();
+            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getMatricule();
+
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
-            $folder = self::MEDIA_DIR . $payment->getPaymentFor()->getReference() . '/';
+            $folder = self::MEDIA_DIR . $member->getReference() . '/';
             if(!file_exists($folder)) mkdir($folder, 0777, true);
-            file_put_contents( $folder . "payment_barcode.png", $content);
+
+            $barcode_file = $folder . "payment_barcode.png";
+            file_put_contents($barcode_file, $content);
+
             $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
+            $receipt_file = $folder . time() . uniqid() . ".pdf";
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
-            file_put_contents($folder . "payment_receipt.pdf", $content);
+            file_put_contents($receipt_file, $content);
+
             if(file_exists($folder . "payment_barcode.png")) \unlink($folder . "payment_barcode.png");
+
+            $member->setPaymentReceiptSynacvtcci(basename($receipt_file));
+            $this->memberRepository->add($member, true);
+
             return $content ?? null;
 
         }catch(\Exception $e){
-            if(file_exists($folder . "payment_barcode.png")) \unlink($folder . "payment_barcode.png");
-            if(file_exists($folder . "payment_receipt.pdf")) \unlink($folder . "payment_receipt.pdf");
+            if(file_exists($barcode_file)) \unlink($barcode_file);
+            if(file_exists($receipt_file)) \unlink($receipt_file);
         }
     }
 
