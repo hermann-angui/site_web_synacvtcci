@@ -141,8 +141,10 @@
                 <div class="py-3">
                     <div id="partner_bock" class="my-3">
                         {{ form_row(form.payment_receipt_cnmci_code) }}
-                        {{ form_row(form.paymentReceiptCnmci) }}
-                        {{ form_row(form.documentScanPdf) }}
+                        <div class="mb-3">
+                            {{ form_row(form.paymentReceiptCnmciPdf) }}
+                        </div>
+                        {{ form_row(form.scanDocumentIdentitePdf) }}
                     </div>
                 </div>
             </div>

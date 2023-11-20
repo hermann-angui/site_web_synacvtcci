@@ -17,7 +17,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -83,12 +85,14 @@ class MemberService
             $member->setTitre("CHAUFFEUR");
 
          // $this->memberRepository->add($member, true);
+            $member->setCountry($member->getBirthCountry());
 
             foreach($member->getChildren() as $child){
                 $this->childRepository->add($child, true);
             }
 
             $this->memberRepository->add($member, true);
+            $this->activityLogger->create($member);
             return $member;
 
         }catch(\Exception $e){
@@ -122,6 +126,8 @@ class MemberService
                 }
             }
 
+            $member->setCountry($member->getBirthCountry());
+
             if(!empty($images)) $this->storeMemberImages($member, $images);
             $member->setTitre("Chauffeur");
             $this->saveMember($member);
@@ -150,22 +156,24 @@ class MemberService
 
         $member->setCodeSticker(!empty($data["CodeSticker"]) ? $data["CodeSticker"] : null);
         if (!$member->getReference()) $member->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)));
+
         if (!$member->getMatricule()) {
             $member->setRoles(['ROLE_USER']);
-
             $date = new \DateTime('now');
             $member->setSubscriptionDate($date);
 
-            $sexCode = null;
-            if ($member->getSex() === "H") $sexCode = "SY1";
-            elseif ($member->getSex() === "F") $sexCode = "SY2";
-
-            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-            $member->setMatricule($matricule);
-
+            if (!$member->getMatricule()) {
+                $date = new DateTime('now');
+                $sexCode = null;
+                if($member->getSex() === "H") $sexCode = "SY1";
+                elseif($member->getSex() === "F") $sexCode = "SY2";
+                if($sexCode){
+                    $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+                    $member->setMatricule($matricule);
+                }
+            }
             $expiredDate = $date->format('Y-12-31');
             $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
-
             $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
         }
 
@@ -173,8 +181,50 @@ class MemberService
             $fileName = $this->memberAssetHelper->uploadAsset($data["member_registration_photo"], $member->getReference());
             if ($fileName) $member->setPhoto($fileName);
         }
+        if (!empty($data["lastName"]) && $member->getLastName() !== $data["lastName"]) {
+            $member->setLastName($data["lastName"]);
+        }
+        if (!empty($data["firstName"]) && $member->getFirstName() !== $data["firstName"]) {
+            $member->setFirstName($data["firstName"]);
+        }
+        if (!empty($data["birthCity"]) && $member->getBirthCity() !== $data["birthCity"]) {
+            $member->setBirthCity($data["birthCity"]);
+        }
+        if (!empty($data["nationality"]) && $member->getNationality() !== $data["nationality"]) {
+            $member->setNationality($data["nationality"]);
+        }
+        if (!empty($data["sex"]) && $member->getSex() !== $data["sex"]) {
+            $member->setSex($data["sex"]);
+        }
+        if (!empty($data["commune"]) && $member->getCity() !== $data["commune"]) {
+            $member->setCommune($data["commune"]);
+        }
+        if (!empty($data["idType"]) && $member->getIdType() !== strtoupper($data["idType"])) {
+            $member->setIdType($data["idType"]);
+        }
+        if (!empty($data["dateOfBirth"]) && $member->getDateOfBirth()->format("d/m/Y") != $data["dateOfBirth"]) {
+            $member->setDateOfBirth(DateTime::createFromFormat('d/m/Y', $data["dateOfBirth"]));
+        }
+        if (!empty($data["idNumber"]) && $member->getIdNumber() !== $data["idNumber"]) {
+            $member->setIdNumber($data["idNumber"]);
+        }
+        if (!empty($data["idDeliveryPlace"]) && $member->getIdDeliveryPlace() !== $data["idDeliveryPlace"]) {
+            $member->setIdDeliveryPlace($data["idDeliveryPlace"]);
+        }
+        if (!empty($data["idDeliveryDate"]) && $member->getIdDeliveryDate()->format("d/m/Y") !== $data["idDeliveryDate"]) {
+            $member->setIdDeliveryDate(DateTime::createFromFormat('d/m/Y', $data["idDeliveryDate"]));
+        }
+        if (!empty($data["etatCivil"]) && $member->getEtatCivil() !== $data["etatCivil"]) {
+            $member->setEtatCivil($data["etatCivil"]);
+        }
+        if (!empty($data["mobile"]) && $member->getMobile() !== $data["mobile"]) {
+            $member->setMobile($data["mobile"]);
+        }
+        if (!empty($data["email"]) && $member->getEmail() !== $data["email"]) {
+            $member->setEmail($data["email"]);
+        }
 
-        $this->saveMember($member);
+       // $this->saveMember($member);
 
         /*************STORE IMAGE FILES*********************/
         $this->storeMemberImages($member, $data);
@@ -449,18 +499,23 @@ class MemberService
             if ($fileName) $member->setPhotoPermisBack($fileName->getFilename());
         }
 
-        if (isset($images['paymentReceiptCnmci'])) {
-            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptCnmci'], $member->getReference());
-            if ($fileName) $member->setPaymentReceiptCnmci($fileName->getFilename());
+        if (isset($images['paymentReceiptCnmciPdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptCnmciPdf'], $member->getReference());
+            if ($fileName) $member->setPaymentReceiptCnmciPdf($fileName->getFilename());
         }
-        if (isset($images['paymentReceiptSynacvtcci'])) {
-            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptSynacvtcci'], $member->getReference());
-            if ($fileName) $member->setPaymentReceiptCnmci($fileName->getFilename());
+        if (isset($images['paymentReceiptSynacvtcciPdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptSynacvtcciPdf'], $member->getReference());
+            if ($fileName) $member->setPaymentReceiptCnmciPdf($fileName->getFilename());
         }
 
-        if (isset($images['document_scan_pdf'])) {
-            $fileName = $this->memberAssetHelper->uploadAsset($images['document_scan_pdf'], $member->getReference());
-            if ($fileName) $member->setDocumentScanPdf($fileName->getFilename());
+        if (isset($images['scanDocumentIdentitePdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['scanDocumentIdentitePdf'], $member->getReference());
+            if ($fileName) $member->setScanDocumentIdentitePdf($fileName->getFilename());
+        }
+
+        if (isset($images['mergedDocumentsPdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['mergedDocumentsPdf'], $member->getReference());
+            if ($fileName) $member->setMergedDocumentsPdf($fileName->getFilename());
         }
 
 
@@ -493,8 +548,9 @@ class MemberService
     public function downloadCNMCIPdf(?Member $member, string $viewTemplate){
         set_time_limit(0);
         $content = $this->generateCNMCIPdf($member, $viewTemplate);
-        return new PdfResponse($content, 'recu_synacvtcci.pdf');
+        return new PdfResponse($content, 'fiche_cnmci.pdf');
     }
+
 
     /**
      * @param Member|null $member
@@ -505,7 +561,10 @@ class MemberService
     {
         try {
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
-            file_put_contents($this->getMemberDir($member) . "cnmci.pdf", $content);
+            $file = $this->getMemberDir($member) . time() . uniqid() . ".pdf";
+            $member->setFormulaireCnmciPdf(basename($file));
+            $this->saveMember($member);
+            file_put_contents($file, $content);
             return $content ?? null;
         }catch(\Exception $e){
             return null;
@@ -550,15 +609,25 @@ class MemberService
     public function generateRegistrationReceipt(?Member $member)
     {
         try {
-            $qrCodeData = self::WEBSITE_URL . "/admin/member/" . $member->getId();
+           // $qrCodeData = self::WEBSITE_URL . "/admin/member/" . $member->getId();
+            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getMatricule();
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
-            $folder = self::MEDIA_DIR . $member->getReference();
-            if(!file_exists(self::MEDIA_DIR)) mkdir(self::MEDIA_DIR, 0777, true);
-            file_put_contents( $folder . "_barcode.png", $content);
-            $viewTemplate = 'frontend/member/receipt-pdf.html.twig';
+            $folder = self::MEDIA_DIR . $member->getReference() . '/';
+            if(!file_exists($folder)) mkdir($folder, 0777, true);
+
+            $barcode_file = $folder . "_barcode.png";
+            file_put_contents($barcode_file, $content);
+
+            $viewTemplate = 'admin/member/receipt-pdf.html.twig';
+            $receipt_file = $folder . time() . uniqid() . ".pdf";
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
-            file_put_contents($folder . "_receipt.pdf", $content);
-            if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
+            file_put_contents($receipt_file, $content);
+
+            if(file_exists($barcode_file)) \unlink($barcode_file);
+
+            $member->setOnlineRegistrationPdf(basename($receipt_file));
+            $this->memberRepository->add($member, true);
+
             return $content ?? null;
 
         }catch(\Exception $e){
@@ -567,18 +636,33 @@ class MemberService
         }
     }
 
-    public function generatePdfForPrint(){
+    public function combinePdfsForPrint(Member $member){
         $pdf = new PDFMerger;
 
-        $pdf->addPDF('samplepdfs/one.pdf', '1, 3, 4');
-        $pdf->addPDF('samplepdfs/two.pdf', '1-2');
-        $pdf->addPDF('samplepdfs/three.pdf', 'all');
+        $folder = $this->getMemberDir($member);
+        if(!$member->getFormulaireCnmciPdf()) {
+            $this->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+        }
+        $pdf->addPDF($folder . $member->getFormulaireCnmciPdf());
+        if($member->getPaymentReceiptCnmciPdf()) {
+            $pdf->addPDF($folder . $member->getPaymentReceiptCnmciPdf());
+        }
+        if($member->getPaymentReceiptSynacvtcciPdf()) {
+            $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
+        }
+        if($member->getScanDocumentIdentitePdf()) {
+            $pdf->addPDF($folder . $member->getScanDocumentIdentitePdf());
+        }
+        if($member->getOnlineRegistrationReceiptPdf()) {
+            $pdf->addPDF($folder . $member->getOnlineRegistrationReceiptPdf());
+        }
 
-//You can optionally specify a different orientation for each PDF
-        $pdf->addPDF('samplepdfs/one.pdf', '1, 3, 4', 'L');
-        $pdf->addPDF('samplepdfs/two.pdf', '1-2', 'P');
-
-        $pdf->merge('file', 'samplepdfs/TEST2.pdf', 'P');
+        $output = $folder . time() . uniqid() . ".pdf";
+        $member->setMergedDocumentsPdf(basename($output));
+        $member->setStatus("COMPLETED");
+        $this->saveMember($member);
+        $res = $pdf->merge();
+        return $output;
     }
 
 }

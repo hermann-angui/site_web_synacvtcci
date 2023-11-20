@@ -7,6 +7,7 @@ use App\Entity\Payment;
 use App\Helper\ActivityLogger;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
+use App\Service\Member\MemberService;
 use App\Service\Payment\PaymentService;
 use App\Service\Wave\WaveService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,8 +40,8 @@ class PaymentController extends AbstractController
 
     #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
     public function cashin(Member $member,
-                           PaymentRepository $paymentRepository,
-                           MemberRepository $memberRepository,
+                           PaymentService $paymentService,
+                           MemberService $memberService,
                            ActivityLogger $activityLogger): Response
     {
         if ($member->getStatus() === 'INFORMATION_VALIDATED') {
@@ -54,10 +55,15 @@ class PaymentController extends AbstractController
                 ->setCodePaymentOperateur(null)
                 ->setReceiptFile(null)
                 ->setStatus("PAID");
-            $paymentRepository->add($payment, true);
+            $paymentService->store($payment);
+
+            $paymentService->generatePaymentReceipt($payment);
 
             $member->setStatus("PAID");
-            $memberRepository->add($member, true);
+            $memberService->saveMember($member);
+
+            $activityLogger->save($payment, "Paiement cash effectuée", "create");
+
             return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
         }
         return $this->redirectToRoute('admin_index');
@@ -155,7 +161,7 @@ class PaymentController extends AbstractController
     public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generatePaymentReceipt($payment);
+            if(!$payment->getPaymentFor()->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
             return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
         }
         return $this->redirectToRoute('admin_index');

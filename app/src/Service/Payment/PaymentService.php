@@ -15,7 +15,7 @@ class PaymentService
     private const MEDIA_DIR = "/var/www/html/public/members/";
 
     public function __construct(private PdfGenerator $pdfGenerator,
-                                private MemberRepository $memberRepository, 
+                                private MemberRepository $memberRepository,
                                 private PaymentRepository $paymentRepository)
     {}
 
@@ -59,9 +59,9 @@ class PaymentService
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
             file_put_contents($receipt_file, $content);
 
-            if(file_exists($folder . "payment_barcode.png")) \unlink($folder . "payment_barcode.png");
+            if(file_exists($barcode_file)) \unlink($barcode_file);
 
-            $member->setPaymentReceiptSynacvtcci(basename($receipt_file));
+            $member->setPaymentReceiptSynacvtcciPdf(basename($receipt_file));
             $this->memberRepository->add($member, true);
 
             return $content ?? null;

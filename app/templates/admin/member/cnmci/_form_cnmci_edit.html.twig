@@ -74,7 +74,7 @@
                             <label for="commune" class="col-form-label">Domicilié (e) à :</label>
                         </div>
                         <div class="col-5">
-                            <input type="text" id="commune" name="city" class="form-control" aria-labelledby="commune" value="{{ member.commune }}">
+                            <input type="text" id="commune" name="commune" class="form-control" aria-labelledby="commune" value="{{ member.commune }}">
                         </div>
                     </div>
 
@@ -168,7 +168,7 @@
                             <label for="email" class="col-form-label">Email :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="email" name="email" class="form-control" aria-labelledby="email" value="{{ member.email }}">
+                            <input type="text" id="email" name="email" class="form-control" aria-labelledby="email" value="{{ member.email|lower }}">
                         </div>
                     </div>
 
@@ -641,7 +641,7 @@
                             <label for="referantEmail" class="col-form-label">Email :</label>
                         </div>
                         <div class="col-auto">
-                            <input type="text" id="referantEmail" name="referantEmail" class="form-control" aria-labelledby="referantEmail"  value="{{ member.email }}">
+                            <input type="text" id="referantEmail" name="referantEmail" class="form-control" aria-labelledby="referantEmail"  value="{{ member.email|lower }}">
                         </div>
                     </div>
                 </div>

@@ -88,7 +88,7 @@
                             <label for="exploitantDomicile" class="col-form-label">Domicilié (e) à :</label>
                         </div>
                         <div class="col-5">
-                            <div class="input">{{ member.domicile }}</div>
+                            <div class="input">{{ member.commune }}</div>
                         </div>
                     </div>
 
@@ -176,13 +176,13 @@
                             <label for="exploitantTel" class="col-form-label">Telephone :</label>
                         </div>
                         <div class="col-2">
-                            <div class="input">{{ member.phone }}</div>
+                            <div class="input">{{ member.mobile }}</div>
                         </div>
                         <div class="col-auto">
                             <label for="exploitantEmail" class="col-form-label">Email :</label>
                         </div>
                         <div class="col-4">
-                            <div class="input">{{ member.email }}</div>
+                            <div class="input">{{ member.email|lower }}</div>
                         </div>
                     </div>
 
@@ -560,7 +560,7 @@
                             <label for="referantDomicile" class="col-form-label">Domicilié (e) à :</label>
                         </div>
                         <div class="col-5">
-                            <div class="input">{{ member.quartier }}</div>
+                            <div class="input">{{ member.commune }}</div>
                         </div>
                     </div>
 
@@ -654,7 +654,7 @@
                             <label for="referantEmail" class="col-form-label">Email :</label>
                         </div>
                         <div class="col-3">
-                            <div class="input">{{ member.email }}</div>
+                            <div class="input">{{ member.email|lower }}</div>
                         </div>
                     </div>
 

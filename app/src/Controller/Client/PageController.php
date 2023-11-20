@@ -113,7 +113,7 @@ class PageController extends AbstractController
         if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
 
         if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
-        if($form->has('paymentReceiptSynacvtcci'))  $images['paymentReceiptSynacvtcci'] = $form->get('paymentReceiptSynacvtcci')?->getData();
+        if($form->has('paymentReceiptSynacvtcciPdf'))  $images['paymentReceiptSynacvtcciPdf'] = $form->get('paymentReceiptSynacvtcciPdf')?->getData();
 
         $data = $request->request->all();
         if(isset($data['child'])){

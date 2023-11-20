@@ -276,18 +276,18 @@
                 <div class="py-3">
                     <div id="partner_bock" class="my-3">
                         {{ form_row(form.payment_receipt_cnmci_code) }}
-    {#                  {{ form_row(form.paymentReceiptCnmci) }}    #}
-    {#                  {{ form_row(form.paymentReceiptSynacvtcci) }} #}
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-5 mx-3">
-                            {% if member.paymentReceiptCnmci %}
-                                <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmci|image_path }}" width="500" height="375" type="application/pdf">
+                            <strong>Recu de paiement Orange Money CNMCI</strong>
+                            {% if member.paymentReceiptCnmciPdf %}
+                                <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmciPdf|image_path }}" width="500" height="375" type="application/pdf">
                             {% endif %}
                         </div>
                         <div class="col-md-5 mx-3">
-                            {% if member.documentScanPdf %}
-                                <embed src="/members/{{ member.reference }}/{{ member.documentScanPdf|image_path }}" width="500" height="375" type="application/pdf">
+                            <strong>Pièces d'identité scannés</strong>
+                            {% if member.scanDocumentIdentitePdf %}
+                                <embed src="/members/{{ member.reference }}/{{ member.scanDocumentIdentitePdf|image_path }}" width="500" height="375" type="application/pdf">
                             {% endif %}
                         </div>
                     </div>

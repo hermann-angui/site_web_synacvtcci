@@ -71,15 +71,15 @@ class MemberPhotoStepType extends AbstractType
                 'data_class' =>  null,
                 'mapped' => true,
             ])
-            ->add('paymentReceiptCnmci',FileType::class, [
+            ->add('paymentReceiptCnmciPdf',FileType::class, [
                 'required' => true,
                 'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
                 'data_class' =>  null,
                 'mapped' => true,
             ])
-            ->add('documentScanPdf',FileType::class, [
+            ->add('scanDocumentIdentitePdf',FileType::class, [
                 'required' => true,
-                'label' => "Documents scannés (format .pdf) ",
+                'label' => "Scan des documents d'identités i.e CNI, PERMIS, CC (format .pdf) ",
                 'data_class' =>  null,
                 'mapped' => true,
             ])

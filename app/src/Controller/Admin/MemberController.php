@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/admin/member')]
@@ -65,18 +66,14 @@ class MemberController extends AbstractController
                               MemberService $memberService,
                               ActivityLogger $activityLogger): Response
     {
-        if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
-            return $this->redirectToRoute('admin_member_edit', ['id' => $member->getId()]);
-        }
-
         if($request->getMethod() === "GET"){
             return $this->render('admin/member/cnmci/cnmci_edit.html.twig', ['member' => $member]);
         }elseif($request->getMethod() === "POST") {
             $memberService->createCnmiOrUpdate($member, $request->request->all(), 1);
+            $memberService->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
             $activityLogger->update($member, "Mise à jour des données du formulaire de la chambre nationale de métiers");
             return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
         }
-
         return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
 
@@ -97,16 +94,11 @@ class MemberController extends AbstractController
         return $this->render('admin/member/cnmci/cnmci_new.html.twig');
     }
 
-    #[Route('/pdf/{id}', name: 'admin_pdf', methods: ['GET'])]
-    public function pdfGenerate(Request $request, Member $member, Pdf $knpSnappyPdf): Response
+    #[Route('/printdocs/{id}', name: 'admin_show_and_download_pdf', methods: ['GET'])]
+    public function generateAllPdf(Member $member, MemberService $memberService): Response
     {
-        $html = $this->renderView('admin/pdf/public_profile.html.twig', array(
-            'member'  => $member
-        ));
-        return new PdfResponse(
-            $knpSnappyPdf->getOutputFromHtml($html),
-            'file.pdf'
-        );
+        $outputFile = $memberService->combinePdfsForPrint($member);
+        return $this->file($outputFile, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
     #[Route('/cnmci-pdf/{id}', name: 'admin_download_cnmci_pdf', methods: ['GET'])]
@@ -590,8 +582,10 @@ class MemberController extends AbstractController
             if($form->has('photoPermisFront'))  $images['photoPermisFront'] = $form->get('photoPermisFront')?->getData();
             if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
 
-            if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
-            if($form->has('documentScanPdf'))  $images['document_scan_pdf'] = $form->get('documentScanPdf')?->getData();
+            if($form->has('paymentReceiptCnmciPdf'))  $images['paymentReceiptCnmciPdf'] = $form->get('paymentReceiptCnmciPdf')?->getData();
+            if($form->has('paymentReceiptSynacvtcciPdf'))  $images['paymentReceiptSynacvtcciPdf'] = $form->get('paymentReceiptSynacvtcciPdf')?->getData();
+            if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
+            if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 
             $data = $request->request->all();
             if(isset($data['child'])){
@@ -604,8 +598,8 @@ class MemberController extends AbstractController
                     $member->addChild($child);
                 }
             }
-            $memberService->updateMember($member, $images);
 
+            $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
 
             if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus()=== "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
@@ -646,9 +640,10 @@ class MemberController extends AbstractController
         if($form->has('photoPermisFront'))  $images['photoPermisFront'] = $form->get('photoPermisFront')?->getData();
         if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
 
-        if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
-        if($form->has('paymentReceiptSynacvtcci'))  $images['paymentReceiptSynacvtcci'] = $form->get('paymentReceiptSynacvtcci')?->getData();
-        if($form->has('documentScanPdf'))  $images['document_scan_pdf'] = $form->get('documentScanPdf')?->getData();
+        if($form->has('paymentReceiptCnmciPdf'))  $images['paymentReceiptCnmciPdf'] = $form->get('paymentReceiptCnmciPdf')?->getData();
+        if($form->has('paymentReceiptSynacvtcciPdf'))  $images['paymentReceiptSynacvtcciPdf'] = $form->get('paymentReceiptSynacvtcciPdf')?->getData();
+        if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
+        if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 
         $data = $request->request->all();
         if(isset($data['child'])){

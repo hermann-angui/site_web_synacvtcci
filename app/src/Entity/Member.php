@@ -157,16 +157,25 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $photoPermis_front = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $payment_receipt_cnmci;
+    private ?string $payment_receipt_cnmci_pdf;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $document_scan_pdf;
+    private ?string $formulaire_cnmci_pdf;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $merged_documents_pdf;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $payment_receipt_synacvtcci_pdf;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $online_registration_receipt_pdf;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $scan_document_identite_pdf;
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private ?string $payment_receipt_cnmci_code;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $payment_receipt_synacvtcci;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photoPermis_back = null;
@@ -1165,38 +1174,21 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getPaymentReceiptCnmci(): ?string
+    public function getPaymentReceiptCnmciPdf(): ?string
     {
-        return $this->payment_receipt_cnmci;
+        return $this->payment_receipt_cnmci_pdf;
     }
 
     /**
-     * @param string|null $payment_receipt_cnmci
+     * @param string|null $payment_receipt_cnmci_pdf
      * @return Member
      */
-    public function setPaymentReceiptCnmci(?string $payment_receipt_cnmci): Member
+    public function setPaymentReceiptCnmciPdf(?string $payment_receipt_cnmci_pdf): Member
     {
-        $this->payment_receipt_cnmci = $payment_receipt_cnmci;
+        $this->payment_receipt_cnmci_pdf = $payment_receipt_cnmci_pdf;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPaymentReceiptSynacvtcci(): ?string
-    {
-        return $this->payment_receipt_synacvtcci;
-    }
-
-    /**
-     * @param string|null $payment_receipt_synacvtcci
-     * @return Member
-     */
-    public function setPaymentReceiptSynacvtcci(?string $payment_receipt_synacvtcci): Member
-    {
-        $this->payment_receipt_synacvtcci = $payment_receipt_synacvtcci;
-        return $this;
-    }
 
     /**
      * @return string|null
@@ -1288,21 +1280,94 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+
     /**
      * @return string|null
      */
-    public function getDocumentScanPdf(): ?string
+    public function getPaymentReceiptSynacvtcciPdf(): ?string
     {
-        return $this->document_scan_pdf;
+        return $this->payment_receipt_synacvtcci_pdf;
     }
 
     /**
-     * @param string|null $document_scan_pdf
+     * @param string|null $payment_receipt_synacvtcci_pdf
      * @return Member
      */
-    public function setDocumentScanPdf(?string $document_scan_pdf): Member
+    public function setPaymentReceiptSynacvtcciPdf(?string $payment_receipt_synacvtcci_pdf): Member
     {
-        $this->document_scan_pdf = $document_scan_pdf;
+        $this->payment_receipt_synacvtcci_pdf = $payment_receipt_synacvtcci_pdf;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFormulaireCnmciPdf(): ?string
+    {
+        return $this->formulaire_cnmci_pdf;
+    }
+
+    /**
+     * @param string|null $formulaire_cnmci_pdf
+     * @return Member
+     */
+    public function setFormulaireCnmciPdf(?string $formulaire_cnmci_pdf): Member
+    {
+        $this->formulaire_cnmci_pdf = $formulaire_cnmci_pdf;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMergedDocumentsPdf(): ?string
+    {
+        return $this->merged_documents_pdf;
+    }
+
+    /**
+     * @param string|null $merged_documents_pdf
+     * @return Member
+     */
+    public function setMergedDocumentsPdf(?string $merged_documents_pdf): Member
+    {
+        $this->merged_documents_pdf = $merged_documents_pdf;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOnlineRegistrationReceiptPdf(): ?string
+    {
+        return $this->online_registration_receipt_pdf;
+    }
+
+    /**
+     * @param string|null $online_registration_receipt_pdf
+     * @return Member
+     */
+    public function setOnlineRegistrationReceiptPdf(?string $online_registration_receipt_pdf): Member
+    {
+        $this->online_registration_receipt_pdf = $online_registration_receipt_pdf;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getScanDocumentIdentitePdf(): ?string
+    {
+        return $this->scan_document_identite_pdf;
+    }
+
+    /**
+     * @param string|null $scan_document_identite_pdf
+     * @return Member
+     */
+    public function setScanDocumentIdentitePdf(?string $scan_document_identite_pdf): Member
+    {
+        $this->scan_document_identite_pdf = $scan_document_identite_pdf;
         return $this;
     }
 
