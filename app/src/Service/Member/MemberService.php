@@ -30,7 +30,7 @@ class MemberService
 {
 
     private const WEBSITE_URL = "https://synacvtcci.org";
-    private const MEDIA_DIR = "/var/www/html/public/frontend/media/";
+    private const MEDIA_DIR = "/var/www/html/public/members/";
     private const MONTANT = 10100;
     public function __construct(
         private ContainerInterface             $container,
@@ -625,7 +625,7 @@ class MemberService
 
             if(file_exists($barcode_file)) \unlink($barcode_file);
 
-            $member->setOnlineRegistrationPdf(basename($receipt_file));
+            $member->setOnlineRegistrationReceiptPdf(basename($receipt_file));
             $this->memberRepository->add($member, true);
 
             return $content ?? null;
