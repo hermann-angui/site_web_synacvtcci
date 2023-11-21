@@ -15,9 +15,8 @@
         </tr>
         <tr style="border-collapse: collapse;">
             <td colspan="2">
-                <p style="border-collapse: collapse;font-weight: bolder">Num Re&ccedil;u:   {{ payment.reference }}</p>
+                <p style="border-collapse: collapse;font-weight: bolder">Numéro deu re&ccedil;u:   {{ payment.reference }}</p>
                 <p style="border-collapse: collapse;font-weight: bolder"> Date : {{ payment.createdAt | date('d/m/Y')}}</p>
-                <p style="border-collapse: collapse;font-weight: bolder"> Mode de paiement : {{ payment.type|upper }}</p>
             </td>
         </tr>
     </table>
@@ -30,6 +29,10 @@
         <tr  style="border-collapse: collapse;">
             <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Pr&eacute;noms</td>
             <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.paymentFor.firstName }}</td>
+        </tr>
+        <tr  style="border-collapse: collapse;">
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Mode de paiement</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.type|upper }}</td>
         </tr>
         <tr>
             <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Montant (CFA)</th>
