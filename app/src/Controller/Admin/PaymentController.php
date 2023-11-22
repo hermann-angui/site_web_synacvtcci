@@ -49,7 +49,7 @@ class PaymentController extends AbstractController
             $payment->setUser($this->getUser())
                 ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
                 ->setType('cash')
-                ->setMontant(3500)
+                ->setMontant(self::MONTANT)
                 ->setTarget("synacvtcci")
                 ->setPaymentFor($member)
                 ->setCodePaymentOperateur(null)
