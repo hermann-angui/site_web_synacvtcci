@@ -135,8 +135,8 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $whatsapp = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $company = null;
+    #[ORM\Column(type:"array" ,length: 255, nullable: true)]
+    private ?array $company = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $partner_first_name = null;
@@ -926,18 +926,18 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getCompany(): ?string
+    public function getCompany(): ?array
     {
         return $this->company;
     }
 
     /**
-     * @param string|null $company
+     * @param array|null $company
      * @return Member
      */
-    public function setCompany(?string $company): Member
+    public function setCompany(?array $company): Member
     {
         $this->company = $company;
         return $this;

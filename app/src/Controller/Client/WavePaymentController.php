@@ -19,6 +19,7 @@ class WavePaymentController extends AbstractController
     public function wavePaymentCheckoutStatusCallback($status,
                                                       Request $request,
                                                       MemberRepository $memberRepository,
+                                                      PaymentService $paymentService,
                                                       PaymentRepository $paymentRepository): Response
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
@@ -26,6 +27,7 @@ class WavePaymentController extends AbstractController
             $payment->setStatus("PAID");
             $paymentRepository->add($payment, true);
             $member = $payment->getPaymentFor();
+            if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
             if ($member) {
                 $member->setStatus("PAID");
                 $memberRepository->add($member, true);
@@ -39,6 +41,7 @@ class WavePaymentController extends AbstractController
     #[Route(path: '/wave', name: 'wave_payment_checkout_webhook')]
     public function callbackWavePayment(Request $request,
                                         PaymentRepository $paymentRepository,
+                                        PaymentService $paymentService,
                                         MemberRepository $memberRepository): Response
     {
         $payload = json_decode($request->getContent(), true);
@@ -52,6 +55,9 @@ class WavePaymentController extends AbstractController
                     $payment->setStatus("PAID");
                     $paymentRepository->add($payment, true);
                     $member = $payment->getPaymentFor();
+
+                    if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
+
                     if ($member) {
                         $member->setStatus("PAID");
                         $memberRepository->add($member, true);
@@ -69,7 +75,6 @@ class WavePaymentController extends AbstractController
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED", "COMPLETED"])) {
             return $this->render('frontend/payment/payment-success.html.twig', ['payment' => $payment]);
         }
-
         if(!$payment->getPaymentFor()?->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
 
         if($this->isGranted('ROLE_USER')) return $this->redirectToRoute('admin_index');

@@ -189,6 +189,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Compagnie de VTC',
                 'mapped' => true,
                 'required' => true,
+                'multiple' => true,
                 'attr' => ['class' => 'select2-multiple'],
                 'choices' => [
                     "YANGO" => "YANGO",

@@ -193,7 +193,7 @@
                                 <h4 class="mb-sm-0 font-size-18">Enregistrement membre</h4>
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="{{ path("admin_index")}}">Accueil</a></li>
+                                        <li class="breadcrumb-item"><a href="{{path('admin_index')}}"><i class="fa fa-arrow-left"></i>  Revenir à l'accueil</a></li>
                                         <li class="breadcrumb-item active">Enregistrement</li>
                                     </ol>
                                 </div>
@@ -342,6 +342,8 @@
           $('.js-datepicker').datetimepicker({
                 timepicker:false,
                 format:  'd/m/Y',
+                scrollMonth : false,
+	            scrollInput : false
                 // mask: true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
           });
 

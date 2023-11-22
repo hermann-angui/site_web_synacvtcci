@@ -50,7 +50,7 @@ class MemberController extends AbstractController
     public function verificationList(Request $request,
                                      MemberRepository $memberRepository): Response
     {
-        $members = $memberRepository->findBy(['status' => 'PAID']);
+        $members = $memberRepository->findBy(['status' => ['PAID','COMPLETED']]);
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
