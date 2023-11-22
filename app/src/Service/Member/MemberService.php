@@ -640,22 +640,26 @@ class MemberService
         $pdf = new PDFMerger;
 
         $folder = $this->getMemberDir($member);
+
         if(!$member->getFormulaireCnmciPdf()) {
             $this->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
         }
         $pdf->addPDF($folder . $member->getFormulaireCnmciPdf());
+
         if($member->getPaymentReceiptCnmciPdf()) {
             $pdf->addPDF($folder . $member->getPaymentReceiptCnmciPdf());
         }
+
         if($member->getPaymentReceiptSynacvtcciPdf()) {
             $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
         }
+
         if($member->getScanDocumentIdentitePdf()) {
             $pdf->addPDF($folder . $member->getScanDocumentIdentitePdf());
         }
-        if($member->getOnlineRegistrationReceiptPdf()) {
-            $pdf->addPDF($folder . $member->getOnlineRegistrationReceiptPdf());
-        }
+//        if($member->getOnlineRegistrationReceiptPdf()) {
+//            $pdf->addPDF($folder . $member->getOnlineRegistrationReceiptPdf());
+//        }
 
         $output = $folder . time() . uniqid() . ".pdf";
         $member->setMergedDocumentsPdf(basename($output));
