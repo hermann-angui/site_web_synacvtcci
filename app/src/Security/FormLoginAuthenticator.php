@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Helper\ActivityLogger;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ class FormLoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'admin_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator, private UserRepository $userRepository)
+    public function __construct(private UrlGeneratorInterface $urlGenerator, private UserRepository $userRepository, private ActivityLogger $activityLogger)
     {
     }
 
@@ -49,6 +50,8 @@ class FormLoginAuthenticator extends AbstractLoginFormAuthenticator
         $user =  $token->getUser();
         $user->setLastConnection(new \DateTime());
         $this->userRepository->add($user, true);
+
+        $this->activityLogger->save($user, "Connexion à la plateforme", "create");
         return new RedirectResponse($this->urlGenerator->generate('admin_index'));
        // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }

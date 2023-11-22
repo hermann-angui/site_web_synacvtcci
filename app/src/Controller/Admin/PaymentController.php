@@ -19,7 +19,7 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/admin/payment')]
 class PaymentController extends AbstractController
 {
-    private const MONTANT = 10;
+    private const MONTANT = 3500;
 
     #[Route(path: '', name: 'admin_payment_index')]
     public function index(Request $request,

@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class MemberPhotoStepType extends AbstractType
 {
@@ -76,12 +77,32 @@ class MemberPhotoStepType extends AbstractType
                 'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
                 'data_class' =>  null,
                 'mapped' => true,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Le fichier doit être au format pdf',
+                    ])
+                ],
             ])
             ->add('scanDocumentIdentitePdf',FileType::class, [
                 'required' => true,
                 'label' => "Scan des documents d'identités i.e CNI, PERMIS, CC (format .pdf) ",
                 'data_class' =>  null,
                 'mapped' => true,
+                'constraints' => [
+                    new File([
+                       // 'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Le fichier doit être au format pdf',
+                    ])
+                ],
             ])
             ->add('payment_receipt_cnmci_code',TextType::class, [
                 'required' => true,

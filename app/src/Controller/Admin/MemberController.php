@@ -29,7 +29,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class MemberController extends AbstractController
 {
     #[Route('', name: 'admin_member_index', methods: ['GET'])]
-    public function index(Request $request, MemberRepository $memberRepository): Response
+    public function index(Request $request,
+                          MemberRepository $memberRepository): Response
     {
         if(in_array("ROLE_AGENT", $this->getUser()->getRoles() ))  {
             return $this->redirectToRoute('admin_index_agent');
@@ -39,20 +40,24 @@ class MemberController extends AbstractController
     }
 
     #[Route(path: '/search', name: 'admin_member_search')]
-    public function chooseMain(Request $request, MemberRepository $memberRepository): Response
+    public function chooseMain(Request $request,
+                               MemberRepository $memberRepository): Response
     {
         return $this->render('admin/pages/search-index.html.twig');
     }
 
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
-    public function verificationList(Request $request, MemberRepository $memberRepository): Response
+    public function verificationList(Request $request,
+                                     MemberRepository $memberRepository): Response
     {
         $members = $memberRepository->findBy(['status' => 'PAID']);
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
-    public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
+    public function formCnmciShow(Request $request,
+                                  Member $member,
+                                  MemberService $memberService): Response
     {
         if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
             return $this->redirectToRoute('admin_member_show', ['id' => $member->getId()]);
@@ -110,13 +115,16 @@ class MemberController extends AbstractController
     }
 
     #[Route('/new-subscription', name: 'admin_member_new_subscription', methods: ['GET'])]
-    public function indexPending(Request $request, MemberRepository $memberRepository): Response
+    public function indexPending(Request $request,
+                                 MemberRepository $memberRepository): Response
     {
         return $this->render('admin/member/synacvtcci/new-subscription.html.twig');
     }
 
     #[Route('/photostep', name: 'admin_member_photostep', methods: ['GET', 'POST'])]
-    public function photoStep(Request $request, MemberService $memberService, ActivityLogger $activityLogger): Response
+    public function photoStep(Request $request,
+                              MemberService $memberService,
+                              ActivityLogger $activityLogger): Response
     {
         $member = new Member;
         $form = $this->createForm(MemberPhotoStepType::class, $member);
@@ -136,7 +144,8 @@ class MemberController extends AbstractController
     }
 
     #[Route('/new', name: 'admin_member_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, MemberService $memberService): Response
+    public function new(Request $request,
+                        MemberService $memberService): Response
     {
         $member = new Member;
         $form = $this->createForm(MemberRegistrationType::class, $member);
@@ -159,7 +168,8 @@ class MemberController extends AbstractController
     }
 
     #[Route('/upload', name: 'admin_member_upload', methods: ['GET', 'POST'])]
-    public function upload(Request $request, FileUploadHelper $fileUploadHelper): Response
+    public function upload(Request $request,
+                           FileUploadHelper $fileUploadHelper): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         set_time_limit(0);
@@ -175,14 +185,17 @@ class MemberController extends AbstractController
     }
 
     #[Route('/import', name: 'admin_member_import', methods: ['GET', 'POST'])]
-    public function import(Request $request, MemberService $memberService): Response
+    public function import(Request $request,
+                           MemberService $memberService): Response
     {
         $memberService->createMemberFromFile();
         return $this->redirectToRoute('admin_member_index');
     }
 
     #[Route('/generate/new/card/{id}', name: 'admin_member_generate_card', methods: ['GET'])]
-    public function generateCard(Member $member, MemberService $memberService, MemberRepository $memberRepository): Response
+    public function generateCard(Member $member,
+                                 MemberService $memberService,
+                                 MemberRepository $memberRepository): Response
     {
         $member = $memberService->generateSingleMemberCard(MemberMapper::MapToMemberRequestDto($member));
         $member->setCardPhoto($member->getCardPhoto()->getFilename());
@@ -192,13 +205,16 @@ class MemberController extends AbstractController
     }
 
     #[Route('/show/card/{id}', name: 'admin_member_show_card', methods: ['GET'])]
-    public function showCard(Request $request,Member $member): Response
+    public function showCard(Request $request,
+                             Member $member): Response
     {
          return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
     }
 
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
-    public function downloadCard(Request $request, Member $member, MemberService $memberService): Response
+    public function downloadCard(Request $request,
+                                 Member $member,
+                                 MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         ini_set('max_execution_time', '-1');
@@ -208,7 +224,8 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET', 'POST'])]
-    public function downloadMemberCards(Request $request, MemberService $memberService): Response
+    public function downloadMemberCards(Request $request,
+                                        MemberService $memberService): Response
     {
         $from = $request->get("from_matricule");
         $to = $request->get("to_matricule");
@@ -231,7 +248,8 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/sample', name: 'admin_member_sample_file', methods: ['GET'])]
-    public function downloadSample(Request $request, MemberService $memberService): Response
+    public function downloadSample(Request $request,
+                                   MemberService $memberService): Response
     {
         $sampleRealPath = $memberService->generateSampleCsvFile();
         return $this->file($sampleRealPath, 'sample.csv');
@@ -244,7 +262,9 @@ class MemberController extends AbstractController
     }
 
     #[Route('/cardslist/dt', name: 'admin_cards_list_dt', methods: ['GET'])]
-    public function cardsListDT(Request $request, Connection $connection, MemberRepository $memberRepository)
+    public function cardsListDT(Request $request,
+                                Connection $connection,
+                                MemberRepository $memberRepository)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
@@ -298,7 +318,9 @@ class MemberController extends AbstractController
     }
 
     #[Route('/new-subscription/datatable', name: 'admin_member_new_subscription_datatable', methods: ['GET'])]
-    public function pendingDT(Request $request, Connection $connection, MemberRepository $memberRepository)
+    public function pendingDT(Request $request,
+                              Connection $connection,
+                              MemberRepository $memberRepository)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
@@ -380,7 +402,9 @@ class MemberController extends AbstractController
     }
 
     #[Route('/datatable', name: 'admin_member_datatable', methods: ['GET'])]
-    public function datatable(Request $request, Connection $connection, MemberRepository $memberRepository)
+    public function datatable(Request $request,
+                              Connection $connection,
+                              MemberRepository $memberRepository)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
@@ -479,7 +503,9 @@ class MemberController extends AbstractController
     }
 
     #[Route('/pending/souscripteur', name: 'admin_member_pending_souscripteur_datatable', methods: ['GET'])]
-    public function pendingSouscripteur(Request $request, Connection $connection, MemberRepository $memberRepository)
+    public function pendingSouscripteur(Request $request,
+                                        Connection $connection,
+                                        MemberRepository $memberRepository)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
@@ -557,7 +583,8 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Member $member,
+    public function edit(Request $request,
+                         Member $member,
                          MemberService $memberService,
                         ActivityLogger $activityLogger): Response
     {
@@ -570,7 +597,6 @@ class MemberController extends AbstractController
 //
 //        $member->setPhotoPermisFront(new File($memberService->getMemberDir($member) . $member->getPhotoPermisFront() ));
 //        $member->setPhotoPermisBack(new File($memberService->getMemberDir($member) . $member->getPhotoPermisBack() ));
-
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
@@ -617,7 +643,9 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}/supprimer', name: 'admin_member_delete', methods: ['GET','POST'])]
-    public function delete(Request $request, Member $member, MemberRepository $memberRepository): Response
+    public function delete(Request $request,
+                           Member $member,
+                           MemberRepository $memberRepository): Response
     {
         if ( false /* $this->isCsrfTokenValid('delete'.$member->getId(), $request->request->get('_token')) */ ) {
             $memberRepository->remove($member, true);
@@ -630,7 +658,10 @@ class MemberController extends AbstractController
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    private function handleFormCreation(Request $request, FormInterface $form, Member &$member, MemberService $memberService): Member {
+    private function handleFormCreation(Request $request,
+                                        FormInterface $form,
+                                        Member &$member,
+                                        MemberService $memberService): Member {
 
         $images = [];
 
@@ -659,6 +690,5 @@ class MemberController extends AbstractController
         $memberService->createMember($member, $images);
         return $member;
     }
-
 
 }

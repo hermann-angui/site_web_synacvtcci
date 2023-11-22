@@ -64,11 +64,13 @@ class WavePaymentController extends AbstractController
 
 
     #[Route(path: '/successpage/{id}', name: 'wave_success_page', methods: ['POST', 'GET'])]
-    public function paymentSuccesPage(?Payment $payment): Response
+    public function paymentSuccesPage(?Payment $payment, PaymentService $paymentService): Response
     {
-        if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
+        if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED", "COMPLETED"])) {
             return $this->render('frontend/payment/payment-success.html.twig', ['payment' => $payment]);
         }
+
+        if(!$payment->getPaymentFor()?->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
 
         if($this->isGranted('ROLE_USER')) return $this->redirectToRoute('admin_index');
         else return $this->redirectToRoute('home');
