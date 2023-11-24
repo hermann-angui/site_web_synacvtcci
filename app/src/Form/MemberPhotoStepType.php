@@ -68,7 +68,7 @@ class MemberPhotoStepType extends AbstractType
             ])
             ->add('photoPermisBack',FileType::class, [
                 'required' => true,
-                'label' => "Copie scannée du  de conduire (verso)",
+                'label' => "Copie scannée du permis de conduire (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
             ])

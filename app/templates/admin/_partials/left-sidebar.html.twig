@@ -8,29 +8,19 @@
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title" key="t-menu">Menu</li>
                 <li>
-                    <a href="{{ path('admin_index') }}" class="waves-effect" aria-expanded="false">
+                    <a href="{{ path('admin_dashboard') }}" class="waves-effect" aria-expanded="false">
                         <i class="bx bx-chat"></i>
                         <span key="t-t0">Tableau de bord</span>
                     </a>
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
-                        <i class="bx bxs-face"></i>
-                        <span>Agents</span>
-                    </a>
-                    <ul class="sub-menu mm-collapse mm-show" aria-expanded="false">
-                        <li><a href="{{ path('admin_member_search') }}" key="t-s1">Recherche rapide</a></li>
-                        <li><a href="{{ path('admin_index_agent') }}" key="t-s1">Accueil agent</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
                         <i class="bx bxs-user"></i>
-                        <span>Le syndicat</span>
+                        <span  key="t-s0">Syndicat</span>
                     </a>
-                    <ul class="sub-menu mm-collapse mm-show" aria-expanded="false">
+                    <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
                         <li><a href="{{ path('admin_member_search') }}" key="t-s1">Recherche rapide</a></li>
-                        <li><a href="{{ path('admin_member_new_subscription') }}" key="t-s1">Nouveaux inscrits</a></li>
+                        <li><a href="{{ path('admin_index') }}" key="t-s1">Accueil</a></li>
                         <li><a href="{{ path('admin_member_index') }}" key="t-s2">Membres</a></li>
                         <li><a href="{{ path('admin_cards_list') }}" key="t-s3">Cartes</a></li>
                     </ul>
@@ -40,7 +30,7 @@
                         <i class="bx bxs-card"></i>
                         <span key="t-a0">Activités</span>
                     </a>
-                    <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
+                    <ul class="sub-sub-menu mm-collapse">
                         <li><a href="{{ path('admin_index') }}" key="t-a1">Flash infos</a></li>
                         <li><a href="{{ path('admin_index') }}" key="t-a2">Activités en images</a></li>
                         <li><a href="{{ path('admin_index') }}" key="t-a3">Activités en vidéos</a></li>

@@ -1,0 +1,285 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .section-title {
+            background-color: #112ba8;
+            padding: 5px 5px;
+            color: white;
+            font-size: 16px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+
+        {{ include('admin/_partials/header.html.twig') }}
+
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+        {% endif %}
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="flex-shrink-0">
+                                            {% if member.status == 'INFORMATION_VALIDATED' %}
+                                                <a href="{{ path('admin_payment_choose',{'id': member.id}) }}" class="btn btn-success waves-effect waves-light"><span class="fa fa-eye fa-1x"></span> Payer</a>
+                                            {% endif %}
+                                            <a href="{{ path('admin_member_index') }}" class="btn btn-primary waves-effect waves-light">Fermer</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Fiche membre : <strong class="badge bg-gradient bg-info">{{ member.trackingCode }}</strong></h4>
+                                    <div class="row">
+                                        <h2 class="section-title">INFORMATIONS PERSONNELLES</h2>
+                                        <table class="table table-bordered px-5">
+                                            <tbody>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class="d-flex justify-content-center">
+                                                        <label for="member_registration_edit_photo" class="d-block d-flex justify-content-center align-content-center">
+                                                            {% if member.photo is null %}
+                                                                <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-2">
+                                                            {% else %}
+                                                                <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                                            {% endif %}
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Matricule</th>
+                                                <td>{{ member.matricule }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Sexe</th>
+                                                <td>{{ member.sex }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Nom</th>
+                                                <td>{{ member.lastName }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Prénoms</th>
+                                                <td>{{ member.firstName }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Email</th>
+                                                <td>{{ member.email }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Titre</th>
+                                                <td><span class="badge badge-pill bg-info font-size-11">{{ member.titre }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Date de souscription</th>
+                                                <td>{{ member.subscriptionDate ? member.subscriptionDate|date('Y-m-d') : '' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Expire le</th>
+                                                <td>{{ member.subscriptionExpireDate ? member.subscriptionExpireDate|date('Y-m-d') : '' }}</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Date de naissance</th>
+                                                <td>{{ member.dateOfBirth ? member.dateOfBirth|date('Y-m-d') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Lieu de naissance</th>
+                                                <td>{{ member.birthCity }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>N° Permis de conduire</th>
+                                                <td>{{ member.drivingLicenseNumber }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>N° Pièce d'identité</th>
+                                                <td>{{ member.IdNumber }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Type de pièce</th>
+                                                <td>{{ member.IdType }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Pays</th>
+                                                <td>{{ member.country }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Ville</th>
+                                                <td>{{ member.city }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Commune</th>
+                                                <td>{{ member.commune }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tel Mobile</th>
+                                                <td>{{ member.mobile }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tel Fixe</th>
+                                                <td>{{ member.phone }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <h2 class="section-title">DOCUMENTS D'IDENTITE</h2>
+                                        <table class="table table-bordered px-5">
+                                            <tbody>
+                                            <tr>
+                                                <th>Compagnie de VTC</th>
+                                                <td>{{ member.company|json_encode }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Type de la pièce d'identite (CNI ou Carte consulaire)</th>
+                                                <td>{{ member.IdType }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>N° Pièce d'identité</th>
+                                                <td>{{ member.IdNumber }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Autorité délivrant la pièce d'identité</th>
+                                                <td>{{ member.IdDeliveryAuthority }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Délivré le</th>
+                                                <td>{{ member.IdDeliveryDate| date('d/m/y') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Lieu d'établissement de la pièce d'identité</th>
+                                                <td>{{ member.IdDeliveryPlace }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Numéro du permis de conduire</th>
+                                                <td>{{ member.drivingLicenseNumber }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <h2 class="section-title">DONNEES FAMILLES</h2>
+                                        <table class="table table-bordered px-5">
+                                            <tbody>
+                                            <tr>
+                                                <th>Situation matrimoniale</th>
+                                                <td>{{ member.etatCivil }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Prénoms conjoint</th>
+                                                <td>{{ member.partnerFirstName }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Nom conjoint</th>
+                                                <td>{{ member.partnerLastName }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Nom personne à contacter</th>
+                                                <td>{{ member.referantLastName }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Prénoms personne à contacter </th>
+                                                <td>{{ member.referantFirstName }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Numéro Téléphone personne à contacter</th>
+                                                <td>{{ member.referantMobile }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <h2 class="section-title">CHAMBRE DES METIERS</h2>
+                                        <table class="table table-bordered px-5">
+                                            <tbody>
+                                            <tr>
+                                                <th>Code reçu de paiement Orange money</th>
+                                                <td>{{ member.paymentReceiptCnmciCode }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Reçu orange</th>
+                                                <td>
+                                                    {% if member.paymentReceiptCnmciPdf %}
+                                                        <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmciPdf }}" width="500" height="375" type="application/pdf">
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Documents scannés</th>
+                                                <td>
+                                                    {% if member.scanDocumentIdentitePdf %}
+                                                        <embed src="/members/{{ member.reference }}/{{ member.scanDocumentIdentitePdf }}" width="500" height="375" type="application/pdf">
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row d-flex justify-content-center">
+                                        {% if member.status == 'INFORMATION_VALIDATED' %}
+                                        <a href="{{ path('admin_payment_choose',{'id': member.id}) }}" class="btn btn-success waves-effect waves-light col-md-2 offset-1"><i class="fa fa-money-bill fa-1x"></i> Passer au paiement</a>
+                                        {% endif %}
+                                        <a href="{{ path('admin_member_edit', {id: member.id}) }}" class="btn btn-primary waves-effect waves-light col-md-2  offset-1"><i class="fa fa-edit fa-1x"></i>Modifier</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- container-fluid -->
+            </div><!-- End Page-content -->
+
+            {{ include('admin/_partials/footer.html.twig') }}
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right Sidebar -->
+
+    <!-- /Right-bar -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+  <script>
+      $('document').ready(function() {
+          $("#member_photo").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#imagePreview').attr('src', evt.target.result);
+                  $('#imagePreview').fadeIn(650);
+              }
+          });
+      });
+
+  </script>
+{% endblock %}
+
+

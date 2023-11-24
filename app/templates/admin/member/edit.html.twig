@@ -4,6 +4,7 @@
     {{ parent() }}
     <link href="{{ asset('assets/admin/css/app.min.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ asset('assets/admin/libs/toastr/build/toastr.min.css') }}" type="text/css" rel="stylesheet">
     <style>
         .wizard .steps > ul > li a {
             font-size: 12px;
@@ -230,20 +231,36 @@
 <script src="{{ asset('assets/admin/libs/jquery.validation/additional-methods.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/toastr/build/toastr.min.js') }}"></script>
 <script>
       $('document').ready(function() {
 
+           window.addEventListener('online', () => toastr.success('Vous êtes de nouveau connecté.'));
+           window.addEventListener('offline', () => toastr.error('Attention!! Vous avez perdu la connexion internet.'));
+           console.log(window.navigator.onLine);
+
           $("#stepperform").submit(function(e){
-                $("#stepperform").validate().settings.ignore = ":disabled,.ignore";
-                return $("#stepperform").valid();
+              console.log(window.navigator.onLine);
+                if(!window.navigator.onLine) {
+                    toastr.error('Attention!! Vous avez perdu la connexion internet.');
+                    return false;
+                }else{
+                    $("#stepperform").validate().settings.ignore = ":disabled,.ignore";
+                    return $("#stepperform").valid();
+                }
           }).validate({
                 errorPlacement: function errorPlacement(error, element) { element.before(error); },
                 rules: {
                 }
           });
 
-          $("input").keyup(function() {
-                this.value = this.value.toUpperCase();
+          $("input").keyup(function(e) {
+                   var ss = e.target.selectionStart;
+                   var se = e.target.selectionEnd;
+                   e.target.value = e.target.value.toUpperCase();
+                   e.target.selectionStart = ss;
+                   e.target.selectionEnd = se;
+                //this.value = this.value.toUpperCase();
           });
 
           $("input[name='has_child']").on('change.bootstrapSwitch', function(e) {
@@ -350,9 +367,24 @@
           $(".input-mask").inputmask();
 
           $(".select2").select2();
+
+          $("#member_registration_birth_city_other_container").hide();
+          $('#member_registration_birth_city').on('select2:select', function (e) {
+                if(e.params.data.text=== 'AUTRE'){
+                    $("#member_registration_birth_city_other_container").show();
+                }
+          });
+
           $(".select2-multiple").select2({
                 multiple: true
           });
+          var companies = [];
+          {% for company in member.company  %}
+             companies.push('{{ company }}');
+          {% endfor %}
+          console.log(companies);
+          $(".select2-multiple").val(companies);
+          $(".select2-multiple").trigger('change');
       });
   </script>
 

@@ -40,34 +40,6 @@ class MemberRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @return Member[] Returns an array of Member objects
-     */
-    public function findMembresChauffeur(): array
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.titre in (:val)')
-            ->setParameter('val', "Membre,Chauffeur")
-            ->orderBy('m.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return Member[] Returns an array of Member objects
-     */
-    public function findMembresBureau(): array
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.titre not in (:val)')
-            ->setParameter('val', "Membre,Chauffeur")
-            ->orderBy('m.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
     public function getLastRowId(): ?int
     {
         return $this->createQueryBuilder('m')

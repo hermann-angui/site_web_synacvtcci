@@ -12,13 +12,10 @@ use App\Helper\FileUploadHelper;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
-use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -82,22 +79,6 @@ class MemberController extends AbstractController
         return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
 
-    #[Route('/cnmci/new', name: 'admin_member_cncmi_new', methods: ['GET','POST'])]
-    public function cnmciNew( Request  $request,
-                              MemberService $memberService,
-                              ActivityLogger $activityLogger): Response
-    {
-        if($request->getMethod()==="GET"){
-            return $this->render('admin/member/cnmci/cnmci_new.html.twig');
-        }elseif($request->getMethod()==="POST"){
-            $data = $request->request->all();
-            $member = $memberService->createCnmiOrUpdate(null, $data);
-            $activityLogger->create($member, "Création de formulaire de la chambre nationale de métiers");
-            $memberService->saveMember($member);
-            return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
-        }
-        return $this->render('admin/member/cnmci/cnmci_new.html.twig');
-    }
 
     #[Route('/printdocs/{id}', name: 'admin_show_and_download_pdf', methods: ['GET'])]
     public function generateAllPdf(Member $member, MemberService $memberService): Response
@@ -114,13 +95,6 @@ class MemberController extends AbstractController
         return $memberService->downloadCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
     }
 
-    #[Route('/new-subscription', name: 'admin_member_new_subscription', methods: ['GET'])]
-    public function indexPending(Request $request,
-                                 MemberRepository $memberRepository): Response
-    {
-        return $this->render('admin/member/synacvtcci/new-subscription.html.twig');
-    }
-
     #[Route('/photostep', name: 'admin_member_photostep', methods: ['GET', 'POST'])]
     public function photoStep(Request $request,
                               MemberService $memberService,
@@ -135,7 +109,7 @@ class MemberController extends AbstractController
             $member->setStatus("PHOTO_VALID");
             $memberService->saveMember($member);
             $activityLogger->create($member, "Création d'un nouveau dossier souscripteur et upload des fichiers (photo, scan des documents d'identités et reçu orange money)");
-            return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('admin/member/etape-photo.html.twig', [
             'member' => $member,
@@ -418,7 +392,7 @@ class MemberController extends AbstractController
                 'dt' => 'id',
                 'formatter' => function( $d, $row ) use ($memberRepository){
                     $member = $memberRepository->find($d);
-                    $imageUrl = $member->getReference() . "/" .  $member->getPhoto();
+                    $imageUrl = $member->getReference() . "/" . basename($member->getPhoto());
                     $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
                     return $content;
                 }
@@ -577,9 +551,21 @@ class MemberController extends AbstractController
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
     public function show(Member $member): Response
     {
-        return $this->render('admin/member/synacvtcci/show.html.twig', [
+        return $this->render('admin/member/show.html.twig', [
             'member' => $member,
         ]);
+    }
+
+    #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
+    public function recapitulatif(Member $member): Response
+    {
+        //            if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+//                $member->setStatus("INFORMATION_VALIDATED");
+//                $memberService->saveMember($member);
+//                return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
+//            }
+//            return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
+        return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member]);
     }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
@@ -589,18 +575,12 @@ class MemberController extends AbstractController
                         ActivityLogger $activityLogger): Response
     {
         date_default_timezone_set("Africa/Abidjan");
-//        $member->setPhoto(new File($memberService->getMemberDir($member) . $member->getPhoto()));
-//        $member->setPaymentReceiptCnmci(new File($memberService->getMemberDir($member) . $member->getPaymentReceiptCnmci() ));
-//
-//        $member->setPhotoPieceFront(new File($memberService->getMemberDir($member) . $member->getPhotoPieceFront() ));
-//        $member->setPhotoPieceBack(new File($memberService->getMemberDir($member) . $member->getPhotoPieceBack() ));
-//
-//        $member->setPhotoPermisFront(new File($memberService->getMemberDir($member) . $member->getPhotoPermisFront() ));
-//        $member->setPhotoPermisBack(new File($memberService->getMemberDir($member) . $member->getPhotoPermisBack() ));
+
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $images = [];
             if($form->has('photo'))  $images['photo'] = $form->get('photo')?->getData();
             if($form->has('photoPieceFront'))  $images['photoPieceFront'] = $form->get('photoPieceFront')?->getData();
@@ -625,15 +605,16 @@ class MemberController extends AbstractController
                 }
             }
 
+            $birth_city_other =  $form->get("birth_city_other")->getData();
+            if($birth_city_other) $member->setBirthCity($birth_city_other);
+
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
-
-            if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus()=== "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+            if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
-                return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
             }
-            return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/member/edit.html.twig', [

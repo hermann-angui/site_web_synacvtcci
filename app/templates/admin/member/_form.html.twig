@@ -13,17 +13,20 @@
                                 {% if member.photo %}
 {#                                    <img id="imagePreview" src="/members/{{ member.reference }}/{{ member.photo }}" alt="" width="150">#}
                                     <img id="imagePreview" src="/members/{{ member.reference }}/{{ member.photo|image_path }}" alt="" width="150">
+                                    <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
+                                        {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div>Télécharger une photo</div>
                                 {% else %}
                                     <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="150">
+                                    <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
+                                        {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div>Télécharger une photo</div>
                                 {% endif %}
-{#                                <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>#}
-{#                                {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}#}
-{#                                <div>Télécharger une photo</div>#}
+
                             </div>
                         </label>
                     </div>
                 </div>
-
                 <div class="row mb-3 mt-4">
                     <div class="col-md-2">
                         {{ form_row(form.sex) }}
@@ -50,13 +53,16 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         {{ form_row(form.birth_city) }}
+                    </div>
+                    <div class="col-md-2" id="member_registration_birth_city_other_container">
+                        {{ form_row(form.birth_city_other) }}
                     </div>
                     <div class="col-md-3">
                         {{ form_row(form.birth_country) }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         {{ form_row(form.date_of_birth) }}
                     </div>
                     <div class="col-md-3">
@@ -115,8 +121,8 @@
                             {% if member.photoPieceFront %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPieceFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPieceFront|image_path }}" alt="" width="80%" style="width:80%;">
-{#                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}#}
-{#                                    <div style="margin-top:0px">Télécharger une image</div>#}
+                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
@@ -124,7 +130,7 @@
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
-{#                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}#}
+                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
                                 </div>
                             {% endif %}
                         </label>
@@ -134,8 +140,8 @@
                             {% if member.photoPieceBack %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPieceBackPreview" src="/members/{{ member.reference }}/{{ member.photoPieceBack|image_path }}" alt="" width="80%" style="width:80%;">
-{#                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}#}
-{#                                    <div style="margin-top:0px">Télécharger une image</div>#}
+                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
@@ -143,7 +149,7 @@
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
-{#                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}#}
+                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
                                 </div>
                             {% endif %}
                         </label>
@@ -155,36 +161,36 @@
                             {% if member.photoPermisFront %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPermisFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPermisFront|image_path }}" alt="" width="80%" style="width:80%;">
-{#                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}#}
-{#                                    <div style="margin-top:0px">Télécharger une image</div>#}
+                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPermisFrontPreview" src="" alt="">
+                                    <img id="member_registration_photoPermisFrontPreview" src="" alt="" style="width:80%;">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
-{#                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}#}
+                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
                                 </div>
                             {% endif %}
                         </label>
 
                     </div>
                     <div class="col-md-6">
-                        <label for="member_registration_photoPermisBack" class="form-label">Copie scannée de la permis (verso)
+                        <label for="member_registration_photoPermisBack" class="form-label">Copie scannée du permis (verso)
                             {% if member.photoPermisBack %}
                                 <div class="image-upload-container">
                                     <img id="member_registration_photoPermisBackPreview" src="/members/{{ member.reference }}/{{ member.photoPermisBack|image_path }}" alt="" width="100" style="width:80%">
-{#                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}#}
-{#                                    <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>#}
+                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPermisBackPreview" src="" alt="">
+                                    <img id="member_registration_photoPermisBackPreview" src="" alt="" width="100" style="width:80%" >
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une image
                                     </div>
-{#                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}#}
+                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
                                 </div>
                             {% endif %}
                         </label>
@@ -266,7 +272,6 @@
                         <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Enregistrer un enfant </span>
                     </div>
                 </div>
-
             </div>
         </fieldset>
 
@@ -279,25 +284,33 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-5 mx-3">
-                            <strong>Recu de paiement Orange Money CNMCI</strong>
                             {% if member.paymentReceiptCnmciPdf %}
+                                <label for="member_registration_paymentReceiptCnmciPdf" class="form-label">Reçu de paiement Orange Money) CNMCI (format .pdf)
+                                    {{ form_widget(form.paymentReceiptCnmciPdf, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
+                                </label>
                                 <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmciPdf|image_path }}" width="500" height="375" type="application/pdf">
                             {% endif %}
                         </div>
                         <div class="col-md-5 mx-3">
-                            <strong>Pièces d'identité scannés</strong>
                             {% if member.scanDocumentIdentitePdf %}
+                                <label for="member_registration_scanDocumentIdentitePdf" class="form-label">Pièces d'identité scannées (format .pdf)
+                                    {{ form_widget(form.scanDocumentIdentitePdf, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
+                                </label>
                                 <embed src="/members/{{ member.reference }}/{{ member.scanDocumentIdentitePdf|image_path }}" width="500" height="375" type="application/pdf">
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+            {{ form_row(form._token) }}
         </fieldset>
         <hr>
     <hr>
     <div class="row justify-content-center">
         <div class="text-center"><button type="submit" class="btn btn-success btn-lg">Enregister</button></div>
     </div>
-    {{ form_end(form) }}
+
+    {{ form_end(form, {'render_rest': false}) }}
 

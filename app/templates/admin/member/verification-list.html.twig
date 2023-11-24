@@ -60,6 +60,20 @@
                                         <div class="col-md-3 col-sm-3">
                                             <div class="card text-center">
                                                 <div class="card-body">
+                                                    <ul class="list-inline user-chat-nav text-end mb-0">
+                                                        <li class="list-inline-item">
+                                                            <div class="dropdown">
+                                                                <button class="btn nav-btn" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                    <i class="bx bx-dots-horizontal-rounded"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu dropdown-menu-end " style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 42px);" data-popper-placement="bottom-end">
+                                                                    <a class="dropdown-item" href="{{ path('admin_member_show', {id: member.id})}}"><i class="fa fa-eye"></i> Afficher</a>
+                                                                    <a class="dropdown-item" href="{{ path('admin_member_edit', {id: member.id})}}"><i class="fa fa-pen"></i> Modifier</a>
+                                                                    <a class="dropdown-item " href="{{ path('admin_member_cncmi_edit', {id: member.id}) }}"><i class="fa fa-file-archive"></i> Editer la Fiche CNMCI</a>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
                                                     <div class="mb-4">
                                                         <img src="/members/{{ member.reference }}/{{ member.photo|image_path }}" alt="" width="50">
                                                         <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ member.firstName ~ ' ' ~ member.lastName }}</a></h5>

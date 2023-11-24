@@ -62,7 +62,7 @@ class PaymentController extends AbstractController
             $member->setStatus("PAID");
             $memberService->saveMember($member);
 
-            $activityLogger->save($payment, "Paiement cash effectuée", "create");
+            $activityLogger->create($payment, "Paiement cash effectuée");
 
             return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
         }

@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class MemberRegistrationType extends AbstractType
 {
@@ -129,6 +130,7 @@ class MemberRegistrationType extends AbstractType
             "SASSANDRA" => "SASSANDRA",
             "SINEMATIALI" => "SINEMATIALI",
             "YAMOUSSOUKRO" => "YAMOUSSOUKRO",
+            "AUTRE" => "AUTRE"
         ];
         $communes = [
             "ABOBO" => "ABOBO",
@@ -146,12 +148,19 @@ class MemberRegistrationType extends AbstractType
         ];
 
         $builder
-//            ->add('photo',FileType::class, [
-//                'required' => false,
-//                'label' => 'Photo',
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
+            ->add('photo',FileType::class, [
+                'required' => false,
+                'label' => 'Photo',
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('tracking_code',TextType::class, [
+                'required' => true,
+                'label' => "Code de suivi dossier",
+                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '*****'"],
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
                 'mapped' => true,
@@ -182,8 +191,6 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Email',
                 'mapped' => true,
                 'required' => false,
-                'empty_data' => null,
-                'data' => null,
             ])
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
@@ -310,6 +317,11 @@ class MemberRegistrationType extends AbstractType
                 'empty_data' => "ABIDJAN",
                 'data' => null,
             ])
+            ->add('birth_city_other', TextType::class, [
+                'label' => 'Saisir le nom de la ville',
+                'mapped' => false,
+                'required' => false,
+            ])
             ->add('birth_locality', TextType::class, [
                 'label' => 'Localité de naissance',
                 'mapped' => true,
@@ -320,42 +332,62 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true,
             ])
-//            ->add('photoPieceFront',FileType::class, [
-//                'required' => false,
-//                'label' => "Copie scannée de la pièce (recto)",
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
-//            ->add('photoPieceBack',FileType::class, [
-//                'required' => false,
-//                'label' => "Copie scannée de la pièce (verso)",
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
-//            ->add('photoPermisFront',FileType::class, [
-//                'required' => false,
-//                'label' => "Copie scannée du permis de conduire (recto)",
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
-//            ->add('photoPermisBack',FileType::class, [
-//                'required' => false,
-//                'label' => "Copie scannée du  de conduire (verso)",
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
-//            ->add('paymentReceiptCnmci',FileType::class, [
-//                'required' => false,
-//                'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
-//            ->add('paymentReceiptSynacvtcci',FileType::class, [
-//                'required' => false,
-//                'label' => "Reçu de paiement SYNACVTCCI",
-//                'data_class' =>  null,
-//                'mapped' => true,
-//            ])
+            ->add('photoPieceFront',FileType::class, [
+                'required' => false,
+                'label' => "Copie scannée de la pièce (recto)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('photoPieceBack',FileType::class, [
+                'required' => false,
+                'label' => "Copie scannée de la pièce (verso)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('photoPermisFront',FileType::class, [
+                'required' => false,
+                'label' => "Copie scannée du permis de conduire (recto)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('photoPermisBack',FileType::class, [
+                'required' => false,
+                'label' => "Copie scannée du permis de conduire (verso)",
+                'data_class' =>  null,
+                'mapped' => true,
+            ])
+            ->add('paymentReceiptCnmciPdf',FileType::class, [
+                'required' => false,
+                'label' => "Reçu de paiement Orange Money) CNMCI (format .pdf) ",
+                'data_class' =>  null,
+                'mapped' => true,
+                'constraints' => [
+                    new File([
+                        //  'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Le fichier doit être au format pdf',
+                    ])
+                ],
+            ])
+            ->add('scanDocumentIdentitePdf',FileType::class, [
+                'required' => false,
+                'label' => "Scan des documents d'identités i.e CNI, PERMIS, CC (format .pdf) ",
+                'data_class' =>  null,
+                'mapped' => true,
+                'constraints' => [
+                    new File([
+                        // 'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Le fichier doit être au format pdf',
+                    ])
+                ],
+            ])
             ->add('payment_receipt_cnmci_code',TextType::class, [
                 'required' => true,
                 'label' => "Code reçu de paiement Orange money",
@@ -368,8 +400,8 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
-                'choices' => $villes,
-                'empty_data' => "ABIDJAN",
+                'choices' => $communes,
+                'empty_data' => null,
                 'data' => null,
             ])
             ->add('commune', ChoiceType::class, [
@@ -377,7 +409,7 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
-                'choices' => $communes,
+                'choices' => $villes,
                 'empty_data' => null,
                 'data' => null,
             ])

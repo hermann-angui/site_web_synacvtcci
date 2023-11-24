@@ -92,7 +92,6 @@ class MemberService
             }
 
             $this->memberRepository->add($member, true);
-            $this->activityLogger->create($member);
             return $member;
 
         }catch(\Exception $e){

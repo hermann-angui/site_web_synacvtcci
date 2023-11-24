@@ -147,38 +147,41 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $status = 'PENDING';
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 600, nullable: true)]
     private ?string $photoPiece_front = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+
+    #[ORM\Column(type: 'string', length: 600, nullable: true)]
     private ?string $photoPiece_back = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 600, nullable: true)]
     private ?string $photoPermis_front = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $payment_receipt_cnmci_pdf;
+    #[ORM\Column(type: 'string', length: 600, nullable: true)]
+    private ?string $photoPermis_back = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $formulaire_cnmci_pdf;
+    private ?string $payment_receipt_cnmci_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $merged_documents_pdf;
+    private ?string $formulaire_cnmci_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $payment_receipt_synacvtcci_pdf;
+    private ?string $merged_documents_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $online_registration_receipt_pdf;
+    private ?string $payment_receipt_synacvtcci_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $scan_document_identite_pdf;
+    private ?string $online_registration_receipt_pdf = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $scan_document_identite_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
-    private ?string $payment_receipt_cnmci_code;
+    private ?string $payment_receipt_cnmci_code = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $photoPermis_back = null;
+
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -526,7 +529,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPhoto(?string $photo): self
     {
-        $this->photo = $photo;
+        if($photo) $this->photo = $photo;
 
         return $this;
     }
@@ -538,7 +541,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setCardPhoto(?string $cardPhoto): self
     {
-        $this->cardPhoto = $cardPhoto;
+        if($cardPhoto) $this->cardPhoto = $cardPhoto;
 
         return $this;
     }
@@ -594,7 +597,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setPhotoPieceFront(?string $photoPiece_front): self
     {
-        $this->photoPiece_front = $photoPiece_front;
+        if($photoPiece_front) $this->photoPiece_front = $photoPiece_front;
         return $this;
     }
 
@@ -612,7 +615,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setPhotoPieceBack(?string $photoPiece_back): self
     {
-        $this->photoPiece_back = $photoPiece_back;
+        if($photoPiece_back) $this->photoPiece_back = $photoPiece_back;
         return $this;
     }
 
@@ -630,7 +633,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setPhotoPermisFront(?string $photoPermis_front): self
     {
-        $this->photoPermis_front = $photoPermis_front;
+        if($photoPermis_front) $this->photoPermis_front = $photoPermis_front;
         return $this;
     }
 
@@ -648,7 +651,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setPhotoPermisBack(?string $photoPermis_back): self
     {
-        $this->photoPermis_back = $photoPermis_back;
+        if($photoPermis_back) $this->photoPermis_back = $photoPermis_back;
         return $this;
     }
 
@@ -1185,7 +1188,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setPaymentReceiptCnmciPdf(?string $payment_receipt_cnmci_pdf): Member
     {
-        $this->payment_receipt_cnmci_pdf = $payment_receipt_cnmci_pdf;
+        if($payment_receipt_cnmci_pdf) $this->payment_receipt_cnmci_pdf = $payment_receipt_cnmci_pdf;
         return $this;
     }
 
@@ -1295,7 +1298,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setPaymentReceiptSynacvtcciPdf(?string $payment_receipt_synacvtcci_pdf): Member
     {
-        $this->payment_receipt_synacvtcci_pdf = $payment_receipt_synacvtcci_pdf;
+        if($payment_receipt_synacvtcci_pdf) $this->payment_receipt_synacvtcci_pdf = $payment_receipt_synacvtcci_pdf;
         return $this;
     }
 
@@ -1313,7 +1316,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setFormulaireCnmciPdf(?string $formulaire_cnmci_pdf): Member
     {
-        $this->formulaire_cnmci_pdf = $formulaire_cnmci_pdf;
+        if($formulaire_cnmci_pdf) $this->formulaire_cnmci_pdf = $formulaire_cnmci_pdf;
         return $this;
     }
 
@@ -1331,7 +1334,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setMergedDocumentsPdf(?string $merged_documents_pdf): Member
     {
-        $this->merged_documents_pdf = $merged_documents_pdf;
+        if($merged_documents_pdf) $this->merged_documents_pdf = $merged_documents_pdf;
         return $this;
     }
 
@@ -1349,7 +1352,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setOnlineRegistrationReceiptPdf(?string $online_registration_receipt_pdf): Member
     {
-        $this->online_registration_receipt_pdf = $online_registration_receipt_pdf;
+        if($online_registration_receipt_pdf) $this->online_registration_receipt_pdf = $online_registration_receipt_pdf;
         return $this;
     }
 
@@ -1367,7 +1370,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setScanDocumentIdentitePdf(?string $scan_document_identite_pdf): Member
     {
-        $this->scan_document_identite_pdf = $scan_document_identite_pdf;
+        if($scan_document_identite_pdf) $this->scan_document_identite_pdf = $scan_document_identite_pdf;
         return $this;
     }
 
