@@ -559,12 +559,6 @@ class MemberController extends AbstractController
     #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
     public function recapitulatif(Member $member): Response
     {
-        //            if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
-//                $member->setStatus("INFORMATION_VALIDATED");
-//                $memberService->saveMember($member);
-//                return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
-//            }
-//            return $this->redirectToRoute('admin_index', [], Response::HTTP_SEE_OTHER);
         return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member]);
     }
 
@@ -610,7 +604,7 @@ class MemberController extends AbstractController
 
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
-            if($member->getStatus()=== "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+            if($member->getStatus() === "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
             }
