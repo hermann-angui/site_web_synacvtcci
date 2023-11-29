@@ -604,6 +604,7 @@ class MemberController extends AbstractController
 
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
+
             if($member->getStatus() === "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
