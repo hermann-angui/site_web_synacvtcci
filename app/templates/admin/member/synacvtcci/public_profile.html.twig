@@ -16,12 +16,12 @@
                 </div>
                 <div class="d-flex justify-content-center mb-5">
                     {% if member.photo is null %}
-                        <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="200" class="rounded-2">
+                        <img src="{{ asset('assets/images/avatar/profile.jpg') }}" alt="" width="200" class="rounded-2">
                     {% else %}
                         <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
                     {% endif %}
-                    <div style="position: absolute; z-index: 10; top:320px;right:60px;">
-                        <img id="imagePreview" src="{{ asset('assets/frontend/img/sticker-paid.png') }}" alt="" width="130">
+                    <div style="position: relative; z-index: 10; top:120px;right:55px;">
+                        <img src="{{ asset('assets/frontend/img/sticker-paid.png') }}" alt="" width="130">
                     </div>
                 </div>
                 <table class="table">
