@@ -73,6 +73,7 @@ services:
     environment:
       - APP_ENV=dev
       - XDEBUG_MODES=debug
+      - MAILER_DSN=gmail
       - TZ=Africa/Abidjan
       - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/synacvtcci_db?serverVersion=14
       - REMOTE_HOST=host.docker.internal

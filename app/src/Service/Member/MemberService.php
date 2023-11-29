@@ -128,7 +128,7 @@ class MemberService
             $member->setCountry($member->getBirthCountry());
 
             if(!empty($images)) $this->storeMemberImages($member, $images);
-            $member->setTitre("Chauffeur");
+            $member->setTitre("CHAUFFEUR");
             $this->saveMember($member);
 
             if($children = $member->getChildren()){

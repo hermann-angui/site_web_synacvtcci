@@ -41,7 +41,7 @@
                                     </div>
 
                                     <div class="table-responsive">
-                                        <table class="table align-middle table-nowrap mb-0">
+                                        <table class="table align-middle table-nowrap table-hover dt-responsive nowrap w-100 dataTable no-footer dtr-inline">
                                             <thead class="table-light">
                                             <tr>
                                                 <th>#</th>
@@ -58,7 +58,7 @@
                                             {% for user in users %}
                                                 <tr>
                                                     <td>{{ user.id }}</td>
-                                                    <td>{{ user.photo }}</td>
+                                                    <td><img src="{{ user.photo ? asset("users/") ~ user.id ~ "/" ~ user.photo : '' }}" class="rounded-circle" width="60"></td>
                                                     <td>{{ user.email }}</td>
                                                     <td>{{ user.roles[1] is defined ? user.roles[1] : "ROLE_USER" }}</td>
                                                     <td>{{ user.firstname }}</td>
