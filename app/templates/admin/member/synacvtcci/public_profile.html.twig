@@ -14,12 +14,15 @@
                     <h5 class="card-title text-primary fs-5 fw-bolder">ADMIS</h5>
                     <h5 class="card-title text-primary fs-5 fw-bolder">A L'IMMATRICULATION A LA CHAMBRE DE METIERS DE COTE D'IVOIRE</h5>
                 </div>
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mb-5">
                     {% if member.photo is null %}
                         <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="200" class="rounded-2">
                     {% else %}
                         <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
                     {% endif %}
+                    <div style="position: absolute; z-index: 10; top:320px;right:60px;">
+                        <img id="imagePreview" src="{{ asset('assets/frontend/img/sticker-paid.png') }}" alt="" width="130">
+                    </div>
                 </div>
                 <table class="table">
                     <tr>
