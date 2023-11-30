@@ -87,9 +87,9 @@ class MemberService
             $this->memberRepository->add($member, true);
             $member->setCountry($member->getBirthCountry());
 
-            foreach($member->getChildren() as $child){
-                $this->childRepository->add($child, true);
-            }
+//            foreach($member->getChildren() as $child){
+//                $this->childRepository->add($child, true);
+//            }
 
             $this->memberRepository->add($member, true);
             return $member;

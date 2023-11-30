@@ -85,17 +85,6 @@ class Child
         return $this->modified_at;
     }
 
-    public function getParent(): ?Member
-    {
-        return $this->parent;
-    }
-
-    public function setParent(?Member $parent): self
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
 
     /**
      * @return mixed

@@ -700,7 +700,7 @@ class Artisan implements UserInterface, PasswordAuthenticatedUserInterface
     public static function getTitres()
     {
         return  [
-            'Chauffeur' => 'Chauffeur',
+            'CHAUFFEUR' => 'CHAUFFEUR',
             'Secrétaire général' => 'Secrétaire général',
             "Secrétaire de section d'Abobo" => "Secrétaire de section d'Abobo",
             "Secrétaire de section d'Adjamé" => "Secrétaire de section d'Adjamé",
