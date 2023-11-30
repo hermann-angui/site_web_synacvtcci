@@ -84,7 +84,7 @@ class MemberService
             $member->setStatus("PENDING");
             $member->setTitre("CHAUFFEUR");
 
-         // $this->memberRepository->add($member, true);
+            $this->memberRepository->add($member, true);
             $member->setCountry($member->getBirthCountry());
 
             foreach($member->getChildren() as $child){
