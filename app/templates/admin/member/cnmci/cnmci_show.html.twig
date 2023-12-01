@@ -102,9 +102,9 @@
                                                     <button class="btn nav-btn" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                         <i class="bx bx-dots-horizontal-rounded"></i>
                                                     </button>
-                                                    <div class="dropdown-menu dropdown-menu-end " style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 42px);background-color: #0701b9; color:white" data-popper-placement="bottom-end">
-                                                        <a class="dropdown-item " href="{{ path('admin_download_cnmci_pdf', {id: member.id}) }}">Imprimer le pdf</a>
-                                                        <a class="dropdown-item" href="{{ path('admin_index')}}">Fermer</a>
+                                                    <div class="dropdown-menu dropdown-menu-end " style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 42px); color:white" data-popper-placement="bottom-end">
+                                                        <a class="dropdown-item fw-bold" href="{{ path('admin_download_cnmci_pdf', {id: member.id}) }}"><i class="fa fa-print"></i> Imprimer le pdf</a>
+                                                        <a class="dropdown-item fw-bold" href="{{ path('admin_index')}}"><i class="fa fa-home"></i> Quitter</a>
                                                     </div>
                                                 </div>
                                             </li>

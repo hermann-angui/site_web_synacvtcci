@@ -56,7 +56,7 @@
                             <div class="tab-pane active show" id="enattente" role="tabpanel">
                                 <div class="row">
                                 {% for member in members %}
-                                    {% if member.status == 'PAID' %}
+                                    {% if member.status == 'INFORMATION_VALIDATED' or member.status == 'PAID' %}
                                         <div class="col-md-3 col-sm-3">
                                             <div class="card text-center">
                                                 <div class="card-body">
@@ -116,7 +116,7 @@
                             <div class="tab-pane" id="completed" role="tabpanel">
                                 <div class="row">
                                     {% for member in members %}
-                                        {% if member.status == 'COMPLETED' %}
+                                        {% if member.status == 'COMPLETED' or  member.status == 'PAID' %}
                                             <div class="col-md-3 col-sm-3">
                                                 <div class="card text-center">
                                                     <div class="card-body">

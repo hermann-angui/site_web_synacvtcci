@@ -19,6 +19,7 @@
             font-weight: bolder;
             border-radius: 0rem;
             border: 1px solid #4f01b9;
+            text-transform: uppercase;
         }
 
         .form-control:focus, .form-select:focus {
@@ -235,19 +236,19 @@
 <script>
       $('document').ready(function() {
 
-           window.addEventListener('online', () => toastr.success('Vous êtes de nouveau connecté.'));
-           window.addEventListener('offline', () => toastr.error('Attention!! Vous avez perdu la connexion internet.'));
-           console.log(window.navigator.onLine);
+           // window.addEventListener('online', () => toastr.success('Vous êtes de nouveau connecté.'));
+           // window.addEventListener('offline', () => toastr.error('Attention!! Vous avez perdu la connexion internet.'));
+           // console.log(window.navigator.onLine);
 
           $("#stepperform").submit(function(e){
-              console.log(window.navigator.onLine);
-                if(!window.navigator.onLine) {
-                    toastr.error('Attention!! Vous avez perdu la connexion internet.');
-                    return false;
-                }else{
+              // console.log(window.navigator.onLine);
+              //   if(!window.navigator.onLine) {
+              //       toastr.error('Attention!! Vous avez perdu la connexion internet.');
+              //       return false;
+              //   }else{
                     $("#stepperform").validate().settings.ignore = ":disabled,.ignore";
                     return $("#stepperform").valid();
-                }
+               // }
           }).validate({
                 errorPlacement: function errorPlacement(error, element) { element.before(error); },
                 rules: {
@@ -271,9 +272,29 @@
                 }
           });
 
-          var index = 0;
+          let index = {{ member.children|length }};
           $('#newChild').click(function(){
-                var row = "<div class='d-flex justify-content-between w-75'><label class='py-2'>Nom <input type='text' onkeyup='this.value=this.value.toUpperCase();'  name='child[" + index + "][firstname]' value='' class='form-control' /></label><label class='my-1'>Prénoms <input type='text' onkeyup='this.value=this.value.toUpperCase();' name='child[" + index + "][lastname]' value='' class='form-control' /></label><label class='my-2'>Sexe <select name='child[" + index + "][sex]' class='form-select' style='min-width:150px;'><option value='MASCULIN'>MASCULIN</option><option value='FEMME'>FEMME</option></select></label></div>";
+              let row = `<div class='d-flex justify-content-between w-75'>
+                        <div class='col-md-3'>
+                            <div class='mb-3'>
+                                <label for='member_registration_children_${index}_lastName' class='form-label required' aria-required='true'>Nom</label>
+                                <input type='text' id='member_registration_children_${index}_lastName' name='member_registration[children][${index}][lastName]' required='required' onkeyup='this.value=this.value.toUpperCase();' class='form-control' value='' aria-required='true'>
+                            </div>
+                        </div>
+                        <div class='col-md-3'>
+                            <div class='mb-3'>
+                                <label for='member_registration_children_${index}_firstName' class='form-label required' aria-required='true'>Prénoms</label>
+                                <input type='text' id='member_registration_children_${index}_firstName' name='member_registration[children][${index}][firstName]' required='required' onkeyup='this.value=this.value.toUpperCase();' class='form-control' value='' aria-required='true'>
+                            </div>
+                        </div>
+                        <div class='col-md-3'>
+                            <div class='mb-3'><label class='form-label required' for='member_registration_children_${index}_sex' aria-required='true'>Sexe</label>
+                                <select id='member_registration_children_${index}_sex' name='member_registration[children][${index}][sex]' class='form-select'>
+                                    <option value='HOMME'>HOMME</option>
+                                    <option value='FEMME'>FEMME</option>
+                                </select>
+                            </div>
+                        </div></div>`;
                 $('#children_bock').append(row);
                 index++;
           });

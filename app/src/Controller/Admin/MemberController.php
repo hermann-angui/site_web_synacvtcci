@@ -4,12 +4,15 @@ namespace App\Controller\Admin;
 
 use App\Entity\Child;
 use App\Entity\Member;
+use App\Entity\Villes;
 use App\Form\MemberPhotoStepType;
 use App\Form\MemberRegistrationType;
 use App\Helper\ActivityLogger;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
+use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
+use App\Repository\VillesRepository;
 use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -566,6 +569,8 @@ class MemberController extends AbstractController
     public function edit(Request $request,
                          Member $member,
                          MemberService $memberService,
+                         VillesRepository $villesRepository,
+                         ChildRepository $childRepository,
                         ActivityLogger $activityLogger): Response
     {
         date_default_timezone_set("Africa/Abidjan");
@@ -587,20 +592,46 @@ class MemberController extends AbstractController
             if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
             if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 
-            $data = $request->request->all();
+          //  $data = $request->request->all();
+/*
+            $memberChildren = $member->getChildren();
             if(isset($data['child'])){
                 foreach($data['child'] as $childItem){
-                    $child=  new Child();
-                    $child->setLastName($childItem['lastname']);
-                    $child->setFirstName($childItem['firstname']);
-                    $child->setSex($childItem['sex']);
-                    $child->setMember($member);
-                    $member->addChild($child);
+//                    $child = $childRepository->findOneBy([
+//                        'first_name' => ,
+//                        'last_name' => ,
+//                        'sex' => ,
+//                    ]);
+                    $found = array_filter($memberChildren->toArray(), function($child) use($childItem){
+                        return ($child->getLastName() === $childItem['lastname'] && $child->getFirstName() === $childItem['firstname']) ;
+                    });
+
+                    $found = array_values($found);
+                    if(!empty($found)) {
+                        $found[0]->setLastName($childItem['lastname']);
+                        $found[0]->setFirstName($childItem['firstname']);
+                        $found[0]->setSex($childItem['sex']);
+                    }else{
+                        $child =  new Child();
+                        $child->setLastName($childItem['lastname']);
+                        $child->setFirstName($childItem['firstname']);
+                        $child->setSex($childItem['sex']);
+                        $child->setMember($member);
+                        $member->addChild($child);
+                    }
                 }
             }
-
+*/
             $birth_city_other =  $form->get("birth_city_other")->getData();
-            if($birth_city_other) $member->setBirthCity($birth_city_other);
+            if($birth_city_other) {
+                $member->setBirthCity(strtoupper($birth_city_other));
+                $exist = $villesRepository->findOneBy(['name' => strtoupper($birth_city_other)]);
+                if(!$exist) {
+                    $ville = new Villes();
+                    $ville->setName(strtoupper($birth_city_other));
+                    $villesRepository->add($ville, true);
+                }
+            }
 
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");

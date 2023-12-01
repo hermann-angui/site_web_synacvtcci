@@ -3,8 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Member;
+use App\Repository\CommunesRepository;
+use App\Repository\VillesRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
@@ -16,6 +19,12 @@ use Symfony\Component\Validator\Constraints\File;
 
 class MemberRegistrationType extends AbstractType
 {
+
+
+    public function __construct(private CommunesRepository $communesRepository, private VillesRepository $villesRepository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
@@ -25,9 +34,11 @@ class MemberRegistrationType extends AbstractType
             array_values(Countries::getNames()),
             array_values(Countries::getNames())
         );
-
+/*
         $villes = [
             "ABIDJAN" => "ABIDJAN",
+            "BINGERVILLE" => "BINGERVILLE",
+            "BONON" => "BONON",
             "ABENGOUROU" => "ABENGOUROU",
             "ALEPE" => "ALEPE",
             "GAGNOA" => "GAGNOA",
@@ -145,8 +156,9 @@ class MemberRegistrationType extends AbstractType
             "PORT-BOUET" => "PORT-BOUET",
             "TREICHVILLE" => "TREICHVILLE",
             "YOPOUGON" => "YOPOUGON",
+            "SONGON" => "SONGON",
         ];
-
+*/
         $builder
             ->add('photo',FileType::class, [
                 'required' => false,
@@ -212,13 +224,13 @@ class MemberRegistrationType extends AbstractType
                     "AUTRE" => "AUTRE"
                 ],
                 'empty_data' => null,
-                'data' => null,
             ])
             ->add('nationality', TextType::class, [
                 'label' => "Nationalité",
                 'mapped' => true,
                 'required' => true,
-                'data' => 'IVOIRIENNE'
+                'attr' => ['placeholder' => "IVOIRIENNE"],
+                'empty_data' => "IVOIRIENNE"
             ])
             ->add('whatsapp', TelType::class, [
                 'label' => "Whatsapp",
@@ -238,7 +250,6 @@ class MemberRegistrationType extends AbstractType
                     'VEUF(VE)' => 'VEUF(VE)',
                 ],
                 'empty_data' => null,
-                'data' => null,
             ])
             ->add('IdType', ChoiceType::class, [
                 'label' => 'Type de la pièce d\'identite (CNI ou Carte consulaire)',
@@ -253,7 +264,6 @@ class MemberRegistrationType extends AbstractType
                     'AUTRE' => 'AUTRE',
                 ],
                 'empty_data' => null,
-                'data' => null,
             ])
             ->add('IdNumber', TextType::class, [
                 'label' => "N° Pièce d'identité",
@@ -269,7 +279,8 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Autorité délivrant la pièce d'identité",
                 'mapped' => true,
                 'required' => true,
-                'data' => 'ONECI'
+                'attr' => ['placeholder' => "ONECI"],
+                'empty_data' => "ONECI"
             ])
             ->add('IdDeliveryDate',DateType::class, [
                 'label' => 'Délivré le',
@@ -289,8 +300,7 @@ class MemberRegistrationType extends AbstractType
                     'Homme' => 'H',
                     'Femme' => 'F',
                 ],
-                'empty_data' => 'H',
-                'data' => 'H',
+                'empty_data' => 'H'
             ])
             ->add('date_of_birth',DateType::class, [
                 'label' => 'Date de naissance',
@@ -306,16 +316,15 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Pays de naissance',
                 'mapped' => true,
                 'required' => true,
-                'data' => 'Côte d\'Ivoire'
+                'attr' => ['placeholder' => "COTE D IVOIRE"],
+                'empty_data' => "COTE D IVOIRE"
             ])
             ->add('birth_city', ChoiceType::class, [
                 'label' => 'Ville de naissance',
                 'mapped' => true,
                 'attr' => ['class' => 'select2'],
                 'required' => true,
-                'choices' => $villes,
-                'empty_data' => "ABIDJAN",
-                'data' => null,
+                'choices' => $this->villesRepository->findAllNames(),
             ])
             ->add('birth_city_other', TextType::class, [
                 'label' => 'Saisir le nom de la ville',
@@ -395,23 +404,20 @@ class MemberRegistrationType extends AbstractType
                 'data_class' =>  null,
                 'mapped' => true,
             ])
-            ->add('city', ChoiceType::class, [
+            ->add('commune', ChoiceType::class, [
                 'label' => "Situation géographique de résidence",
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
-                'choices' => $communes,
-                'empty_data' => null,
-                'data' => null,
+             //   'choices' => $communes,
+                'choices' => $this->communesRepository->findAllNames()
             ])
-            ->add('commune', ChoiceType::class, [
+            ->add('city', ChoiceType::class, [
                 'label' => "Ville de résidence",
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
-                'choices' => $villes,
-                'empty_data' => null,
-                'data' => null,
+                'choices' => $this->villesRepository->findAllNames(),
             ])
             ->add('postal_code', TextType::class, [
                 'label' => "Boite postale",
@@ -451,43 +457,45 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Situation géographique d'activité",
                 'mapped' => true,
                 'required' => true,
-                'data' => 'ABIDJAN'
+                'attr' =>['placeholder' => 'ABIDJAN'],
+                'empty_data' => 'ABIDJAN'
             ])
             ->add('activity_country_location', TextType::class, [
                 'label' => "Pays d'activité",
                 'mapped' => true,
                 'required' => true,
-                'empty_data' => "COTE D'IVOIRE",
-                'data' => "COTE D'IVOIRE",
+                'attr' =>['placeholder' => "COTE D'IVOIRE"],
+                'empty_data' => "COTE D'IVOIRE"
             ])
             ->add('activity_city_location', ChoiceType::class, [
                 'label' => "Ville d'activité",
                 'mapped' => true,
                 'required' => true,
-                'choices' => $villes,
+                'choices' => $this->villesRepository->findAllNames(),
                 'empty_data' => "ABIDJAN",
-                'data' => "ABIDJAN",
-
+                'attr' => array('placeholder' => 'ABIDJAN')
             ])
             ->add('activity_quartier_location', TextType::class, [
                 'label' => "Quartier d'activité",
                 'mapped' => true,
                 'required' => true,
-                'empty_data' => "ABIDJAN",
-                'data' =>  "ABIDJAN",
+                'empty_data' => 'ABIDJAN',
+                'attr' => ['placeholder' => 'ABIDJAN']
             ])
             ->add('socioprofessionnelle_category', TextType::class, [
                 'label' => "Catégorie socioprofessionnelle",
                 'mapped' => true,
                 'required' => true,
-                'data' => 'ARTISAN',
-                'empty_data' => "ARTISAN",
+                'empty_data' => 'ARTISAN',
+                'attr' => ['placeholder' => 'ARTISAN']
             ])
             ->add('activity', TextType::class, [
                 'label' => "Activité",
                 'mapped' => true,
                 'required' => true,
-                'data' => 'CHAUFFEUR VTC'
+                'empty_data' => 'CHAUFFEUR VTC',
+                'attr' => ['placeholder' => 'CHAUFFEUR VTC']
+
             ])
             ->add('activity_date_debut', DateType::class, [
                 'label' => "Date debut d'activité",
@@ -499,6 +507,16 @@ class MemberRegistrationType extends AbstractType
                 'format' => 'dd/MM/yyyy',
                 'years' => range($past->format('Y'), $end->format('Y')),
             ])
+            ->add('children',CollectionType::class, [
+                    'entry_type' => ChildType::class,
+                    'entry_options' => [
+                        'label'         => false,
+                    ],
+                    'label'         => false,
+                    'allow_add'     => true,
+                    'allow_delete'  => true,
+                    'by_reference'  => false,  // Very important thing!
+            ])
         ;
     }
 
@@ -509,3 +527,4 @@ class MemberRegistrationType extends AbstractType
         ]);
     }
 }
+

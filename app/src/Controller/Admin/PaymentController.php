@@ -44,7 +44,7 @@ class PaymentController extends AbstractController
                            MemberService $memberService,
                            ActivityLogger $activityLogger): Response
     {
-        if ($member->getStatus() === 'INFORMATION_VALIDATED') {
+        if ($member->getStatus() !== 'PAID') {
             $payment = new Payment();
             $payment->setUser($this->getUser())
                 ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))

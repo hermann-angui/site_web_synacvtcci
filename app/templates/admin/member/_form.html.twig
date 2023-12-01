@@ -1,6 +1,6 @@
 
     {{ form_start(form, {'method': 'POST', 'attr': {'id': 'stepperform'}}) }}
-        <h3>INFORMATIONS PERSONNELLES</h3>
+        <h3>INFORMATIONS PERSONNELLES - <span class="mx-5"> MATRICULE : {{ member.matricule??''}}</span></h3>
         <fieldset>
             <div id="step0">
                 <div class="my-custom-class-for-errors">
@@ -25,6 +25,11 @@
 
                             </div>
                         </label>
+                    </div>
+                </div>
+                <div class="row mb-3 mt-4">
+                    <div class="col-md-2">
+                        {{ form_row(form.tracking_code) }}
                     </div>
                 </div>
                 <div class="row mb-3 mt-4">
@@ -72,10 +77,10 @@
                         {{ form_row(form.nationality) }}
                     </div>
                     <div class="col-md-3">
-                        {{ form_row(form.city) }}
+                        {{ form_row(form.commune) }}
                     </div>
                     <div class="col-md-3">
-                        {{ form_row(form.commune) }}
+                        {{ form_row(form.city) }}
                     </div>
                     <div class="col-md-3">
                         {{ form_row(form.quartier) }}
@@ -260,16 +265,33 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+
+
+                </div>
+                <div class="row mb-3">
                     Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
                     <div class="d-flex">
-                        <input type="checkbox" name="has_child" id="has_child" switch="none" />
+                        <input type="checkbox" name="has_child" id="has_child" switch="{{ member.children|length ? 'Oui': 'Non' }}" {{ member.children|length ? 'checked': '' }}/>
                         <label for="has_child" data-on-label="Oui" data-off-label="Non"></label>
                     </div>
                     <br>
-                    <div id="child-row" style="display:none;">
+                    <div id="child-row" {{ member.children|length ? '': 'style="display:none;"' }}>
                         <div id="children_bock"  class="pt-2">
+                            {% for  child in form.children %}
+                                <div class="d-flex justify-content-between w-75">
+                                    <div class="col-md-3">
+                                        {{ form_row(child.lastName) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form_row(child.firstName) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form_row(child.sex) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
-                        <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"></i> Enregistrer un enfant </span>
+                        <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"> Enregistrer un enfant </span>
                     </div>
                 </div>
             </div>
