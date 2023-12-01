@@ -170,7 +170,6 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'label' => "Code de suivi dossier",
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '*****'"],
-                'data_class' =>  null,
                 'mapped' => true,
             ])
             ->add('lastName', TextType::class, [
