@@ -175,13 +175,17 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
 
-        {{ include('admin/_partials/header.html.twig') }}
-
-        <!-- ========== Left Sidebar Start ========== -->
         {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
             {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
         {% endif %}
-        <!-- Left Sidebar End -->
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
 
         <!-- ============================================================== -->
         <!-- Start right Content here -->

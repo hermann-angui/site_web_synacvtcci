@@ -122,7 +122,7 @@ class PageController extends AbstractController
                 $child->setLastName($childItem['lastname']);
                 $child->setFirstName($childItem['firstname']);
                 $child->setSex($childItem['sex']);
-                $child->setParent($member);
+                $child->setMember($member);
                 $member->addChild($child);
             }
         }

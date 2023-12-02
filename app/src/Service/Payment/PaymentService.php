@@ -45,6 +45,19 @@ class PaymentService
     {
         try {
             $member = $payment->getPaymentFor();
+
+            if (!$member->getMatricule()) {
+                $date = new \DateTime('now');
+                $sexCode = null;
+                if($member->getSex() === "H") $sexCode = "SY1";
+                elseif($member->getSex() === "F") $sexCode = "SY2";
+                if($sexCode){
+                    $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+                    $member->setMatricule($matricule);
+                    $this->memberRepository->add($member, true);
+                }
+            }
+
             $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getMatricule();
 
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
