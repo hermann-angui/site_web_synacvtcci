@@ -152,7 +152,7 @@ class PaymentController extends AbstractController
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
             $paymentService->generatePaymentReceipt($payment);
-            return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
+            return $this->render('admin/payment/payment-receipt-pdf.html.twig', ['payment' => $payment]);
         }
         return $this->redirectToRoute('admin_index');
     }
