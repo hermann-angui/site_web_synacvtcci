@@ -150,7 +150,7 @@ class PaymentController extends AbstractController
     #[Route(path: '/receipt/{id}', name: 'member_display_receipt', methods: ['POST', 'GET'])]
     public function showPaymentReceipt(?Payment $payment, PaymentService $paymentService): Response
     {
-        if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED"])) {
+        if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {
             $paymentService->generatePaymentReceipt($payment);
             return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
         }
