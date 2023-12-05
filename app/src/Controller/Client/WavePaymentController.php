@@ -79,7 +79,6 @@ class WavePaymentController extends AbstractController
 
         if($this->isGranted('ROLE_USER')) return $this->redirectToRoute('admin_index');
         else return $this->redirectToRoute('home');
-
     }
 
     #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]

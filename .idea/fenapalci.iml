@@ -132,6 +132,15 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/clegginabox/pdf-merger" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/setasign/fpdf" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/setasign/fpdi" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/markbaker/matrix" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/markbaker/complex" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/phpoffice/phpspreadsheet" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/psr/http-factory" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/psr/http-client" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/psr/simple-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/maennchen/zipstream-php" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/ezyang/htmlpurifier" />
     </content>
     <content url="file://$MODULE_DIR$/app/templates" />
     <orderEntry type="inheritedJdk" />

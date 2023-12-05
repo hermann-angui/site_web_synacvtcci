@@ -64,7 +64,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    {% if member.status == 'PAID' %}
+                                    {% if member.status == 'PHOTO_VALID' or member.status == 'INFORMATION_VALIDATED' %}
                                         <div class="alert alert-danger fs-5 alert-dismissible fade show" role="alert">
                                             <i class="mdi mdi-alert-outline mdi-24px me-2"></i>
                                             Attention! Ce souscripteur n'a pas encore fait son paiement.

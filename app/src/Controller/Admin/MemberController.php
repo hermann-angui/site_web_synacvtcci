@@ -174,7 +174,7 @@ class MemberController extends AbstractController
                                  MemberService $memberService,
                                  MemberRepository $memberRepository): Response
     {
-        $member = $memberService->generateSingleMemberCard(MemberMapper::MapToMemberRequestDto($member));
+        $member = $memberService->generateSingleMemberCard($member);
         $member->setCardPhoto($member->getCardPhoto()->getFilename());
         $member->setModifiedAt(new \DateTime());
         $memberRepository->add($member, true);
@@ -538,7 +538,6 @@ class MemberController extends AbstractController
 
         $whereResult = null;
 
-
         if(!empty($params['searchTerm'])) {
             $whereResult .= " tracking_code LIKE '%". $params['searchTerm']. "%' AND ";
 //            $whereResult .= " first_name LIKE '%". $params['searchTerm']. "%' OR ";
@@ -554,9 +553,7 @@ class MemberController extends AbstractController
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
     public function show(Member $member): Response
     {
-        return $this->render('admin/member/show.html.twig', [
-            'member' => $member,
-        ]);
+        return $this->render('admin/member/show.html.twig', ['member' => $member,]);
     }
 
     #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
