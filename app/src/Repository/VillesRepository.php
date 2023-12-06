@@ -48,7 +48,7 @@ class VillesRepository extends ServiceEntityRepository
     {
         $result =  $this->createQueryBuilder('v')
             ->select('v.name')
-            ->orderBy('v.name', 'ASC')
+            ->orderBy('v.id', 'ASC')
             ->getQuery()
             ->getArrayResult();
 

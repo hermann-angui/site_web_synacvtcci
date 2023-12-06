@@ -265,10 +265,6 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-
-
-                </div>
-                <div class="row mb-3">
                     Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
                     <div class="d-flex">
                         <input type="checkbox" name="has_child" id="has_child" switch="{{ member.children|length ? 'Oui': 'Non' }}" {{ member.children|length ? 'checked': '' }}/>
@@ -291,7 +287,7 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <span href="#" id="newChild" class="btn btn-small btn-rounded btn-primary"> Enregistrer un enfant </span>
+                        <span href="#" id="newChild" class="btn btn-small btn-rounded btn-success"> Enregistrer un enfant </span>
                     </div>
                 </div>
             </div>
@@ -326,11 +322,28 @@
                     </div>
                 </div>
             </div>
+        </fieldset>
+
+        <h3>ADHESION AU SYNDICAT SYNACVTCCI</h3>
+        <fieldset>
+            <div id="step4">
+                <div class="row mb-3">
+                    <div class="col-md-12  form-check form-switch form-switch-lg">
+                        {{ form_row(form.is_syndicat_member) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12 form-check form-switch form-switch-lg">
+                        {{ form_row(form.payforsyndicat) }}
+                    </div>
+                </div>
+            </div>
             {{ form_row(form._token) }}
         </fieldset>
         <hr>
     <hr>
-    <div class="row justify-content-center">
+    <div class="d-flex justify-content-center">
+        <div class="text-center mx-3"><a href="{{ path('admin_index') }}" class="btn btn-success btn-lg">Annuler</a></div>
         <div class="text-center"><button type="submit" class="btn btn-success btn-lg">Enregister</button></div>
     </div>
 

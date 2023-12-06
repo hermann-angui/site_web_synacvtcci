@@ -3,22 +3,165 @@
 {% block stylesheet %}
     {{ parent() }}
     <style>
-        .section-title {
-            background-color: #112ba8;
+        .wizard .steps > ul > li a {
+            font-size: 12px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .form-control, .form-select {
+            padding: 0.5rem 0.55rem;
+            font-size: 0.95rem;
+            color: #117b01;
+            font-weight: bolder;
+            border-radius: 0rem;
+            border: 2px solid #ffbb00;
+            text-transform: uppercase;
+        }
+
+        .form-control:focus, .form-select:focus {
+            outline: 0;
+            box-shadow: none;
+            border-color: #ffbb00;
+        }
+
+        .col-form-label {
+            padding-top: calc(0.375rem + 1px);
+            padding-bottom: calc(0.375rem + 1px);
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #2a3042;
+        }
+
+        .form-check-label {
+            font-size: 0.82rem;
+        }
+
+        .form-check-input {
+            margin-top: 0.4em;
+        }
+
+        #field {
+            margin-left: .5em;
+            float: left;
+        }
+
+        #field, label {
+            float: left;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: small;
+        }
+
+        br {
+            clear: both;
+        }
+
+        input {
+            border: 1px solid black;
+            margin-bottom: .5em;
+        }
+
+        input.error {
+            border: 1px solid red;
+        }
+
+        label.error {
+            padding-left: 0px;
+            margin-left: 0em;
+        }
+
+        label.valid {
+            display: block;
+            width: 16px;
+            height: 16px;
+        }
+
+        .select2 span.select2-selection__rendered,
+        li.select2-results__option {
+            font-size: 1.05rem;
+            color: #117b01;
+            font-weight: bolder;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #117b01;
+            /*font-size: 0.75rem;*/
+            font-size: 1.05rem;
+            color: #fff;
+            font-weight: bolder;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #117b01;
+            line-height: 28px;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border: 1px solid #ffbb00;
+            border-radius: 4px;
+            cursor: text;
+            min-height: 50px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 41px;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 2px solid #ffbb00;
+            border-radius: 0px;
+        }
+
+        input.select2-search__field {
+            border: 1px solid black;
+            margin-bottom: 0.0em;
+        }
+
+
+        @media (max-width: 768px) {
+            .page-header-info h2 {
+                font-size: 26px;
+                line-height: 36px;
+            }
+        }
+
+        label.required:after {
+            content: " *";
+            color: red;
+        }
+
+
+        #stepperform h3{
+            background: linear-gradient(59deg, rgba(252,114,0,1) 9%, rgba(244,130,0,0.8855917366946778) 32%, rgba(62,146,60,0.9398113905325444) 69%, rgba(4,113,2,1) 95%);
             padding: 5px 5px;
             color: white;
             font-size: 16px;
         }
-        table tbody tr td {
-            color: #112ba8;
-            text-transform: uppercase;
-            font-weight: bold;
+
+        fieldset > div {
+            padding: 10px 25px;
+            margin-top: 5px;
         }
-        table tbody tr th {
-            width: 40%;
-        }
-        table tbody tr td{
-            width: 60%;
+
+        .image-upload-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 450px;
+            min-height: 200px;
+            margin: auto;
+            border: 1px dashed #adb5bd;
+            padding: 10px 10px;
         }
     </style>
 {% endblock %}

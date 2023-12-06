@@ -7,10 +7,20 @@
             border: 2px solid #f8f8fb;
             cursor: pointer;
         }
+
         .card-body:hover {
-            border: 2px solid #556ee6;
+            border: 2px solid #ffbb00;
             cursor: pointer;
         }
+
+        .nav-tabs-custom .nav-item .nav-link::after {
+            background-color: #ffbb00;;
+        }
+
+        .nav-tabs-custom .nav-item .nav-link.active {
+            color: #117b01;
+        }
+
     </style>
 {% endblock %}
 
@@ -19,8 +29,6 @@
     <div id="layout-wrapper">
         {{ include('admin/_partials/simple-header.html.twig') }}
             <div class="page-content">
-                <div class="container-fluid">
-
                     <!-- start page title -->
                     <div class="row">
                         <div class="col-12">
@@ -36,7 +44,7 @@
                         </div>
                     </div>
                     <!-- end page title -->
-                    <div class="container">
+                    <div class="row">
                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#enattente" role="tab" aria-selected="true">
@@ -175,7 +183,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
     </div>
 

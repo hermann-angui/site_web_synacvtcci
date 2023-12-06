@@ -169,6 +169,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $merged_documents_pdf = null;
 
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $is_syndicat_member = false;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $has_paid_for_syndicat = false;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $payment_receipt_synacvtcci_pdf = null;
 
@@ -1371,6 +1377,42 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setScanDocumentIdentitePdf(?string $scan_document_identite_pdf): Member
     {
         if($scan_document_identite_pdf) $this->scan_document_identite_pdf = $scan_document_identite_pdf;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsSyndicatMember(): ?bool
+    {
+        return $this->is_syndicat_member;
+    }
+
+    /**
+     * @param bool|null $is_syndicat_member
+     * @return Member
+     */
+    public function setIsSyndicatMember(?bool $is_syndicat_member): Member
+    {
+        $this->is_syndicat_member = $is_syndicat_member;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasPaidForSyndicat(): ?bool
+    {
+        return $this->has_paid_for_syndicat;
+    }
+
+    /**
+     * @param bool|null $has_paid_for_syndicat
+     * @return Member
+     */
+    public function setHasPaidForSyndicat(?bool $has_paid_for_syndicat): Member
+    {
+        $this->has_paid_for_syndicat = $has_paid_for_syndicat;
         return $this;
     }
 

@@ -1,0 +1,45 @@
+
+    {{ form_start(form, {'method': 'POST', 'attr': {'id': 'stepperform'}}) }}
+        <h3>INFORMATIONS PERSONNELLES</h3>
+        <fieldset>
+            <div id="step0">
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                </div>
+                <div class="row mb-3 mt-4">
+                    <div class="col-md-2">
+                        {{ form_row(form.sex) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.lastName) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.firstName) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.mobile) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.whatsapp) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.is_syndicat_member) }}
+                    </div>
+                </div>
+                {{ form_row(form._token) }}
+            </div>
+        </fieldset>
+        <hr>
+    <hr>
+    <div class="d-flex justify-content-center">
+        <div class="text-center mx-3"><a href="{{ path('home') }}" class="btn btn-success btn-lg">Annuler</a></div>
+        <div class="text-center"><button type="submit" class="btn btn-success btn-lg">Enregister</button></div>
+    </div>
+
+    {{ form_end(form, {'render_rest': false}) }}
+

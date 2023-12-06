@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Repository\CommunesRepository;
 use App\Repository\VillesRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -28,137 +29,14 @@ class MemberRegistrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
+        $data = $builder->getData();
         $past = new \DateTime('- 65 years');
         $end = new \DateTime('- 18 years');
-        $countries = array_combine(
-            array_values(Countries::getNames()),
-            array_values(Countries::getNames())
-        );
-/*
-        $villes = [
-            "ABIDJAN" => "ABIDJAN",
-            "BINGERVILLE" => "BINGERVILLE",
-            "BONON" => "BONON",
-            "ABENGOUROU" => "ABENGOUROU",
-            "ALEPE" => "ALEPE",
-            "GAGNOA" => "GAGNOA",
-            "ADIAKE" => "ADIAKE",
-            "ADJAME" => "ADJAME",
-            "BETTIE" => "BETTIE",
-            "AZAGUIE" => "AZAGUIE",
-            "ATTINGUE" => "ATTINGUE",
-            "ADZOPE" => "ADZOPE",
-            "ADJOVILLE" => "ADJOVILLE",
-            "AGNIBILEKRO" => "AGNIBILEKRO",
-            "AKOUPE" => "AKOUPE",
-            "BASSAM" => "BASSAM",
-            "BONDOUKOU" => "BONDOUKOU",
-            "NIAKARAMADOUGOU" => "NIAKARAMADOUGOU",
-            "DIKODOUGOU" => "DIKODOUGOU",
-            "BONOUA" => "BONOUA",
-            "BOUNA" => "BOUNA",
-            "NASSIAN" => "NASSIAN",
-            "SANDEGUE" => "SANDEGUE",
-            "BOUAKE" => "BOUAKE",
-            "BIANKOUMA" => "BIANKOUMA",
-            "BOUNDIALI" => "BOUNDIALI",
-            "MBENGUE" => "MBENGUE",
-            "MANKONO" => "MANKONO",
-            "TEHINI" => "TEHINI",
-            "DROPO" => "DROPO",
-            "OUANGOLODOUGOU" => "OUANGOLODOUGOU",
-            "BANGOLO" => "BANGOLO",
-            "DAOUKRO" => "DAOUKRO",
-            "DIANRA" => "DIANRA",
-            "DUEKOUE" => "DUEKOUE",
-            "DIDIEVI" => "DIDIEVI",
-            "KATIOLA" => "KATIOLA",
-            "KOUIBLY" => "KOUIBLY",
-            "KONG" => "KONG",
-            "FAKOBLY" => "FAKOBLY",
-            "GRAND-BASSAM" => "GRAND-BASSAM",
-            "ISSIA" => "ISSIA",
-            "OUANINOU" => "ISSIA",
-            "KORO" => "KORO",
-            "BOTRO" => "BOTRO",
-            "KOUNAHIRI" => "KOUNAHIRI",
-            "BEOUMI" => "BEOUMI",
-            "PRIKRO" => "PRIKRO",
-            "TANDA" => "TANDA",
-            "KOUNFAO" => "KOUNFAO",
-            "TRANSUA" => "TRANSUA",
-            "OUELLE" => "OUELLE",
-            "ARRAH" => "ARRAH",
-            "BONGOUANOU" => "BONGOUANOU",
-            "BOCANDA" => "BOCANDA",
-            "TIEBISSOU" => "TIEBISSOU",
-            "SAKASSOU" => "SAKASSOU",
-            "BOUAFLE" => "BOUAFLE",
-            "SINFRA" => "SINFRA",
-            "OUME" => "OUME",
-            "DJEKANOU" => "DJEKANOU",
-            "ATTIE" => "ATTIE",
-            "M\'BATO" => "MBATO",
-            "TAABO" => "TAABO",
-            "TIAPOUM" => "TIAPOUM",
-            "KANI" => "KANI",
-            "KANIASSO" => "KANIASSO",
-            "KOUTO" => "KOUTO",
-            "MADINANI" => "MADINANI",
-            "GBELEBAN" => "GBELEBAN",
-            "MINIGNAN" => "MINIGNAN",
-            "GRAND-LAHOU" => "GRAND-LAHOU",
-            "ODIENNE" => "ODIENNE",
-            "DABAKALA" => "DABAKALA",
-            "FERKE" => "FERKE",
-            "SIKENSI" => "SIKENSI",
-            "SEGUELA" => "SEGUELA",
-            "SEGUELON" => "SEGUELON",
-            "SOUBRE" => "SOUBRE",
-            "KOUASSI-KOUASSIKRO" => "KOUASSI-KOUASSIKRO",
-            "TOUMODI" => "TOUMODI",
-            "TOULEPLEU" => "TOULEPLEU",
-            "SIPILOU" => "SIPILOU",
-            "TOUBA" => "TOUBA",
-            "TABOU" => "TABOU",
-            "JACQUEVILLE" => "JACQUEVILLE",
-            "TAI" => "TAI",
-            "TAFIRE" => "TAFIRE",
-            "MEAGUI" => "MEAGUI",
-            "LAKOTA" => "LAKOTA",
-            "ZIENOULA" => "ZIENOULA",
-            "DIVO" => "DIVO",
-            "FRESCO" => "FRESCO",
-            "GUITRY" => "GUITRY",
-            "ABOISSO" => "ABOISSO",
-            "DALOA" => "DALOA",
-            "KORHOGO" => "KORHOGO",
-            "DABOU" => "DABOU",
-            "MAN" => "MAN",
-            "VAVOUA" => "VAVOUA",
-            "SAMATIGUILA" => "SAMATIGUILA",
-            "SAN-PEDRO" => "SAN-PEDRO",
-            "SASSANDRA" => "SASSANDRA",
-            "SINEMATIALI" => "SINEMATIALI",
-            "YAMOUSSOUKRO" => "YAMOUSSOUKRO",
-            "AUTRE" => "AUTRE"
-        ];
-        $communes = [
-            "ABOBO" => "ABOBO",
-            "ANYAMA" => "ANYAMA",
-            "ADJAME" => "ADJAME",
-            "ATTECOUBE" => "ATTECOUBE",
-            "MARCORY" => "MARCORY",
-            "BINGERVILLE" => "BINGERVILLE",
-            "COCODY" => "COCODY",
-            "PLATEAU" => "PLATEAU",
-            "KOUMASSI" => "KOUMASSI",
-            "PORT-BOUET" => "PORT-BOUET",
-            "TREICHVILLE" => "TREICHVILLE",
-            "YOPOUGON" => "YOPOUGON",
-            "SONGON" => "SONGON",
-        ];
-*/
+//        $countries = array_combine(
+//            array_values(Countries::getNames()),
+//            array_values(Countries::getNames())
+//        );
+
         $builder
             ->add('photo',FileType::class, [
                 'required' => false,
@@ -228,8 +106,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Nationalité",
                 'mapped' => true,
                 'required' => true,
-                'attr' => ['placeholder' => "IVOIRIENNE"],
-                'empty_data' => "IVOIRIENNE"
+                'data' => $data->getNationality() ?? "IVOIRIENNE"
             ])
             ->add('whatsapp', TelType::class, [
                 'label' => "Whatsapp",
@@ -279,7 +156,7 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true,
                 'attr' => ['placeholder' => "ONECI"],
-                'empty_data' => "ONECI"
+                'data' => $data->getSocioprofessionnelleCategory()?? "ONECI"
             ])
             ->add('IdDeliveryDate',DateType::class, [
                 'label' => 'Délivré le',
@@ -301,6 +178,16 @@ class MemberRegistrationType extends AbstractType
                 ],
                 'empty_data' => 'H'
             ])
+            ->add('is_syndicat_member', CheckboxType::class, [
+                'label' => 'Voulez-vous adhérer au syndicat ?',
+                'required' => false,
+                'mapped' => true,
+            ])
+            ->add('payforsyndicat', CheckboxType::class, [
+                'label' => "Voulez-vous payer pour l'adhésion au syndicat maintenant (5 000 F) ?",
+                'required' => false,
+                'mapped' => false,
+            ])
             ->add('date_of_birth',DateType::class, [
                 'label' => 'Date de naissance',
                 'attr' => ['class' => 'js-datepicker'],
@@ -315,8 +202,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => 'Pays de naissance',
                 'mapped' => true,
                 'required' => true,
-                'attr' => ['placeholder' => "COTE D IVOIRE"],
-                'empty_data' => "COTE D IVOIRE"
+                'data' => $data->getBirthCountry() ?? "COTE D'IVOIRE"
             ])
             ->add('birth_city', ChoiceType::class, [
                 'label' => 'Ville de naissance',
@@ -409,7 +295,8 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'attr' => ['class' => 'select2'],
              //   'choices' => $communes,
-                'choices' => $this->communesRepository->findAllNames()
+                'choices' => $this->communesRepository->findAllNames(),
+                'data' => $data->getCommune() ?? null
             ])
             ->add('city', ChoiceType::class, [
                 'label' => "Ville de résidence",
@@ -417,6 +304,7 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'attr' => ['class' => 'select2'],
                 'choices' => $this->villesRepository->findAllNames(),
+                'data' => $data->getCity() ?? null
             ])
             ->add('postal_code', TextType::class, [
                 'label' => "Boite postale",
@@ -456,45 +344,38 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Situation géographique d'activité",
                 'mapped' => true,
                 'required' => true,
-                'attr' =>['placeholder' => 'ABIDJAN'],
-                'empty_data' => 'ABIDJAN'
+                'data' => $data->getActivityGeoLocation()?? 'ABIDJAN'
             ])
             ->add('activity_country_location', TextType::class, [
                 'label' => "Pays d'activité",
                 'mapped' => true,
                 'required' => true,
-                'attr' =>['placeholder' => "COTE D'IVOIRE"],
-                'empty_data' => "COTE D'IVOIRE"
+                'data' => $data->getActivityCountryLocation()?? "COTE D'IVOIRE"
             ])
             ->add('activity_city_location', ChoiceType::class, [
                 'label' => "Ville d'activité",
                 'mapped' => true,
                 'required' => true,
                 'choices' => $this->villesRepository->findAllNames(),
-                'empty_data' => "ABIDJAN",
-                'attr' => array('placeholder' => 'ABIDJAN')
+                'data' => $data->getActivityCityLocation()?? "ABIDJAN"
             ])
             ->add('activity_quartier_location', TextType::class, [
                 'label' => "Quartier d'activité",
                 'mapped' => true,
                 'required' => true,
-                'empty_data' => 'ABIDJAN',
-                'attr' => ['placeholder' => 'ABIDJAN']
+                'data' => $data->getActivityQuartierLocation()?? "ABIDJAN"
             ])
             ->add('socioprofessionnelle_category', TextType::class, [
                 'label' => "Catégorie socioprofessionnelle",
                 'mapped' => true,
                 'required' => true,
-                'empty_data' => 'ARTISAN',
-                'attr' => ['placeholder' => 'ARTISAN']
+                'data' => $data->getSocioprofessionnelleCategory()?? "ARTISAN"
             ])
             ->add('activity', TextType::class, [
                 'label' => "Activité",
                 'mapped' => true,
                 'required' => true,
-                'empty_data' => 'CHAUFFEUR VTC',
-                'attr' => ['placeholder' => 'CHAUFFEUR VTC']
-
+                'data' => $data->getSocioprofessionnelleCategory()?? "CHAUFFEUR VTC"
             ])
             ->add('activity_date_debut', DateType::class, [
                 'label' => "Date debut d'activité",

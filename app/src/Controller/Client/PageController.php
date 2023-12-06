@@ -5,6 +5,7 @@ namespace App\Controller\Client;
 use App\Entity\Child;
 use App\Entity\Member;
 use App\Form\MemberOnlineRegistrationType;
+use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -136,5 +137,26 @@ class PageController extends AbstractController
         set_time_limit(0);
         $content = $memberService->generateRegistrationReceipt($member);
         return new PdfResponse($content, 'recu_synacvtcci.pdf');
+    }
+
+    #[Route('/preinscription/{tracking_code}', name: 'presubscribe', methods: ['GET']), ]
+    public function presubscribe (string $tracking_code, Request $request, MemberRepository $memberRepository): Response
+    {
+        date_default_timezone_set("Africa/Abidjan");
+
+        $member = $memberRepository->findOneBy(['tracking_code' => $tracking_code]);
+        $form = $this->createForm(MemberRegistrationType::class, $member);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $memberRepository->add($member, true);
+
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->renderForm('frontend/member/self_subscription.html.twig', [
+            'member' => $member,
+            'form' => $form,
+        ]);
     }
 }

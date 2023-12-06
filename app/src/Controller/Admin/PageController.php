@@ -25,4 +25,19 @@ class PageController extends AbstractController
         return $this->render('admin/pages/dashboard.html.twig');
     }
 
+    #[Route(path: '/generate/tracking_codes', name: 'admin_generate_tracking_codes')]
+    public function generateTrackingCodes(Request $request, MemberRepository $memberRepository): Response
+    {
+        $trackingCodes = [];
+        $from = $request->get('from') ;
+        $to = $request->get('to') ;
+        if($from && $to){
+            $from = (int)ltrim($from, '0');
+            $to = (int)ltrim($to, '0');
+            $trackingCodes = array_map(function($num){
+                return sprintf('05d', $num);
+            }, range($from, $to));
+        }
+        return $this->render('admin/pages/generate_tracking_codes.html.twig', ['tracking_codes' => $trackingCodes]);
+    }
 }
