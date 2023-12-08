@@ -30,6 +30,7 @@ class WavePaymentController extends AbstractController
             if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
             if ($member) {
                 $member->setStatus("PAID");
+                if($payment->getMontant() > $this->getParameter('montant_frais')) $member->setHasPaidForSyndicat(true);
                 $memberRepository->add($member, true);
             }
             return $this->redirectToRoute('wave_success_page', ["id" => $payment->getId(), "status" => $status]);
@@ -55,11 +56,10 @@ class WavePaymentController extends AbstractController
                     $payment->setStatus("PAID");
                     $paymentRepository->add($payment, true);
                     $member = $payment->getPaymentFor();
-
                     if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
-
                     if ($member) {
                         $member->setStatus("PAID");
+                        if($payment->getMontant() > $this->getParameter('montant_frais')) $member->setHasPaidForSyndicat(true);
                         $memberRepository->add($member, true);
                     }
                 }

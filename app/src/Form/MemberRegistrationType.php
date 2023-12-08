@@ -100,7 +100,6 @@ class MemberRegistrationType extends AbstractType
                     "SB DRIVE" => "SB DRIVE",
                     "AUTRE" => "AUTRE"
                 ],
-                'empty_data' => null,
             ])
             ->add('nationality', TextType::class, [
                 'label' => "Nationalité",
@@ -184,7 +183,7 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
             ])
             ->add('payforsyndicat', CheckboxType::class, [
-                'label' => "Voulez-vous payer pour l'adhésion au syndicat maintenant (5 000 F) ?",
+                'label' => "Payer votre adhésion maintenant (5 000 F) ?",
                 'required' => false,
                 'mapped' => false,
             ])

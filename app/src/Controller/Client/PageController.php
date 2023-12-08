@@ -4,10 +4,14 @@ namespace App\Controller\Client;
 
 use App\Entity\Child;
 use App\Entity\Member;
+use App\Entity\Payment;
 use App\Form\MemberOnlineRegistrationType;
 use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
+use App\Repository\PaymentRepository;
 use App\Service\Member\MemberService;
+use App\Service\Payment\PaymentService;
+use App\Service\Wave\WaveService;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -17,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PageController extends AbstractController
 {
+
     #[Route(path: '/', name: 'home')]
     public function home(Request $request): Response
     {
@@ -51,7 +56,8 @@ class PageController extends AbstractController
     }
 
     #[Route(path: '/success/{id}', name: 'success')]
-    public function success(Member $member, MemberService $memberService): Response
+    public function success(Member $member,
+                            MemberService $memberService): Response
     {
         $flashInfos = [
             "Suite à la bastonnade d'un chauffeur à ..",
@@ -63,7 +69,8 @@ class PageController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'register_member')]
-    public function registerMember (Request $request, MemberService $memberService): Response
+    public function registerMember (Request $request,
+                                    MemberService $memberService): Response
     {
         $flashInfos = [
             "Suite à la bastonnade d'un chauffeur à ..",
@@ -86,7 +93,8 @@ class PageController extends AbstractController
     }
 
     #[Route(path: '/profile/{matricule}', name: 'public_member_profile')]
-    public function memberProfile(Request $request, MemberRepository $memberRepository): Response
+    public function memberProfile(Request $request,
+                                  MemberRepository $memberRepository): Response
     {
         $member = $memberRepository->findOneBy(["matricule" => $request->get("matricule")]);
         if($member)  return $this->render('admin/member/synacvtcci/public_profile.html.twig', ["member" => $member]);
@@ -94,7 +102,8 @@ class PageController extends AbstractController
     }
 
     #[Route('/cnmci/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
-    public function formCnmciShow($id, MemberRepository $memberRepository): Response
+    public function formCnmciShow($id,
+                                  MemberRepository $memberRepository): Response
     {
         $member = $memberRepository->findOneBy(['codeSticker' => $id]);
         return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
@@ -132,15 +141,34 @@ class PageController extends AbstractController
     }
 
     #[Route('/download/receipt/{id}', name: 'download_receipt_pdf', methods: ['GET'])]
-    public function pdfGenerate(Member $member, MemberService $memberService): Response
+    public function pdfGenerate(Member $member,
+                                MemberService $memberService): Response
     {
         set_time_limit(0);
         $content = $memberService->generateRegistrationReceipt($member);
         return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
 
-    #[Route('/preinscription/{tracking_code}', name: 'presubscribe', methods: ['GET']), ]
-    public function presubscribe (string $tracking_code, Request $request, MemberRepository $memberRepository): Response
+    #[Route('/preinscription/{id}/confirmation', name: 'presubscribe_confirm')]
+    public function presubscribeConfirmation (Member $member,
+                                              Request $request,
+                                              MemberRepository $memberRepository): Response
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        $montant_frais = $this->getParameter('montant_frais');
+        $montant_souscription_syndicat = $this->getParameter('montant_souscription_syndicat');
+        $montant = $request->get('payforsyndicat') ?  ($montant_souscription_syndicat + $montant_frais) : $montant_frais;
+        return $this->render('frontend/member/self_subscription_confirmation.html.twig', [
+            'id' => $member->getId(),
+            'montant' => $montant
+        ]);
+    }
+
+
+    #[Route('/preinscription/{tracking_code}', name: 'presubscribe'), ]
+    public function presubscribe (string $tracking_code,
+                                  Request $request,
+                                  MemberRepository $memberRepository): Response
     {
         date_default_timezone_set("Africa/Abidjan");
 
@@ -148,10 +176,14 @@ class PageController extends AbstractController
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ( $form->isSubmitted() && $form->isValid()) {
+            if(!in_array($member->getStatus(),['PAID', 'COMPLETED', 'SUCCESS'])){
+                $mr = $request->request->all()['member_registration'];
+                $payForSyndicat = (array_key_exists('payforsyndicat', $mr) ) ? $mr['payforsyndicat']: null;
+            }
+            $member->setTrackingCode($tracking_code);
             $memberRepository->add($member, true);
-
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('presubscribe_confirm', ['id' => $member->getId(), 'payforsyndicat' => $payForSyndicat]);
         }
 
         return $this->renderForm('frontend/member/self_subscription.html.twig', [
@@ -159,4 +191,42 @@ class PageController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
+    #[Route(path: '/do/{id}', name: 'do_public_payment')]
+    public function doPayment(Member $member,
+                              Request $request,
+                              WaveService       $waveService,
+                              PaymentRepository $paymentRepository): Response
+    {
+        if(in_array($member->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) return $this->redirectToRoute('home');
+        $response = $waveService->makePayment($request->get('montant') ?? $this->getParameter('montant'));
+        if ($response) {
+            $payment = new Payment();
+            $payment->setUser($this->getUser());
+            $payment->setStatus(strtoupper($response->getPaymentStatus()));
+            $payment->setReference($response->getClientReference());
+            $payment->setOperateur("WAVE");
+            $payment->setMontant($response->getAmount());
+            $payment->setType("MOBILE_MONEY");
+            $payment->setReceiptNumber(PaymentService::generateReference());
+            $payment->setCreatedAt(new \DateTime('now'));
+            $payment->setModifiedAt(new \DateTime('now'));
+            $payment->setPaymentFor($member);
+            $paymentRepository->add($payment, true);
+            return $this->redirect($response->getWaveLaunchUrl());
+        } else return $this->redirectToRoute('home');
+    }
+
+    #[Route(path: '/receipt/{id}', name: 'display_receipt', methods: ['POST', 'GET'])]
+    public function showPaymentReceipt(?Payment $payment,
+                                       PaymentService $paymentService): Response
+    {
+        if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {
+            $paymentService->generatePaymentReceipt($payment);
+            return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
+        }
+        return $this->redirectToRoute('admin_index');
+    }
+
 }

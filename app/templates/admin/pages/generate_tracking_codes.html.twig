@@ -29,23 +29,45 @@
         {% if is_granted('ROLE_AGENT') %}
         {{ include('admin/_partials/simple-header.html.twig') }}
         {% endif %}
-            <div class="page-content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">Génération de code de suivi dossier</h4>
+        <div class="page-content">
+            <div class="container">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18">Génération de code de suivi dossier</h4>
+                    </div>
+                    <div class="alert alert-info">
+                        Générer des numéros de dossiers souscripteurs entre dans un interval de chiffres.
+                        NB: Le système ne génère que 20 numéros de dossier à la fois.
+                    </div>
+                    <form action="{{ path('admin_generate_tracking_codes') }}" method="post">
+                        <div class="row">
+                            <div class="hstack gap-3 fs-3">
+                                <div>De</div>
+                                <div class="border border-1 border-warning p-3">{{ tracking_codes[0] }}</div>
+                                <div>A</div>
+                                <div class="border border-1 border-warning p-3">{{ tracking_codes[19] }}</div>
                             </div>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
-                        <div class="col-md-4">
-                            <div class="card card-body d-flex align-items-center">
-                            </div>
+                        <div class="container mt-3">
+                            <table class="table table-bordered">
+                               <tr>
+                                   <td>
+                                       {% for tracking_code in tracking_codes %}
+                                       <span class="badge bg-primary p-2 m-3">{{ tracking_code }}</span>
+                                       {% endfor  %}
+                                   </td>
+                               </tr>
+                                <tr>
+                                    <td>
+                                        <button type="submit" class="btn btn-success">Valider</button>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
+        </div>
     </div>
 
 {% endblock %}

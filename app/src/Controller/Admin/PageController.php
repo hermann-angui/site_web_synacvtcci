@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Member;
 use App\Repository\MemberRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,16 +29,23 @@ class PageController extends AbstractController
     #[Route(path: '/generate/tracking_codes', name: 'admin_generate_tracking_codes')]
     public function generateTrackingCodes(Request $request, MemberRepository $memberRepository): Response
     {
-        $trackingCodes = [];
-        $from = $request->get('from') ;
-        $to = $request->get('to') ;
-        if($from && $to){
-            $from = (int)ltrim($from, '0');
-            $to = (int)ltrim($to, '0');
-            $trackingCodes = array_map(function($num){
-                return sprintf('05d', $num);
-            }, range($from, $to));
+        $member = $memberRepository->getLast();
+        $from = (int)ltrim($member->getTrackingCode(), '0');
+        $trackingCodes = array_map(function($num){
+            return sprintf('%05d', $num);
+        }, range(++$from , $from + 19 ));
+
+        if($request->isMethod('POST')){
+            foreach($trackingCodes as $trackingCode){
+                $member = new Member();
+                $member->setTrackingCode($trackingCode);
+                $memberRepository->add($member, true);
+            }
+            return $this->redirectToRoute('admin_member_search');
+        }else{
+            return $this->render('admin/pages/generate_tracking_codes.html.twig', [
+                'tracking_codes' => $trackingCodes
+            ]);
         }
-        return $this->render('admin/pages/generate_tracking_codes.html.twig', ['tracking_codes' => $trackingCodes]);
     }
 }

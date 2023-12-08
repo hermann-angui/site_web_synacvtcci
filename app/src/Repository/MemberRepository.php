@@ -48,6 +48,17 @@ class MemberRepository extends ServiceEntityRepository
             ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
             ;
     }
+
+    public function getLast(): ?Member
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     public function setAutoIncrementToLast(int $value): ?int
     {
         $conn = $this->getEntityManager()->getConnection();

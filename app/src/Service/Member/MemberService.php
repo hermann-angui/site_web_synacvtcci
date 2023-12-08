@@ -31,7 +31,7 @@ class MemberService
 
     private const WEBSITE_URL = "https://synacvtcci.org";
     private const MEDIA_DIR = "/var/www/html/public/members/";
-    private const MONTANT = 10100;
+
     public function __construct(
         private ContainerInterface             $container,
         private MemberCardGeneratorService     $memberCardGeneratorService,
@@ -617,7 +617,7 @@ class MemberService
             $barcode_file = $folder . "_barcode.png";
             file_put_contents($barcode_file, $content);
 
-            $viewTemplate = 'admin/member/receipt-pdf.html.twig';
+            $viewTemplate = 'frontend/member/receipt-pdf.html.twig';
             $receipt_file = $folder . time() . uniqid() . ".pdf";
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
             file_put_contents($receipt_file, $content);

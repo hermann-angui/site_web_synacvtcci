@@ -15,6 +15,7 @@ use App\Repository\MemberRepository;
 use App\Repository\VillesRepository;
 use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
@@ -89,6 +90,7 @@ class MemberController extends AbstractController
         $outputFile = $memberService->combinePdfsForPrint($member);
         return $this->file($outputFile, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
+
 
     #[Route('/cnmci-pdf/{id}', name: 'admin_download_cnmci_pdf', methods: ['GET'])]
     public function downloadCnmciPdf(Member $member,
@@ -442,7 +444,7 @@ class MemberController extends AbstractController
                                             <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
-                                            <a class='dropdown-item' href='#'><i class='mdi mdi-trash-can'></i>Supprimer</a>
+                                            <a class='dropdown-item' href='/admin/member/$id/supprimer'><i class='mdi mdi-trash-can'></i>Supprimer</a>
                                         </div>
                                     </div>
                                 </div> ";
@@ -540,8 +542,6 @@ class MemberController extends AbstractController
 
         if(!empty($params['searchTerm'])) {
             $whereResult .= " tracking_code LIKE '%". $params['searchTerm']. "%' AND ";
-//            $whereResult .= " first_name LIKE '%". $params['searchTerm']. "%' OR ";
-//            $whereResult .= " last_name LIKE '%". $params['searchTerm']. "%') AND ";
         }
 
         $whereResult.= " status IN ('PHOTO_VALID') ";
@@ -557,9 +557,9 @@ class MemberController extends AbstractController
     }
 
     #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
-    public function recapitulatif(Member $member): Response
+    public function recapitulatif(Member $member, Request $request): Response
     {
-        return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member]);
+        return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member, 'montant' => $request->get('montant')]);
     }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
@@ -589,36 +589,6 @@ class MemberController extends AbstractController
             if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
             if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 
-          //  $data = $request->request->all();
-/*
-            $memberChildren = $member->getChildren();
-            if(isset($data['child'])){
-                foreach($data['child'] as $childItem){
-//                    $child = $childRepository->findOneBy([
-//                        'first_name' => ,
-//                        'last_name' => ,
-//                        'sex' => ,
-//                    ]);
-                    $found = array_filter($memberChildren->toArray(), function($child) use($childItem){
-                        return ($child->getLastName() === $childItem['lastname'] && $child->getFirstName() === $childItem['firstname']) ;
-                    });
-
-                    $found = array_values($found);
-                    if(!empty($found)) {
-                        $found[0]->setLastName($childItem['lastname']);
-                        $found[0]->setFirstName($childItem['firstname']);
-                        $found[0]->setSex($childItem['sex']);
-                    }else{
-                        $child =  new Child();
-                        $child->setLastName($childItem['lastname']);
-                        $child->setFirstName($childItem['firstname']);
-                        $child->setSex($childItem['sex']);
-                        $child->setMember($member);
-                        $member->addChild($child);
-                    }
-                }
-            }
-*/
             $birth_city_other =  $form->get("birth_city_other")->getData();
             if($birth_city_other) {
                 $member->setBirthCity(strtoupper($birth_city_other));
@@ -630,6 +600,14 @@ class MemberController extends AbstractController
                 }
             }
 
+            if(!in_array($member->getStatus(),['PAID', 'COMPLETED', 'SUCCESS'])){
+                $mr = $request->request->all()['member_registration'];
+                $payForSyndicat = (array_key_exists('payforsyndicat', $mr) ) ? $mr['payforsyndicat']: null;
+                $montant_frais = $this->getParameter('montant_frais');
+                $montant_souscription_syndicat = $this->getParameter('montant_souscription_syndicat');
+                $montant = $payForSyndicat ?  ($montant_souscription_syndicat + $montant_frais) : $montant_frais;
+            }
+
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
 
@@ -637,7 +615,7 @@ class MemberController extends AbstractController
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
             }
-            return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId(), 'montant' => $montant], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/member/edit.html.twig', [
@@ -647,16 +625,22 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}/supprimer', name: 'admin_member_delete', methods: ['GET','POST'])]
-    public function delete(Request $request,
-                           Member $member,
+    public function delete(Member $member, Request $request,
+                           EntityManagerInterface $entityManager,
                            MemberRepository $memberRepository): Response
     {
-        if ( false /* $this->isCsrfTokenValid('delete'.$member->getId(), $request->request->get('_token')) */ ) {
-            $memberRepository->remove($member, true);
-            $fileName = "/var/www/html/public/members/" . $member->getReference() . "/";
-            if(file_exists($fileName)) {
-                $fs =  new Filesystem();
-                $fs->remove($fileName);
+        $member->getChildren()->forAll(function ($key, $entity) use ($member){
+            $member->removeChild($entity);
+        });
+        $member->getPayments()->forAll(function ($key, $entity) use ($member){
+            $member->removePayment($entity);
+        });
+        $memberRepository->remove($member, true);
+        if($member->getReference()) {
+            $dir = "/var/www/html/public/members/" . $member->getReference() ;
+            if(is_dir($dir)) {
+                $fs = new Filesystem();
+                $fs->remove($dir);
             }
         }
         return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);

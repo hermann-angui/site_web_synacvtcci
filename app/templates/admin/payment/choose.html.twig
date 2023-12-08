@@ -35,9 +35,9 @@
                                     <img src="{{ asset('assets/frontend/img/mobile-payment-01.webp') }}" alt="" width="230" height="200">
                                     <p class="card-text">Paiement électronique via paiement mobile wave.</p>
 
-                                <a href="{{ path('admin_show_and_download_pdf', {id: member.id}) }}" id="mobilemoneybtn" class="btn btn-primary w-75 waves-effect waves-light"
+                                <a href="#" id="mobilemoneybtn" class="btn btn-primary w-75 waves-effect waves-light"
                                    target="popup"
-                                   onclick="window.open('{{ path('do_payment', {id: member.id})}}','popup','width=600,height=600,scrollbars=no,resizable=no'); return false;">
+                                   onclick="window.open('{{ path('do_payment', {id: member.id, montant: montant})}}','popup','width=600,height=600,scrollbars=no,resizable=no'); return false;">
                                     MOBILE MONEY
                                 </a>
                             </div>
@@ -55,10 +55,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ path('admin_payment_cash', {id: member.id}) }}">
+                    <form method="post" action="{{ path('admin_payment_cash', {id: member.id, montant: montant}) }}">
                         <div class="form-group">
                             <label for="selection_type" class="form-label col-md-2">Montant:</label>
-                            <input type="text" name="amount" class="form-control form-control-lg col-md-5 fs-2" checked placeholder="3500"/>  &nbsp;&nbsp;
+                            <input type="text" name="amount" class="form-control form-control-lg col-md-5 fs-2" checked placeholder="{{ montant }}" value="{{ montant }}"/>  &nbsp;&nbsp;
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary w-md" data-bs-dismiss="modal">Enregistrer</button>

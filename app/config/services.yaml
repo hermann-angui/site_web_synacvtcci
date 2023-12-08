@@ -5,10 +5,13 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.supported_locales: ['fr','en']
-    wave_success_url: https://synacvtcci.org/wave/checkout/success
-    wave_error_url: https://synacvtcci.org/wave/checkout/error
+    checkout_url: "https://api.wave.com/v1/checkout/sessions"
+    success_url: "https://synacvtcci.org/payment/wave/checkout/success?ref="
+    error_url: "https://synacvtcci.org/payment/wave/checkout/error"
     profile_url: http://synacvtcci.org/profile
     images_directory: '%kernel.project_dir%/public/uploads'
+    montant_frais: 100  # 3500
+    montant_souscription_syndicat: 100  #5000
 
 services:
     # default configuration for services in *this* file

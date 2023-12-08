@@ -197,7 +197,18 @@
                     <img src="{{ asset('assets/frontend/img/logo-synacvtcci.jpg') }}" width="100" height="85" alt="logo synacvtcci"/>
                 </div>
             </div>
-            {{ include('frontend/member/_form_self_subscription.html.twig') }}
+            <div class="card">
+                <div class="alert alert-info d-flex justify-content-center align-items-center flex-column">
+                    <img src="{{ asset('assets/frontend/img/wave-logo.svg') }}" alt="wave logo" width="90" class="py-3">
+                    <h5>Vous vous apprêtez à effectuer un paiement de</h5>
+                    <h2 class="fw-bold fs-2">{{ montant }}</h2>
+                    <p>Veuillez conserver votre reçu de paiement à la fin du processus.</p>
+                </div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <a href="{{ path('admin_index') }}" class="btn btn-success mx-2">Annuler</a>
+                    <a href="{{ path('do_public_payment', {id: id, montant: montant }) }}" class="btn btn-success">Payer maintenant</a>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -205,15 +216,12 @@
 {% block javascript %}
 {{ parent() }}
 <script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
-<script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
-<script src="{{ asset('assets/admin/libs/jquery.validation/jquery.validate.min.js') }}"></script>
-<script src="{{ asset('assets/admin/libs/jquery.validation/additional-methods.min.js') }}"></script>
-<script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/toastr/build/toastr.min.js') }}"></script>
 <script>
       $('document').ready(function() {
           $(".input-mask").inputmask();
+
           $(".select2").select2();
       });
   </script>
