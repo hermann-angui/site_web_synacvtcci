@@ -10,8 +10,8 @@ parameters:
     error_url: "https://synacvtcci.org/payment/wave/checkout/error"
     profile_url: http://synacvtcci.org/profile
     images_directory: '%kernel.project_dir%/public/uploads'
-    montant_frais: 100  # 3500
-    montant_souscription_syndicat: 100  #5000
+    montant_frais: 25
+    montant_souscription_syndicat: 25
 
 services:
     # default configuration for services in *this* file

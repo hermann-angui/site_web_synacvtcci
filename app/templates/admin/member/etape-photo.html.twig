@@ -15,7 +15,7 @@
         .form-control, .form-select {
             padding: 0.5rem 0.55rem;
             font-size: 0.95rem;
-            color: #117b01;
+            color: #009E60;
             font-weight: bolder;
             border-radius: 0rem;
             border: 2px solid #ffbb00;
@@ -32,8 +32,8 @@
             border: 2px solid #ffbb00;
         }
         .form-check-input:checked {
-            background-color: #117b01;
-            border: 2px solid #117b01;
+            background-color: #009E60;
+            border: 2px solid #009E60;
         }
         .col-form-label {
             padding-top: calc(0.375rem + 1px);
@@ -96,12 +96,12 @@
         .select2 span.select2-selection__rendered,
         li.select2-results__option {
             font-size: 1.05rem;
-            color: #117b01;
+            color: #009E60;
             font-weight: bolder;
         }
 
         .select2-container--default .select2-results__option--highlighted[aria-selected] {
-            background-color: #117b01;
+            background-color: #009E60;
             /*font-size: 0.75rem;*/
             font-size: 1.05rem;
             color: #fff;
@@ -109,7 +109,7 @@
         }
 
         .select2-container--default .select2-selection--single .select2-selection__rendered {
-            color: #117b01;
+            color: #009E60;
             line-height: 28px;
         }
 
@@ -177,9 +177,7 @@
 {% endblock %}
 
 {% block body %}
-    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
-    <!-- Begin page -->
     <div id="layout-wrapper">
 
         {{ include('admin/_partials/header.html.twig') }}
@@ -216,7 +214,8 @@
                         </div>
                     </div>
                 </div> <!-- container-fluid -->
-            </div><!-- End Page-content -->
+            </div>
+            <!-- End Page-content -->
 
             {{ include('admin/_partials/footer.html.twig') }}
         </div>

@@ -114,7 +114,7 @@ class MemberController extends AbstractController
             $member->setStatus("PHOTO_VALID");
             $memberService->saveMember($member);
             $activityLogger->create($member, "Création d'un nouveau dossier souscripteur et upload des fichiers (photo, scan des documents d'identités et reçu orange money)");
-            return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_member_show', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('admin/member/etape-photo.html.twig', [
             'member' => $member,
@@ -551,24 +551,23 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
-    public function show(Member $member): Response
+    public function show(Member $member, Request $request): Response
     {
-        return $this->render('admin/member/show.html.twig', ['member' => $member,]);
+        return $this->render('admin/member/show.html.twig', ['member' => $member, 'montant' => $request->get('montant')]);
     }
 
-    #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
-    public function recapitulatif(Member $member, Request $request): Response
-    {
-        return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member, 'montant' => $request->get('montant')]);
-    }
+//    #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
+//    public function recapitulatif(Member $member, Request $request): Response
+//    {
+//        return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member, 'montant' => $request->get('montant')]);
+//    }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request,
                          Member $member,
                          MemberService $memberService,
                          VillesRepository $villesRepository,
-                         ChildRepository $childRepository,
-                        ActivityLogger $activityLogger): Response
+                         ActivityLogger $activityLogger): Response
     {
         date_default_timezone_set("Africa/Abidjan");
 
@@ -576,7 +575,6 @@ class MemberController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $images = [];
             if($form->has('photo'))  $images['photo'] = $form->get('photo')?->getData();
             if($form->has('photoPieceFront'))  $images['photoPieceFront'] = $form->get('photoPieceFront')?->getData();
@@ -600,6 +598,7 @@ class MemberController extends AbstractController
                 }
             }
 
+            $montant = 0;
             if(!in_array($member->getStatus(),['PAID', 'COMPLETED', 'SUCCESS'])){
                 $mr = $request->request->all()['member_registration'];
                 $payForSyndicat = (array_key_exists('payforsyndicat', $mr) ) ? $mr['payforsyndicat']: null;
@@ -611,11 +610,12 @@ class MemberController extends AbstractController
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
 
-            if($member->getStatus() === "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
+            if(in_array($member->getStatus(), ["PHOTO_VALID", "PENDING", "INFORMATION_VALIDATED"])){
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
             }
-            return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId(), 'montant' => $montant], Response::HTTP_SEE_OTHER);
+            return $this->render('admin/member/show.html.twig', ['member' => $member, 'montant' => $montant]);
+        //  return $this->redirectToRoute('admin_member_show', ['id' => $member->getId(), 'montant' => $montant], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/member/edit.html.twig', [

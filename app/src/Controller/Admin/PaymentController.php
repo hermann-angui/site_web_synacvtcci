@@ -34,12 +34,12 @@ class PaymentController extends AbstractController
         if (in_array($member->getStatus(), ["PAID", "COMPLETED"])) {
             return $this->redirectToRoute('admin_index', ['id' => $member->getId()]);
         }
-        return $this->render('admin/payment/choose.html.twig', ['member' => $member, 'montant' => $request->get('montant')]);
+        return $this->render('admin/payment/choose.html.twig', ['member' => $member, 'montant' => $request->get('montant', 3500)]);
     }
 
     #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
     public function cashin(Member $member,
-                           REquest $request,
+                           Request $request,
                            PaymentService $paymentService,
                            MemberService $memberService,
                            ActivityLogger $activityLogger): Response
@@ -74,10 +74,9 @@ class PaymentController extends AbstractController
     public function doPayment(Member $member,
                               Request $request,
                               WaveService       $waveService,
-                              ActivityLogger $activityLogger,
                               PaymentRepository $paymentRepository): Response
     {
-        $response = $waveService->makePayment($request->get('montant') ?? self::MONTANT);
+        $response = $waveService->makePayment($request->get('montant') ?? $this->getParameter('montant_frais'));
         if ($response) {
             $payment = new Payment();
             $payment->setUser($this->getUser());

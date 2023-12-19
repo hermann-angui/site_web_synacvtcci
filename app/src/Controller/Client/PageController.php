@@ -173,6 +173,7 @@ class PageController extends AbstractController
         date_default_timezone_set("Africa/Abidjan");
 
         $member = $memberRepository->findOneBy(['tracking_code' => $tracking_code]);
+        if(!$member) $member = new Member();
         $form = $this->createForm(MemberRegistrationType::class, $member);
         $form->handleRequest($request);
 
@@ -181,7 +182,13 @@ class PageController extends AbstractController
                 $mr = $request->request->all()['member_registration'];
                 $payForSyndicat = (array_key_exists('payforsyndicat', $mr) ) ? $mr['payforsyndicat']: null;
             }
-            $member->setTrackingCode($tracking_code);
+
+            if($tracking_code) $member->setTrackingCode($tracking_code);
+            else {
+                $m = $memberRepository->getLast();
+                $tracking_code = (int)ltrim($m->getTrackingCode(), '0');
+                $member->setTrackingCode(sprintf('%05d', $tracking_code));
+            }
             $memberRepository->add($member, true);
             return $this->redirectToRoute('presubscribe_confirm', ['id' => $member->getId(), 'payforsyndicat' => $payForSyndicat]);
         }

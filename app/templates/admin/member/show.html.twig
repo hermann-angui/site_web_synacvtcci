@@ -163,6 +163,18 @@
             border: 1px dashed #adb5bd;
             padding: 10px 10px;
         }
+
+        .section-title {
+             background: linear-gradient(59deg, rgba(252,114,0,1) 9%, rgba(244,130,0,0.8855917366946778) 32%, rgba(62,146,60,0.9398113905325444) 69%, rgba(4,113,2,1) 95%);
+             padding: 5px 5px;
+             color: white;
+             font-size: 16px;
+        }
+        table tbody tr td {
+            color: #117b01;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
     </style>
 {% endblock %}
 
@@ -176,10 +188,9 @@
 
         {{ include('admin/_partials/header.html.twig') }}
 
-        <!-- ========== Left Sidebar Start ========== -->
-        {{ include('admin/_partials/left-sidebar.html.twig')}}
-        <!-- Left Sidebar End -->
-
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+        {% endif %}
 
         <!-- ============================================================== -->
         <!-- Start right Content here -->
@@ -234,7 +245,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th>Matricule</th>
+                                                <th style="width:35%">Matricule</th>
                                                 <td>{{ member.matricule }}</td>
                                             </tr>
                                             <tr>
@@ -309,7 +320,7 @@
                                         <table class="table table-condensed table-bordered px-5">
                                             <tbody>
                                             <tr>
-                                                <th>Compagnie de VTC</th>
+                                                <th style="width:35%">Compagnie de VTC</th>
                                                 <td>{{ member.company ? member.company|json_encode: "" }}</td>
                                             </tr>
                                             <tr>
@@ -359,7 +370,7 @@
                                         <table class="table table-bordered px-5">
                                             <tbody>
                                             <tr>
-                                                <th>Situation matrimoniale</th>
+                                                <th style="width:35%">Situation matrimoniale</th>
                                                 <td>{{ member.etatCivil }}</td>
                                             </tr>
                                             <tr>
@@ -413,11 +424,11 @@
                                         </table>
                                     </div>
                                     <div class="row d-flex justify-content-between">
-                                        <a href="{{ path('admin_member_edit', {id: member.id}) }}" class="btn btn-primary waves-effect waves-light col-md-2 offset-1"><i class="fa fa-arrow-left fa-1x"></i> Revenir</a>
-                                        {% if member.status == 'INFORMATION_VALIDATED' %}
+                                        <a href="{{ path('admin_member_edit', {id: member.id}) }}" class="btn btn-success waves-effect waves-light col-md-2 offset-1"><i class="fa fa-arrow-left fa-1x"></i> Revenir</a>
+                                        {% if member.status == 'INFORMATION_VALIDATED'  or member.status == 'PHOTO_VALID' %}
                                             <a href="{{ path('admin_payment_choose',{'id': member.id}) }}" class="btn btn-success waves-effect waves-light col-md-2 offset-1"> Passer au paiement <i class="fa fa-arrow-right fa-1x"></i></a>
                                         {% else %}
-                                            <a href="{{ path('admin_index')}}" class="btn btn-primary waves-effect waves-light col-md-2 offset-1"><i class="fa fa-arrow-left fa-1x"></i> Enregistrer et quitter</a>
+                                            <a href="{{ path('admin_index')}}" class="btn btn-success waves-effect waves-light col-md-2 offset-1"><i class="fa fa-arrow-left fa-1x"></i> Enregistrer et quitter</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -447,16 +458,6 @@
 {{ parent() }}
   <script>
       $('document').ready(function() {
-          $("#member_photo").change(function(data){
-              var imageFile = data.target.files[0];
-              var reader = new FileReader();
-              reader.readAsDataURL(imageFile);
-
-              reader.onload = function(evt){
-                  $('#imagePreview').attr('src', evt.target.result);
-                  $('#imagePreview').fadeIn(650);
-              }
-          });
       });
 
   </script>

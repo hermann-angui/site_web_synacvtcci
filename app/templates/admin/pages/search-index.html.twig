@@ -26,7 +26,13 @@
 {% block body %}
     <!-- Begin page -->
     <div id="layout-wrapper">
-        {{ include('admin/_partials/simple-header.html.twig') }}
+        {{ include('admin/_partials/header.html.twig') }}
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
+        {% endif %}
         <div class="page-content">
             <div class="container">
                 <div class="row">
@@ -39,7 +45,6 @@
                                     <li class="breadcrumb-item active">Recherche rapide</li>
                                 </ol>
                             </div>
-
                         </div>
                     </div>
                 </div>
