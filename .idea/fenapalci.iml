@@ -141,6 +141,8 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/psr/simple-cache" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/maennchen/zipstream-php" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/ezyang/htmlpurifier" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/laminas/laminas-escaper" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/phpoffice/phpword" />
     </content>
     <content url="file://$MODULE_DIR$/app/templates" />
     <orderEntry type="inheritedJdk" />

@@ -34,7 +34,11 @@ class PaymentController extends AbstractController
         if (in_array($member->getStatus(), ["PAID", "COMPLETED"])) {
             return $this->redirectToRoute('admin_index', ['id' => $member->getId()]);
         }
-        return $this->render('admin/payment/choose.html.twig', ['member' => $member, 'montant' => $request->get('montant', 3500)]);
+        $defaultAmount = $this->getParameter('montant_frais');
+        return $this->render('admin/payment/choose.html.twig', [
+            'member' => $member,
+            'montant' => $request->get('montant', $defaultAmount)
+        ]);
     }
 
     #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]

@@ -632,12 +632,15 @@ class MemberController extends AbstractController
         $member->getChildren()->forAll(function ($key, $entity) use ($member){
             $member->removeChild($entity);
         });
+
         $member->getPayments()->forAll(function ($key, $entity) use ($member){
             $member->removePayment($entity);
         });
+
         $memberRepository->remove($member, true);
+
         if($member->getReference()) {
-            $dir = "/var/www/html/public/members/" . $member->getReference() ;
+            $dir = $this->getParameter('kernel.project_dir'). "/public/members/" . $member->getReference() ;
             if(is_dir($dir)) {
                 $fs = new Filesystem();
                 $fs->remove($dir);
