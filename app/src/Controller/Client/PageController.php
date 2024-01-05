@@ -7,6 +7,7 @@ use App\Entity\Member;
 use App\Entity\Payment;
 use App\Form\MemberOnlineRegistrationType;
 use App\Form\MemberRegistrationType;
+use App\Helper\ActivityLogger;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
 use App\Service\Member\MemberService;
@@ -18,6 +19,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 class PageController extends AbstractController
 {
@@ -102,11 +104,11 @@ class PageController extends AbstractController
     }
 
     #[Route('/cnmci/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
-    public function formCnmciShow($id,
-                                  MemberRepository $memberRepository): Response
+    public function formCnmciShow($id, MemberRepository $memberRepository): Response
     {
-        $member = $memberRepository->findOneBy(['codeSticker' => $id]);
-        return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
+        $member = $memberRepository->findOneBy(['sticker_code' => $id]);
+        if(!$member) return $this->redirectToRoute('admin_index');
+        else return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
     }
 
     private function handleFormCreation(Request $request,
@@ -151,8 +153,7 @@ class PageController extends AbstractController
 
     #[Route('/preinscription/{id}/confirmation', name: 'presubscribe_confirm')]
     public function presubscribeConfirmation (Member $member,
-                                              Request $request,
-                                              MemberRepository $memberRepository): Response
+                                              Request $request): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         $montant_frais = $this->getParameter('montant_frais');
@@ -163,7 +164,6 @@ class PageController extends AbstractController
             'montant' => $montant
         ]);
     }
-
 
     #[Route('/preinscription/{tracking_code}', name: 'presubscribe'), ]
     public function presubscribe (string $tracking_code,
@@ -199,30 +199,66 @@ class PageController extends AbstractController
         ]);
     }
 
-
     #[Route(path: '/do/{id}', name: 'do_public_payment')]
     public function doPayment(Member $member,
                               Request $request,
-                              WaveService       $waveService,
-                              PaymentRepository $paymentRepository): Response
+                              PaymentService $paymentService,
+                              MemberService $memberService,
+                              ActivityLogger $activityLogger,
+                              WaveService $waveService): Response
     {
-        if(in_array($member->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) return $this->redirectToRoute('home');
-        $response = $waveService->makePayment($request->get('montant') ?? $this->getParameter('montant'));
-        if ($response) {
-            $payment = new Payment();
-            $payment->setUser($this->getUser());
-            $payment->setStatus(strtoupper($response->getPaymentStatus()));
-            $payment->setReference($response->getClientReference());
-            $payment->setOperateur("WAVE");
-            $payment->setMontant($response->getAmount());
-            $payment->setType("MOBILE_MONEY");
-            $payment->setReceiptNumber(PaymentService::generateReference());
-            $payment->setCreatedAt(new \DateTime('now'));
-            $payment->setModifiedAt(new \DateTime('now'));
-            $payment->setPaymentFor($member);
-            $paymentRepository->add($payment, true);
-            return $this->redirect($response->getWaveLaunchUrl());
-        } else return $this->redirectToRoute('home');
+        $paymentInfos = $request->request->all();
+        if($paymentInfos['paiement_mode'] === "cash"){
+            $payments = [];
+            foreach($paymentInfos['payfor'] as $payfor){
+                $payment = new Payment();
+                $payment->setUser($this->getUser())
+                    ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
+                    ->setType('CASH')
+                    ->setPaymentFor($member)
+                    ->setCodePaymentOperateur(null)
+                    ->setReceiptFile(null)
+                    ->setStatus("PAID")
+                    ->setTarget($payfor)
+                    ->setMontant($paymentInfos["total"]);
+                $paymentService->store($payment);
+                $payments[] = $payment;
+            }
+            $member->setStatus("PAID");
+            $memberService->saveMember($member);
+            $activityLogger->create($payment, "Paiement cash effectuée");
+            $paymentService->generatePaymentReceipt($member, $payments);
+            return $this->redirectToRoute('payment_success_page', ['montant' => $payments]);
+
+        }elseif($paymentInfos['paiement_mode'] === "mobile_money"){
+            $response = $waveService->requestPayment($paymentInfos["total"]);
+            if ($response) {
+                foreach($paymentInfos['payfor'] as $payfor){
+                    $payment = new Payment();
+                    $payment->setUser($this->getUser());
+                    $payment->setStatus(strtoupper($response->getPaymentStatus()));
+                    $payment->setReference($response->getClientReference());
+                    $payment->setOperateur("WAVE");
+                    $payment->setMontant($response->getAmount());
+                    $payment->setType("MOBILE_MONEY");
+                    $payment->setReceiptNumber(PaymentService::generateReference());
+                    $payment->setCreatedAt(new \DateTime('now'));
+                    $payment->setModifiedAt(new \DateTime('now'));
+                    $payment->setPaymentFor($member);
+                    $payment->setTarget($payfor);
+                    $paymentService->store($payment);
+                }
+                return $this->redirect($response->getWaveLaunchUrl());
+            }
+        }
+        return $this->redirectToRoute('admin_index');
+    }
+
+    #[Route(path: '/successpage', name: 'payment_success_page', methods: ['POST', 'GET'])]
+    public function paymentSuccessPage(Request $request): Response
+    {
+        $montant = $request->get('montant');
+        return $this->render('admin/payment/payment-success.html.twig', ['montant' => $montant]);
     }
 
     #[Route(path: '/receipt/{id}', name: 'display_receipt', methods: ['POST', 'GET'])]
@@ -235,5 +271,4 @@ class PageController extends AbstractController
         }
         return $this->redirectToRoute('admin_index');
     }
-
 }

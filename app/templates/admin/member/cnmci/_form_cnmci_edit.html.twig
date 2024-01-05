@@ -176,7 +176,7 @@
                         <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
                             <div style="margin-top: -18px;">
                                 {% if member is defined and member.photo is not empty %}
-                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="120" height="160" class="rounded-0">
+                                    <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="120" height="160" style="object-fit: contain">
                                 {% else %}
                                     <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="50" class="rounded-0">
                                 {% endif %}

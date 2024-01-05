@@ -2,19 +2,19 @@
 
 namespace App\Service\Payment;
 
+use App\Entity\Member;
 use App\Entity\Payment;
 use App\Helper\PdfGenerator;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Uid\Uuid;
 
 class PaymentService
 {
-    private const WEBSITE_URL = "https://synacvtcci.org";
-    private const MEDIA_DIR = "/var/www/html/public/members/";
-
-    public function __construct(private PdfGenerator $pdfGenerator,
+    public function __construct(private ContainerInterface  $container,
+                                private PdfGenerator $pdfGenerator,
                                 private MemberRepository $memberRepository,
                                 private PaymentRepository $paymentRepository)
     {}
@@ -37,31 +37,18 @@ class PaymentService
     }
 
      /**
-     * @param Payment|null $payment
-     * @param string $viewTemplate
+     * @param Member|null $payment
+     * @param array|null $payments
      * @return string|null
      */
-    public function generatePaymentReceipt(?Payment $payment)
+    public function generatePaymentReceipt(?Member $member, ?array $payments = [])
     {
         try {
-            $member = $payment->getPaymentFor();
-
-            if (!$member->getMatricule()) {
-                $date = new \DateTime('now');
-                $sexCode = null;
-                if($member->getSex() === "H") $sexCode = "SY1";
-                elseif($member->getSex() === "F") $sexCode = "SY2";
-                if($sexCode){
-                    $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-                    $member->setMatricule($matricule);
-                    $this->memberRepository->add($member, true);
-                }
-            }
-
-            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getMatricule();
+            if(empty($payments)) $payments = $member->getPayments();
+            $qrCodeData = $this->container->getParameter('app.baseurl') . "/profile/" . $member->getMatricule();
 
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
-            $folder = self::MEDIA_DIR . $member->getReference() . '/';
+            $folder = $this->container->getParameter('app.member.dir') . $member->getReference() . '/';
             if(!file_exists($folder)) mkdir($folder, 0777, true);
 
             $barcode_file = $folder . "payment_barcode.png";
@@ -69,13 +56,18 @@ class PaymentService
 
             $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
             $receipt_file = $folder . time() . uniqid() . ".pdf";
-            $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
+            $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member'=> $member, 'payments' => $payments]);
             file_put_contents($receipt_file, $content);
 
             if(file_exists($barcode_file)) \unlink($barcode_file);
 
             $member->setPaymentReceiptSynacvtcciPdf(basename($receipt_file));
             $this->memberRepository->add($member, true);
+
+            foreach($payments as $payment){
+                $payment->setReceiptFile($receipt_file);
+                $this->paymentRepository->add($payment, true);
+            }
 
             return $content ?? null;
 
@@ -110,4 +102,24 @@ class PaymentService
         return $payment;
     }
 
+
+    public function findOneBy(array $criteria, array|null $orderBy = null) : ?Payment
+    {
+        return $this->paymentRepository->findOneBy($criteria, $orderBy);
+    }
+
+    public function findBy(array $criteria, array|null $orderBy, $limit = null, $offset = null): ?array
+    {
+        return $this->paymentRepository->findBy( $criteria, $orderBy, $limit, $offset);
+    }
+
+    public function findAll(): ?array
+    {
+        return $this->paymentRepository->findAll();
+    }
+
+    public function find($id, $lockMode = null, $lockVersion = null): ?Payment
+    {
+        return $this->paymentRepository->find($id, $lockMode, $lockVersion);
+    }
 }

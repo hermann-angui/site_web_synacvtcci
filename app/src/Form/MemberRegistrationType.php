@@ -50,6 +50,12 @@ class MemberRegistrationType extends AbstractType
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '*****'"],
                 'mapped' => true,
             ])
+            ->add('sticker_code',TextType::class, [
+                'required' => true,
+                'label' => "N° Sticker",
+                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '*******'"],
+                'mapped' => true,
+            ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
                 'mapped' => true,
@@ -182,10 +188,10 @@ class MemberRegistrationType extends AbstractType
                 'required' => false,
                 'mapped' => true,
             ])
-            ->add('payforsyndicat', CheckboxType::class, [
+            ->add('has_paid_for_syndicat', CheckboxType::class, [
                 'label' => "Payer votre adhésion maintenant (5 000 F) ?",
                 'required' => false,
-                'mapped' => false,
+                'mapped' => true,
             ])
             ->add('date_of_birth',DateType::class, [
                 'label' => 'Date de naissance',
@@ -248,6 +254,54 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Copie scannée du permis de conduire (verso)",
                 'data_class' =>  null,
                 'mapped' => true,
+            ])
+            ->add('ficheEngagementSynacvtcciPdf',FileType::class, [
+                'required' => false,
+                'label' => "Fiche engagement",
+                'data_class' =>  null,
+                'mapped' => true,
+                'constraints' => [
+                    new File([
+                        //  'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Le fichier doit être au format pdf',
+                    ])
+                ],
+            ])
+            ->add('formulaireCnmciPdf',FileType::class, [
+                'required' => false,
+                'label' => "Fiche engagement",
+                'data_class' =>  null,
+                'mapped' => true,
+                'constraints' => [
+                    new File([
+                        //  'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Le fichier doit être au format pdf',
+                    ])
+                ],
+            ])
+            ->add('paymentReceiptSynacvtcciPdf',FileType::class, [
+                'required' => false,
+                'label' => "Fiche engagement",
+                'data_class' =>  null,
+                'mapped' => true,
+                'constraints' => [
+                    new File([
+                        //  'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Le fichier doit être au format pdf',
+                    ])
+                ],
             ])
             ->add('paymentReceiptCnmciPdf',FileType::class, [
                 'required' => false,

@@ -143,6 +143,15 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/ezyang/htmlpurifier" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/laminas/laminas-escaper" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/phpoffice/phpword" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/api-platform/core" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/api-platform/api-pack" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/willdurand/negotiation" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/psr/link" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/serializer-pack" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/expression-language" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/web-link" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/orm-pack" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/nelmio/cors-bundle" />
     </content>
     <content url="file://$MODULE_DIR$/app/templates" />
     <orderEntry type="inheritedJdk" />

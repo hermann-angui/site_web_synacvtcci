@@ -239,17 +239,16 @@
       $('document').ready(function() {
 
           $("#stepperform").submit(function(e){
-              console.log(window.navigator.onLine);
-                if(!window.navigator.onLine) {
-                    toastr.error('Attention!! Vous avez perdu la connexion internet.');
-                    toastr.options ={
-
-                    };
-                    return false;
-                }else{
+                // if(!window.navigator.onLine) {
+                //     toastr.error('Attention!! Vous avez perdu la connexion internet.');
+                //     toastr.options ={
+                //
+                //     };
+                //     return false;
+                // }else{
                     $("#stepperform").validate().settings.ignore = ":disabled,.ignore";
                     return $("#stepperform").valid();
-                }
+               // }
           }).validate({
                 errorPlacement: function errorPlacement(error, element) { element.before(error); },
                 rules: {

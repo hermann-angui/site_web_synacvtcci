@@ -10,15 +10,16 @@ use App\Form\MemberRegistrationType;
 use App\Helper\ActivityLogger;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
-use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
 use App\Repository\VillesRepository;
 use App\Service\Member\MemberService;
+use App\Service\Payment\PaymentService;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,7 +77,7 @@ class MemberController extends AbstractController
             return $this->render('admin/member/cnmci/cnmci_edit.html.twig', ['member' => $member]);
         }elseif($request->getMethod() === "POST") {
             $memberService->createCnmiOrUpdate($member, $request->request->all(), 1);
-            $memberService->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+            $memberService->generateFormulaireCNMCIPdf($member);
             $activityLogger->update($member, "Mise à jour des données du formulaire de la chambre nationale de métiers");
             return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
         }
@@ -85,8 +86,9 @@ class MemberController extends AbstractController
 
 
     #[Route('/printdocs/{id}', name: 'admin_show_and_download_pdf', methods: ['GET'])]
-    public function generateAllPdf(Member $member, MemberService $memberService): Response
+    public function generateAllPdf(Member $member, MemberService $memberService, ActivityLogger $activityLogger): Response
     {
+        $activityLogger->create($member, "Génération des fichiers à imprimer.");
         $outputFile = $memberService->combinePdfsForPrint($member);
         return $this->file($outputFile, null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
@@ -96,8 +98,16 @@ class MemberController extends AbstractController
     public function downloadCnmciPdf(Member $member,
                                      MemberService $memberService,
                                     ActivityLogger $activityLogger): Response {
-        $activityLogger->create($member, "Téléchargement fiche de la chambre nationale de métier");
-        return $memberService->downloadCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+        $activityLogger->create($member, "Téléchargement fiche de la Chambre Nationale de Métier");
+        return $memberService->downloadCNMCIPdf($member);
+    }
+
+    #[Route('/fiche-engagement-synacvtcci/{id}', name: 'admin_download_fiche_engagement_synacvtcci_pdf', methods: ['GET'])]
+    public function downloadFicheEngagementSynacvtcciPdf(Member $member,
+                                     MemberService $memberService,
+                                    ActivityLogger $activityLogger): Response {
+        $activityLogger->create($member, "Téléchargement fiche de la Chambre Nationale de Métier");
+        return $memberService->downloadFicheEngagementSynacvtcci($member);
     }
 
     #[Route('/photostep', name: 'admin_member_photostep', methods: ['GET', 'POST'])]
@@ -551,21 +561,21 @@ class MemberController extends AbstractController
     }
 
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
-    public function show(Member $member, Request $request): Response
+    public function show(Member $member, PaymentService $paymentService, Request $request): Response
     {
-        return $this->render('admin/member/show.html.twig', ['member' => $member, 'montant' => $request->get('montant')]);
+        $payFor = [];
+        return $this->render('admin/member/show.html.twig', [
+            'member' => $member,
+            'montant' => $request->get('montant'),
+            'payFor' => $payFor
+        ]);
     }
-
-//    #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
-//    public function recapitulatif(Member $member, Request $request): Response
-//    {
-//        return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member, 'montant' => $request->get('montant')]);
-//    }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request,
                          Member $member,
                          MemberService $memberService,
+                         PaymentService $paymentService,
                          VillesRepository $villesRepository,
                          ActivityLogger $activityLogger): Response
     {
@@ -585,9 +595,11 @@ class MemberController extends AbstractController
             if($form->has('paymentReceiptCnmciPdf'))  $images['paymentReceiptCnmciPdf'] = $form->get('paymentReceiptCnmciPdf')?->getData();
             if($form->has('paymentReceiptSynacvtcciPdf'))  $images['paymentReceiptSynacvtcciPdf'] = $form->get('paymentReceiptSynacvtcciPdf')?->getData();
             if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
-            if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
+            if($form->has('ficheEngagementSynacvtcciPdf'))  $images['ficheEngagementSynacvtcciPdf'] = $form->get('ficheEngagementSynacvtcciPdf')?->getData();
+            if($form->has('formulaireCnmciPdf'))  $images['formulaireCnmciPdf'] = $form->get('formulaireCnmciPdf')?->getData();
 
             $birth_city_other =  $form->get("birth_city_other")->getData();
+
             if($birth_city_other) {
                 $member->setBirthCity(strtoupper($birth_city_other));
                 $exist = $villesRepository->findOneBy(['name' => strtoupper($birth_city_other)]);
@@ -598,13 +610,13 @@ class MemberController extends AbstractController
                 }
             }
 
-            $montant = 0;
-            if(!in_array($member->getStatus(),['PAID', 'COMPLETED', 'SUCCESS'])){
-                $mr = $request->request->all()['member_registration'];
-                $payForSyndicat = (array_key_exists('payforsyndicat', $mr) ) ? $mr['payforsyndicat']: null;
-                $montant_frais = $this->getParameter('montant_frais');
-                $montant_souscription_syndicat = $this->getParameter('montant_souscription_syndicat');
-                $montant = $payForSyndicat ?  ($montant_souscription_syndicat + $montant_frais) : $montant_frais;
+            $frais_inscription = $paymentService->findOneBy(['payment_for' => $member ,'target' => "FRAIS_SERVICE_TECHNIQUE"]);
+            $adhesion_syndicat = $paymentService->findOneBy(['payment_for' => $member,'target' => "FRAIS_ADHESION_SYNDICAT"]);
+
+            $payFor = [];
+            if(!$frais_inscription) $payFor[] = "FRAIS_SERVICE_TECHNIQUE";
+            if($member->getHasPaidForSyndicat() && !$adhesion_syndicat) {
+                $payFor[] = "FRAIS_ADHESION_SYNDICAT";
             }
 
             $memberService->updateMember($member, $images);
@@ -614,8 +626,11 @@ class MemberController extends AbstractController
                 $member->setStatus("INFORMATION_VALIDATED");
                 $memberService->saveMember($member);
             }
-            return $this->render('admin/member/show.html.twig', ['member' => $member, 'montant' => $montant]);
-        //  return $this->redirectToRoute('admin_member_show', ['id' => $member->getId(), 'montant' => $montant], Response::HTTP_SEE_OTHER);
+
+            return $this->render('admin/member/show.html.twig', [
+                'member' => $member,
+                'payFor' => $payFor,
+            ]);
         }
 
         return $this->renderForm('admin/member/edit.html.twig', [

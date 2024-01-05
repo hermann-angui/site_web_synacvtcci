@@ -3,13 +3,24 @@
 {% block stylesheet %}
     {{ parent() }}
     <style>
-        .card-body{
-            border: 2px solid #f8f8fb;
+
+        label#choice-mobile, label#choice-cash {
             cursor: pointer;
         }
-        .card-body:hover {
+
+        .highlighted {
             border: 2px solid #dc8c00;
-            cursor: pointer;
+        }
+        .unselected {
+            border: none;
+        }
+        #invoice-table tr th {
+            font-size: 1.15em;
+            font-weight: bold;
+        }
+        #invoice-table tr td {
+            font-size: 1.15em;
+            font-weight: normal;
         }
     </style>
 {% endblock %}
@@ -29,7 +40,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">Recherche rapide de souscripteur</h4>
+                                <h4 class="mb-sm-0 font-size-18">Paiement</h4>
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
                                         <li class="breadcrumb-item"><a href="{{ path("admin_index")}}">Accueil</a></li>
@@ -39,41 +50,60 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
-                        <div class="col-lg-4 mx-3">
-                            <div class="card card-body d-flex align-items-center">
-                                    <h4 class="card-title">REGLEMENT PAR CASH</h4>
-                                    <img src="{{ asset('assets/frontend/img/cash-payment.png') }}" alt="" width="200">
-                                    <p class="card-text">Veuillez encaisser le somme en espèce du client.</p>
-                                    <form method="post" action="{{ path('admin_payment_cash', {id: member.id, montant: montant}) }}">
-                                        <div class="form-group">
-                                            <input type="text" name="amount" class="form-control form-control-lg text-center fs-2 fw-bold"  placeholder="{{ montant }}" value="{{ montant }} F CFA"/>  &nbsp;&nbsp;
-                                        </div>
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary w-75 w-md" data-bs-dismiss="modal">CASH</button>
-                                        </div>
-                                    </form>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 ">
-                            <div class="card card-body d-flex align-items-center">
-                                    <h4 class="card-title">REGLEMENT PAR MOBILE MONEY</h4>
-                                    <img src="{{ asset('assets/frontend/img/mobile-payment-01.webp') }}" alt="" width="230" height="200">
-                                    <p class="card-text">Paiement électronique via paiement mobile wave.</p>
-
-                                <form method="post" action="{{ path('admin_payment_cash', {id: member.id, montant: montant}) }}">
-                                    <div class="form-group">
-                                        <input type="text" name="amount" class="form-control form-control-lg text-center fs-2 fw-bold"  placeholder="{{ montant }}" value="{{ montant }} F CFA"/>  &nbsp;&nbsp;
+                    <div class="row">
+                        <div class="card card-body d-flex align-items-center">
+                            <div class="col-12">
+                                <form id="frm" action="{{ path('do_payment', {id: member.id})}}" method="post">
+                                <table id="invoice-table" class="table table-bordered table-condensed">
+                                    <tr>
+                                        <th></th>
+                                        <th>LIBELLE</th>
+                                        <th>MONTANT (CFA TTC)</th>
+                                    </tr>
+                                    {% for index, pay in payFor['items'] %}
+                                    <tr>
+                                        <td>{{ index+1 }}</td>
+                                        <td>{{ pay['title'] }}</td>
+                                        <td>{{ pay['montant'] }}</td>
+                                        <input type="hidden" name="payfor[]" value="{{ pay['key'] }}">
+                                    </tr>
+                                    {% endfor %}
+                                    <tr style="background-color: #fcf7e8">
+                                        <td></td>
+                                        <td style="text-align: end;font-size: 1.5em;"> TOTAL </td>
+                                        <td style="font-size: 1.5em;">{{ payFor['total'] }}</td>
+                                        <input type="hidden" name="total" value="{{ payFor['total'] }}">
+                                    </tr>
+                                </table>
+                                <div class="row">
+                                    <div class="col-lg-5">
+                                        <h5 class="mt-5" >Veuillez sélectionner le mode de paiement</h5>
                                     </div>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <div class="col-lg-2">
+                                        <label class="card card-body d-flex align-items-center highlighted" id="choice-cash">
+                                            <input type="radio" value="mobile_money" name="paiement_mode" style="position:absolute;left:11px;top:9px;" checked/>
+                                            <span>MOBILE MONEY</span>
+                                            <img src="{{ asset('assets/frontend/img/mobile-payment-01.webp') }}" alt="" width="100">
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 mx-3">
+                                        <label class="card card-body d-flex align-items-center" id="choice-mobile">
+                                            <input type="radio" value="cash" name="paiement_mode" style="position:absolute;left:11px;top:9px;"/>
+                                            <span>CASH</span>
+                                            <img src="{{ asset('assets/frontend/img/cash-payment.png') }}" alt="" width="80">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mx-auto w-25">
                                     <div class="text-center">
-                                        <a href="#" id="mobilemoneybtn" class="btn btn-primary w-75 waves-effect waves-light"
-                                           target="popup"
-                                           onclick="window.open('{{ path('do_payment', {id: member.id, montant: montant})}}','popup','width=600,height=600,scrollbars=no,resizable=no'); return false;">
-                                            MOBILE MONEY
-                                        </a>
+                                        <button type="submit" id="payerbtn" class="btn btn-success w-100 waves-effect waves-light">
+                                            PAYER
+                                        </button>
                                     </div>
+                                </div>
                                 </form>
-
                             </div>
                         </div>
                     </div>
@@ -88,10 +118,28 @@
     <script type="text/javascript">
         jQuery(document).ready(function ($) {
 
-            $("#cashbtn").click(function(){
-                $('.modal-cash').modal('show');
+            $("label#choice-cash input[type='radio']").on('click', function(){
+                $("label#choice-mobile").removeClass('highlighted');
+                $("label#choice-mobile").addClass('unselected');
+
+                $("label#choice-cash").removeClass('unselected');
+                $("label#choice-cash").addClass('highlighted');
             });
 
+            $("label#choice-mobile input[type='radio']").on('click', function(){
+                $("label#choice-cash").removeClass('highlighted');
+                $("label#choice-cash").addClass('unselected');
+
+                $("label#choice-mobile").removeClass('unselected');
+                $("label#choice-mobile").addClass('highlighted');
+            });
+
+            var myForm = document.getElementById('frm');
+            myForm.onsubmit = function() {
+                var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=1000,height=800,left = 312,top = 234');
+                this.target = 'Popup_Window';
+                window.location.replace('{{ path('admin_index') }}');
+            };
         });
     </script>
 {% endblock %}

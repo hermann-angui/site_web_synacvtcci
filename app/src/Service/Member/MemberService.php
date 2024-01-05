@@ -11,6 +11,7 @@ use App\Helper\PasswordHelper;
 use App\Helper\PdfGenerator;
 use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
+use App\Service\Payment\PaymentService;
 use Clegginabox\PDFMerger\PDFMerger;
 use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -20,6 +21,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -29,14 +31,12 @@ use Symfony\Component\Uid\Uuid;
 class MemberService
 {
 
-    private const WEBSITE_URL = "https://synacvtcci.org";
-    private const MEDIA_DIR = "/var/www/html/public/members/";
-
     public function __construct(
         private ContainerInterface             $container,
         private MemberCardGeneratorService     $memberCardGeneratorService,
         private MemberAssetHelper              $memberAssetHelper,
         private MemberRepository               $memberRepository,
+        private PaymentService                 $paymentService,
         private ChildRepository                $childRepository,
         private UserPasswordHasherInterface    $userPasswordHasher,
         private PdfGenerator                   $pdfGenerator,
@@ -82,14 +82,10 @@ class MemberService
             if(!empty($images)) $this->storeMemberImages($member, $images);
 
             $member->setStatus("PENDING");
-            $member->setTitre("CHAUFFEUR");
+            $member->setTitre($member->getActivity());
 
             $this->memberRepository->add($member, true);
             $member->setCountry($member->getBirthCountry());
-
-//            foreach($member->getChildren() as $child){
-//                $this->childRepository->add($child, true);
-//            }
 
             $this->memberRepository->add($member, true);
             return $member;
@@ -128,7 +124,7 @@ class MemberService
             $member->setCountry($member->getBirthCountry());
 
             if(!empty($images)) $this->storeMemberImages($member, $images);
-            $member->setTitre("CHAUFFEUR");
+            $member->setTitre(strtoupper($member->getActivity()));
             $this->saveMember($member);
 
             if($children = $member->getChildren()){
@@ -512,6 +508,16 @@ class MemberService
             if ($fileName) $member->setScanDocumentIdentitePdf($fileName->getFilename());
         }
 
+        if (isset($images['formulaireCnmciPdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['formulaireCnmciPdf'], $member->getReference());
+            if ($fileName) $member->setFormulaireCnmciPdf($fileName->getFilename());
+        }
+
+        if (isset($images['ficheEngagementSynacvtcciPdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['ficheEngagementSynacvtcciPdf'], $member->getReference());
+            if ($fileName) $member->setFicheEngagementSynacvtcciPdf($fileName->getFilename());
+        }
+
         if (isset($images['mergedDocumentsPdf'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['mergedDocumentsPdf'], $member->getReference());
             if ($fileName) $member->setMergedDocumentsPdf($fileName->getFilename());
@@ -544,22 +550,45 @@ class MemberService
      * @param string $viewTemplate
      * @return PdfResponse
      */
-    public function downloadCNMCIPdf(?Member $member, string $viewTemplate){
+    public function downloadCNMCIPdf(?Member $member){
         set_time_limit(0);
-        $content = $this->generateCNMCIPdf($member, $viewTemplate);
+        $content = $this->generateFormulaireCNMCIPdf($member);
         return new PdfResponse($content, 'fiche_cnmci.pdf');
     }
 
 
     /**
-     * @param Member|null $member
+     * @param Member|null $payment
      * @param string $viewTemplate
+     * @return Response
+     */
+    public function downloadFicheEngagementSynacvtcci(?Member $member): Response{
+        set_time_limit(0);
+//        $file = $member->getFicheEngagementSynacvtcciPdf() ? $this->getMemberDir($member) . $member->getFicheEngagementSynacvtcciPdf() : null;
+//        if(file_exists($file)) {
+//           $response = new BinaryFileResponse($file);
+//           $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'fiche_engagement.pdf');
+//
+//            return $response;
+//        }
+        $content = $this->generateFicheEngagementSynacvtcci($member);
+        return new PdfResponse($content, 'fiche_engagement.pdf');
+    }
+
+    /**
+     * @param Member|null $member
      * @return string|null
      */
-    public function generateCNMCIPdf(?Member $member, string $viewTemplate)
+    public function generateFormulaireCNMCIPdf(?Member $member)
     {
         try {
+            $viewTemplate = "admin/pdf/cnmci.html.twig";
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
+
+            if($member->getFormulaireCnmciPdf() && file_exists($this->getMemberDir($member) . $member->getFormulaireCnmciPdf())){
+                \unlink($this->getMemberDir($member) . $member->getFormulaireCnmciPdf());
+            }
+
             $file = $this->getMemberDir($member) . time() . uniqid() . ".pdf";
             $member->setFormulaireCnmciPdf(basename($file));
             $this->saveMember($member);
@@ -601,23 +630,27 @@ class MemberService
 
 
     /**
-     * @param Payment|null $payment
+     * @param Member|null $payment
      * @param string $viewTemplate
      * @return string|null
      */
     public function generateRegistrationReceipt(?Member $member)
     {
         try {
-           // $qrCodeData = self::WEBSITE_URL . "/admin/member/" . $member->getId();
-            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getMatricule();
+            $qrCodeData = $this->container->getParameter('app.baseurl') . "/profile/" . $member->getMatricule();
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
-            $folder = self::MEDIA_DIR . $member->getReference() . '/';
+            $folder = $this->container->getParameter('app.member.dir') . $member->getReference() . '/';
             if(!file_exists($folder)) mkdir($folder, 0777, true);
 
             $barcode_file = $folder . "_barcode.png";
             file_put_contents($barcode_file, $content);
 
             $viewTemplate = 'frontend/member/receipt-pdf.html.twig';
+
+            if($member->getOnlineRegistrationReceiptPdf() && file_exists($this->getMemberDir($member) . $member->getOnlineRegistrationReceiptPdf())){
+                \unlink($this->getMemberDir($member) . $member->getOnlineRegistrationReceiptPdf());
+            }
+
             $receipt_file = $folder . time() . uniqid() . ".pdf";
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
             file_put_contents($receipt_file, $content);
@@ -635,13 +668,48 @@ class MemberService
         }
     }
 
+    /**
+     * @param Member|null $payment
+     * @param string $viewTemplate
+     * @return string|null
+     */
+    public function generateFicheEngagementSynacvtcci(?Member $member)
+    {
+        try {
+            $folder = $this->container->getParameter('app.member.dir') . $member->getReference() . '/';
+            if(!file_exists($folder)) mkdir($folder, 0777, true);
+
+            $viewTemplate = 'admin/pdf/fiche_engagement_synacvtcci-pdf.html.twig';
+
+            if($member->getFicheEngagementSynacvtcciPdf() && file_exists($this->getMemberDir($member) . $member->getFicheEngagementSynacvtcciPdf())){
+                \unlink($this->getMemberDir($member) . $member->getFicheEngagementSynacvtcciPdf());
+            }
+
+            $pdf_file = $folder . time() . uniqid() . ".pdf";
+            $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
+            file_put_contents($pdf_file, $content);
+
+            $member->setFicheEngagementSynacvtcciPdf(basename($pdf_file));
+            $this->memberRepository->add($member, true);
+
+            return $content ?? null;
+
+        }catch(\Exception $e){
+        }
+    }
+
     public function combinePdfsForPrint(Member $member){
         $pdf = new PDFMerger;
 
         $folder = $this->getMemberDir($member);
 
-        if(!$member->getFormulaireCnmciPdf()) {
-            $this->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+        if(!$member->getFicheEngagementSynacvtcciPdf()){
+            $this->generateFicheEngagementSynacvtcci($member);
+        }
+        $pdf->addPDF($folder . $member->getFicheEngagementSynacvtcciPdf());
+
+        if($member->getFormulaireCnmciPdf()) {
+            $this->generateFormulaireCNMCIPdf($member);
         }
         $pdf->addPDF($folder . $member->getFormulaireCnmciPdf());
 
@@ -650,15 +718,17 @@ class MemberService
         }
 
         if($member->getPaymentReceiptSynacvtcciPdf()) {
-            $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
+            $this->paymentService->generatePaymentReceipt($member);
         }
+        $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
 
         if($member->getScanDocumentIdentitePdf()) {
             $pdf->addPDF($folder . $member->getScanDocumentIdentitePdf());
         }
-//        if($member->getOnlineRegistrationReceiptPdf()) {
-//            $pdf->addPDF($folder . $member->getOnlineRegistrationReceiptPdf());
-//        }
+
+//      if($member->getOnlineRegistrationReceiptPdf()) {
+//          $pdf->addPDF($folder . $member->getOnlineRegistrationReceiptPdf());
+//      }
 
         $output = $folder . time() . uniqid() . ".pdf";
         $member->setMergedDocumentsPdf(basename($output));
@@ -666,6 +736,26 @@ class MemberService
         $this->saveMember($member);
         $res = $pdf->merge();
         return $output;
+    }
+
+    public function findOneBy(array $criteria, array|null $orderBy = null): ?Member
+    {
+        return $this->memberRepository->findOneBy($criteria, $orderBy);
+    }
+
+    public function findBy(array $criteria, array|null $orderBy, $limit = null, $offset = null): ?array
+    {
+        return $this->memberRepository->findBy( $criteria, $orderBy, $limit, $offset);
+    }
+
+    public function findAll(): ?array
+    {
+        return $this->memberRepository->findAll();
+    }
+
+    public function find($id, $lockMode = null, $lockVersion = null): ?Member
+    {
+        return $this->memberRepository->find($id, $lockMode, $lockVersion);
     }
 
 }

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <title>Formulaire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Administration" name="description"/>
+    <link href="/var/www/html/public/assets/admin/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet"
+          type="text/css"/>
+    <link href="/var/www/html/public/assets/admin/css/bootstrap-print.min.css" id="bootstrap-style" rel="stylesheet"
+          type="text/css"/>
+    <style>
+
+        .form-check-input.top-row  {
+            width: 1.7em;
+            height: 1.7em;
+            border:1px solid #000000;
+            border-radius: 0;
+            -webkit-border-radius: 0;
+            background-color: #ffffff;
+            margin-top: 0.4em;
+        }
+
+        .form-check-input:checked[type=radio] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e")
+        }
+
+        .form-check-input {
+            width: 0.85em;
+            height: 0.85em;
+            border:1px solid #000000;
+            border-radius: 0;
+            -webkit-border-radius: 0;
+            background-color: #ffffff;
+        }
+
+        .form-check-input:checked {
+            background-color: #101011;
+            border:0px solid #000000;
+        }
+
+        .form-check-input[type=radio] {
+            border-radius: 0;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            border: none;
+            border-bottom: 1px dot-dash #000;
+            background-color: #f1f1f1;
+            height: 2em;
+        }
+
+        @media print{
+            *{
+                margin: 0;
+                padding:0;
+            }
+            table {
+                width: 100%;
+                page-break-inside: avoid;
+            }
+
+
+            @page {
+                margin: 0.1cm;
+            }
+
+            @page :first {
+                margin: 0.1cm
+            }
+            body {transform: scale(.7);}
+        }
+
+
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td style="padding:5px 10px;border-collapse: collapse;border:0px solid white; width: 20%">
+                <img src="/var/www/html/public/assets/frontend/img/logo-synacvtcci.jpg" width="95" height="85" alt="logo synacvtcci"/>
+            </td>
+            <td style="padding:5px 10px;border-collapse: collapse;border:0px solid white; width: 75%">
+                <span style="color:#6ce000">Chambre Nationale de Métiers de Cote d'Ivoire</span>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td style="display:flex;justify-content:center;text-align:center;padding:5px 10px;border-collapse: collapse;border:0px solid white; width: 100%">
+                <div style="display:-webkit-flex; justify-content: center;text-align:center; border:3px solid #000000; padding:10px 10px; width: 250px">FICHE D'ADHESION</div>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+          <td style="padding:20px 5px;border-collapse: collapse;border:0px solid white;display: flex; justify-content: center">
+              <div style="display:flex;justify-content:space-between;text-align: center">
+                  <div>
+                      <span>Objet :</span><span> Lettre d'engagement</span>
+                  </div>
+                  <div>
+                      <img id="imagePreview" src="/var/www/html/public/members/{{ member.reference }}/{{ member.photo }}" alt="" width="95" class="rounded-0">
+                  </div>
+              </div>
+          </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td style="padding:20px 5px;border-collapse: collapse;border:0px solid white;display: flex; justify-content: center">
+                <div style="display: flex; justify-content: center; padding: 20px 10px;">
+                    Je soussigné M./Mme/Mlle .............................................................................<br>
+                    Cel. : ...............................................................................................<br>
+                    CNI/PC/ CC : .........................................................................................<br>
+                    Agissant en qualité de Membre du Syndicat National des Chauffeurs VTC de Côte d’Ivoire (SYNACVTCCI).<br>
+                    Avoir pris connaissance des règles de fonctionnement du règlement intérieur.<br>
+                    M’engage à respecter les règles et procédures mentionnées dans ce présent règlement.<br>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:20px 5px;border-collapse: collapse;border:0px solid white;display: flex; justify-content: center;padding:20px 10px;">
+                <div style="display: flex; justify-content: center">
+                    Fait à Abidjan le ......................................................................
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+

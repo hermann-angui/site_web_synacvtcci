@@ -142,6 +142,15 @@
       <path value="$PROJECT_DIR$/app/vendor/ezyang/htmlpurifier" />
       <path value="$PROJECT_DIR$/app/vendor/laminas/laminas-escaper" />
       <path value="$PROJECT_DIR$/app/vendor/phpoffice/phpword" />
+      <path value="$PROJECT_DIR$/app/vendor/api-platform/core" />
+      <path value="$PROJECT_DIR$/app/vendor/api-platform/api-pack" />
+      <path value="$PROJECT_DIR$/app/vendor/willdurand/negotiation" />
+      <path value="$PROJECT_DIR$/app/vendor/psr/link" />
+      <path value="$PROJECT_DIR$/app/vendor/symfony/serializer-pack" />
+      <path value="$PROJECT_DIR$/app/vendor/symfony/expression-language" />
+      <path value="$PROJECT_DIR$/app/vendor/symfony/web-link" />
+      <path value="$PROJECT_DIR$/app/vendor/symfony/orm-pack" />
+      <path value="$PROJECT_DIR$/app/vendor/nelmio/cors-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0">

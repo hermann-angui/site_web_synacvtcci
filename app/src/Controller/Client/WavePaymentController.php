@@ -19,21 +19,21 @@ class WavePaymentController extends AbstractController
     public function wavePaymentCheckoutStatusCallback($status,
                                                       Request $request,
                                                       MemberRepository $memberRepository,
-                                                      PaymentService $paymentService,
                                                       PaymentRepository $paymentRepository): Response
     {
-        $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
-        if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
-            $payment->setStatus("PAID");
-            $paymentRepository->add($payment, true);
-            $member = $payment->getPaymentFor();
-            if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
-            if ($member) {
-                $member->setStatus("PAID");
-                if($payment->getMontant() > $this->getParameter('montant_frais')) $member->setHasPaidForSyndicat(true);
-                $memberRepository->add($member, true);
+        $payments = $paymentRepository->findBy(["reference" => $request->get("ref")]);
+        if ($payments && (strtoupper(trim($status)) === "SUCCESS")) {
+            foreach ($payments as $payment){
+                $payment->setStatus("PAID");
+                $paymentRepository->add($payment, true);
+                $member = $payment->getPaymentFor();
+                if ($member) {
+                    $member->setStatus("PAID");
+                    if($payment->getTarget() == 'FRAIS_ADHESION_SYNDICAT') $member->setHasPaidForSyndicat(true);
+                    $memberRepository->add($member, true);
+                }
             }
-            return $this->redirectToRoute('wave_success_page', ["id" => $payment->getId(), "status" => $status]);
+            return $this->redirectToRoute('wave_payment_success_page');
         }
         if($this->isGranted("ROLE_USER")) return $this->redirectToRoute('admin_index');
         else return $this->redirectToRoute('home');
@@ -42,7 +42,6 @@ class WavePaymentController extends AbstractController
     #[Route(path: '/wave', name: 'wave_payment_checkout_webhook')]
     public function callbackWavePayment(Request $request,
                                         PaymentRepository $paymentRepository,
-                                        PaymentService $paymentService,
                                         MemberRepository $memberRepository): Response
     {
         $payload = json_decode($request->getContent(), true);
@@ -50,17 +49,18 @@ class WavePaymentController extends AbstractController
         if (!empty($payload) && array_key_exists("data", $payload)) {
             $data = $payload['data'];
             if (!empty($data) && array_key_exists("client_reference", $data)) {
-                $payment = $paymentRepository->findOneBy(["reference" => $data["client_reference"]]);
-                if ($payment && (array_key_exists("payment_status", $data) && (strtoupper($data["payment_status"]) === "SUCCEEDED"))) {
-                    $payment->setCodePaymentOperateur($data["transaction_id"]);
-                    $payment->setStatus("PAID");
-                    $paymentRepository->add($payment, true);
-                    $member = $payment->getPaymentFor();
-                    if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
-                    if ($member) {
-                        $member->setStatus("PAID");
-                        if($payment->getMontant() > $this->getParameter('montant_frais')) $member->setHasPaidForSyndicat(true);
-                        $memberRepository->add($member, true);
+                $payments = $paymentRepository->findBy(["reference" => $data["client_reference"]]);
+                foreach ($payments as $payment){
+                    if ($payment && (array_key_exists("payment_status", $data) && (strtoupper($data["payment_status"]) === "SUCCEEDED"))) {
+                        $payment->setCodePaymentOperateur($data["transaction_id"]);
+                        $payment->setStatus("PAID");
+                        $paymentRepository->add($payment, true);
+                        $member = $payment->getPaymentFor();
+                        if ($member) {
+                            $member->setStatus("PAID");
+                            if($payment->getTarget() == 'FRAIS_ADHESION_SYNDICAT') $member->setHasPaidForSyndicat(true);
+                            $memberRepository->add($member, true);
+                        }
                     }
                 }
             }
@@ -69,24 +69,17 @@ class WavePaymentController extends AbstractController
     }
 
 
-    #[Route(path: '/successpage/{id}', name: 'wave_success_page', methods: ['POST', 'GET'])]
-    public function paymentSuccesPage(?Payment $payment, PaymentService $paymentService): Response
+    #[Route(path: '/successpage', name: 'wave_payment_success_page', methods: ['POST', 'GET'])]
+    public function paymentSuccessPage(Request $request): Response
     {
-        if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED", "COMPLETED"])) {
-            return $this->render('frontend/payment/payment-success.html.twig', ['payment' => $payment]);
-        }
-        if(!$payment->getPaymentFor()?->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
-
-        if($this->isGranted('ROLE_USER')) return $this->redirectToRoute('admin_index');
-        else return $this->redirectToRoute('home');
+        return $this->render('admin/payment/payment-success.html.twig');
     }
-
     #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
     public function pdfGenerate(Payment $payment,
                                 PaymentService $paymentService,
                                 ActivityLogger $activityLogger): Response
     {
-        $activityLogger->create($payment, "Téléchargement de reçu");
+        $activityLogger->create($payment, "Téléchargement du reçu de paiement.");
         return $paymentService->downloadMemberPaymentReceipt($payment);
     }
 }

@@ -5,13 +5,16 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.supported_locales: ['fr','en']
-    checkout_url: "https://api.wave.com/v1/checkout/sessions"
-    success_url: "https://synacvtcci.org/payment/wave/checkout/success?ref="
-    error_url: "https://synacvtcci.org/payment/wave/checkout/error"
-    profile_url: http://synacvtcci.org/profile
+    app.wave_api_key: '%env(APP_WAVE_API_KEY)%'
+    app.wave_checkout_url: '%env(resolve:APP_WAVE_CHECKOUT_URL)%'
+    app.wave_success_url: '%env(resolve:APP_WAVE_SUCCESS_URL)%'
+    app.wave_error_url: '%env(resolve:APP_WAVE_ERROR_URL)%'
+    app.profile_url: '%env(resolve:APP_MEMBER_PROFILE_URL)%'
+    app.member.dir: '%env(resolve:APP_MEMBER_DIR)%'
     images_directory: '%kernel.project_dir%/public/uploads'
-    montant_frais: 25
-    montant_souscription_syndicat: 25
+    app.frais_service_technique: '%env(resolve:APP_FRAIS_SERVICE_TECHNIQUE)%'
+    app.frais_adhesion_syndicat: '%env(resolve:APP_FRAIS_ADHESION_SYNDICAT)%'
+    app.baseurl: '%env(resolve:APP_BASE_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -30,7 +33,16 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\Wave\WaveService:
+        arguments:
+            $container: '@service_container'
+
     App\Service\Member\MemberService:
+        arguments:
+            $container: '@service_container'
+
+    App\Service\Payment\PaymentService:
         arguments:
             $container: '@service_container'
 

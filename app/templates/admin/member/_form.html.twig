@@ -31,6 +31,12 @@
                     <div class="col-md-2">
                         {{ form_row(form.tracking_code) }}
                     </div>
+                    {% if member.status == 'PAID' or member.status == 'COMPLETED' or member.status == 'SUCCESS' %}
+                    <div class="col-md-7"></div>
+                    <div class="col-md-2">
+                        {{ form_row(form.sticker_code) }}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="row mb-3 mt-4">
                     <div class="col-md-2">
@@ -300,26 +306,57 @@
                     <div id="partner_bock" class="my-3">
                         {{ form_row(form.payment_receipt_cnmci_code) }}
                     </div>
-                    <div class="row mb-3">
+                    <div class="row mb-5 mt-3">
                         <div class="col-md-5 mx-3">
+                            <label for="member_registration_paymentReceiptCnmciPdf" class="form-label">Reçu de paiement Orange Money) CNMCI (format .pdf)
+                                {{ form_widget(form.paymentReceiptCnmciPdf, {'attr': {'class': 'visually-hidden'}}) }}
+                                <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
+                            </label>
                             {% if member.paymentReceiptCnmciPdf %}
-                                <label for="member_registration_paymentReceiptCnmciPdf" class="form-label">Reçu de paiement Orange Money) CNMCI (format .pdf)
-                                    {{ form_widget(form.paymentReceiptCnmciPdf, {'attr': {'class': 'visually-hidden'}}) }}
-                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
-                                </label>
                                 <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmciPdf|image_path }}" width="500" height="375" type="application/pdf">
                             {% endif %}
                         </div>
                         <div class="col-md-5 mx-3">
+                            <label for="member_registration_scanDocumentIdentitePdf" class="form-label">Pièces d'identité scannées (format .pdf)
+                                {{ form_widget(form.scanDocumentIdentitePdf, {'attr': {'class': 'visually-hidden'}}) }}
+                                <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
+                            </label>
                             {% if member.scanDocumentIdentitePdf %}
-                                <label for="member_registration_scanDocumentIdentitePdf" class="form-label">Pièces d'identité scannées (format .pdf)
-                                    {{ form_widget(form.scanDocumentIdentitePdf, {'attr': {'class': 'visually-hidden'}}) }}
-                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
-                                </label>
                                 <embed src="/members/{{ member.reference }}/{{ member.scanDocumentIdentitePdf|image_path }}" width="500" height="375" type="application/pdf">
                             {% endif %}
                         </div>
                     </div>
+                    {% if member.status == 'PAID' or member.status == 'COMPLETED' %}
+                        <div class="row mb-3 border-top border-1 border-light">
+                            <div class="col-md-5 mx-3 my-3">
+                                <label for="member_registration_formulaireCnmciPdf" class="form-label">Fiche signée CNMCI (format .pdf)
+                                    {{ form_widget(form.formulaireCnmciPdf, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
+                                </label>
+                                {% if member.formulaireCnmciPdf %}
+                                    <embed src="/members/{{ member.reference }}/{{ member.formulaireCnmciPdf|image_path }}" width="500" height="375" type="application/pdf">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-5 mx-3 my-3">
+                                <label for="member_registration_ficheEngagementSynacvtcciPdf" class="form-label">Fiche d'engagement syndicat (format .pdf)
+                                    {{ form_widget(form.ficheEngagementSynacvtcciPdf, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
+                                </label>
+                                {% if member.ficheEngagementSynacvtcciPdf %}
+                                    <embed src="/members/{{ member.reference }}/{{ member.ficheEngagementSynacvtcciPdf|image_path }}" width="500" height="375" type="application/pdf">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-5 mx-3 my-3">
+                                <label for="member_registration_paymentReceiptSynacvtcciPdf" class="form-label">Reçu de paiement syndicat (format .pdf)
+                                    {{ form_widget(form.paymentReceiptSynacvtcciPdf, {'attr': {'class': 'visually-hidden'}}) }}
+                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
+                                </label>
+                                {% if member.paymentReceiptSynacvtcciPdf %}
+                                    <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptSynacvtcciPdf|image_path }}" width="500" height="375" type="application/pdf">
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </fieldset>
@@ -334,7 +371,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-12 form-check form-switch form-switch-lg">
-                        {{ form_row(form.payforsyndicat) }}
+                        {{ form_row(form.has_paid_for_syndicat) }}
                     </div>
                 </div>
             </div>

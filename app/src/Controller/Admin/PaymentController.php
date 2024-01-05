@@ -6,7 +6,6 @@ use App\Entity\Member;
 use App\Entity\Payment;
 use App\Helper\ActivityLogger;
 use App\Repository\MemberRepository;
-use App\Repository\PaymentRepository;
 use App\Service\Member\MemberService;
 use App\Service\Payment\PaymentService;
 use App\Service\Wave\WaveService;
@@ -21,8 +20,7 @@ class PaymentController extends AbstractController
 {
 
     #[Route(path: '', name: 'admin_payment_index')]
-    public function index(Request $request,
-                          MemberRepository $memberRepository): Response
+    public function index(Request $request, MemberRepository $memberRepository): Response
     {
         $members = $memberRepository->findAll();
         return $this->render('admin/pages/index.html.twig', ["members" => $members]);
@@ -31,80 +29,91 @@ class PaymentController extends AbstractController
     #[Route(path: '/choose/{id}', name: 'admin_payment_choose')]
     public function searchMain(Member $member, Request $request): Response
     {
-        if (in_array($member->getStatus(), ["PAID", "COMPLETED"])) {
-            return $this->redirectToRoute('admin_index', ['id' => $member->getId()]);
+        $viewData = [];
+        $total = 0;
+        foreach ($request->get('payFor') as $pay){
+            if($pay === "FRAIS_SERVICE_TECHNIQUE") {
+                $viewData["items"][] = [
+                    "key" => "FRAIS_SERVICE_TECHNIQUE",
+                    "title" => "Frais d'enrôlement",
+                    "montant" => $this->getParameter('app.frais_service_technique'),
+                ];
+                $total+= (int)$this->getParameter('app.frais_service_technique');
+            }
+            elseif($pay === "FRAIS_ADHESION_SYNDICAT") {
+                $viewData["items"][] = [
+                    "key" => "FRAIS_ADHESION_SYNDICAT",
+                    "title" => "Frais d'adhésion au syndicat",
+                    "montant" => $this->getParameter('app.frais_adhesion_syndicat'),
+                ];
+                $total+= (int)$this->getParameter('app.frais_adhesion_syndicat');
+            }
         }
-        $defaultAmount = $this->getParameter('montant_frais');
+        $viewData["total"] = $total;
         return $this->render('admin/payment/choose.html.twig', [
             'member' => $member,
-            'montant' => $request->get('montant', $defaultAmount)
+            'payFor' => !empty($viewData) ? $viewData: null
         ]);
     }
-
-    #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
-    public function cashin(Member $member,
-                           Request $request,
-                           PaymentService $paymentService,
-                           MemberService $memberService,
-                           ActivityLogger $activityLogger): Response
-    {
-        if ($member->getStatus() !== 'PAID') {
-            $payment = new Payment();
-            $payment->setUser($this->getUser())
-                ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
-                ->setType('cash')
-                ->setMontant($request->get('montant') ?? $this->getParameter('montant_frais'))
-                ->setTarget("synacvtcci")
-                ->setPaymentFor($member)
-                ->setCodePaymentOperateur(null)
-                ->setReceiptFile(null)
-                ->setStatus("PAID");
-            $paymentService->store($payment);
-
-            $paymentService->generatePaymentReceipt($payment);
-            $member->setStatus("PAID");
-            if($payment->getMontant() > $this->getParameter('montant_frais')) $member->setHasPaidForSyndicat(true);
-            $memberService->saveMember($member);
-
-            $activityLogger->create($payment, "Paiement cash effectuée");
-
-            return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
-        }
-        return $this->redirectToRoute('admin_index');
-    }
-
 
     #[Route(path: '/do/{id}', name: 'do_payment')]
     public function doPayment(Member $member,
                               Request $request,
-                              WaveService       $waveService,
-                              PaymentRepository $paymentRepository): Response
+                              PaymentService $paymentService,
+                              MemberService $memberService,
+                              ActivityLogger $activityLogger,
+                              WaveService $waveService): Response
     {
-        $response = $waveService->makePayment($request->get('montant') ?? $this->getParameter('montant_frais'));
-        if ($response) {
-            $payment = new Payment();
-            $payment->setUser($this->getUser());
-            $payment->setStatus(strtoupper($response->getPaymentStatus()));
-            $payment->setReference($response->getClientReference());
-            $payment->setOperateur("WAVE");
-            $payment->setMontant($response->getAmount());
-            $payment->setType("MOBILE_MONEY");
-            $payment->setReceiptNumber(PaymentService::generateReference());
-            $payment->setCreatedAt(new \DateTime('now'));
-            $payment->setModifiedAt(new \DateTime('now'));
-            $payment->setPaymentFor($member);
-            $paymentRepository->add($payment, true);
-            return $this->redirect($response->getWaveLaunchUrl());
-        } else return $this->redirectToRoute('admin_index');
-    }
+        $paymentInfos = $request->request->all();
+        if($paymentInfos['paiement_mode'] === "cash"){
+            $payments = [];
+            foreach($paymentInfos['payfor'] as $payfor){
+                $payment = new Payment();
+                $payment->setUser($this->getUser())
+                    ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
+                    ->setType('CASH')
+                    ->setPaymentFor($member)
+                    ->setCodePaymentOperateur(null)
+                    ->setReceiptFile(null)
+                    ->setStatus("PAID")
+                    ->setTarget($payfor)
+                    ->setMontant($paymentInfos["total"]);
+                $paymentService->store($payment);
+                $payments[] = $payment;
+            }
+            $member->setStatus("PAID");
+            $memberService->saveMember($member);
+            $activityLogger->create($payment, "Paiement cash effectuée");
+            $paymentService->generatePaymentReceipt($member, $payments);
+            return $this->redirectToRoute('payment_success_page', ['montant' => $payments]);
 
-    #[Route(path: '/successpage/{id}', name: 'payment_succes_page', methods: ['POST', 'GET'])]
-    public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService): Response
-    {
-        if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generatePaymentReceipt($payment);
-            return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
+        }elseif($paymentInfos['paiement_mode'] === "mobile_money"){
+            $response = $waveService->requestPayment($paymentInfos["total"]);
+            if ($response) {
+                foreach($paymentInfos['payfor'] as $payfor){
+                    $payment = new Payment();
+                    $payment->setUser($this->getUser());
+                    $payment->setStatus(strtoupper($response->getPaymentStatus()));
+                    $payment->setReference($response->getClientReference());
+                    $payment->setOperateur("WAVE");
+                    $payment->setMontant($response->getAmount());
+                    $payment->setType("MOBILE_MONEY");
+                    $payment->setReceiptNumber(PaymentService::generateReference());
+                    $payment->setCreatedAt(new \DateTime('now'));
+                    $payment->setModifiedAt(new \DateTime('now'));
+                    $payment->setPaymentFor($member);
+                    $payment->setTarget($payfor);
+                    $paymentService->store($payment);
+                }
+                return $this->redirect($response->getWaveLaunchUrl());
+            }
         }
         return $this->redirectToRoute('admin_index');
+    }
+
+    #[Route(path: '/successpage', name: 'payment_success_page', methods: ['POST', 'GET'])]
+    public function paymentSuccessPage(Request $request): Response
+    {
+        return $this->render('admin/payment/payment-success.html.twig');
     }
 }

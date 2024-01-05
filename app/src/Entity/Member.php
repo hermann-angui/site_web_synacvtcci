@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: '`member`')]
 #[ORM\HasLifecycleCallbacks()]
+#[ApiR]
 #[UniqueEntity(fields: ['matricule','phone','mobile','IdNumber','drivingLicenseNumber', 'email', 'tracking_code'])]
 class Member implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -29,6 +30,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $tracking_code = null;
+
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    private ?string $sticker_code = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $reference = null;
@@ -86,9 +90,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $IdNumber = null;
-
-    #[ORM\Column(length: 255, nullable: true, unique: true)]
-    private ?string $code_sticker = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $IdDeliveryPlace = null;
@@ -184,10 +185,11 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $scan_document_identite_pdf = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $fiche_engagement_synacvtcci_pdf = null;
+
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private ?string $payment_receipt_cnmci_code = null;
-
-
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -769,24 +771,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDomicile(?string $domicile): Member
     {
         $this->domicile = $domicile;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCodeSticker(): ?string
-    {
-        return $this->code_sticker;
-    }
-
-    /**
-     * @param string|null $code_sticker
-     * @return Member
-     */
-    public function setCodeSticker(?string $code_sticker): Member
-    {
-        $this->code_sticker = $code_sticker;
         return $this;
     }
 
@@ -1413,6 +1397,42 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setHasPaidForSyndicat(?bool $has_paid_for_syndicat): Member
     {
         $this->has_paid_for_syndicat = $has_paid_for_syndicat;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFicheEngagementSynacvtcciPdf(): ?string
+    {
+        return $this->fiche_engagement_synacvtcci_pdf;
+    }
+
+    /**
+     * @param string|null $fiche_engagement_synacvtcci_pdf
+     * @return Member
+     */
+    public function setFicheEngagementSynacvtcciPdf(?string $fiche_engagement_synacvtcci_pdf): Member
+    {
+        $this->fiche_engagement_synacvtcci_pdf = $fiche_engagement_synacvtcci_pdf;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStickerCode(): ?string
+    {
+        return $this->sticker_code;
+    }
+
+    /**
+     * @param string|null $sticker_code
+     * @return Member
+     */
+    public function setStickerCode(?string $sticker_code): Member
+    {
+        $this->sticker_code = $sticker_code;
         return $this;
     }
 
