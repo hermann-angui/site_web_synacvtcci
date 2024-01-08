@@ -15,7 +15,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: '`member`')]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiR]
 #[UniqueEntity(fields: ['matricule','phone','mobile','IdNumber','drivingLicenseNumber', 'email', 'tracking_code'])]
 class Member implements UserInterface, PasswordAuthenticatedUserInterface
 {

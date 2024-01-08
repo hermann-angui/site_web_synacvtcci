@@ -11,7 +11,7 @@ class WaveService
 
     public function checkOutRequest(?WaveCheckoutRequest $request) : ?WaveCheckoutResponse
     {
-        if($this->container->get('kernel')->getEnvironment() === 'test'){
+        if($this->container->get('kernel')->getEnvironment() === 'dev'){
             $waveResponse = new WaveCheckoutResponse();
                 $waveResponse->setAmount($request->getAmount())
                 ->setPaymentStatus("SUCCESS")
