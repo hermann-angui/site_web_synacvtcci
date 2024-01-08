@@ -149,7 +149,7 @@ class MemberService
     {
         if(!$update && !$member) $member =  new Member();
 
-        $member->setCodeSticker(!empty($data["CodeSticker"]) ? $data["CodeSticker"] : null);
+        $member->setStickerCode(!empty($data["sticker_code"]) ? $data["sticker_code"] : null);
         if (!$member->getReference()) $member->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)));
 
         if (!$member->getMatricule()) {
