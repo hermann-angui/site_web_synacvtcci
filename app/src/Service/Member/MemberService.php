@@ -708,7 +708,7 @@ class MemberService
         }
         $pdf->addPDF($folder . $member->getFicheEngagementSynacvtcciPdf());
 
-        if($member->getFormulaireCnmciPdf()) {
+        if(!$member->getFormulaireCnmciPdf()) {
             $this->generateFormulaireCNMCIPdf($member);
         }
         $pdf->addPDF($folder . $member->getFormulaireCnmciPdf());
@@ -718,7 +718,7 @@ class MemberService
         }
 
         if($member->getPaymentReceiptSynacvtcciPdf()) {
-            $this->paymentService->generatePaymentReceipt($member);
+            $this->paymentService->generatePaymentSynacvtcciReceipt($member);
         }
         $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
 

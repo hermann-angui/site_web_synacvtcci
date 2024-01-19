@@ -32,7 +32,7 @@ class PaymentService
      */
     public function downloadMemberPaymentReceipt(?Payment $payment){
         set_time_limit(0);
-        $content = $this->generatePaymentReceipt($payment);
+        $content = $this->generatePaymentSynacvtcciReceipt($payment);
         return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
 
@@ -41,7 +41,7 @@ class PaymentService
      * @param array|null $payments
      * @return string|null
      */
-    public function generatePaymentReceipt(?Member $member, ?array $payments = [])
+    public function generatePaymentSynacvtcciReceipt(?Member $member, ?array $payments = [])
     {
         try {
             if(empty($payments)) $payments = $member->getPayments();

@@ -84,12 +84,13 @@ class PaymentController extends AbstractController
             $member->setStatus("PAID");
             $memberService->saveMember($member);
             $activityLogger->create($payment, "Paiement cash effectuée");
-            $paymentService->generatePaymentReceipt($member, $payments);
+            $paymentService->generatePaymentSynacvtcciReceipt($member, $payments);
             return $this->redirectToRoute('payment_success_page', ['montant' => $payments]);
 
         }elseif($paymentInfos['paiement_mode'] === "mobile_money"){
             $response = $waveService->requestPayment($paymentInfos["total"]);
             if ($response) {
+                $payments = [];
                 foreach($paymentInfos['payfor'] as $payfor){
                     $payment = new Payment();
                     $payment->setUser($this->getUser());
@@ -104,7 +105,9 @@ class PaymentController extends AbstractController
                     $payment->setPaymentFor($member);
                     $payment->setTarget($payfor);
                     $paymentService->store($payment);
+                    $payments[] = $payment;
                 }
+                $paymentService->generatePaymentSynacvtcciReceipt($member, $payments);
                 return $this->redirect($response->getWaveLaunchUrl());
             }
         }

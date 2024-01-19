@@ -10,13 +10,13 @@
                <img src="/var/www/html/public/assets/frontend/img/logo-synacvtcci.jpg" width="100">
             </td>
             <td style="border-collapse: collapse;padding: 15px 15px;text-align: center">
-                <img id="imagePreview" src="/var/www/html/public/members/{{ member.reference }}/{{ payment.paymentFor.photo }}" alt="" width="150" height="150">
+                <img id="imagePreview" src="/var/www/html/public/members/{{ member.reference }}/{{ payments[0].paymentFor.photo }}" alt="" width="150" height="150">
             </td>
         </tr>
         <tr style="border-collapse: collapse;">
             <td colspan="2">
                 <p style="border-collapse: collapse;font-weight: bolder">Num&eacute;ro de re&ccedil;u:   {{ payments[0].reference }}</p>
-                <p style="border-collapse: collapse;font-weight: bolder"> Date : {{ payment[0].createdAt | date('d/m/Y')}}</p>
+                <p style="border-collapse: collapse;font-weight: bolder"> Date : {{ payments[0].createdAt | date('d/m/Y')}}</p>
             </td>
         </tr>
     </table>
