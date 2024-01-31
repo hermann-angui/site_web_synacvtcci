@@ -50,6 +50,12 @@ class MemberRegistrationType extends AbstractType
                 'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '*****'"],
                 'mapped' => true,
             ])
+            ->add('codeSticker',TextType::class, [
+                'required' => true,
+                'label' => "Code du Sticker",
+                'attr' => ['class' => 'input-mask','data-inputmask' => "'mask': '*******'"],
+                'mapped' => true,
+            ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
                 'mapped' => true,

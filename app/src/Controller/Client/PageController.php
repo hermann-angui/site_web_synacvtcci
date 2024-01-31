@@ -96,7 +96,7 @@ class PageController extends AbstractController
     #[Route('/cnmci/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
     public function formCnmciShow($id, MemberRepository $memberRepository): Response
     {
-        $member = $memberRepository->findOneBy(['codeSticker' => $id]);
+        $member = $memberRepository->findOneBy(['code_sticker' => $id]);
         return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
     }
 
