@@ -14,6 +14,7 @@ use App\Repository\MemberRepository;
 use Clegginabox\PDFMerger\PDFMerger;
 use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use SplFileInfo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -670,6 +671,42 @@ class MemberService
         $res = $pdf->merge($outputmode, uniqid() . '.pdf');
         return $output;
     }
+
+
+    public function archiveMemberDocuments(array $members): ?string
+    {
+        $zipArchive = new \ZipArchive();
+        $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/cnmci/download.zip';;
+        if(file_exists($zipFile)) \unlink($zipFile);
+        $isOpen = $zipArchive->open($zipFile, \ZipArchive::CREATE);
+
+        if($isOpen === true)
+        {
+            $fileInscrits = $this->container->getParameter('kernel.project_dir') . '/public/cnmci/inscrits.xls';
+            if(file_exists($fileInscrits)) {
+                $zipArchive->addFile($fileInscrits, 'inscrits.xls');
+            }
+            /** @var Member $member **/
+            foreach($members as $member)
+            {
+                if(is_file($this->getMemberDir($member) . $member->getPhoto())) {
+                    $info = new SplFileInfo($this->getMemberDir($member) . $member->getPhoto());
+                    $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
+                    $zipArchive->addFile($this->getMemberDir($member) . $member->getPhoto(), $outputFile);
+                }
+
+                if(is_file($this->getMemberDir($member) . $member->getMergedDocumentsPdf())) {
+                    $info = new SplFileInfo($this->getMemberDir($member) . $member->getMergedDocumentsPdf());
+                    $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
+                    $zipArchive->addFile($this->getMemberDir($member) . $member->getMergedDocumentsPdf(), $outputFile);
+                }
+            }
+            $zipArchive->close();
+            return $zipFile;
+        }
+        return null;
+    }
+
 
 }
 

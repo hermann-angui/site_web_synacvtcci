@@ -43,7 +43,7 @@ class CnmciController extends AbstractController
         $imageUrl = '/var/www/html/public/members/' . $member->getReference() . "/" . basename($member->getPhoto());
 
         $info = new SplFileInfo($imageUrl);
-        $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . $info->getExtension();
+        $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
         return $this->file($imageUrl, $outputFile );
     }
 
@@ -58,7 +58,7 @@ class CnmciController extends AbstractController
     }
 
     #[Route('/telecharger/adherents', name: 'cnmci_download_list', methods: ['POST', 'GET'])]
-    public function downloadList(Request $request, MemberRepository $memberRepository): Response
+    public function downloadList(Request $request, MemberRepository $memberRepository, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         ini_set('max_execution_time', '-1');
@@ -67,7 +67,9 @@ class CnmciController extends AbstractController
         $members = $memberRepository->findAdherentsFromTo($from, $to);
         if(!$members) return $this->json(null);
         $file = $this->generateAdherentListXlsxFile($members);
-        return $this->file($file);
+        $outputFile = $memberService->archiveMemberDocuments($members);
+
+        return $this->file($outputFile, 'liste_adherents.zip');
     }
 
     #[Route('/telecharger/matrice', name: 'cnmci_download_matrice', methods: ['POST', 'GET'])]
@@ -257,13 +259,13 @@ class CnmciController extends AbstractController
             $cel = 3;
             /** @var Member $member  **/
             foreach ($members as $member) {
-
                 try{
                     $d = [
                         "N°" =>  $count++,
                         "EMAIL" => $member->getEmail(),
                         "NOM" => $member->getLastName(),
                         "PRENOMS" => $member->getFirstName(),
+                        "ACTIVITE" => $member->getActivity(),
                         "DATE SOUSCRIPTION" =>  $member->getSubscriptionDate()?->format('d/m/Y'),
                         "SEXE" => $member->getSex(),
                         "PHOTO" => $member->getPhoto(),
@@ -301,7 +303,7 @@ class CnmciController extends AbstractController
                         "VILLE DE L'ACTIVITE" => $member->getActivityCityLocation(),
                         "QUARTIER DE L'ACTIVITE" => $member->getActivityQuartierLocation(),
                         "CATEGORIE SOCIOPROFESSIONNELLE" => $member->getSocioprofessionnelleCategory(),
-                        "ACTIVITE DATE DEBUT" => $member->getActivityDateDebut()?->format('d/m/Y'),
+                        "DATE DEBUT ACTIVITE " => $member->getActivityDateDebut()?->format('d/m/Y'),
                         "PRENOMS PERSONNE A CONTACTER" => $member->getPartnerFirstName(),
                         "NOM PERSONNE A CONTACTER" => $member->getPartnerLastName(),
                   //    "TELEPHONE PERSONNE A CONTACTER" => "",
@@ -341,5 +343,9 @@ class CnmciController extends AbstractController
 
         return null;
     }
+
+
+
+
 
 }
