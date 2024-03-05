@@ -1,0 +1,96 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .btn-cnmci {
+            background-color: #6e0000;
+            color: #ffffff;
+        }
+
+        .head {
+            background-color: #ffd4f9;
+            color: #000000;
+        }
+        #top-row .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.4em;
+        }
+
+        .form-check-input:checked[type=radio] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e")
+        }
+
+        .form-label, .col-form-label, .form-check-label {
+            font-size: 14px;
+        }
+
+        .form-check-input {
+            width: 0.85em;
+            height: 0.85em;
+            margin-top: 0.4em;
+        }
+
+        .form-check-input:checked {
+            background-color: #101011;
+            border-color: #000000;
+        }
+
+        .form-check-input:focus {
+            border-color: none;
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .form-check-input[type=radio] {
+            border-radius: 0.2em;
+        }
+
+        div.input, input[type="text"],input[type="number"] {
+            border: 0;
+            border-bottom: 1px dashed #000;
+            background-color: #f4f5f8;
+            height: 2em;
+        }
+
+        .form-control:focus {
+            background-color: #f4f5f8;
+            border-color: #000;
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .page-header {
+            height: 160px !important;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body border-bottom">
+                            <div class="d-flex justify-content-end">
+                                <div class="flex-shrink-0 mx-2">
+                                    <a class="btn btn-cnmci" href="{{ path('admin_download_cnmci_pdf', {id: member.id}) }}"><i class="fa fa-download"></i> Téléecharger pdf</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {{ include('admin/member/cnmci/_form_cnmci.html.twig') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% endblock %}
+
+

@@ -50,7 +50,7 @@ class PageController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/success/{id}', name: 'success')]
+    #[Route(path: '/success/{+\id}', name: 'success')]
     public function success(Member $member, MemberService $memberService): Response
     {
         $flashInfos = [
@@ -93,17 +93,14 @@ class PageController extends AbstractController
         else return $this->redirectToRoute('home');
     }
 
-    #[Route('/cnmci/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
+    #[Route('/cnmci/{+\id}', name: 'member_cncmi_sticker', methods: ['GET'])]
     public function formCnmciShow($id, MemberRepository $memberRepository): Response
     {
         $member = $memberRepository->findOneBy(['code_sticker' => $id]);
         return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
     }
 
-    private function handleFormCreation(Request $request,
-                                        FormInterface $form,
-                                        Member &$member,
-                                        MemberService $memberService): Member {
+    private function handleFormCreation(Request $request, FormInterface $form, Member &$member, MemberService $memberService): Member {
 
         $images = [];
 
@@ -131,7 +128,7 @@ class PageController extends AbstractController
         return $member;
     }
 
-    #[Route('/download/receipt/{id}', name: 'download_receipt_pdf', methods: ['GET'])]
+    #[Route('/download/receipt/{+\id}', name: 'download_receipt_pdf', methods: ['GET'])]
     public function pdfGenerate(Member $member, MemberService $memberService): Response
     {
         set_time_limit(0);

@@ -57,6 +57,21 @@ class MemberRepository extends ServiceEntityRepository
 
     }
 
+    public function findAdherentsFromTo($date_start, $date_end): ?array
+    {
+        $data = $this->createQueryBuilder('m')
+            ->where('m.subscription_date BETWEEN :from AND :to')
+           // ->andWhere('m.subscription_date >= :from')
+           // ->andWhere('m.subscription_date <= :to')
+            ->setParameter('from', $date_start)
+            ->setParameter('to', $date_end)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $data;
+    }
+
 //    public function findOneBySomeField($value): ?Member
 //    {
 //        return $this->createQueryBuilder('m')

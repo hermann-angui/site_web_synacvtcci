@@ -635,7 +635,7 @@ class MemberService
         }
     }
 
-    public function combinePdfsForPrint(Member $member){
+    public function combinePdfsForPrint(Member $member, $excludeReceipt = false, $outputmode = 'browser'){
         $pdf = new PDFMerger;
 
         $folder = $this->getMemberDir($member);
@@ -649,9 +649,12 @@ class MemberService
             $pdf->addPDF($folder . $member->getPaymentReceiptCnmciPdf());
         }
 
-        if($member->getPaymentReceiptSynacvtcciPdf()) {
-            $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
+        if(!$excludeReceipt){
+            if($member->getPaymentReceiptSynacvtcciPdf()) {
+                $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
+            }
         }
+
 
         if($member->getScanDocumentIdentitePdf()) {
             $pdf->addPDF($folder . $member->getScanDocumentIdentitePdf());
@@ -664,7 +667,7 @@ class MemberService
         $member->setMergedDocumentsPdf(basename($output));
         $member->setStatus("COMPLETED");
         $this->saveMember($member);
-        $res = $pdf->merge();
+        $res = $pdf->merge($outputmode, uniqid() . '.pdf');
         return $output;
     }
 
