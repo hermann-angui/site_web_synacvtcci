@@ -20,7 +20,6 @@ class ImageGenerator extends ImageRenderer
         $barCodeObj = new TCPDF2DBarcode($data, "QRCODE" );
         $barCodeImage = $barCodeObj->getBarcodePngData($width, $height);
         file_put_contents($outputFile, $barCodeImage);
-
         return $outputFile;
     }
 }

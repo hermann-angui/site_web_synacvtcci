@@ -67,14 +67,26 @@ class PaymentService
             $barcode_file = $folder . "payment_barcode.png";
             file_put_contents($barcode_file, $content);
 
-            $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
             $receipt_file = $folder . time() . uniqid() . ".pdf";
+            $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
+
+            if($payment->getTarget()  === "FRAIS_CARTE_SYNDICAT"){
+                $viewTemplate = 'admin/payment/payment-receipt-carte-synacvtcci-pdf.html.twig';
+                $member->setHasPaidForSyndicat(true);
+                $member->setIsSyndicatMember(true);
+            }
+
+            if($payment->getTarget()  === "FRAIS_SERVICE_TECHNIQUE"){
+                $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
+                $member->setPaymentReceiptSynacvtcciPdf(basename($receipt_file));
+            }
+
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
             file_put_contents($receipt_file, $content);
 
             if(file_exists($barcode_file)) \unlink($barcode_file);
 
-            $member->setPaymentReceiptSynacvtcciPdf(basename($receipt_file));
+            $member->setStatus("PAID");
             $this->memberRepository->add($member, true);
 
             return $content ?? null;

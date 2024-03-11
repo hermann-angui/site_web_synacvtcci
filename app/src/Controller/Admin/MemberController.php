@@ -29,8 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MemberController extends AbstractController
 {
     #[Route('', name: 'admin_member_index', methods: ['GET'])]
-    public function index(Request $request,
-                          MemberRepository $memberRepository): Response
+    public function index(Request $request): Response
     {
         if(in_array("ROLE_AGENT", $this->getUser()->getRoles() ))  {
             return $this->redirectToRoute('admin_index_agent');
@@ -40,24 +39,20 @@ class MemberController extends AbstractController
     }
 
     #[Route(path: '/search', name: 'admin_member_search')]
-    public function chooseMain(Request $request,
-                               MemberRepository $memberRepository): Response
+    public function chooseMain(Request $request): Response
     {
         return $this->render('admin/pages/search-index.html.twig');
     }
 
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
-    public function verificationList(Request $request,
-                                     MemberRepository $memberRepository): Response
+    public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
         $members = $memberRepository->findBy(['status' => ['PAID','COMPLETED']]);
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
-    public function formCnmciShow(Request $request,
-                                  Member $member,
-                                  MemberService $memberService): Response
+    public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
         if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
             return $this->redirectToRoute('admin_member_show', ['id' => $member->getId()]);
@@ -144,7 +139,7 @@ class MemberController extends AbstractController
         ]);
     }
 
-    #[Route('/upload', name: 'admin_member_upload', methods: ['GET', 'POST'])]
+        #[Route('/upload', name: 'admin_member_upload', methods: ['GET', 'POST'])]
     public function upload(Request $request,
                            FileUploadHelper $fileUploadHelper): Response
     {
@@ -175,9 +170,6 @@ class MemberController extends AbstractController
                                  MemberRepository $memberRepository): Response
     {
         $member = $memberService->generateSingleMemberCard($member);
-        $member->setCardPhoto($member->getCardPhoto()->getFilename());
-        $member->setModifiedAt(new \DateTime());
-        $memberRepository->add($member, true);
         return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
     }
 
@@ -185,7 +177,7 @@ class MemberController extends AbstractController
     public function showCard(Request $request,
                              Member $member): Response
     {
-         return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
+        return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
     }
 
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
@@ -197,7 +189,7 @@ class MemberController extends AbstractController
         ini_set('max_execution_time', '-1');
         $memberService->generateSingleMemberCard($member);
         $zipFile = $memberService->archiveMemberCards([$member]);
-        return $this->file($zipFile);
+        return $this->file($zipFile, 'fichier_carte.zip');
     }
 
     #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET', 'POST'])]
@@ -442,7 +434,7 @@ class MemberController extends AbstractController
                                             <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
-                                            <a class='dropdown-item' href='#'><i class='mdi mdi-trash-can'></i>Supprimer</a>
+                                            <a class='dropdown-item' href='/admin/payment/carte/synacvtcci/$id'><i class='mdi mdi-cash'></i> Payer la carte SYNACVTCI</a>
                                         </div>
                                     </div>
                                 </div> ";
@@ -540,8 +532,6 @@ class MemberController extends AbstractController
 
         if(!empty($params['searchTerm'])) {
             $whereResult .= " tracking_code LIKE '%". $params['searchTerm']. "%' AND ";
-//            $whereResult .= " first_name LIKE '%". $params['searchTerm']. "%' OR ";
-//            $whereResult .= " last_name LIKE '%". $params['searchTerm']. "%') AND ";
         }
 
         $whereResult.= " status IN ('PHOTO_VALID') ";

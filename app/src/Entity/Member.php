@@ -175,6 +175,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $has_paid_for_syndicat = false;
 
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $has_withdraw_synacvtcci_carte = false;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $payment_receipt_synacvtcci_pdf = null;
 
@@ -1413,6 +1416,24 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setHasPaidForSyndicat(?bool $has_paid_for_syndicat): Member
     {
         $this->has_paid_for_syndicat = $has_paid_for_syndicat;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasWithdrawSynacvtcciCarte(): ?bool
+    {
+        return $this->has_withdraw_synacvtcci_carte;
+    }
+
+    /**
+     * @param bool|null $has_withdraw_synacvtcci_carte
+     * @return Member
+     */
+    public function setHasWithdrawSynacvtcciCarte(?bool $has_withdraw_synacvtcci_carte): Member
+    {
+        $this->has_withdraw_synacvtcci_carte = $has_withdraw_synacvtcci_carte;
         return $this;
     }
 

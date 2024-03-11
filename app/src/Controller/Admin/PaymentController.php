@@ -20,6 +20,7 @@ use Symfony\Component\Uid\Uuid;
 class PaymentController extends AbstractController
 {
     private const MONTANT = 3500;
+    private const MONTANT_CARTE_SYNDICAT = 5000;
 
     #[Route(path: '', name: 'admin_payment_index')]
     public function index(Request $request,
@@ -50,7 +51,7 @@ class PaymentController extends AbstractController
                 ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
                 ->setType('cash')
                 ->setMontant(self::MONTANT)
-                ->setTarget("synacvtcci")
+                ->setTarget('FRAIS_SERVICE_TECHNIQUE')
                 ->setPaymentFor($member)
                 ->setCodePaymentOperateur(null)
                 ->setReceiptFile(null)
@@ -59,9 +60,6 @@ class PaymentController extends AbstractController
 
             $paymentService->generatePaymentReceipt($payment);
 
-            $member->setStatus("PAID");
-            $memberService->saveMember($member);
-
             $activityLogger->create($payment, "Paiement cash effectuée");
 
             return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
@@ -69,6 +67,30 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('admin_index');
     }
 
+    #[Route(path: '/carte/synacvtcci/{id}', name: 'do_payment_carte_synacvtcci')]
+    public function doSyndicatPayment(Member $member,
+                              WaveService       $waveService,
+                              ActivityLogger $activityLogger,
+                              PaymentRepository $paymentRepository): Response
+    {
+        $response = $waveService->makePayment(self::MONTANT_CARTE_SYNDICAT);
+        if ($response) {
+            $payment = new Payment();
+            $payment->setUser($this->getUser());
+            $payment->setStatus(strtoupper($response->getPaymentStatus()));
+            $payment->setReference($response->getClientReference());
+            $payment->setOperateur("WAVE");
+            $payment->setTarget("FRAIS_CARTE_SYNDICAT");
+            $payment->setMontant($response->getAmount());
+            $payment->setType("MOBILE_MONEY");
+            $payment->setReceiptNumber(PaymentService::generateReference());
+            $payment->setCreatedAt(new \DateTime('now'));
+            $payment->setModifiedAt(new \DateTime('now'));
+            $payment->setPaymentFor($member);
+            $paymentRepository->add($payment, true);
+            return $this->redirect($response->getWaveLaunchUrl());
+        } else return $this->redirectToRoute('admin_index');
+    }
 
     #[Route(path: '/do/{id}', name: 'do_payment')]
     public function doPayment(Member $member,
@@ -83,6 +105,7 @@ class PaymentController extends AbstractController
             $payment->setStatus(strtoupper($response->getPaymentStatus()));
             $payment->setReference($response->getClientReference());
             $payment->setOperateur("WAVE");
+            $payment->setTarget("FRAIS_SERVICE_TECHNIQUE");
             $payment->setMontant($response->getAmount());
             $payment->setType("MOBILE_MONEY");
             $payment->setReceiptNumber(PaymentService::generateReference());
@@ -166,4 +189,5 @@ class PaymentController extends AbstractController
         }
         return $this->redirectToRoute('admin_index');
     }
+
 }

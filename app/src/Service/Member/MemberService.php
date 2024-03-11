@@ -259,9 +259,14 @@ class MemberService
         date_default_timezone_set("Africa/Abidjan");
         if ($member) {
             if(empty($member->getPhoto())) return null;
+            if($member->getCardPhoto()){
+                $file = $this->getMemberDir($member) . $member->getCardPhoto();
+                if(file_exists($file))  unlink($file);
+            }
             $cardImage = $this->memberCardGeneratorService->generate($member);
-            $member->setCardPhoto(new File($cardImage));
+            $member->setCardPhoto($cardImage->getFilename());
             $member->setModifiedAt(new DateTime());
+            $this->memberRepository->add($member, true);
             return $member;
         }
         return null;
@@ -295,19 +300,20 @@ class MemberService
         date_default_timezone_set("Africa/Abidjan");
         set_time_limit(0);
         $zipArchive = new \ZipArchive();
-        $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/members/tmp/members.zip';;
+        $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/members/tmp_members.zip';
         if(file_exists($zipFile)) unlink($zipFile);
         if($zipArchive->open($zipFile, \ZipArchive::CREATE) === true)
         {
             /**@var Member $member **/
             foreach($members as $member)
             {
-                if(is_file($member->getPhoto())) {
-                    $zipArchive->addFile($this->getMemberDir($member) . $member->getPhoto(), $member->getReference() . '_photo.png');
+                $file = $this->getMemberDir($member) . $member->getPhoto();
+                if(is_file($file)) {
+                    $zipArchive->addFile($file, $member->getReference() . '_photo.png');
                 }
-
-                if(is_file($member->getCardPhoto())) {
-                    $zipArchive->addFile($this->getMemberDir($member) . $member->getCardPhoto(), $member->getReference() . '_card.png');
+                $file = $this->getMemberDir($member) . $member->getCardPhoto();
+                if(is_file($file)) {
+                    $zipArchive->addFile($file, $member->getReference() . '_card.png');
                 }
 
                 $barCodePhotoRealPath = $this->getMemberDir($member) . $member->getReference() . "_barcode.png";

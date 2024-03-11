@@ -22,3 +22,6 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 public/artisans/
+public/cnmci/encaissements.xls
+public/cnmci/inscrits.xls
+public/cnmci/download.zip

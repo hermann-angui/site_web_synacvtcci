@@ -27,7 +27,7 @@ class WavePaymentController extends AbstractController
             $payment->setStatus("PAID");
             $paymentRepository->add($payment, true);
             $member = $payment->getPaymentFor();
-            if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
+            $paymentService->generatePaymentReceipt($payment);
             if ($member) {
                 $member->setStatus("PAID");
                 $memberRepository->add($member, true);
@@ -55,9 +55,7 @@ class WavePaymentController extends AbstractController
                     $payment->setStatus("PAID");
                     $paymentRepository->add($payment, true);
                     $member = $payment->getPaymentFor();
-
-                    if(!$member->getPaymentReceiptSynacvtcciPdf()) $paymentService->generatePaymentReceipt($payment);
-
+                    $paymentService->generatePaymentReceipt($payment);
                     if ($member) {
                         $member->setStatus("PAID");
                         $memberRepository->add($member, true);
