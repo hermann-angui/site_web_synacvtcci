@@ -240,18 +240,18 @@ class MemberController extends AbstractController
         $paramDB = $connection->getParams();
         $table = 'member';
         $primaryKey = 'id';
+        $member = null;
         $columns = [
             [
                 'db' => 'id',
                 'dt' => 'id',
                 'formatter' => function( $d, $row ) use ($memberRepository){
                     $member = $memberRepository->find($d);
-                    $imageUrl = $member->getMatricule() . "/" .  $member->getReference() . "_card.png";
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-2 img-thumbnail'>";
+                    $imageUrl = $member->getReference() . "/" . basename($member->getPhoto());
+                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
                     return $content;
                 }
             ],
-
             [
                 'db' => 'matricule',
                 'dt' => 'matricule',
@@ -264,6 +264,41 @@ class MemberController extends AbstractController
                 'db' => 'first_name',
                 'dt' => 'first_name',
             ],
+            [
+                'db' => 'subscription_date',
+                'dt' => 'subscription_date'
+            ],
+            [
+                'db' => 'subscription_expire_date',
+                'dt' => 'subscription_expire_date'
+            ],
+            [
+                'db' => 'has_withdraw_synacvtcci_carte',
+                'dt' => 'has_withdraw_synacvtcci_carte',
+                'formatter' => function($d, $row) {
+                    $res = $d ? 'OUI': 'NON';
+                    return "<span>$res</span>";
+                }
+            ],
+            [
+                'db'        => 'email',
+                'dt'        => 'email',
+                'formatter' => function($d, $row) {
+                    $id = $row['id'];
+                    $content =  "<div class='d-flex gap-2 flex-wrap'>
+                                    <div class='btn-group'>
+                                        <button class='btn btn-info dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                            <small></small><i class='mdi mdi-menu'></i>
+                                        </button>
+                                        <div class='dropdown-menu' style=''>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
+                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
+                                        </div>
+                                    </div>
+                                </div> ";
+                    return $content;
+                }
+            ]
         ];
 
         $sql_details = array(
@@ -273,15 +308,8 @@ class MemberController extends AbstractController
             'host' => $paramDB['host']
         );
 
-        $whereResult = '';
-        if(!empty($params['matricule'])){
-            $whereResult .= " matricule LIKE '%". $params['matricule'] . "%' AND";
-        }
-        if(!empty($params['last_name'])) {
-            $whereResult .= " last_name LIKE '%". $params['last_name']. "%' AND";
-        }
-        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
-        $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+        $whereResult= "`has_withdraw_synacvtcci_carte` = 1";
+        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
     }

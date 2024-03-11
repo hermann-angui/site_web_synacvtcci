@@ -280,9 +280,9 @@ class MemberService
         date_default_timezone_set("Africa/Abidjan");
         $members = [];
         if(empty($matricules)){
-            $members = $this->memberRepository->findAll();
+            $members = $this->memberRepository->findBy(['has_paid_for_syndicat' => 1]);
         }else{
-            $members = $this->memberRepository->findBy(["matricule" => $matricules]);
+            $members = $this->memberRepository->findBy(["matricule" => $matricules, 'has_paid_for_syndicat' => 1]);
         }
 
         foreach ($members as $member) {

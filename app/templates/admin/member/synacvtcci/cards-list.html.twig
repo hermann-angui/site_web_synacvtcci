@@ -3,7 +3,6 @@
 {% block stylesheet %}
     {{ parent() }}
     <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/select.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
@@ -31,11 +30,11 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">Cartes</h4>
+                                <h4 class="mb-sm-0 font-size-18">Membres</h4>
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="{{ path('home') }}">Accueil</a></li>
-                                        <li class="breadcrumb-item active">Liste des cartes des membres</li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Accueil</a></li>
+                                        <li class="breadcrumb-item active">Liste des Membres</li>
                                     </ol>
                                 </div>
                             </div>
@@ -45,6 +44,14 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="d-flex align-items-center">
+                                        <h5 class="mb-0 card-title flex-grow-1"></h5>
+                                        <div class="flex-shrink-0">
+                                            <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".bs-downloadcards"><span class="fa fa-download fa-1x"></span>Télécharger des cartes</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         {{ include('admin/member/synacvtcci/_member_cards_list.html.twig') }}
@@ -62,65 +69,62 @@
     </div>
     <!-- END layout-wrapper -->
 
-    <!-- Right Sidebar -->
-
-    <!-- /Right-bar -->
-
-    <!-- Right bar overlay-->
-    <div class="rightbar-overlay"></div>
-
 {% endblock %}
 
 {% block javascript %}
-    {{ parent() }}
-    <script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/datatables.net/js/dataTables.select.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
 
-            var datatable = initDatatable();
+        var datatable = initDatatable();
 
-            function initDatatable(){
-                /* DATATABLE INIT */
-                var dt = $('#datatable').DataTable( {
-                    "responsive": true,
-                    "language": {
-                        url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
-                        processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
-                        sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />"
-                    },
-                    "processing": true,
-                    "serverSide": true,
-                    "ajax": {
-                        "url": '{{ path('admin_cards_list_dt') }}',
-                        "data": function (d) {
-                            d.matricule = $("#matricule").val();
-                            d.last_name = $("#last_name").val();
-                        }
-                    },
-                    "columnDefs": [ {
-                        orderable: false,
-                        className: 'select-checkbox',
-                        targets:   0
-                    } ],
-                    "select": {
-                        style:    'multi',
-                        selector: 'td:first-child'
-                    },
-                    "columns": [
-                        {"data": "id"},
-                        {"data": "matricule"},
-                        {"data": "last_name"},
-                        {"data": "first_name"}
-                    ],
-                    "order": [[1, 'asc']]
-                } );
-
-
-                return dt;
-            }
+        $("#matricule,#last_name,#driving_license_number,#id_number,#sex").change(function (e) {
+                datatable.draw();
         });
+
+       $("input[name='selection_type']").change(function(){
+             if($(this).val() === "0"){
+                $('#interval-row').hide();
+             }else{
+                  $('#interval-row').show();
+             }
+          });
+        function initDatatable(){
+            /* DATATABLE INIT */
+            var dt = $('#datatable').DataTable( {
+                "responsive": true,
+                 "pageLength": 50,
+                "language": {
+                    url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                    processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
+                    sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />"
+                },
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": '{{ path('admin_cards_list_dt') }}',
+                    "data": function (d) {
+                    }
+                },
+                "columns": [
+                    {"data":  "id"},
+                    {"data":  "matricule"},
+                    {"data":  "last_name"},
+                    {"data":  "first_name"},
+                    { "data": "subscription_date" },
+                    { "data": "subscription_expire_date" },
+                    { "data": "has_withdraw_synacvtcci_carte" },
+                    { "data": "email" }
+                ],
+                "order": [[4, 'desc']]
+            } );
+
+
+            return dt;
+        }
+    });
 </script>
 {% endblock %}
