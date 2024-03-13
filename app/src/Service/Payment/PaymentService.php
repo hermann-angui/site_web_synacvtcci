@@ -58,7 +58,7 @@ class PaymentService
                 }
             }
 
-            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getMatricule();
+            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getReference();
 
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
             $folder = self::MEDIA_DIR . $member->getReference() . '/';
