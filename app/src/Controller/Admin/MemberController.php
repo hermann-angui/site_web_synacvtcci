@@ -269,15 +269,10 @@ class MemberController extends AbstractController
                 'dt' => 'subscription_date'
             ],
             [
-                'db' => 'subscription_expire_date',
-                'dt' => 'subscription_expire_date'
-            ],
-            [
                 'db' => 'has_withdraw_synacvtcci_carte',
                 'dt' => 'has_withdraw_synacvtcci_carte',
                 'formatter' => function($d, $row) {
-                    $res = $d ? 'OUI': 'NON';
-                    return "<span>$res</span>";
+                    return $d ? "<span class='badge bg-success p-2'>OUI</span>" : "<span class='badge bg-danger p-2'>NON</span>" ;
                 }
             ],
             [
@@ -293,6 +288,7 @@ class MemberController extends AbstractController
                                         <div class='dropdown-menu' style=''>
                                             <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
+                                            <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-eye'></i> Délivrée</a>
                                         </div>
                                     </div>
                                 </div> ";
@@ -308,7 +304,7 @@ class MemberController extends AbstractController
             'host' => $paramDB['host']
         );
 
-        $whereResult= "`has_withdraw_synacvtcci_carte` = 1";
+        $whereResult= "`has_withdraw_synacvtcci_carte` = 1 OR `has_paid_for_syndicat` = 1";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);

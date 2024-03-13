@@ -185,7 +185,7 @@ class MemberRegistrationType extends AbstractType
                 'empty_data' => 'H'
             ])
             ->add('hasWithdrawSynacvtcciCarte', CheckboxType::class, [
-                'label' => 'Carte de membre synacvtcci délivré ?',
+                'label' => 'Carte de membre synacvtcci délivrée ?',
                 'required' => false,
                 'mapped' => true,
             ])

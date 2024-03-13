@@ -15,20 +15,27 @@
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
-                        <i class="bx bxs-user"></i>
-                        <span  key="t-s0">Syndicat</span>
+                        <i class="bx bxs-group"></i>
+                        <span  key="t-s0">CNMCI</span>
                     </a>
                     <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
                         <li><a href="{{ path('admin_member_search') }}" key="t-s1">Recherche rapide</a></li>
                         <li><a href="{{ path('admin_index') }}" key="t-s1">Accueil</a></li>
-                        <li><a href="{{ path('admin_member_index') }}" key="t-s2">Membres</a></li>
-                        <li><a href="{{ path('admin_generate_tracking_codes') }}" key="t-s2">Generateur de codes</a></li>
-                        <li><a href="{{ path('admin_cards_list') }}" key="t-s3">Cartes</a></li>
+                        <li><a href="{{ path('admin_member_index') }}" key="t-s2">Liste artisans</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
+                        <i class="bx bxs-user"></i>
+                        <span  key="t-s0">SYNACVTCCI</span>
+                    </a>
+                    <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="{{ path('admin_cards_list') }}" key="t-s3">Liste membres</a></li>
                     </ul>
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bxs-card"></i>
+                        <i class="bx bxs-factory"></i>
                         <span key="t-a0">Activités</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse">
@@ -38,8 +45,15 @@
                         <li><a href="#" key="t-a4">Galerie</a></li>
                     </ul>
                 </li>
-
-                <li class="menu-title">Paramètres</li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bxs-detail"></i>
+                        <span key="t-a0">Configuration</span>
+                    </a>
+                    <ul class="sub-sub-menu mm-collapse">
+                        <li><a href="{{ path('admin_generate_tracking_codes') }}" key="t-s2">Codes dossier</a></li>
+                    </ul>
+                </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-lock"></i>

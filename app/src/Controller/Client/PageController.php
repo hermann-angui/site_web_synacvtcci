@@ -85,10 +85,10 @@ class PageController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/profile/{matricule}', name: 'public_member_profile')]
+    #[Route(path: '/profile/{reference}', name: 'public_member_profile')]
     public function memberProfile(Request $request, MemberRepository $memberRepository): Response
     {
-        $member = $memberRepository->findOneBy(["matricule" => $request->get("matricule")]);
+        $member = $memberRepository->findOneBy(["reference" => $request->get("reference")]);
         if($member)  return $this->render('admin/member/synacvtcci/public_profile.html.twig', ["member" => $member]);
         else return $this->redirectToRoute('home');
     }
