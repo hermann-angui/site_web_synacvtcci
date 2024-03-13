@@ -18,7 +18,11 @@
     <!-- Begin page -->
             <div class="container">
                 <div class="d-flex py-4">
+                    {% if app.user is defined and app.user is not null %}
                     <a href="{{ path('admin_index')}}" class="btn btn-primary waves-effect waves-light">Revenir à l'accueil</a>
+                    {% else %}
+                        <a href="{{ path('home')}}" class="btn btn-primary waves-effect waves-light">Revenir à l'accueil</a>
+                    {% endif %}
                 </div>
                 <div class="container-fluid">
                     <div class="row">
