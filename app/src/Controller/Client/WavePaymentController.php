@@ -67,7 +67,7 @@ class WavePaymentController extends AbstractController
     }
 
 
-    #[Route(path: '/successpage/{+\id}', name: 'wave_success_page', methods: ['POST', 'GET'])]
+    #[Route(path: '/successpage/{id}', name: 'wave_success_page', methods: ['POST', 'GET'])]
     public function paymentSuccesPage(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["SUCCEEDED", "PAID", "CLOSED", "COMPLETED"])) {
@@ -79,7 +79,7 @@ class WavePaymentController extends AbstractController
         else return $this->redirectToRoute('home');
     }
 
-    #[Route('/receipt/download/{+\id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
+    #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
     public function pdfGenerate(Payment $payment,
                                 PaymentService $paymentService,
                                 ActivityLogger $activityLogger): Response

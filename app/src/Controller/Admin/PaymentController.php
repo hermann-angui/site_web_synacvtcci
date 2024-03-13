@@ -132,7 +132,8 @@ class PaymentController extends AbstractController
                 $member->setStatus("PAID");
                 $memberRepository->add($member, true);
             }
-            return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
+            if( $payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE" ) return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
+            elseif( $payment->getTarget() === "FRAIS_CARTE_SYNDICAT" ) return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId(), "status" => $status]);
         }
         return $this->redirectToRoute('admin_index');
     }
@@ -189,5 +190,18 @@ class PaymentController extends AbstractController
         }
         return $this->redirectToRoute('admin_index');
     }
+
+    #[Route(path: '/carte-syndicat/success/{id}', name: 'payment_succes_carte_syndicat', methods: ['POST', 'GET'])]
+    public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService): Response
+    {
+        if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {
+            $paymentService->generatePaymentReceipt($payment);
+            return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
+        }
+        return $this->redirectToRoute('admin_index');
+    }
+
+
+
 
 }

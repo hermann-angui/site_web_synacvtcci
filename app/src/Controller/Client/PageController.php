@@ -4,10 +4,12 @@ namespace App\Controller\Client;
 
 use App\Entity\Child;
 use App\Entity\Member;
+use App\Entity\Payment;
 use App\Form\MemberOnlineRegistrationType;
 use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
 use App\Service\Member\MemberService;
+use App\Service\Payment\PaymentService;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -135,6 +137,16 @@ class PageController extends AbstractController
         $content = $memberService->generateRegistrationReceipt($member);
         return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
+
+    #[Route('/download/synactvtcci/receipt/{id}', name: 'download_payment_receipt_carte_synacvtcci_pdf', methods: ['GET'])]
+    public function downloadReceiptCarteSynacvtcci(?Payment $payment, PaymentService $paymentService): Response
+    {
+        set_time_limit(0);
+        $content = $paymentService->generatePaymentReceipt($payment);
+        return new PdfResponse($content, 'recu_synacvtcci.pdf');
+    }
+
+
 
     #[Route('/preinscription/{tracking_code}', name: 'presubscribe', methods: ['GET']), ]
     public function presubscribe (string $tracking_code, Request $request, MemberRepository $memberRepository): Response

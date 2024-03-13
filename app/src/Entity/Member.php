@@ -182,6 +182,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $payment_receipt_synacvtcci_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $payment_receipt_carte_synacvitci_pdf = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $online_registration_receipt_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -189,8 +192,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
     private ?string $payment_receipt_cnmci_code = null;
-
-
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -1436,6 +1437,25 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         $this->has_withdraw_synacvtcci_carte = $has_withdraw_synacvtcci_carte;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getPaymentReceiptCarteSynacvitciPdf(): ?string
+    {
+        return $this->payment_receipt_carte_synacvitci_pdf;
+    }
+
+    /**
+     * @param string|null $payment_receipt_carte_synacvitci_pdf
+     * @return Member
+     */
+    public function setPaymentReceiptCarteSynacvitciPdf(?string $payment_receipt_carte_synacvitci_pdf): Member
+    {
+        $this->payment_receipt_carte_synacvitci_pdf = $payment_receipt_carte_synacvitci_pdf;
+        return $this;
+    }
+
 
 
 }
