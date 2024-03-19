@@ -170,7 +170,7 @@ class MemberController extends AbstractController
                                  MemberRepository $memberRepository): Response
     {
         $member = $memberService->generateSingleMemberCard($member);
-        return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
+        return $this->redirectToRoute('admin_member_show_card', ['id' => $member->getId()]);
     }
 
     #[Route('/show/card/{id}', name: 'admin_member_show_card', methods: ['GET'])]
