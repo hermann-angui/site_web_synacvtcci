@@ -52,7 +52,7 @@ class PageController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/success/{+\id}', name: 'success')]
+    #[Route(path: '/success/{id}', name: 'success')]
     public function success(Member $member, MemberService $memberService): Response
     {
         $flashInfos = [
@@ -95,7 +95,7 @@ class PageController extends AbstractController
         else return $this->redirectToRoute('home');
     }
 
-    #[Route('/cnmci/{+\id}', name: 'member_cncmi_sticker', methods: ['GET'])]
+    #[Route('/cnmci/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
     public function formCnmciShow($id, MemberRepository $memberRepository): Response
     {
         $member = $memberRepository->findOneBy(['code_sticker' => $id]);
@@ -130,7 +130,7 @@ class PageController extends AbstractController
         return $member;
     }
 
-    #[Route('/download/receipt/{+\id}', name: 'download_receipt_pdf', methods: ['GET'])]
+    #[Route('/download/receipt/{id}', name: 'download_receipt_pdf', methods: ['GET'])]
     public function pdfGenerate(Member $member, MemberService $memberService): Response
     {
         set_time_limit(0);
@@ -145,7 +145,6 @@ class PageController extends AbstractController
         $content = $paymentService->generatePaymentReceipt($payment);
         return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
-
 
 
     #[Route('/preinscription/{tracking_code}', name: 'presubscribe', methods: ['GET']), ]
