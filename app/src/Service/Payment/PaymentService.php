@@ -71,10 +71,10 @@ class PaymentService
             $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
 
             if($payment->getTarget()  === "FRAIS_CARTE_SYNDICAT"){
-                $viewTemplate = 'admin/payment/payment-receipt-carte-synacvtcci-pdf.html.twig';
+                $viewTemplate = 'admin/payment/payment-receipt-carte-syndicat-pdf.html.twig';
                 $member->setHasPaidForSyndicat(true);
                 $member->setIsSyndicatMember(true);
-                $member->setPaymentReceiptCarteSynacvitciPdf(basename($receipt_file));
+                $member->setPaymentReceiptCarteSyndicatPdf(basename($receipt_file));
             }
 
             if($payment->getTarget()  === "FRAIS_SERVICE_TECHNIQUE"){

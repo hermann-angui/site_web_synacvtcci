@@ -9,13 +9,13 @@
                 <li class="menu-title" key="t-menu">Menu</li>
                 <li>
                     <a href="{{ path('admin_dashboard') }}" class="waves-effect" aria-expanded="false">
-                        <i class="bx bx-chat"></i>
+                        <i class="bx bxs-dashboard"></i>
                         <span key="t-t0">Tableau de bord</span>
                     </a>
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
-                        <i class="bx bxs-group"></i>
+                        <i class="bx bxs-business"></i>
                         <span  key="t-s0">CNMCI</span>
                     </a>
                     <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
@@ -26,16 +26,34 @@
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
-                        <i class="bx bxs-user"></i>
+                        <i class="bx bxs-car"></i>
                         <span  key="t-s0">SYNACVTCCI</span>
                     </a>
                     <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
-                        <li><a href="{{ path('admin_cards_list') }}" key="t-s3">Liste membres</a></li>
+                        <li><a href="{{ path('admin_adherents_synacvtcci') }}" key="t-s3">Liste adhérents</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
+                        <i class="bx bxs-taxi"></i>
+                        <span  key="t-s0">TAXI</span>
+                    </a>
+                    <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="{{ path('admin_adherents_taxi') }}" key="t-s3">Liste adhérents</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
+                        <i class="bx bxs-circle"></i>
+                        <span  key="t-s0">LIVREURS</span>
+                    </a>
+                    <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="{{ path('admin_adherents_livreurs') }}" key="t-s3">Liste adhérents</a></li>
                     </ul>
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bxs-factory"></i>
+                        <i class="bx bxs-collection"></i>
                         <span key="t-a0">Activités</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse">
@@ -47,7 +65,7 @@
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bxs-detail"></i>
+                        <i class="bx bxs-cog"></i>
                         <span key="t-a0">Configuration</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse">

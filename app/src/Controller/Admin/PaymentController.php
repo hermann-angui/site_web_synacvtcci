@@ -67,7 +67,7 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('admin_index');
     }
 
-    #[Route(path: '/carte/synacvtcci/{id}', name: 'do_payment_carte_synacvtcci')]
+    #[Route(path: '/carte/syndicat/{id}', name: 'do_payment_carte_syndicat')]
     public function doSyndicatPayment(Member $member,
                               WaveService       $waveService,
                               ActivityLogger $activityLogger,

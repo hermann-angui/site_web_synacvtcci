@@ -161,8 +161,6 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Autorité délivrant la pièce d'identité",
                 'mapped' => true,
                 'required' => true,
-                'attr' => ['placeholder' => "ONECI"],
-                'data' => $data->getSocioprofessionnelleCategory()?? "ONECI"
             ])
             ->add('IdDeliveryDate',DateType::class, [
                 'label' => 'Délivré le',
@@ -184,7 +182,7 @@ class MemberRegistrationType extends AbstractType
                 ],
                 'empty_data' => 'H'
             ])
-            ->add('hasWithdrawSynacvtcciCarte', CheckboxType::class, [
+            ->add('hasWithdrawSyndicatCarte', CheckboxType::class, [
                 'label' => 'Carte de membre synacvtcci délivrée ?',
                 'required' => false,
                 'mapped' => true,
@@ -382,11 +380,16 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'data' => $data->getSocioprofessionnelleCategory()?? "ARTISAN"
             ])
-            ->add('activity', TextType::class, [
+            ->add('activity', ChoiceType::class, [
                 'label' => "Activité",
                 'mapped' => true,
                 'required' => true,
-                'data' => $data->getSocioprofessionnelleCategory()?? "CHAUFFEUR VTC"
+                'choices' => [
+                    "CHAUFFEUR VTC" => "CHAUFFEUR VTC",
+                    "CHAUFFEUR TAXI" => "CHAUFFEUR TAXI",
+                    "CHAUFFEUR LIVREUR" => "CHAUFFEUR LIVREUR",
+                ],
+                'data' => $data->getActivity() ?? null
             ])
             ->add('activity_date_debut', DateType::class, [
                 'label' => "Date debut d'activité",

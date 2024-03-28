@@ -176,13 +176,13 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $has_paid_for_syndicat = false;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
-    private ?bool $has_withdraw_synacvtcci_carte = false;
+    private ?bool $has_withdraw_syndicat_carte = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $payment_receipt_synacvtcci_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $payment_receipt_carte_synacvitci_pdf = null;
+    private ?string $payment_receipt_carte_syndicat_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $online_registration_receipt_pdf = null;
@@ -1423,36 +1423,36 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return bool|null
      */
-    public function getHasWithdrawSynacvtcciCarte(): ?bool
+    public function getHasWithdrawSyndicatCarte(): ?bool
     {
-        return $this->has_withdraw_synacvtcci_carte;
+        return $this->has_withdraw_syndicat_carte;
     }
 
     /**
-     * @param bool|null $has_withdraw_synacvtcci_carte
+     * @param bool|null $has_withdraw_syndicat_carte
      * @return Member
      */
-    public function setHasWithdrawSynacvtcciCarte(?bool $has_withdraw_synacvtcci_carte): Member
+    public function setHasWithdrawSyndicatCarte(?bool $has_withdraw_syndicat_carte): Member
     {
-        $this->has_withdraw_synacvtcci_carte = $has_withdraw_synacvtcci_carte;
+        $this->has_withdraw_syndicat_carte = $has_withdraw_syndicat_carte;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getPaymentReceiptCarteSynacvitciPdf(): ?string
+    public function getPaymentReceiptCarteSyndicatPdf(): ?string
     {
-        return $this->payment_receipt_carte_synacvitci_pdf;
+        return $this->payment_receipt_carte_syndicat_pdf;
     }
 
     /**
-     * @param string|null $payment_receipt_carte_synacvitci_pdf
+     * @param string|null $payment_receipt_carte_syndicat_pdf
      * @return Member
      */
-    public function setPaymentReceiptCarteSynacvitciPdf(?string $payment_receipt_carte_synacvitci_pdf): Member
+    public function setPaymentReceiptCarteSyndicatPdf(?string $payment_receipt_carte_syndicat_pdf): Member
     {
-        $this->payment_receipt_carte_synacvitci_pdf = $payment_receipt_carte_synacvitci_pdf;
+        $this->payment_receipt_carte_syndicat_pdf = $payment_receipt_carte_syndicat_pdf;
         return $this;
     }
 

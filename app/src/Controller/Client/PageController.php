@@ -138,12 +138,12 @@ class PageController extends AbstractController
         return new PdfResponse($content, 'recu_synacvtcci.pdf');
     }
 
-    #[Route('/download/synactvtcci/receipt/{id}', name: 'download_payment_receipt_carte_synacvtcci_pdf', methods: ['GET'])]
-    public function downloadReceiptCarteSynacvtcci(?Payment $payment, PaymentService $paymentService): Response
+    #[Route('/download/syndicat/receipt/{id}', name: 'download_payment_receipt_carte_syndicat_pdf', methods: ['GET'])]
+    public function downloadReceiptCarteSyndiact(?Payment $payment, PaymentService $paymentService): Response
     {
         set_time_limit(0);
         $content = $paymentService->generatePaymentReceipt($payment);
-        return new PdfResponse($content, 'recu_synacvtcci.pdf');
+        return new PdfResponse($content, 'recu_syndicat.pdf');
     }
 
 

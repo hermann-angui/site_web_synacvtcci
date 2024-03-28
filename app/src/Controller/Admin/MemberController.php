@@ -139,7 +139,7 @@ class MemberController extends AbstractController
         ]);
     }
 
-        #[Route('/upload', name: 'admin_member_upload', methods: ['GET', 'POST'])]
+    #[Route('/upload', name: 'admin_member_upload', methods: ['GET', 'POST'])]
     public function upload(Request $request,
                            FileUploadHelper $fileUploadHelper): Response
     {
@@ -157,33 +157,27 @@ class MemberController extends AbstractController
     }
 
     #[Route('/import', name: 'admin_member_import', methods: ['GET', 'POST'])]
-    public function import(Request $request,
-                           MemberService $memberService): Response
+    public function import(Request $request, MemberService $memberService): Response
     {
         $memberService->createMemberFromFile();
         return $this->redirectToRoute('admin_member_index');
     }
 
     #[Route('/generate/new/card/{id}', name: 'admin_member_generate_card', methods: ['GET'])]
-    public function generateCard(Member $member,
-                                 MemberService $memberService,
-                                 MemberRepository $memberRepository): Response
+    public function generateCard(Member $member, MemberService $memberService): Response
     {
         $member = $memberService->generateSingleMemberCard($member);
         return $this->redirectToRoute('admin_member_show_card', ['id' => $member->getId()]);
     }
 
     #[Route('/show/card/{id}', name: 'admin_member_show_card', methods: ['GET'])]
-    public function showCard(Request $request,
-                             Member $member): Response
+    public function showCard(Request $request, Member $member): Response
     {
         return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member]);
     }
 
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
-    public function downloadCard(Request $request,
-                                 Member $member,
-                                 MemberService $memberService): Response
+    public function downloadCard(Request $request, Member $member, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         ini_set('max_execution_time', '-1');
@@ -193,8 +187,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/cards', name: 'admin_member_download_cards', methods: ['GET', 'POST'])]
-    public function downloadMemberCards(Request $request,
-                                        MemberService $memberService): Response
+    public function downloadMemberCards(Request $request, MemberService $memberService): Response
     {
         $from = $request->get("from_matricule");
         $to = $request->get("to_matricule");
@@ -217,20 +210,29 @@ class MemberController extends AbstractController
     }
 
     #[Route('/download/sample', name: 'admin_member_sample_file', methods: ['GET'])]
-    public function downloadSample(Request $request,
-                                   MemberService $memberService): Response
+    public function downloadSample(Request $request, MemberService $memberService): Response
     {
         $sampleRealPath = $memberService->generateSampleCsvFile();
         return $this->file($sampleRealPath, 'sample.csv');
     }
 
-    #[Route('/cards/list', name: 'admin_cards_list', methods: ['GET'])]
-    public function showCardsList(Request $request): Response
+    #[Route('/adherents/synacvtcci', name: 'admin_adherents_synacvtcci', methods: ['GET'])]
+    public function  showListAdherentsSynacvtcci(Request $request): Response
     {
-        return $this->render('admin/member/synacvtcci/cards-list.html.twig');
+        return $this->render('admin/member/synacvtcci/adherents-list.html.twig');
+    }
+    #[Route('/adherents/taxi', name: 'admin_adherents_taxi', methods: ['GET'])]
+    public function  showListAdherentsTaxi(Request $request): Response
+    {
+        return $this->render('admin/member/taxi/adherents-list.html.twig');
+    }
+    #[Route('/adherents/livreurs', name: 'admin_adherents_livreurs', methods: ['GET'])]
+    public function showListAdherentsLivreurs(Request $request): Response
+    {
+        return $this->render('admin/member/livreurs/adherents-list.html.twig');
     }
 
-    #[Route('/cardslist/dt', name: 'admin_cards_list_dt', methods: ['GET'])]
+    #[Route('/adherents/dt', name: 'admin_adherents_list_dt', methods: ['GET'])]
     public function cardsListDT(Request $request,
                                 Connection $connection,
                                 MemberRepository $memberRepository)
@@ -286,7 +288,7 @@ class MemberController extends AbstractController
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-eye'></i> Délivrée</a>
                                         </div>
@@ -304,7 +306,7 @@ class MemberController extends AbstractController
             'host' => $paramDB['host']
         );
 
-        $whereResult= "`has_withdraw_synacvtcci_carte` = 1 OR `has_paid_for_syndicat` = 1";
+        $whereResult= "`has_withdraw_syndicat_carte` = 1 OR `has_paid_for_syndicat` = 1";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -455,10 +457,10 @@ class MemberController extends AbstractController
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
-                                            <a class='dropdown-item' href='/admin/payment/carte/synacvtcci/$id'><i class='mdi mdi-cash'></i> Payer la carte SYNACVTCI</a>
+                                            <a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>
                                         </div>
                                     </div>
                                 </div> ";
@@ -495,74 +497,6 @@ class MemberController extends AbstractController
         return new JsonResponse($response);
     }
 
-    #[Route('/pending/souscripteur', name: 'admin_member_pending_souscripteur_datatable', methods: ['GET'])]
-    public function pendingSouscripteur(Request $request,
-                                        Connection $connection,
-                                        MemberRepository $memberRepository)
-    {
-        date_default_timezone_set("Africa/Abidjan");
-        $params = $request->query->all();
-        $paramDB = $connection->getParams();
-        $table = 'member';
-        $primaryKey = 'id';
-        $columns = [
-            [
-                'db' => 'id',
-                'dt' => 'id',
-                'formatter' => function( $d, $row ) use ($memberRepository){
-                    $member = $memberRepository->find($d);
-                    $imageUrl = $member->getReference() . "/" .  $member->getPhoto();
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
-                    return $content;
-                }
-            ],
-            [
-                'db' => 'tracking_code',
-                'dt' => 'tracking_code',
-            ],
-            [
-                'db' => 'last_name',
-                'dt' => 'last_name',
-            ],
-            [
-                'db' => 'first_name',
-                'dt' => 'first_name',
-            ],
-            [
-                'db' => 'status',
-                'dt' => 'status'
-            ],
-            [
-                'db'        => 'matricule',
-                'dt'        => 'matricule',
-                'formatter' => function($d, $row) {
-                    $id = $row['id'];
-                    $content =  "<div class='d-flex gap-2 flex-wrap'>
-                                   <a class='btn btn-primary btn-sm btn-rounded' href='/admin/member/$id/edit'><i class='mdi mdi-eye'></i>Traiter</a>                                    
-                                </div> ";
-                    return $content;
-                }
-            ]
-        ];
-
-        $sql_details = array(
-            'user' => $paramDB['user'],
-            'pass' => $paramDB['password'],
-            'db'   => $paramDB['dbname'],
-            'host' => $paramDB['host']
-        );
-
-        $whereResult = null;
-
-        if(!empty($params['searchTerm'])) {
-            $whereResult .= " tracking_code LIKE '%". $params['searchTerm']. "%' AND ";
-        }
-
-        $whereResult.= " status IN ('PHOTO_VALID') ";
-        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult, null);
-
-        return new JsonResponse($response);
-    }
 
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
     public function show(Member $member): Response
@@ -603,36 +537,6 @@ class MemberController extends AbstractController
             if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
             if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 
-          //  $data = $request->request->all();
-/*
-            $memberChildren = $member->getChildren();
-            if(isset($data['child'])){
-                foreach($data['child'] as $childItem){
-//                    $child = $childRepository->findOneBy([
-//                        'first_name' => ,
-//                        'last_name' => ,
-//                        'sex' => ,
-//                    ]);
-                    $found = array_filter($memberChildren->toArray(), function($child) use($childItem){
-                        return ($child->getLastName() === $childItem['lastname'] && $child->getFirstName() === $childItem['firstname']) ;
-                    });
-
-                    $found = array_values($found);
-                    if(!empty($found)) {
-                        $found[0]->setLastName($childItem['lastname']);
-                        $found[0]->setFirstName($childItem['firstname']);
-                        $found[0]->setSex($childItem['sex']);
-                    }else{
-                        $child =  new Child();
-                        $child->setLastName($childItem['lastname']);
-                        $child->setFirstName($childItem['firstname']);
-                        $child->setSex($childItem['sex']);
-                        $child->setMember($member);
-                        $member->addChild($child);
-                    }
-                }
-            }
-*/
             $birth_city_other =  $form->get("birth_city_other")->getData();
             if($birth_city_other) {
                 $member->setBirthCity(strtoupper($birth_city_other));

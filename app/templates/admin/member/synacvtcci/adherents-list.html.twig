@@ -105,8 +105,9 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": '{{ path('admin_cards_list_dt') }}',
+                    "url": '{{ path('admin_adherents_list_dt') }}',
                     "data": function (d) {
+                        d.activity = "CHAUFFEUR VTC";
                     }
                 },
                 "columns": [
