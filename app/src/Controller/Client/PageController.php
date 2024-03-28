@@ -113,7 +113,7 @@ class PageController extends AbstractController
         if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
 
         if($form->has('paymentReceiptCnmci'))  $images['paymentReceiptCnmci'] = $form->get('paymentReceiptCnmci')?->getData();
-        if($form->has('paymentReceiptSynacvtcciPdf'))  $images['paymentReceiptSynacvtcciPdf'] = $form->get('paymentReceiptSynacvtcciPdf')?->getData();
+        if($form->has('paymentReceiptSyndicatPdf'))  $images['paymentReceiptSyndicatPdf'] = $form->get('paymentReceiptSyndicatPdf')?->getData();
 
         $data = $request->request->all();
         if(isset($data['child'])){
@@ -135,7 +135,7 @@ class PageController extends AbstractController
     {
         set_time_limit(0);
         $content = $memberService->generateRegistrationReceipt($member);
-        return new PdfResponse($content, 'recu_synacvtcci.pdf');
+        return new PdfResponse($content, 'recu_syndicat.pdf');
     }
 
     #[Route('/download/syndicat/receipt/{id}', name: 'download_payment_receipt_carte_syndicat_pdf', methods: ['GET'])]

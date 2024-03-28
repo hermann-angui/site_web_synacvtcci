@@ -271,8 +271,8 @@ class MemberController extends AbstractController
                 'dt' => 'subscription_date'
             ],
             [
-                'db' => 'has_withdraw_synacvtcci_carte',
-                'dt' => 'has_withdraw_synacvtcci_carte',
+                'db' => 'has_withdraw_syndicat_carte',
+                'dt' => 'has_withdraw_syndicat_carte',
                 'formatter' => function($d, $row) {
                     return $d ? "<span class='badge bg-success p-2'>OUI</span>" : "<span class='badge bg-danger p-2'>NON</span>" ;
                 }
@@ -373,7 +373,7 @@ class MemberController extends AbstractController
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche SYNACVTCCI</a>
+                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
                                         </div>
@@ -533,7 +533,7 @@ class MemberController extends AbstractController
             if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
 
             if($form->has('paymentReceiptCnmciPdf'))  $images['paymentReceiptCnmciPdf'] = $form->get('paymentReceiptCnmciPdf')?->getData();
-            if($form->has('paymentReceiptSynacvtcciPdf'))  $images['paymentReceiptSynacvtcciPdf'] = $form->get('paymentReceiptSynacvtcciPdf')?->getData();
+            if($form->has('paymentReceiptSyndicatPdf'))  $images['paymentReceiptSyndicatPdf'] = $form->get('paymentReceiptSyndicatPdf')?->getData();
             if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
             if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 
@@ -594,7 +594,7 @@ class MemberController extends AbstractController
         if($form->has('photoPermisBack'))  $images['photoPermisBack'] = $form->get('photoPermisBack')?->getData();
 
         if($form->has('paymentReceiptCnmciPdf'))  $images['paymentReceiptCnmciPdf'] = $form->get('paymentReceiptCnmciPdf')?->getData();
-        if($form->has('paymentReceiptSynacvtcciPdf'))  $images['paymentReceiptSynacvtcciPdf'] = $form->get('paymentReceiptSynacvtcciPdf')?->getData();
+        if($form->has('paymentReceiptSyndicatPdf'))  $images['paymentReceiptSyndicatPdf'] = $form->get('paymentReceiptSyndicatPdf')?->getData();
         if($form->has('scanDocumentIdentitePdf'))  $images['scanDocumentIdentitePdf'] = $form->get('scanDocumentIdentitePdf')?->getData();
         if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 

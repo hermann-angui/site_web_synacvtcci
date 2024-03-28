@@ -33,7 +33,7 @@ class PaymentService
     public function downloadMemberPaymentReceipt(?Payment $payment){
         set_time_limit(0);
         $content = $this->generatePaymentReceipt($payment);
-        return new PdfResponse($content, 'recu_synacvtcci.pdf');
+        return new PdfResponse($content, 'recu_syndicat.pdf');
     }
 
      /**

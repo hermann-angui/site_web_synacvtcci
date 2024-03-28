@@ -509,8 +509,8 @@ class MemberService
             $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptCnmciPdf'], $member->getReference());
             if ($fileName) $member->setPaymentReceiptCnmciPdf($fileName->getFilename());
         }
-        if (isset($images['paymentReceiptSynacvtcciPdf'])) {
-            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptSynacvtcciPdf'], $member->getReference());
+        if (isset($images['paymentReceiptSyndicatPdf'])) {
+            $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptSyndicatPdf'], $member->getReference());
             if ($fileName) $member->setPaymentReceiptCnmciPdf($fileName->getFilename());
         }
 
@@ -657,8 +657,8 @@ class MemberService
         }
 
         if(!$excludeReceipt){
-            if($member->getPaymentReceiptSynacvtcciPdf()) {
-                $pdf->addPDF($folder . $member->getPaymentReceiptSynacvtcciPdf());
+            if($member->getPaymentReceiptSyndicatPdf()) {
+                $pdf->addPDF($folder . $member->getPaymentReceiptSyndicatPdf());
             }
         }
 

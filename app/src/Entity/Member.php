@@ -179,7 +179,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $has_withdraw_syndicat_carte = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $payment_receipt_synacvtcci_pdf = null;
+    private ?string $payment_receipt_syndicat_pdf = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $payment_receipt_carte_syndicat_pdf = null;
@@ -1297,18 +1297,18 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getPaymentReceiptSynacvtcciPdf(): ?string
+    public function getPaymentReceiptSyndicatPdf(): ?string
     {
-        return $this->payment_receipt_synacvtcci_pdf;
+        return $this->payment_receipt_syndicat_pdf;
     }
 
     /**
-     * @param string|null $payment_receipt_synacvtcci_pdf
+     * @param string|null $payment_receipt_syndicat_pdf
      * @return Member
      */
-    public function setPaymentReceiptSynacvtcciPdf(?string $payment_receipt_synacvtcci_pdf): Member
+    public function setPaymentReceiptSyndicatPdf(?string $payment_receipt_syndicat_pdf): Member
     {
-        if($payment_receipt_synacvtcci_pdf) $this->payment_receipt_synacvtcci_pdf = $payment_receipt_synacvtcci_pdf;
+        if($payment_receipt_syndicat_pdf) $this->payment_receipt_syndicat_pdf = $payment_receipt_syndicat_pdf;
         return $this;
     }
 
