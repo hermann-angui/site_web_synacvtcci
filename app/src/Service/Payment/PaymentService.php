@@ -79,7 +79,7 @@ class PaymentService
 
             if($payment->getTarget()  === "FRAIS_SERVICE_TECHNIQUE"){
                 $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
-                $member->setPaymentReceiptSynacvtcciPdf(basename($receipt_file));
+                $member->setPaymentReceiptServiceTechniquePdf(basename($receipt_file));
             }
 
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);

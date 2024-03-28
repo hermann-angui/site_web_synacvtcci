@@ -312,7 +312,7 @@ class MemberController extends AbstractController
         return new JsonResponse($response);
     }
 
-    #[Route('/new-subscription/datatable', name: 'admin_member_new_subscription_datatable', methods: ['GET'])]
+    #[Route('/pending-subscription/datatable', name: 'admin_member_pending_souscripteur_datatable', methods: ['GET'])]
     public function pendingDT(Request $request,
                               Connection $connection,
                               MemberRepository $memberRepository)
@@ -335,8 +335,8 @@ class MemberController extends AbstractController
                 }
             ],
             [
-                'db' => 'matricule',
-                'dt' => 'matricule',
+                'db' => 'tracking_code',
+                'dt' => 'tracking_code',
             ],
             [
                 'db' => 'last_name',
@@ -347,38 +347,11 @@ class MemberController extends AbstractController
                 'dt' => 'first_name',
             ],
             [
-                'db' => 'subscription_date',
-                'dt' => 'subscription_date'
-            ],
-            [
-                'db' => 'subscription_expire_date',
-                'dt' => 'subscription_expire_date'
-            ],
-            [
-                'db' => 'driving_license_number',
-                'dt' => 'driving_license_number'
-            ],
-            [
-                'db' => 'id_number',
-                'dt' => 'id_number'
-            ],
-            [
                 'db'        => 'email',
                 'dt'        => 'email',
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
-                    $content =  "<div class='d-flex gap-2 flex-wrap'>
-                                    <div class='btn-group'>
-                                        <button class='btn btn-info dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
-                                            <small></small><i class='mdi mdi-menu'></i>
-                                        </button>
-                                        <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
-                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
-                                            <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
-                                        </div>
-                                    </div>
-                                </div> ";
+                    $content =  "<a class='btn btn-primary btn-sm btn-rounded waves-effect waves-light' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Traiter le dossier</a>";
                     return $content;
                 }
             ]
