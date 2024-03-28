@@ -10,8 +10,11 @@ class WaveService
 {
     const API_KEY = 'wave_ci_prod_4XND3J1y63CypaAeQqqWSMkK8foUdvw8mMbDZEyH0gmi5KfzERABL8RZaTgjaG-mH3K9-whXTQWE7f-vyk3AqPV04dq1JTPGdw';
     const CHECKOUT_URL = "https://api.wave.com/v1/checkout/sessions";
-    const SUCCESS_URL = "https://synacvtcci.org/payment/wave/checkout/success?ref=";
-    const ERROR_URL = "https://synacvtcci.org/payment/wave/checkout/error";
+   // const SUCCESS_URL = "https://synacvtcci.org/payment/wave/checkout/success?ref=";
+  //  const ERROR_URL = "https://synacvtcci.org/payment/wave/checkout/error";
+
+    const SUCCESS_URL = "https://synacvtcci.sfpci.com/payment/wave/checkout/success?ref=";
+    const ERROR_URL = "https://synacvtcci.sfpci.com/payment/wave/checkout/error";
 
     public function checkOutRequest(?WaveCheckoutRequest $request) : ?WaveCheckoutResponse
     {
