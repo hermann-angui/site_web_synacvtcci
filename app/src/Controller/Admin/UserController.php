@@ -35,12 +35,12 @@ class UserController extends AbstractController
 
     #[Route('/new', name: 'admin_user_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function new(Request                              $request,
-                        UserPasswordHasherInterface          $userPasswordHasher,
-                        UserAuthenticatorInterface           $userAuthenticator,
-                        FormLoginAuthenticator               $authenticator,
-                        EntityManagerInterface                 $entityManager,
-                        UserHelper                           $userHelper): Response
+    public function new(Request                        $request,
+                        UserPasswordHasherInterface    $userPasswordHasher,
+                        UserAuthenticatorInterface     $userAuthenticator,
+                        FormLoginAuthenticator         $authenticator,
+                        EntityManagerInterface         $entityManager,
+                        UserHelper                     $userHelper): Response
     {
         $user = new User();
         $form = $this->createForm(UserFormType::class, $user);

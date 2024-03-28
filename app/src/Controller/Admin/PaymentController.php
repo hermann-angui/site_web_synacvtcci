@@ -19,12 +19,14 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/admin/payment')]
 class PaymentController extends AbstractController
 {
-    private const MONTANT = 3500;
-    private const MONTANT_CARTE_SYNDICAT = 6500;
+   // private const MONTANT = 3500;
+   // private const MONTANT_CARTE_SYNDICAT = 6500;
+
+    private const MONTANT = 10;
+    private const MONTANT_CARTE_SYNDICAT = 10;
 
     #[Route(path: '', name: 'admin_payment_index')]
-    public function index(Request $request,
-                          MemberRepository $memberRepository): Response
+    public function index(Request $request, MemberRepository $memberRepository): Response
     {
         $members = $memberRepository->findAll();
         return $this->render('admin/pages/index.html.twig', ["members" => $members]);
@@ -40,10 +42,7 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
-    public function cashin(Member $member,
-                           PaymentService $paymentService,
-                           MemberService $memberService,
-                           ActivityLogger $activityLogger): Response
+    public function cashin(Member $member, PaymentService $paymentService, MemberService $memberService, ActivityLogger $activityLogger): Response
     {
         if ($member->getStatus() !== 'PAID') {
             $payment = new Payment();
@@ -68,10 +67,7 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/carte/syndicat/{id}', name: 'do_payment_carte_syndicat')]
-    public function doSyndicatPayment(Member $member,
-                              WaveService       $waveService,
-                              ActivityLogger $activityLogger,
-                              PaymentRepository $paymentRepository): Response
+    public function doSyndicatPayment(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentRepository $paymentRepository): Response
     {
         $response = $waveService->makePayment(self::MONTANT_CARTE_SYNDICAT);
         if ($response) {
@@ -93,10 +89,7 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/do/{id}', name: 'do_payment')]
-    public function doPayment(Member $member,
-                              WaveService       $waveService,
-                              ActivityLogger $activityLogger,
-                              PaymentRepository $paymentRepository): Response
+    public function doPayment(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentRepository $paymentRepository): Response
     {
         $response = $waveService->makePayment(self::MONTANT);
         if ($response) {
@@ -118,10 +111,7 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/wave/checkout/{status}', name: 'wave_payment_callback')]
-    public function wavePaymentCheckoutStatusCallback($status,
-                                                      Request $request,
-                                                      MemberRepository $memberRepository,
-                                                      PaymentRepository $paymentRepository): Response
+    public function wavePaymentCheckoutStatusCallback($status, Request $request, MemberRepository $memberRepository, PaymentRepository $paymentRepository): Response
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
@@ -151,20 +141,19 @@ class PaymentController extends AbstractController
         } catch (\Exception $e) {
         }
 
-
         if (!empty($payload) && array_key_exists("data", $payload)) {
             $data = $payload['data'];
             if (!empty($data) && array_key_exists("client_reference", $data)) {
                 $payment = $paymentRepository->findOneBy(["reference" => $data["client_reference"]]);
                 if ($payment && (array_key_exists("payment_status", $data) && (strtoupper($data["payment_status"]) === "SUCCEEDED"))) {
-                        $payment->setCodePaymentOperateur($data["transaction_id"]);
-                        $payment->setStatus("PAID");
-                        $paymentRepository->add($payment, true);
-                        $member = $payment->getPaymentFor();
-                        if ($member) {
-                            $member->setStatus("PAID");
-                            $memberRepository->add($member, true);
-                        }
+                    $payment->setCodePaymentOperateur($data["transaction_id"]);
+                    $payment->setStatus("PAID");
+                    $paymentRepository->add($payment, true);
+                    $member = $payment->getPaymentFor();
+                    if ($member) {
+                        $member->setStatus("PAID");
+                        $memberRepository->add($member, true);
+                    }
                 }
             }
         }
@@ -200,8 +189,5 @@ class PaymentController extends AbstractController
         }
         return $this->redirectToRoute('admin_index');
     }
-
-
-
 
 }
