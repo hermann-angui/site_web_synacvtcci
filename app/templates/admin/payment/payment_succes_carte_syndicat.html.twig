@@ -39,8 +39,8 @@
                                         <a class="btn btn-sm btn-success" href="{{ path('download_payment_receipt_carte_syndicat_pdf', {id: payment.id}) }}"><i class="fa fa-download">Télécharger mon reçu</i></a>
                                     </div>
                                     <div>
-                                        <object data="{{ asset('members/') }}{{ payment.paymentFor.reference }}/{{ payment.paymentFor.paymentReceiptCarteSynacvitciPdf }}" type="application/pdf" style="width:100%;height:500px; margin-top: 20px;">
-                                            <p>Impossible d'afficher un aperçu du recu. <a href="/members/{{ payment.paymentFor.reference }}/{{ payment.paymentFor.paymentReceiptCarteSynacvitciPdf }}"> Télécharger</a></p>
+                                        <object data="{{ asset('members/') }}{{ payment.paymentFor.reference }}/{{ payment.paymentFor.paymentReceiptCarteSyndicatPdf }}" type="application/pdf" style="width:100%;height:500px; margin-top: 20px;">
+                                            <p>Impossible d'afficher un aperçu du recu. <a href="/members/{{ payment.paymentFor.reference }}/{{ payment.paymentFor.paymentReceiptCarteSyndicatPdf }}"> Télécharger</a></p>
                                         </object>
                                     </div>
                                 </div>
