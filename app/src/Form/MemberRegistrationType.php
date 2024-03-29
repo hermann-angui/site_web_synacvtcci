@@ -90,7 +90,7 @@ class MemberRegistrationType extends AbstractType
             ->add('company', ChoiceType::class, [
                 'label' => 'Compagnie de VTC',
                 'mapped' => true,
-                'required' => true,
+                'required' => false,
                 'multiple' => true,
                 'attr' => ['class' => 'select2-multiple'],
                 'choices' => [

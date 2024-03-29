@@ -108,23 +108,6 @@
             line-height: 28px;
         }
 
-        .select2-container--default .select2-selection--multiple {
-            background-color: white;
-            border: 1px solid #ffbb00;
-            border-radius: 4px;
-            cursor: text;
-            min-height: 50px;
-        }
-
-        .select2-container .select2-selection--single {
-            height: 41px;
-        }
-
-        .select2-container--default .select2-selection--single {
-            background-color: #fff;
-            border: 2px solid #ffbb00;
-            border-radius: 0px;
-        }
 
         input.select2-search__field {
             border: 1px solid black;
@@ -168,6 +151,26 @@
             border: 1px dashed #adb5bd;
             padding: 10px 10px;
         }
+        .select2-container .select2-container--default,
+        .select2-selection .select2-selection--multiple,
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border: 1px solid #ffbb00;
+            border-radius: 4px;
+            cursor: text;
+            min-height: 50px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 41px;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 2px solid #ffbb00;
+            border-radius: 0px;
+        }
+
     </style>
 {% endblock %}
 
@@ -333,6 +336,15 @@
                   $('#imagePreview').attr('src', evt.target.result);
                   $('#imagePreview').fadeIn(650);
                 }
+          });
+
+          $("#member_registration_activity").change(function(data){
+              var act = $(this).val();
+              if( act !== "CHAUFFEUR VTC"){
+                  $("#registration_company_container").hide();
+              }else{
+                  $("#registration_company_container").show();
+              }
           });
 
           $("label[for='member_registration_photoPieceFront']").change(function(data){

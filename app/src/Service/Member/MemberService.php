@@ -657,8 +657,8 @@ class MemberService
         }
 
         if(!$excludeReceipt){
-            if($member->getPaymentReceiptSyndicatPdf()) {
-                $pdf->addPDF($folder . $member->getPaymentReceiptSyndicatPdf());
+            if($member->getPaymentReceiptServiceTechniquePdf()) {
+                $pdf->addPDF($folder . $member->getPaymentReceiptServiceTechniquePdf());
             }
         }
 

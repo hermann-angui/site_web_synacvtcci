@@ -10,9 +10,9 @@ parameters:
     profile_url: http://synacvtcci.org/profile
     images_directory: '%kernel.project_dir%/public/uploads'
 
-#    wave_success_url: https://synacvtcci.sfpci.com/wave/checkout/success
-#    wave_error_url: https://synacvtcci.sfpci.com/wave/checkout/error
-#    profile_url: http://synacvtcci.sfpci.com/profile
+#   wave_success_url: https://synacvtcci.sfpci.com/wave/checkout/success
+#   wave_error_url: https://synacvtcci.sfpci.com/wave/checkout/error
+#   profile_url: http://synacvtcci.sfpci.com/profile
 
 services:
     # default configuration for services in *this* file

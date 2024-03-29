@@ -103,19 +103,16 @@
             <div id="step1">
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        {{ form_row(form.company) }}
-                    </div>
-                    <div class="col-md-4">
                         {{ form_row(form.IdType) }}
                     </div>
                     <div class="col-md-4">
                         {{ form_row(form.IdNumber) }}
                     </div>
-                </div>
-                <div class="row mb-3">
                     <div class="col-md-3">
                         {{ form_row(form.IdDeliveryAuthority) }}
                     </div>
+                </div>
+                <div class="row mb-3">
                     <div class="col-md-3">
                         {{ form_row(form.IdDeliveryDate) }}
                     </div>
@@ -218,14 +215,15 @@
                         <div class="col-md-4">
                             {{ form_row(form.activity) }}
                         </div>
+                        <div class="col-md-4" id="registration_company_container">
+                            {{ form_row(form.company) }}
+                        </div>
                         <div class="col-md-4">
                             {{ form_row(form.activity_date_debut) }}
                         </div>
                         <div class="col-md-4">
                             {{ form_row(form.socioprofessionnelle_category) }}
                         </div>
-                    </div>
-                    <div class="row mb-3">
                         <div class="col-md-3">
                             {{ form_row(form.activity_geo_location) }}
                         </div>
