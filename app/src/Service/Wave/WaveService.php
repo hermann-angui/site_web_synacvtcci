@@ -100,6 +100,7 @@ class WaveService
             else return null;
 
         }catch(\Exception $e){
+            dump($e);
             return null;
         }
     }
