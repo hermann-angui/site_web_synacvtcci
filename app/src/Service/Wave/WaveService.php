@@ -18,6 +18,9 @@ class WaveService
     {
         try {
             $env = $this->container->get('kernel')->getEnvironment();
+
+            dump($env);
+
             if($env === 'dev'){
                 $waveResponse = new WaveCheckoutResponse();
                 $waveResponse->setAmount($request->getAmount())
@@ -42,6 +45,8 @@ class WaveService
                 'error_url' => $this->configurationService->getParameter('app.wave.checkout_error_url')
             ]);
 
+            dump($encodedPayload);
+
             $curlOptions = [
                 CURLOPT_URL => $this->configurationService->getParameter('app.wave.checkout_url'),
                 CURLOPT_RETURNTRANSFER => true,
@@ -61,10 +66,12 @@ class WaveService
             $err = curl_error($curl);
             curl_close($curl);
             if ($err) {
+                dump($err);
                 return null;
             } else {
                 # You can now decode the response and use the checkout session. Happy coding ;)
                 $checkout_session = json_decode($response, true);
+                dump($checkout_session);
                 $waveResponse = new WaveCheckoutResponse();
                 $waveResponse->setAmount($checkout_session["amount"])
                     ->setPaymentStatus($checkout_session["payment_status"])
@@ -89,14 +96,12 @@ class WaveService
     public function makePayment($montant) : ?WaveCheckoutResponse
     {
         try{
-            dump($this->configurationService->getParameter('app.wave.checkout_success_url'));
             $waveCheckoutRequest = new WaveCheckoutRequest();
             $waveCheckoutRequest->setCurrency("XOF")
                 ->setAmount($montant)
                 ->setClientReference(Uuid::v4()->toRfc4122())
                 ->setSuccessUrl($this->configurationService->getParameter('app.wave.checkout_success_url'));
 
-            dump($waveCheckoutRequest);
             $waveResponse = $this->checkOutRequest($waveCheckoutRequest);
             if($waveResponse) return $waveResponse;
             else return null;
