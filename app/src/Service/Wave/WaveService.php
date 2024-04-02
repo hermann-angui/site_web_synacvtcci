@@ -18,7 +18,7 @@ class WaveService
     {
         try {
             $env = $this->container->get('kernel')->getEnvironment();
-            if($env === 'test' || $env === 'dev'){
+            if($env === 'dev'){
                 $waveResponse = new WaveCheckoutResponse();
                 $waveResponse->setAmount($request->getAmount())
                             ->setPaymentStatus('PROCESSING')
