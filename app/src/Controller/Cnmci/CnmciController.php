@@ -22,7 +22,7 @@ use PhpOffice\PhpSpreadsheet\Style\ConditionalFormatting\Wizard;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-#[Route('/cnmci')]
+#[Route('/public/cnmci')]
 class CnmciController extends AbstractController
 {
     #[Route('/adherents', name: 'cnmci_index', methods: ['GET', 'POST'])]
@@ -82,25 +82,23 @@ class CnmciController extends AbstractController
         $members = $memberRepository->findAdherentsFromTo($from, $to);
         if(!$members) return $this->json(null);
         $file = $this->generateMatriceEncaissementXlsxFile($members);
-        return $this->file($file);
+        return $this->file($file, 'encaissements.xls');
     }
 
     #[Route('/souscription/dt', name: 'cnmci_souscription_datatable', methods: ['GET', 'POST'])]
-    public function souscriptionDT(Request $request, Connection $connection, MemberRepository $memberRepository)
+    public function souscriptionDT(Request $request, Connection $connection)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
         $paramDB = $connection->getParams();
         $table = 'member';
         $primaryKey = 'id';
-        $member = null;
         $columns = [
             [
                 'db' => 'id',
                 'dt' => 'id',
-                'formatter' => function( $d, $row ) use ($memberRepository){
-                    $member = $memberRepository->find($d);
-                    $imageUrl = $member->getReference() . "/" . basename($member->getPhoto());
+                'formatter' => function( $d, $row ){
+                    $imageUrl = $row['reference'] . "/" . $row['photo'] ;
                     $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-lg rounded-circle img-thumbnail' width='150'>";
                     return $content;
                 }
@@ -126,8 +124,8 @@ class CnmciController extends AbstractController
                 'dt' => 'id_number'
             ],
             [
-                'db'        => 'email',
-                'dt'        => 'email',
+                'db'        => 'id',
+                'dt'        => '',
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
                     $content =  "<div class='d-flex gap-2 flex-wrap justify-content-end'>
@@ -136,15 +134,23 @@ class CnmciController extends AbstractController
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/cnmci/fiche/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
-                                            <a class='dropdown-item' href='/cnmci/telecharger/documents/$id'><i class='mdi mdi-eye'></i> Documents</a>
-                                            <a class='dropdown-item' href='/cnmci/telecharger/photo/$id'><i class='mdi mdi-eye'></i> Télécharger la photo</a>
+                                            <a class='dropdown-item' href='/public/cnmci/fiche/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
+                                            <a class='dropdown-item' href='/public/cnmci/telecharger/documents/$id'><i class='mdi mdi-eye'></i> Documents</a>
+                                            <a class='dropdown-item' href='/public/cnmci/telecharger/photo/$id'><i class='mdi mdi-eye'></i> Télécharger la photo</a>
                                         </div>
                                     </div>
                                 </div> ";
                     return $content;
                 }
-            ]
+            ],
+            [
+                'db' => 'reference',
+                'dt' => 'reference'
+            ],
+            [
+                'db' => 'photo',
+                'dt' => 'photo'
+            ],
         ];
 
         $sql_details = [

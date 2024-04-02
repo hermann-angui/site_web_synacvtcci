@@ -70,14 +70,14 @@
                     <div class="row">
                         <div class="col-xl-10">
                             <div class="card">
-                                <div class="card-body border-bottom">
+                                <div class="card-body border-bottom" >
                                     <div class="d-flex justify-content-end">
                                         <div class="flex-shrink-0">
                                             <a href="{{ path('admin_member_show',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" >Revenir</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body" style="height: 80vh;">
                                     <h4 class="card-title mb-5">Fiche membre : <strong class="badge bg-gradient bg-info">{{ member.matricule }}</strong></h4>
                                     <div class="flip-card d-flex justify-content-center">
                                         <div class="flip-card-inner">
@@ -85,7 +85,7 @@
                                                 <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.cardPhoto }}" alt="Avatar" class="w-75">
                                             </div>
                                             <div class="flip-card-back">
-                                                <img src="{{ asset('assets/files/card_member_back.jpg')}}" alt="Avatar" class="w-75">
+                                                <img src="{{ asset('assets/files/' ~ carte_img_back)}}" alt="Avatar" class="w-75">
                                             </div>
                                         </div>
                                     </div>

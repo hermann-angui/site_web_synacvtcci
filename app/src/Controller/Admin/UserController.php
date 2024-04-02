@@ -153,6 +153,19 @@ class UserController extends AbstractController
             [
                 'db' => 'photo',
                 'dt' => 'photo',
+                'formatter' => function( $d, $row ){
+                    $imageUrl = $row['reference'] . "/" . $row['photo'];
+                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
+                    return $content;
+                }
+            ],
+            [
+                'db' => 'nom',
+                'dt' => 'nom',
+            ],
+            [
+                'db' => 'prenoms',
+                'dt' => 'prenoms',
             ],
             [
                 'db' => 'email',
@@ -162,30 +175,17 @@ class UserController extends AbstractController
                 'db' => 'roles',
                 'dt' => 'roles',
             ],
-            [
-                'db' => 'prenoms',
-                'dt' => 'prenoms',
-            ],
-            [
-                'db' => 'nom',
-                'dt' => 'nom',
-            ],
+
             [
                 'db'        => 'id',
                 'dt'        => '',
                 'formatter' => function($d, $row){
                     $id = $row['id'];
-                    $content =  "<ul class='list-unstyled hstack gap-1 mb-0'>
-                                  <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='View'>
-                                    <a href='/admin/user/$id' class='btn btn-sm btn-soft-primary'><i class='mdi mdi-eye-outline'></i></a>
-                                  </li>
-                                  <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='View'>
-                                       <a href='/admin/user/$id/edit' class='btn btn-sm btn-soft-primary'><i class='mdi mdi-pen'></i></a>
-                                  </li>
-                                  <li data-bs-toggle='tooltip' data-bs-placement='top' aria-label='View'>
-                                       <a href='/admin/user/$id/delete' class='btn btn-sm btn-soft-primary'><i class='mdi mdi-pen'></i></a>
-                                  </li>
-                                  </ul>";
+                    $content =  "<div class='d-flex justify-content-center'>
+                                    <a href='/admin/user/$id' class='btn btn-success btn-sm mx-1'><i class='mdi mdi-eye-outline'></i></a>
+                                    <a href='/admin/user/$id/edit' class='btn btn-danger btn-sm'><i class='mdi mdi-pen'></i></a>
+                                    <a href='/admin/user/$id/delete' class='btn btn-danger btn-sm'><i class='mdi mdi-trash-can'></i></a>
+                                 </div>";
                     return $content;
                 }
             ]

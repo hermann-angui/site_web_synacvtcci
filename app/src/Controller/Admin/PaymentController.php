@@ -7,6 +7,7 @@ use App\Entity\Payment;
 use App\Helper\ActivityLogger;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
+use App\Service\ConfigurationService\ConfigurationService;
 use App\Service\Member\MemberService;
 use App\Service\Payment\PaymentService;
 use App\Service\Wave\WaveService;
@@ -19,11 +20,6 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/admin/payment')]
 class PaymentController extends AbstractController
 {
-//    private const MONTANT = 3500;
-//    private const MONTANT_CARTE_SYNDICAT = 6500;
-
-    private const MONTANT = 10;
-    private const MONTANT_CARTE_SYNDICAT = 10;
 
     #[Route(path: '', name: 'admin_payment_index')]
     public function index(Request $request, MemberRepository $memberRepository): Response
@@ -42,70 +38,68 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
-    public function cashin(Member $member, PaymentService $paymentService, MemberService $memberService, ActivityLogger $activityLogger): Response
+    public function cashin(Member $member, PaymentService $paymentService, ConfigurationService $configurationService, ActivityLogger $activityLogger): Response
     {
         if ($member->getStatus() !== 'PAID') {
-            $payment = new Payment();
-            $payment->setUser($this->getUser())
-                ->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)))
-                ->setType('cash')
-                ->setMontant(self::MONTANT)
-                ->setTarget('FRAIS_SERVICE_TECHNIQUE')
-                ->setPaymentFor($member)
-                ->setCodePaymentOperateur(null)
-                ->setReceiptFile(null)
-                ->setStatus("PAID");
-            $paymentService->store($payment);
-
+            $payment = $paymentService->create(
+                $member,
+                $this->getUser(),
+                $configurationService->getParameter('app.montant_frais_service_technique'),
+                null,
+                "FRAIS_SERVICE_TECHNIQUE",
+                'PAID',
+                'CASH',
+                null
+            );
             $paymentService->generatePaymentReceipt($payment);
-
             $activityLogger->create($payment, "Paiement cash effectuée");
-
             return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
         }
         return $this->redirectToRoute('admin_index');
     }
 
     #[Route(path: '/carte/syndicat/{id}', name: 'do_payment_carte_syndicat')]
-    public function doSyndicatPayment(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentRepository $paymentRepository): Response
+    public function doSyndicatPayment(Member $member, WaveService $waveService, PaymentService $paymentService, ActivityLogger $activityLogger, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
-        $response = $waveService->makePayment(self::MONTANT_CARTE_SYNDICAT);
+        $montant = match($member->getActivity()){
+            "CHAUFFEUR VTC" => $configurationService->getParameter('app.montant_frais_carte_synacvtcci'),
+            "CHAUFFEUR TAXI" => $configurationService->getParameter('app.app.montant_frais_carte_taxi'),
+            "CHAUFFEUR LIVREUR" => $configurationService->getParameter('app.montant_frais_carte_falci')
+        };
+
+        $response = $waveService->makePayment($montant);
         if ($response) {
-            $payment = new Payment();
-            $payment->setUser($this->getUser());
-            $payment->setStatus(strtoupper($response->getPaymentStatus()));
-            $payment->setReference($response->getClientReference());
-            $payment->setOperateur("WAVE");
-            $payment->setTarget("FRAIS_CARTE_SYNDICAT");
-            $payment->setMontant($response->getAmount());
-            $payment->setType("MOBILE_MONEY");
-            $payment->setReceiptNumber(PaymentService::generateReference());
-            $payment->setCreatedAt(new \DateTime('now'));
-            $payment->setModifiedAt(new \DateTime('now'));
-            $payment->setPaymentFor($member);
-            $paymentRepository->add($payment, true);
+            $payment = $paymentService->create(
+                $member,
+                $this->getUser(),
+                $montant,
+                $response->getClientReference(),
+                "FRAIS_CARTE_SYNDICAT",
+                strtoupper($response->getPaymentStatus()),
+                'MOBILE_MONEY',
+                "WAVE"
+            );
+            $activityLogger->create($payment, "Payment carte syndical initié");
             return $this->redirect($response->getWaveLaunchUrl());
         } else return $this->redirectToRoute('admin_index');
     }
 
     #[Route(path: '/do/{id}', name: 'do_payment')]
-    public function doPayment(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentRepository $paymentRepository): Response
+    public function doPaymentServiceTechnique(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentService $paymentService, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
-        $response = $waveService->makePayment(self::MONTANT);
+        $response = $waveService->makePayment($configurationService->getParameter('app.montant_frais_service_technique'));
         if ($response) {
-            $payment = new Payment();
-            $payment->setUser($this->getUser());
-            $payment->setStatus(strtoupper($response->getPaymentStatus()));
-            $payment->setReference($response->getClientReference());
-            $payment->setOperateur("WAVE");
-            $payment->setTarget("FRAIS_SERVICE_TECHNIQUE");
-            $payment->setMontant($response->getAmount());
-            $payment->setType("MOBILE_MONEY");
-            $payment->setReceiptNumber(PaymentService::generateReference());
-            $payment->setCreatedAt(new \DateTime('now'));
-            $payment->setModifiedAt(new \DateTime('now'));
-            $payment->setPaymentFor($member);
-            $paymentRepository->add($payment, true);
+            $payment = $paymentService->create(
+                $member,
+                $this->getUser(),
+                $configurationService->getParameter('app.montant_frais_service_technique'),
+                $response->getClientReference(),
+                "FRAIS_CARTE_SYNDICAT",
+                strtoupper($response->getPaymentStatus()),
+                'MOBILE_MONEY',
+                "WAVE"
+            );
+            $activityLogger->create($payment, "Payment frais service technique initié");
             return $this->redirect($response->getWaveLaunchUrl());
         } else return $this->redirectToRoute('admin_index');
     }
@@ -132,7 +126,6 @@ class PaymentController extends AbstractController
     public function callbackWavePayment(Request $request, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
     {
         $payload = json_decode($request->getContent(), true);
-
         try {
             $path = "/var/www/html/var/log/wave_payment_checkout_webhook";
             if (!file_exists($path)) mkdir($path, 0777, true);

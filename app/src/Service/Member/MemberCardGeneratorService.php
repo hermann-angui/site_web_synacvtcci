@@ -4,32 +4,19 @@ namespace App\Service\Member;
 
 use App\Entity\Member;
 use App\Helper\ImageGenerator;
+use App\Service\ConfigurationService\ConfigurationService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
-/**
- *
- */
 class MemberCardGeneratorService
 {
     /**
-     * @var ImageGenerator
-     */
-    private ImageGenerator $imageGenerator;
-
-    /**
-     * @var ContainerInterface
-     */
-    private ContainerInterface $container;
-
-    /**
      * @param ContainerInterface $container
      * @param ImageGenerator $imageGenerator
+     * @param ConfigurationService $configurationService
      */
-    public function __construct(ContainerInterface $container, ImageGenerator $imageGenerator)
+    public function __construct(private ContainerInterface $container, private ImageGenerator $imageGenerator, private ConfigurationService $configurationService)
     {
-        $this->container = $container;
-        $this->imageGenerator = $imageGenerator;
     }
 
     /**
@@ -39,17 +26,36 @@ class MemberCardGeneratorService
     public function mapToCardViewModel(?Member $member): ?array
     {
         $data['fullname'] = $member->getLastName() . " " . $member->getFirstName();
-        $data['titre'] = $member->getTitre();
+        $data['titre'] = $member->getActivity();
         $data['matricule'] = $member->getMatricule();
         $data['outputdir'] = "/var/www/html/public/members/" . $member->getReference() . "/";
         if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
-        $data['cardbg'] = "/var/www/html/public/assets/files/card_member_front.jpg";
-        $data['photopath'] =  $data['outputdir']. $member->getPhoto();
-        $data['qrcodepath'] = $data['outputdir'] . $member->getReference() . '_barcode.png' ;
-        $data['cardpath'] = $data['outputdir'] . $member->getReference() . '_card.png' ;
-        $data['qrcodeurl'] = $this->container->getParameter('profile_url')  . "/" . $member->getReference();
-        $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
-        $data['website'] = "www.synacvtcci.org";
+
+        switch($member->getActivity()){
+            case "CHAUFFEUR VTC":
+                $data['cardbg'] = "/var/www/html/public/assets/files/carte_synacvtcci_front.jpg";
+                $data['twig_view'] = "admin/print/carte_synacvtcci.html.twig";
+                $data['website']    = "www.synacvtcci.org";
+                $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
+                $data['qrcode_color'] = [14, 119, 12];
+                break;
+            case "CHAUFFEUR LIVREUR":
+                $data['cardbg'] = "/var/www/html/public/assets/files/carte_falci_front.jpg";
+                $data['twig_view'] = "admin/print/carte_falci.html.twig";
+                $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
+                $data['qrcode_color'] = [0, 0, 0];
+                break;
+            case "CHAUFFEUR TAXI":
+                $data['cardbg'] = "/var/www/html/public/assets/files/carte_taxi_front.jpg";
+                $data['twig_view'] = "admin/print/carte_taxi.html.twig";
+                $data['qrcode_color'] = [14, 119, 12];
+                break;
+        }
+
+        $data['photo_path']  =  $data['outputdir'] . $member->getPhoto();
+        $data['qrcode_path'] = $data['outputdir'] . $member->getReference() . '_barcode.png' ;
+        $data['card_path']   = $data['outputdir'] . $member->getReference() . '_card.png' ;
+        $data['qrcode_url']  = $this->configurationService->getParameter('app.base_url')  . "profile/" . $member->getReference();
 
         return $data;
     }
@@ -62,11 +68,8 @@ class MemberCardGeneratorService
     {
         if(!$member) return null;
         $cardData = $this->mapToCardViewModel($member);
-        $cardData['qrcodepath'] = $this->imageGenerator->generateBarCode($cardData['qrcodeurl'], $cardData['qrcodepath'], 50, 50);
-        $userData['view_data'] = $cardData;
-        $userData['twig_view'] = "admin/print/card.html.twig";
-        return $this->imageGenerator->generate($userData);
+        $cardData['qrcode_path'] = $this->imageGenerator->generateBarCode($cardData['qrcode_url'], $cardData['qrcode_path'], $cardData['qrcode_color'],50, 50);
+        return $this->imageGenerator->generate($cardData);
     }
-
 
 }

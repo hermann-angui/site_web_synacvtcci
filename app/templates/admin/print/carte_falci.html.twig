@@ -15,10 +15,10 @@
         }
         #photo{
             position: absolute;
-            left:2px;
-            top: 236px;
-            width: 310px;
-            height: 340px;
+            left:14px;
+            top: 278px;
+            width: 250px;
+            height: 275px;
             background-position:center;
             background-repeat: no-repeat;
             background-size:auto;
@@ -28,7 +28,7 @@
             position: absolute;
             text-align: center;
             top: 220px;
-            left: 322px;
+            left: 250px;
             width: 650px;
             /*border: 1px solid red;*/
         }
@@ -85,33 +85,21 @@
         #expiredate {
             position: absolute;
             letter-spacing: 2px;
-            left: 325px;
-            top: 527px;
+            left: 650px;
+            top: 600px;
             width: 300px;
             font-weight: bolder;
-            color: black;
-            font-family: 'Arial Black';
-            font-size: 14pt;
-        }
-
-        #website {
-            position: absolute;
-            letter-spacing: 2px;
-            font-weight: bolder;
-            left: 325px;
-            top: 549px;
-            width: 250px;
             color: white;
             font-family: 'Arial Black';
             font-size: 14pt;
-            /*border: 1px solid red;*/
         }
+
 
         #qrcode  {
             position: absolute;
-            left: 790px;
+            left: 825px;
             top: 450px;
-            padding: 10px 10px;
+            padding: 5px 5px;
             background-color: white;
             z-index: 2;
             /*border: 1px solid red;*/
@@ -119,8 +107,8 @@
         }
 
         #qrcode img {
-            width: 155px;
-            height: 150px;
+            width: 100px;
+            height: 100px;
             z-index: 10;
         }
         #footer {
@@ -135,7 +123,7 @@
     </style>
 </head>
 <body>
-<img id="photo" src="{{ photopath }}" alt="">
+<img id="photo" src="{{ photo_path }}" alt="">
 <div id="info">
     <p id="matricule">MATRICULE &nbsp; {{ matricule }}</p>
     <p id="fullname">{{ fullname }}</p>
@@ -143,10 +131,9 @@
 </div>
 
 <div id="qrcode">
-    <img src="{{ qrcodepath }}" alt="">
+    <img src="{{ qrcode_path }}" alt="">
 </div>
 <div id="expiredate">{{ expiredate }}</div>
-<div id="website">{{ website }}</div>
 <div id="footer"></div>
 
 </body>

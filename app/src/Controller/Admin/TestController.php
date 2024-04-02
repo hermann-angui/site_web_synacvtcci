@@ -25,7 +25,7 @@ class TestController extends AbstractController
                 $member->setReference(
                     str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
                 );
-                $memberService->save($member);
+                $memberService->saveMember($member);
             }
 
             $sourceDir =  "/var/www/html/public/members/" . $member->getMatricule() . "/";

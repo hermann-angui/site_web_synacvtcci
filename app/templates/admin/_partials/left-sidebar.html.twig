@@ -69,18 +69,28 @@
                         <span key="t-a0">Configuration</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse">
-                        <li><a href="{{ path('admin_generate_tracking_codes') }}" key="t-s2">Codes dossier</a></li>
+                        <li><a href="{{ path('admin_configuration_index') }}" key="t-pa1">Paramètres système</a></li>
+                        <li><a href="{{ path('admin_generate_tracking_codes') }}" key="t-pa2">Codes dossier</a></li>
                     </ul>
                 </li>
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-lock"></i>
-                        <span key="t-s0">Sécurité</span>
+                        <span key="t-se0">Sécurité</span>
                     </a>
                     <ul class="sub-sub-menu mm-collapse" aria-expanded="false">
-                        <li><a href="{{ path('admin_user_index') }}" key="t-s1">Utilisateurs</a></li>
-                        <li><a href="#" key="t-s2">Roles</a></li>
-                        <li><a href="#" key="t-s3">API</a></li>
+                        <li><a href="{{ path('admin_user_index') }}" key="t-se1">Utilisateurs</a></li>
+                        <li><a href="#" key="t-se2">Roles</a></li>
+                        <li><a href="#" key="t-se3">API</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="false">
+                        <i class="bx bxs-circle"></i>
+                        <span  key="t-s0">Vue CNMCI</span>
+                    </a>
+                    <ul class="sub-menu mm-collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="{{ path('cnmci_index') }}" key="t-s3">Adhérents</a></li>
                     </ul>
                 </li>
             </ul>

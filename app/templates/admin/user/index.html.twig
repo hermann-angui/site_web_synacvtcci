@@ -39,43 +39,8 @@
                                             <button data-href="{{  path('admin_user_new') }}" class="btn btn-primary btn-sm waves-effect waves-light" id="btnNewUser"><span class="fa fa-plus-circle fa-1x"></span> Créer un utilisateur</button>
                                         </div>
                                     </div>
-
                                     <div class="table-responsive">
-                                        <table class="table align-middle table-nowrap table-hover dt-responsive nowrap w-100 dataTable no-footer dtr-inline">
-                                            <thead class="table-light">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Photo</th>
-                                                <th>Email</th>
-                                                <th>Roles</th>
-                                                <th>Prenoms</th>
-                                                <th>Nom</th>
-                                                <th>Dernière connexion</th>
-                                                <th>actions</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% for user in users %}
-                                                <tr>
-                                                    <td>{{ user.id }}</td>
-                                                    <td><img src="{{ user.photo ? asset("users/") ~ user.id ~ "/" ~ user.photo : '' }}" class="rounded-circle" width="60"></td>
-                                                    <td>{{ user.email }}</td>
-                                                    <td>{{ user.roles[1] is defined ? user.roles[1] : "ROLE_USER" }}</td>
-                                                    <td>{{ user.firstname }}</td>
-                                                    <td>{{ user.lastname }}</td>
-                                                    <td>{{ user.lastConnection ? user.lastConnection|date('Y-m-d H:i:s') : '' }}</td>
-                                                    <td>
-                                                        <button class="btn btn-warning btn-sm btn-rounded  btnshow" data-href="{{ path('admin_user_show', {'id': user.id}) }}">Afficher</button>
-                                                        <button class="btn btn-success btn-sm btn-rounded btnedit" data-href="{{ path('admin_user_edit', {'id': user.id}) }}">Modifier</button>
-                                                    </td>
-                                                </tr>
-                                            {% else %}
-                                                <tr>
-                                                    <td colspan="11">no records found</td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
+                                     {{ include('admin/user/_user_datatable.html.twig') }}
                                     </div>
                                     <!-- end table-responsive -->
                                 </div>
@@ -147,58 +112,92 @@
 {{ parent() }}
   <script>
       $('document').ready(function() {
+            var datatable = initDatatable();
+            function initDatatable(){
+                /* DATATABLE INIT */
+                var dt = $('#datatable').DataTable( {
+                    "responsive": true,
+                    "pageLength": 50,
+                    "language": {
+                        url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                        processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
+                        sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": '{{ path('admin_user_dt') }}',
+                        "data": function (d) {
 
-        $("#user_form_photo").change(function(data){
-          var imageFile = data.target.files[0];
-          var reader = new FileReader();
-          reader.readAsDataURL(imageFile);
+                        }
+                    },
+                    "columns": [
+                        {"data":  "id"},
+                        {"data":  "photo"},
+                        {"data":  "nom"},
+                        {"data":  "prenoms"},
+                        {"data":  "email"},
+                        {"data":  "roles"},
+                        {"data":  "last_connection"},
+                        { "data": "" },
+                    ],
+                    "order": [[1, 'desc']]
+                } );
 
-          reader.onload = function(evt){
-              $('#imagePreview').attr('src', evt.target.result);
-              $('#imagePreview').fadeIn(650);
-          }
-        });
 
+                return dt;
+            }
 
-        $('#btnNewUser').click(function(e){
-            e.preventDefault();
-            var url = '{{ path('admin_user_new') }}';
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(response){
-                    $('#registerUserModal .modal-body').html(response);
-                    $('#registerUserModal').modal('show');
-                }
+            $("#user_form_photo").change(function(data){
+              var imageFile = data.target.files[0];
+              var reader = new FileReader();
+              reader.readAsDataURL(imageFile);
+
+              reader.onload = function(evt){
+                  $('#imagePreview').attr('src', evt.target.result);
+                  $('#imagePreview').fadeIn(650);
+              }
             });
-        });
 
-        $('.btnshow').click(function(){
-            var url = $(this).data('href');
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(response){
-                    $('#showUserModal .modal-body').html(response);
-                    $('#showUserModal').modal('show');
-                }
+            $('#btnNewUser').click(function(e){
+                e.preventDefault();
+                var url = '{{ path('admin_user_new') }}';
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response){
+                        $('#registerUserModal .modal-body').html(response);
+                        $('#registerUserModal').modal('show');
+                    }
+                });
             });
-        });
 
-        $('.btnedit').click(function(){
-            var url = $(this).data('href');
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(response){
-                    // Add response in Modal body
-                    $('#editUserModal .modal-body').html(response);
-
-                    // Display Modal
-                    $('#editUserModal').modal('show');
-                }
+            $('.btnshow').click(function(){
+                var url = $(this).data('href');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response){
+                        $('#showUserModal .modal-body').html(response);
+                        $('#showUserModal').modal('show');
+                    }
+                });
             });
-        });
+
+            $('.btnedit').click(function(){
+                var url = $(this).data('href');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response){
+                        // Add response in Modal body
+                        $('#editUserModal .modal-body').html(response);
+
+                        // Display Modal
+                        $('#editUserModal').modal('show');
+                    }
+                });
+            });
       });
   </script>
 {% endblock %}

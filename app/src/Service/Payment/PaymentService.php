@@ -2,32 +2,43 @@
 
 namespace App\Service\Payment;
 
+use App\Entity\Member;
 use App\Entity\Payment;
+use App\Entity\User;
 use App\Helper\PdfGenerator;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
+use App\Service\ConfigurationService\ConfigurationService;
+use App\Service\Member\MemberService;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ *
+ */
 class PaymentService
 {
-    private const WEBSITE_URL = "https://synacvtcci.org";
     private const MEDIA_DIR = "/var/www/html/public/members/";
 
     public function __construct(private PdfGenerator $pdfGenerator,
                                 private MemberRepository $memberRepository,
+                                private ConfigurationService $configurationService,
                                 private PaymentRepository $paymentRepository)
     {}
 
+    /**
+     * @return string
+     */
     public static function generateReference() {
-        $now = new \DateTime();
-        $year = $now->format("y");
-        return $year . strtoupper(substr(Uuid::v4()->toRfc4122(), 0, 8));
+        //  $now = new \DateTime();
+        //  $year = $now->format("y");
+        //  return $year . strtoupper(substr(Uuid::v4()->toRfc4122(), 0, 8));
+        return str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18));
     }
 
     /**
      * @param Payment|null $payment
-     * @param string $viewTemplate
      * @return PdfResponse
      */
     public function downloadMemberPaymentReceipt(?Payment $payment){
@@ -38,7 +49,6 @@ class PaymentService
 
      /**
      * @param Payment|null $payment
-     * @param string $viewTemplate
      * @return string|null
      */
     public function generatePaymentReceipt(?Payment $payment)
@@ -47,18 +57,12 @@ class PaymentService
             $member = $payment->getPaymentFor();
 
             if (!$member->getMatricule()) {
-                $date = new \DateTime('now');
-                $sexCode = null;
-                if($member->getSex() === "H") $sexCode = "SY1";
-                elseif($member->getSex() === "F") $sexCode = "SY2";
-                if($sexCode){
-                    $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-                    $member->setMatricule($matricule);
-                    $this->memberRepository->add($member, true);
-                }
+                $matricule = MemberService::generateMatricule($member);
+                $member->setMatricule($matricule);
+                $this->memberRepository->add($member, true);
             }
 
-            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getReference();
+            $qrCodeData = $this->configurationService->getParameter('app.base_url') . "profile/" . $member->getReference();
 
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
             $folder = self::MEDIA_DIR . $member->getReference() . '/';
@@ -78,7 +82,7 @@ class PaymentService
             }
 
             if($payment->getTarget()  === "FRAIS_SERVICE_TECHNIQUE"){
-                $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
+                $viewTemplate = 'admin/payment/payment-receipt-service-technique-pdf.html.twig';
                 $member->setPaymentReceiptServiceTechniquePdf(basename($receipt_file));
             }
 
@@ -107,20 +111,30 @@ class PaymentService
          $this->paymentRepository->add($payment, true);
     }
 
-
     /**
-     * @param array $data
+     * @param $montant
+     * @param $operateur
+     * @param $type
      * @return Payment
-     * @throws \Exception
      */
-    public function create($montant, $operateur = "WAVE", $type = "MOBILE_MONEY"): Payment {
+    public function create(?Member $member, ?UserInterface $user, ?int $montant, ?string $reference, ?string $target, ?string $status, ?string $type, ?string $operateur): Payment {
         $payment = new Payment();
-        $payment->setMontant($montant);
-        $payment->setOperateur($operateur);
-        $payment->setReceiptNumber($this->generateReference());
-        $payment->setType(strtoupper($type));
-        $this->paymentRepository->add($payment, true);
-        return $payment;
+        $payment->setUser($user)
+                ->setReference($reference?:$this->generateReference())
+                ->setType(strtoupper($type))
+                ->setMontant($montant)
+                ->setTarget($target)
+                ->setPaymentFor($member)
+                ->setStatus($status)
+                ->setOperateur($operateur)
+                ->setCodePaymentOperateur(null)
+                ->setReceiptNumber($this->generateReference())
+                ->setReceiptFile(null)
+                ->setCreatedAt(new \DateTime('now'))
+                ->setModifiedAt(new \DateTime('now'));
+         $this->store($payment);
+         return $payment;
     }
+
 
 }

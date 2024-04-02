@@ -77,13 +77,12 @@
                                                                 <div class="dropdown-menu dropdown-menu-end " style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 42px);" data-popper-placement="bottom-end">
                                                                     <a class="dropdown-item" href="{{ path('admin_member_show', {id: member.id})}}"><i class="fa fa-eye"></i> Afficher</a>
                                                                     <a class="dropdown-item" href="{{ path('admin_member_edit', {id: member.id})}}"><i class="fa fa-pen"></i> Modifier</a>
-                                                                    <a class="dropdown-item " href="{{ path('admin_member_cncmi_edit', {id: member.id}) }}"><i class="fa fa-file-archive"></i> Editer la Fiche CNMCI</a>
                                                                 </div>
                                                             </div>
                                                         </li>
                                                     </ul>
                                                     <div class="mb-4">
-                                                        <img src="/members/{{ member.reference }}/{{ member.photo|image_path }}" alt="" width="50">
+                                                        <img src="{{ asset('/members/' ~ member.reference ~ '/' ~ member.photo|image_path) }}" alt="" width="50">
                                                         <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ member.firstName ~ ' ' ~ member.lastName }}</a></h5>
                                                         <p class="text-muted">{{ member.createdAt|date('d/m/y') }}</p>
                                                         <div>
@@ -110,7 +109,7 @@
                                                     <div class="card-footer bg-transparent border-top">
                                                         <div class="contact-links d-flex font-size-20">
                                                             <div class="flex-fill">
-                                                                <a href="{{ path("admin_member_cncmi_edit", { id: member.id }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
+                                                                <a href="{{ path("admin_member_cncmi_show", { id: member.id }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -137,13 +136,12 @@
                                                                     <div class="dropdown-menu dropdown-menu-end " style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 42px);" data-popper-placement="bottom-end">
                                                                         <a class="dropdown-item" href="{{ path('admin_member_show', {id: member.id})}}"><i class="fa fa-eye"></i> Afficher</a>
                                                                         <a class="dropdown-item" href="{{ path('admin_member_edit', {id: member.id})}}"><i class="fa fa-pen"></i> Modifier</a>
-                                                                        <a class="dropdown-item " href="{{ path('admin_member_cncmi_edit', {id: member.id}) }}"><i class="fa fa-file-archive"></i> Editer la Fiche CNMCI</a>
                                                                     </div>
                                                                 </div>
                                                             </li>
                                                         </ul>
                                                         <div class="mb-4">
-                                                            <img src="/members/{{ member.reference }}/{{ member.photo|image_path }}" alt="" width="50">
+                                                            <img src="{{ asset('/members/' ~ member.reference ~ '/' ~ member.photo|image_path) }}" alt="" width="50">
                                                             <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ member.firstName ~ ' ' ~ member.lastName }}</a></h5>
                                                             <p class="text-muted">{{ member.createdAt|date('d/m/y') }}</p>
                                                             <div>
@@ -170,7 +168,7 @@
                                                         <div class="card-footer bg-transparent border-top">
                                                             <div class="contact-links d-flex font-size-20">
                                                                 <div class="flex-fill">
-                                                                    <a href="{{ path("admin_member_cncmi_edit", { id: member.id }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
+                                                                    <a href="{{ path("admin_member_cncmi_show", { id: member.id }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
                                                                 </div>
                                                             </div>
                                                         </div>

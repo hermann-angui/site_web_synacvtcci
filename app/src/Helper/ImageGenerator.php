@@ -9,16 +9,16 @@ class ImageGenerator extends ImageRenderer
 {
     public function generate($data): ?File
     {
-        $html = $this->twig->render($data['twig_view'], $data['view_data']);
+        $html = $this->twig->render($data['twig_view'], $data);
         $output = $this->snappy->getOutputFromHtml($html);
-        file_put_contents($data['view_data']['cardpath'], $output);
-        return new File($data['view_data']['cardpath']);
+        file_put_contents($data['card_path'], $output);
+        return new File($data['card_path']);
     }
 
-    public function generateBarCode($data, $outputFile, $width = 50, $height = 50): ?string
+    public function generateBarCode($data, $outputFile, $color = [0,0,0], $width = 50, $height = 50): ?string
     {
         $barCodeObj = new TCPDF2DBarcode($data, "QRCODE" );
-        $barCodeImage = $barCodeObj->getBarcodePngData($width, $height, [14, 119, 12]);
+        $barCodeImage = $barCodeObj->getBarcodePngData($width, $height, $color);
         file_put_contents($outputFile, $barCodeImage);
         return $outputFile;
     }

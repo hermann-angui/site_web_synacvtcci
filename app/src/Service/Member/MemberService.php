@@ -18,9 +18,7 @@ use SplFileInfo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -32,7 +30,6 @@ class MemberService
 
     private const WEBSITE_URL = "https://synacvtcci.org";
     private const MEDIA_DIR = "/var/www/html/public/members/";
-    private const MONTANT = 10100;
     public function __construct(
         private ContainerInterface             $container,
         private MemberCardGeneratorService     $memberCardGeneratorService,
@@ -67,11 +64,8 @@ class MemberService
                 );
             }
 
-            $sexCode = null;
-            if($member->getSex() === "H") $sexCode = "SY1";
-            elseif($member->getSex() === "F") $sexCode = "SY2";
-            if($sexCode){
-                $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+            if (!$member->getMatricule()) {
+                $matricule = MemberService::generateMatricule($member);
                 $member->setMatricule($matricule);
             }
 
@@ -116,14 +110,8 @@ class MemberService
             }
 
             if (!$member->getMatricule()) {
-                $date = new DateTime('now');
-                $sexCode = null;
-                if($member->getSex() === "H") $sexCode = "SY1";
-                elseif($member->getSex() === "F") $sexCode = "SY2";
-                if($sexCode){
-                    $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-                    $member->setMatricule($matricule);
-                }
+                $matricule = MemberService::generateMatricule($member);
+                $member->setMatricule($matricule);
             }
 
             $member->setCountry($member->getBirthCountry());
@@ -163,15 +151,10 @@ class MemberService
             $member->setSubscriptionDate($date);
 
             if (!$member->getMatricule()) {
-                $date = new DateTime('now');
-                $sexCode = null;
-                if($member->getSex() === "H") $sexCode = "SY1";
-                elseif($member->getSex() === "F") $sexCode = "SY2";
-                if($sexCode){
-                    $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-                    $member->setMatricule($matricule);
-                }
+                $matricule = MemberService::generateMatricule($member);
+                $member->setMatricule($matricule);
             }
+
             $expiredDate = $date->format('Y-12-31');
             $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
             $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
@@ -642,6 +625,13 @@ class MemberService
         }
     }
 
+    /**
+     * @param Member $member
+     * @param $excludeReceipt
+     * @param $outputmode
+     * @return string
+     * @throws \Exception
+     */
     public function combinePdfsForPrint(Member $member, $excludeReceipt = false, $outputmode = 'browser'){
         $pdf = new PDFMerger;
 
@@ -679,6 +669,10 @@ class MemberService
     }
 
 
+    /**
+     * @param array $members
+     * @return string|null
+     */
     public function archiveMemberDocuments(array $members): ?string
     {
         $zipArchive = new \ZipArchive();
@@ -714,5 +708,58 @@ class MemberService
     }
 
 
+    /**
+     * @param Member|null $member
+     * @return string|null
+     */
+    public static function createSynacvtcciMatricule(?Member $member): ?string
+    {
+        $sexCode = null;
+        $date = new DateTime('now');
+        if ($member->getSex() === "H") $sexCode = "SY1";
+        elseif ($member->getSex() === "F") $sexCode = "SY2";
+        if ($sexCode) {
+            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
+            return $matricule;
+        }
+        return null;
+    }
+
+    /**
+     * @param Member|null $member
+     * @return string
+     */
+    public static function createFalciMatricule(?Member $member): string
+    {
+        $prefix = "FALCI";
+        $matricule = sprintf('%s%05d', $prefix, $member->getId());
+        return $matricule;
+    }
+
+    /**
+     * @param Member|null $member
+     * @return string
+     */
+    public static function createTaxiMatricule(?Member $member): string
+    {
+        $prefix = "TAXI";
+        $matricule = sprintf('%s%05d', $prefix, $member->getId());
+        return $matricule;
+    }
+
+
+    /**
+     * @param Member|null $member
+     * @return string|null
+     */
+    public static function generateMatricule(?Member $member): ?string{
+        $matricule = match($member->getActivity()){
+            "CHAUFFEUR VTC" => self::createSynacvtcciMatricule($member),
+            "CHAUFFEUR TAXI" => self::createTaxiMatricule($member),
+            "CHAUFFEUR LIVREUR" => self::createFalciMatricule($member)
+        };
+
+        return $matricule;
+    }
 }
 
