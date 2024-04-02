@@ -753,6 +753,7 @@ class MemberService
      * @return string|null
      */
     public static function generateMatricule(?Member $member): ?string{
+        if(!$member->getActivity()) return null;
         $matricule = match($member->getActivity()){
             "CHAUFFEUR VTC" => self::createSynacvtcciMatricule($member),
             "CHAUFFEUR TAXI" => self::createTaxiMatricule($member),
