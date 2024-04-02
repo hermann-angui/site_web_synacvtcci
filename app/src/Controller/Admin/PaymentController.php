@@ -86,7 +86,6 @@ class PaymentController extends AbstractController
     #[Route(path: '/do/{id}', name: 'do_payment')]
     public function doPaymentServiceTechnique(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentService $paymentService, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
-        dump("HELLO");
         $response = $waveService->makePayment($configurationService->getParameter('app.montant_frais_service_technique'));
         dump($response);
         if ($response) {

@@ -89,12 +89,14 @@ class WaveService
     public function makePayment($montant) : ?WaveCheckoutResponse
     {
         try{
+            dump($this->configurationService->getParameter('app.wave.checkout_success_url'));
             $waveCheckoutRequest = new WaveCheckoutRequest();
             $waveCheckoutRequest->setCurrency("XOF")
                 ->setAmount($montant)
                 ->setClientReference(Uuid::v4()->toRfc4122())
                 ->setSuccessUrl($this->configurationService->getParameter('app.wave.checkout_success_url'));
 
+            dump($waveCheckoutRequest);
             $waveResponse = $this->checkOutRequest($waveCheckoutRequest);
             if($waveResponse) return $waveResponse;
             else return null;
