@@ -61,7 +61,6 @@ class PaymentController extends AbstractController
     #[Route(path: '/carte/syndicat/{id}', name: 'do_payment_carte_syndicat')]
     public function doSyndicatPayment(Member $member, WaveService $waveService, PaymentService $paymentService, ActivityLogger $activityLogger, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
-        dump($member);
         $montant = match($member->getActivity()){
             "CHAUFFEUR VTC" => $configurationService->getParameter('app.montant_frais_carte_synacvtcci'),
             "CHAUFFEUR TAXI" => $configurationService->getParameter('app.app.montant_frais_carte_taxi'),
@@ -87,7 +86,9 @@ class PaymentController extends AbstractController
     #[Route(path: '/do/{id}', name: 'do_payment')]
     public function doPaymentServiceTechnique(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentService $paymentService, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
+        dump("HELLO");
         $response = $waveService->makePayment($configurationService->getParameter('app.montant_frais_service_technique'));
+        dump($response);
         if ($response) {
             $payment = $paymentService->create(
                 $member,
