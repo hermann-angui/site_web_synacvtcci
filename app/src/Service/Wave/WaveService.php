@@ -19,8 +19,6 @@ class WaveService
         try {
             $env = $this->container->get('kernel')->getEnvironment();
 
-            dump($env);
-
             if($env === 'dev'){
                 $waveResponse = new WaveCheckoutResponse();
                 $waveResponse->setAmount($request->getAmount())
@@ -45,8 +43,6 @@ class WaveService
                 'error_url' => $this->configurationService->getParameter('app.wave.checkout_error_url')
             ]);
 
-            dump($encodedPayload);
-
             $curlOptions = [
                 CURLOPT_URL => $this->configurationService->getParameter('app.wave.checkout_url'),
                 CURLOPT_RETURNTRANSFER => true,
@@ -54,7 +50,7 @@ class WaveService
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => $encodedPayload,
                 CURLOPT_HTTPHEADER => [
-                    "Authorization: Bearer " . $this->configurationService->getParameter('app.wave.checkout_url'),
+                    "Authorization: Bearer " . $this->configurationService->getParameter('app.wave.api_key'),
                     "Content-Type: application/json"
                 ],
             ];
@@ -71,7 +67,6 @@ class WaveService
             } else {
                 # You can now decode the response and use the checkout session. Happy coding ;)
                 $checkout_session = json_decode($response, true);
-                dump($checkout_session);
                 $waveResponse = new WaveCheckoutResponse();
                 $waveResponse->setAmount($checkout_session["amount"])
                     ->setPaymentStatus($checkout_session["payment_status"])

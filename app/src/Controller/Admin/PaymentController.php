@@ -66,7 +66,9 @@ class PaymentController extends AbstractController
             "CHAUFFEUR TAXI" => $configurationService->getParameter('app.app.montant_frais_carte_taxi'),
             "CHAUFFEUR LIVREUR" => $configurationService->getParameter('app.montant_frais_carte_falci')
         };
+
         $response = $waveService->makePayment($montant);
+
         if ($response) {
             $payment = $paymentService->create(
                 $member,
@@ -78,8 +80,11 @@ class PaymentController extends AbstractController
                 'MOBILE_MONEY',
                 "WAVE"
             );
+
             $activityLogger->create($payment, "Payment carte syndical initié");
+
             return $this->redirect($response->getWaveLaunchUrl());
+
         } else return $this->redirectToRoute('admin_index');
     }
 
@@ -87,8 +92,9 @@ class PaymentController extends AbstractController
     public function doPaymentServiceTechnique(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentService $paymentService, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
         $response = $waveService->makePayment($configurationService->getParameter('app.montant_frais_service_technique'));
-        dump($response);
+
         if ($response) {
+
             $payment = $paymentService->create(
                 $member,
                 $this->getUser(),
@@ -99,8 +105,11 @@ class PaymentController extends AbstractController
                 'MOBILE_MONEY',
                 "WAVE"
             );
+
             $activityLogger->create($payment, "Payment frais service technique initié");
+
             return $this->redirect($response->getWaveLaunchUrl());
+
         } else return $this->redirectToRoute('admin_index');
     }
 
