@@ -426,7 +426,7 @@ class MemberController extends AbstractController
                                             <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>";
-                    if(in_array($row['status'], ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) $content .= "<a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>";
+                    if(in_array($row['status'], ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"]) && !$row['has_paid_for_syndicat'] ) $content .= "<a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>";
                     $content.= "</div></div></div> ";
                     return $content;
                 }
