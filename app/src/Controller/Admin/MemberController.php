@@ -425,11 +425,9 @@ class MemberController extends AbstractController
                                         <div class='dropdown-menu' style=''>
                                             <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
-                                            <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>
-                                            <a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>
-                                        </div>
-                                    </div>
-                                </div> ";
+                                            <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>";
+                    if(in_array($row['status'], ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) $content .= "<a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>";
+                    $content.= "</div></div></div> ";
                     return $content;
                 }
             ],
@@ -440,6 +438,10 @@ class MemberController extends AbstractController
             [
                 'db' => 'has_paid_for_syndicat',
                 'dt' => 'has_paid_for_syndicat'
+            ],
+            [
+                'db' => 'status',
+                'dt' => 'status'
             ]
 
         ];
