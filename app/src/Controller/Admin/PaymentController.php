@@ -98,10 +98,10 @@ class PaymentController extends AbstractController
             $payment = $paymentService->create(
                 $member,
                 $this->getUser(),
-                $configurationService->getParameter('app.montant_frais_service_technique'),
+                $response->getAmount(),
                 $response->getClientReference(),
-                "FRAIS_CARTE_SYNDICAT",
-                strtoupper($response->getPaymentStatus()),
+                "FRAIS_SERVICE_TECHNIQUE",
+                $response->getPaymentStatus(),
                 'MOBILE_MONEY',
                 "WAVE"
             );
@@ -113,7 +113,7 @@ class PaymentController extends AbstractController
         } else return $this->redirectToRoute('admin_index');
     }
 
-    #[Route(path: '/wave/checkout/{status}', name: 'wave_payment_callback')]
+    #[Route(path: '/wave/checkout/{status}', name: 'admin_wave_payment_callback')]
     public function wavePaymentCheckoutStatusCallback($status, Request $request, MemberRepository $memberRepository, PaymentRepository $paymentRepository): Response
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
@@ -125,13 +125,13 @@ class PaymentController extends AbstractController
                 $member->setStatus("PAID");
                 $memberRepository->add($member, true);
             }
-            if( $payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE" ) return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
+            if( $payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE" ) return $this->redirectToRoute('admin_payment_success_page', ["id" => $payment->getId(), "status" => $status]);
             elseif( $payment->getTarget() === "FRAIS_CARTE_SYNDICAT" ) return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId(), "status" => $status]);
         }
         return $this->redirectToRoute('admin_index');
     }
 
-    #[Route(path: '/wave', name: 'wave_payment_checkout_webhook')]
+    #[Route(path: '/wave', name: 'admin_wave_payment_checkout_webhook')]
     public function callbackWavePayment(Request $request, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
     {
         $payload = json_decode($request->getContent(), true);
@@ -172,7 +172,7 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('admin_index');
     }
 
-    #[Route(path: '/successpage/{id}', name: 'payment_succes_page', methods: ['POST', 'GET'])]
+    #[Route(path: '/successpage/{id}', name: 'admin_payment_success_page', methods: ['POST', 'GET'])]
     public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService): Response
     {
         if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {

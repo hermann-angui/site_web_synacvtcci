@@ -69,11 +69,11 @@ class WaveService
                 $checkout_session = json_decode($response, true);
                 $waveResponse = new WaveCheckoutResponse();
                 $waveResponse->setAmount($checkout_session["amount"])
-                    ->setPaymentStatus($checkout_session["payment_status"])
+                    ->setPaymentStatus(strtoupper($checkout_session["payment_status"]))
                     ->setCurrency($checkout_session["currency"])
                     ->setClientReference($checkout_session["client_reference"])
                     ->setCheckoutSessionId($checkout_session["id"])
-                    ->setCheckoutStatus($checkout_session["checkout_status"])
+                    ->setCheckoutStatus(strtoupper($checkout_session["checkout_status"]))
                     ->setWhenCreated(new \DateTime($checkout_session["when_created"]))
                     ->setWhenCompleted(new \DateTime($checkout_session["when_completed"]))
                     ->setWhenExpires(new \DateTime($checkout_session["when_expires"]))
