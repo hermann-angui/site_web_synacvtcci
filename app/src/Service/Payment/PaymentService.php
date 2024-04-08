@@ -78,6 +78,8 @@ class PaymentService
                 $member->setPaymentReceiptServiceTechniquePdf(basename($receipt_file));
             }
 
+            $this->memberRepository->add($member, true);
+
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
             file_put_contents($receipt_file, $content);
 

@@ -13,7 +13,10 @@ use App\Helper\FileUploadHelper;
 use App\Repository\MemberRepository;
 use App\Repository\VillesRepository;
 use App\Service\Member\MemberService;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Expr\Expression;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -47,7 +50,8 @@ class MemberController extends AbstractController
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
-        $members = $memberRepository->findBy(['etape' => 3]);
+
+        $members = $memberRepository->matching(new Criteria($expression));
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 

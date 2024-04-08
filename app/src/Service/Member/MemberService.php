@@ -638,7 +638,6 @@ class MemberService
      */
     public function combinePdfsForPrint(Member $member, $excludeReceipt = false, $outputmode = 'browser'){
         $pdf = new PDFMerger;
-
         $folder = $this->getMemberDir($member);
 
         if(!$member->getFormulaireCnmciPdf()) {
@@ -650,12 +649,9 @@ class MemberService
             $pdf->addPDF($folder . $member->getPaymentReceiptCnmciPdf());
         }
 
-        if(!$excludeReceipt){
-            if($member->getPaymentReceiptServiceTechniquePdf()) {
-                $pdf->addPDF($folder . $member->getPaymentReceiptServiceTechniquePdf());
-            }
+        if(!$excludeReceipt && $member->getPaymentReceiptServiceTechniquePdf()) {
+            $pdf->addPDF($folder . $member->getPaymentReceiptServiceTechniquePdf());
         }
-
 
         if($member->getScanDocumentIdentitePdf()) {
             $pdf->addPDF($folder . $member->getScanDocumentIdentitePdf());

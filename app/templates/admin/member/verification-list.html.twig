@@ -64,6 +64,7 @@
                             <div class="tab-pane active show" id="enattente" role="tabpanel">
                                 <div class="row">
                                 {% for member in members %}
+                                    {% if member.etape == 2 %}
                                         <div class="col-md-3 col-sm-3">
                                             <div class="card text-center">
                                                 <div class="card-body">
@@ -115,12 +116,14 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    {% endif %}
                                 {% endfor %}
                                 </div>
                             </div>
                             <div class="tab-pane" id="completed" role="tabpanel">
                                 <div class="row">
                                     {% for member in members %}
+                                        {% if member.etape > 4 %}
                                             <div class="col-md-3 col-sm-3">
                                                 <div class="card text-center">
                                                     <div class="card-body">
@@ -172,6 +175,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                             </div>
