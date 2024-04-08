@@ -51,7 +51,7 @@ class MemberController extends AbstractController
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
 
-        $members = $memberRepository->matching(new Criteria($expression));
+        $members = $memberRepository->findAll();
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
