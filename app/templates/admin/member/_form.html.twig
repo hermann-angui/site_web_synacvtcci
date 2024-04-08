@@ -31,12 +31,10 @@
                     <div class="col-md-2">
                         {{ form_row(form.tracking_code) }}
                     </div>
-                    {% if member.status == 'PAID' or member.status == 'COMPLETED'  %}
-                         <div class="col-md-7"></div>
-                         <div class="col-md-2">
-                            {{ form_row(form.codeSticker) }}
-                         </div>
-                    {% endif %}
+                    <div class="col-md-7"></div>
+                    <div class="col-md-2">
+                       {{ form_row(form.codeSticker) }}
+                    </div>
                 </div>
                 <div class="row mb-3 mt-4">
                     <div class="col-md-2">

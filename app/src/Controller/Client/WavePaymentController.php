@@ -23,13 +23,8 @@ class WavePaymentController extends AbstractController
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
             $payment->setStatus("PAID");
             $paymentRepository->add($payment, true);
-            $member = $payment->getPaymentFor();
-            if ($member) {
-                $member->setStatus("PAID");
-                $memberRepository->add($member, true);
-            }
-            if( $payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE" ) return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
-            elseif( $payment->getTarget() === "FRAIS_CARTE_SYNDICAT" ) return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId(), "status" => $status]);
+            if ($payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE") return $this->redirectToRoute('payment_succes_page', ["id" => $payment->getId(), "status" => $status]);
+            elseif ($payment->getTarget() === "FRAIS_CARTE_SYNDICAT") return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId(), "status" => $status]);
         }
         return $this->redirectToRoute('admin_index');
     }
@@ -38,16 +33,6 @@ class WavePaymentController extends AbstractController
     public function callbackWavePayment(Request $request, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
     {
         $payload = json_decode($request->getContent(), true);
-
-        try {
-            $path = "/var/www/html/var/log/wave_payment_checkout_webhook";
-            if (!file_exists($path)) mkdir($path, 0777, true);
-            $data = ["reference" => $request->get("ref"), "date" => date("Ymd H:i:s")];
-            file_put_contents($path . "log_" . date("Ymd") . ".log", json_encode($data), FILE_APPEND);
-        } catch (\Exception $e) {
-        }
-
-
         if (!empty($payload) && array_key_exists("data", $payload)) {
             $data = $payload['data'];
             if (!empty($data) && array_key_exists("client_reference", $data)) {
@@ -56,11 +41,6 @@ class WavePaymentController extends AbstractController
                     $payment->setCodePaymentOperateur($data["transaction_id"]);
                     $payment->setStatus("PAID");
                     $paymentRepository->add($payment, true);
-                    $member = $payment->getPaymentFor();
-                    if ($member) {
-                        $member->setStatus("PAID");
-                        $memberRepository->add($member, true);
-                    }
                 }
             }
         }
@@ -70,32 +50,29 @@ class WavePaymentController extends AbstractController
     #[Route(path: '/receipt/{id}', name: 'member_display_receipt', methods: ['POST', 'GET'])]
     public function showPaymentReceipt(?Payment $payment, PaymentService $paymentService): Response
     {
-        if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generatePaymentReceipt($payment);
-            return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
-        }
-        return $this->redirectToRoute('admin_index');
+        $paymentService->generatePaymentReceipt($payment);
+        return $this->render('admin/payment/receipt.html.twig', ['payment' => $payment]);
     }
 
     #[Route(path: '/successpage/{id}', name: 'payment_succes_page', methods: ['POST', 'GET'])]
-    public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService): Response
+    public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
-        if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generatePaymentReceipt($payment);
-            return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
-        }
-        return $this->redirectToRoute('admin_index');
+        $member = $payment->getPaymentFor();
+        $member->setEtape(3);
+        $memberRepository->add($member, true);
+        $paymentService->generatePaymentReceipt($payment);
+        return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
     }
 
     #[Route(path: '/carte-syndicat/success/{id}', name: 'payment_succes_carte_syndicat', methods: ['POST', 'GET'])]
     public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberService $memberService): Response
     {
-        if (in_array($payment->getStatus(), ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"])) {
-            $paymentService->generatePaymentReceipt($payment);
-            $memberService->generateSingleMemberCard($payment->getPaymentFor());
-            return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
-        }
-        return $this->redirectToRoute('admin_index');
+        $member = $payment->getPaymentFor();
+        $member->setEtape(5);
+        $memberService->saveMember($member);
+        $paymentService->generatePaymentReceipt($payment);
+        $memberService->generateSingleMemberCard($payment->getPaymentFor());
+        return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
     }
 
     #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]

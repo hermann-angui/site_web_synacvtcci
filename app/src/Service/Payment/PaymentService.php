@@ -14,26 +14,18 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
-/**
- *
- */
+
 class PaymentService
 {
     private const MEDIA_DIR = "/var/www/html/public/members/";
 
-    public function __construct(private PdfGenerator $pdfGenerator,
-                                private MemberRepository $memberRepository,
-                                private ConfigurationService $configurationService,
-                                private PaymentRepository $paymentRepository)
+    public function __construct(private PdfGenerator $pdfGenerator, private MemberRepository $memberRepository, private ConfigurationService $configurationService, private PaymentRepository $paymentRepository)
     {}
 
     /**
      * @return string
      */
     public static function generateReference() {
-        //  $now = new \DateTime();
-        //  $year = $now->format("y");
-        //  return $year . strtoupper(substr(Uuid::v4()->toRfc4122(), 0, 8));
         return str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18));
     }
 
@@ -41,7 +33,7 @@ class PaymentService
      * @param Payment|null $payment
      * @return PdfResponse
      */
-    public function downloadMemberPaymentReceipt(?Payment $payment){
+    public function downloadMemberPaymentReceipt(?Payment $payment) {
         set_time_limit(0);
         $content = $this->generatePaymentReceipt($payment);
         return new PdfResponse($content, 'recu_syndicat.pdf');
@@ -91,9 +83,6 @@ class PaymentService
 
             if(file_exists($barcode_file)) \unlink($barcode_file);
 
-            $member->setStatus("PAID");
-            $this->memberRepository->add($member, true);
-
             return $content ?? null;
 
         }catch(\Exception $e){
@@ -111,10 +100,16 @@ class PaymentService
          $this->paymentRepository->add($payment, true);
     }
 
+
     /**
-     * @param $montant
-     * @param $operateur
-     * @param $type
+     * @param Member|null $member
+     * @param UserInterface|null $user
+     * @param int|null $montant
+     * @param string|null $reference
+     * @param string|null $target
+     * @param string|null $status
+     * @param string|null $type
+     * @param string|null $operateur
      * @return Payment
      */
     public function create(?Member $member, ?UserInterface $user, ?int $montant, ?string $reference, ?string $target, ?string $status, ?string $type, ?string $operateur): Payment {

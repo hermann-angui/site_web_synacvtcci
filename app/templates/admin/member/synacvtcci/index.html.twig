@@ -48,10 +48,9 @@
                                     <div class="d-flex align-items-center">
                                         <h5 class="mb-0 card-title flex-grow-1"></h5>
                                         <div class="flex-shrink-0">
-                                            <a href="{{ path('admin_member_new') }}" class="btn btn-primary btn-sm"><span class="fa fa-plus-circle fa-1x"></span> Enregister un membre</a>
+                                            <a href="{{ path('admin_member_photostep') }}" class="btn btn-primary btn-sm"><span class="fa fa-plus-circle fa-1x"></span> Enregister un chauffeur</a>
                                             <a href="{{ path('admin_member_upload') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-upload fa-1x"></span> Importer</a>
-                                            {# <a href="{{ path('admin_member_download_cards') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-download fa-1x"></span> Télécharger toutes cartes</a> #}
-                                            <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".bs-downloadcards"><span class="fa fa-download fa-1x"></span>Télécharger des cartes</button>
+                                            <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".bs-downloadcards"><span class="fa fa-download fa-1x"></span>Télécharger les cartes</button>
                                         </div>
                                     </div>
                                 </div>
@@ -76,17 +75,9 @@
                                         <div class="col-xxl-2 col-lg-4">
                                             <select id="title" class="form-control select2"  title="Catégorie">
                                                 <option>--Type--</option>
-                                                <option value="Chauffeur">Chauffeur</option>
-                                                <option value="Secrétaire général">Secrétaire général</option>
-                                                <option value="SN au contrôle informatique">SN au contrôle informatique</option>
-                                                <option value="SN aux finances">SN aux finances</option>
-                                                <option value="SN à l’administration">SN à l’administration</option>
-                                                <option value="Secrétaire général adjoint">Secrétaire général adjoint</option>
-                                                <option value="SN à l’organisation">SN à l’organisation</option>
-                                                <option value="SN à la communication">SN à la communication</option>
-                                                <option value="SN à la formation">SN à la formation</option>
-                                                <option value="SN chargé  des applications">SN chargé des applications</option>
-                                                <option value="SN Adjointe aux finances">SN Adjointe aux finances</option>
+                                                <option value="CHAUFFEUR VTC">CHAUFFEUR VTC</option>
+                                                <option value="CHAUFFEUR TAXI">CHAUFFEUR TAXI</option>
+                                                <option value="CHAUFFEUR LIVREUR">CHAUFFEUR LIVREUR</option>
                                             </select>
                                         </div>
                                     </div>

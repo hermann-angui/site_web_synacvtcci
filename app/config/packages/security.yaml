@@ -15,6 +15,7 @@ security:
             security: false
         main:
             pattern: ^/admin
+           # user_checker: App\Security\UserChecker
             security: true
             lazy: true
             custom_authenticator: App\Security\FormLoginAuthenticator

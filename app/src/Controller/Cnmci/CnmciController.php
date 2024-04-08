@@ -214,7 +214,7 @@ class CnmciController extends AbstractController
                     $member->getPaymentReceiptCnmciCode(), //$row['payment_receipt_cnmci_code']  $member->get,
                     $member->getSubscriptionDate()->format('d/m/Y'), //$row['subscription_date']->format('d/m/Y'),
                     $member->getLastName() . '' . $member->getFirstName(),
-                    $member->getTitre(),
+                    $member->getActivity(),
                     $member->getActivityGeoLocation(),
                     $member->getMobile(),
                     '',

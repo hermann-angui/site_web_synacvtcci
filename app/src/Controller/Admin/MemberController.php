@@ -14,6 +14,7 @@ use App\Repository\MemberRepository;
 use App\Repository\VillesRepository;
 use App\Service\Member\MemberService;
 use Doctrine\DBAL\Connection;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
@@ -46,16 +47,13 @@ class MemberController extends AbstractController
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
-        $members = $memberRepository->findBy(['status' => ['PAID','COMPLETED']]);
+        $members = $memberRepository->findBy(['etape' => 3]);
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
     public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
-        if(!in_array($member->getStatus() , ["PAID", "COMPLETED"])){
-            return $this->redirectToRoute('admin_member_show', ['id' => $member->getId()]);
-        }
         return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
 
@@ -94,9 +92,8 @@ class MemberController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            $member->setEtape(1);
             $this->handleFormCreation($request, $form, $member, $memberService);
-            $member->setStatus("PHOTO_VALID");
-            $memberService->saveMember($member);
             $activityLogger->create($member, "Création d'un nouveau dossier souscripteur et upload des fichiers (photo, scan des documents d'identités et reçu orange money)");
             return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -115,13 +112,9 @@ class MemberController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $this->handleFormCreation($request, $form, $member, $memberService);
-            if($member->getStatus() === "PENDING" || $member->getStatus() === "PHOTO_VALID" || $member->getStatus() === "INFORMATION_VALIDATED"){
-                $member->setStatus("INFORMATION_VALIDATED");
-                $memberService->saveMember($member);
-                return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
-            }
+            $memberService->saveMember($member);
+            return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
 
-            return $this->redirectToRoute('admin_member_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('admin/member/new.html.twig', [
             'member' => $member,
@@ -215,11 +208,13 @@ class MemberController extends AbstractController
     {
         return $this->render('admin/member/synacvtcci/adherents-list.html.twig');
     }
+
     #[Route('/adherents/taxi', name: 'admin_adherents_taxi', methods: ['GET'])]
     public function  showListAdherentsTaxi(Request $request): Response
     {
         return $this->render('admin/member/taxi/adherents-list.html.twig');
     }
+
     #[Route('/adherents/livreurs', name: 'admin_adherents_livreurs', methods: ['GET'])]
     public function showListAdherentsLivreurs(Request $request): Response
     {
@@ -360,7 +355,7 @@ class MemberController extends AbstractController
             'db'   => $paramDB['dbname'],
             'host' => $paramDB['host']
         );
-        $whereResult= " status IN ('PENDING', 'PHOTO_VALID')";
+        $whereResult= " etape = 1";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -426,7 +421,7 @@ class MemberController extends AbstractController
                                             <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
                                             <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>";
-                    if(in_array($row['status'], ["COMPLETED","SUCCEEDED", "PAID", "CLOSED"]) && !$row['has_paid_for_syndicat'] ) $content .= "<a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>";
+                    if(!$row['has_paid_for_syndicat']) $content .= "<a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>";
                     $content.= "</div></div></div> ";
                     return $content;
                 }
@@ -439,11 +434,6 @@ class MemberController extends AbstractController
                 'db' => 'has_paid_for_syndicat',
                 'dt' => 'has_paid_for_syndicat'
             ],
-            [
-                'db' => 'status',
-                'dt' => 'status'
-            ]
-
         ];
 
         $sql_details = array(
@@ -472,6 +462,14 @@ class MemberController extends AbstractController
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
+    }
+
+    #[Route('/download/fiche_adhesion_synacvtcci/{id}', name: 'admin_member_download_fiche_adhesion_synacvtcci_pdf', methods: ['GET'])]
+    public function pdfGenerate(Member $member, MemberService $memberService): Response
+    {
+        set_time_limit(0);
+        $content = $memberService->generateFicheAdhesionSynacvtcci($member);
+        return new PdfResponse($content, "fiche_adhesion_syndicat_" . $member->getMatricule(). ".pdf");
     }
 
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
@@ -519,13 +517,10 @@ class MemberController extends AbstractController
                 }
             }
 
+            $member->setEtape(2);
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
 
-            if($member->getStatus() === "PHOTO_VALID" || $member->getStatus() === "PENDING" || $member->getStatus() === "INFORMATION_VALIDATED"){
-                $member->setStatus("INFORMATION_VALIDATED");
-                $memberService->saveMember($member);
-            }
             return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
         }
 

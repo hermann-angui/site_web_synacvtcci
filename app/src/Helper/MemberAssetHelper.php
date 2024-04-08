@@ -22,9 +22,7 @@ class MemberAssetHelper implements AssetHelperInterface
      */
     protected string $uploadDirectory;
 
-    public function __construct(string $uploadDirectory,
-                                FileUploadHelper $fileUploadHelper,
-                                ImageHelper $imageHelper)
+    public function __construct(string $uploadDirectory, FileUploadHelper $fileUploadHelper, ImageHelper $imageHelper)
     {
         $this->fileUploadHelper = $fileUploadHelper;
         $this->uploadDirectory = $uploadDirectory;

@@ -1,7 +1,28 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
+{{ form_start(form, {action: '/admin/user/new'}) }}
+    {% if error is defined %}
+        <div class="alert alert-danger">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+    <div class="row">
+        <label for="user_form_photo" class="d-block d-flex justify-content-center align-content-center">
+            <div>
+                <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-circle">
+                <span class="d-block position-relative text-white" style="top:-40px;left:32px"><i class="mdi mdi-camera mdi-36px"></i></span>
+                {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
+            </div>
+        </label>
+    </div>
+    {{ form_row(form.sex) }}
+    {{ form_row(form.lastname) }}
+    {{ form_row(form.firstname) }}
+    {{ form_row(form.email, {'attr': {'class': 'required'}}) }}
+    {{ form_row(form.role) }}
+    {{ form_widget(form.password , {'attr': {'class': 'required'}}) }}
+    {{ form_row(form.phoneNumber) }}
+    {{ form_row(form.isActive) }}
     <div class="d-flex justify-content-center">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="submit" class="btn btn-primary mx-2" data-href={{ path('admin_user_edit', {id: user.id}) }} id="btnSaveUser">Enregistrer</button>
+        <button type="submit" class="btn btn-primary mx-2">Enregistrer</button>
     </div>
 {{ form_end(form) }}

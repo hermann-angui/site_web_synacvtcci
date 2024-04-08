@@ -37,8 +37,6 @@ class UserController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function new(Request                        $request,
                         UserPasswordHasherInterface    $userPasswordHasher,
-                        UserAuthenticatorInterface     $userAuthenticator,
-                        FormLoginAuthenticator         $authenticator,
                         EntityManagerInterface         $entityManager,
                         UserHelper                     $userHelper): Response
     {
@@ -59,12 +57,16 @@ class UserController extends AbstractController
 
             switch($form->get('role')->getData()){
                 case 'ROLE_AGENT':
+                    array_push($roles, 'ROLE_AGENT');
+                    break;
+                case 'ROLE_AGENT_SUPERVISOR':
+                    array_push($roles, 'ROLE_AGENT_SUPERVISOR');
                     break;
                 case 'ROLE_ADMIN':
-                    $roles[] = 'ROLE_ADMIN';
+                    array_push($roles, 'ROLE_ADMIN');
                     break;
                 case 'ROLE_SUPER_ADMIN':
-                    $roles[] = 'ROLE_SUPER_ADMIN';
+                    array_push($roles, 'ROLE_SUPER_ADMIN');
                     break;
                 default:
                     break;
@@ -76,7 +78,6 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-
             $photo = $form->get('photo')->getData();
             if($photo){
                 $fileName = $userHelper->uploadAsset($photo, $user->getId());
@@ -85,11 +86,7 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $userAuthenticator->authenticateUser(
-                $user,
-                $authenticator,
-                $request
-            );
+            return $this->json(['app' => 25]);
         }
         return $this->render('admin/user/new.html.twig', ['form' => $form->createView()]);
     }
@@ -115,7 +112,6 @@ class UserController extends AbstractController
 
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
-
         return $this->renderForm('admin/user/edit.html.twig', [
             'user' => $user,
             'form' => $form
@@ -135,7 +131,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/dt', name: 'admin_user_dt', methods: ['GET'])]
-    public function datatable(Request $request, Connection $connection, PaymentRepository $paymentRepository)
+    public function datatable(Request $request, Connection $connection)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
@@ -144,36 +140,52 @@ class UserController extends AbstractController
         $primaryKey = 'id';
         $columns = [
             [
-                'db' => 'id',
-                'dt' => 'DT_RowId',
-                'formatter' => function( $d, $row ) {
-                    return 'row_'.$d;
-                }
-            ],
-            [
                 'db' => 'photo',
                 'dt' => 'photo',
                 'formatter' => function( $d, $row ){
-                    $imageUrl = $row['reference'] . "/" . $row['photo'];
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
+                    if(empty($d)) $image = '/assets/images/avatar/avatar.jpg';
+                    else $image = "/user/$d";
+                    $content = "<img src='$image' alt='' class='avatar-md rounded-circle img-thumbnail'>";
                     return $content;
                 }
             ],
             [
-                'db' => 'nom',
-                'dt' => 'nom',
+                'db' => 'lastname',
+                'dt' => 'lastname',
             ],
             [
-                'db' => 'prenoms',
-                'dt' => 'prenoms',
+                'db' => 'firstname',
+                'dt' => 'firstname',
             ],
             [
                 'db' => 'email',
                 'dt' => 'email',
             ],
             [
+                'db' => 'is_active',
+                'dt' => 'is_active',
+                'formatter' => function($d, $row){
+                    $actif = $d ? 'checked': '';
+                    return "<input type='checkbox' class='form-check' $actif disabled/>";
+                }
+            ],
+            [
                 'db' => 'roles',
                 'dt' => 'roles',
+                'formatter' => function($d, $row){
+                    $part = explode(",", $d) ;
+                    $content = str_replace(['"', ']', "ROLE_"], '' , $part[1]??null);
+                    return "<strong>$content</strong>";
+                }
+            ],
+            [
+                'db' => 'last_connection',
+                'dt' => 'last_connection',
+                'formatter' => function($d, $row){
+                    $d = new \DateTime($d);
+                    $d = $d->format('d/m/Y');
+                    return "<span>$d</span>";
+                }
             ],
 
             [
@@ -182,9 +194,9 @@ class UserController extends AbstractController
                 'formatter' => function($d, $row){
                     $id = $row['id'];
                     $content =  "<div class='d-flex justify-content-center'>
-                                    <a href='/admin/user/$id' class='btn btn-success btn-sm mx-1'><i class='mdi mdi-eye-outline'></i></a>
-                                    <a href='/admin/user/$id/edit' class='btn btn-danger btn-sm'><i class='mdi mdi-pen'></i></a>
-                                    <a href='/admin/user/$id/delete' class='btn btn-danger btn-sm'><i class='mdi mdi-trash-can'></i></a>
+                                    <span data-id='$id' class='btn btn-success btn-sm btn-user-show'><i class='mdi mdi-eye-outline'></i></span>
+                                    <span data-id='$id' class='btn btn-info btn-sm mx-2 btn-user-edit'><i class='mdi mdi-pen'></i></span>
+                                    <span data-id='$id' class='btn btn-danger btn-sm btn-user-delete'><i class='mdi mdi-trash-can'></i></span>
                                  </div>";
                     return $content;
                 }
@@ -197,9 +209,7 @@ class UserController extends AbstractController
             'db'   => $paramDB['dbname'],
             'host' => $paramDB['host']
         );
-
         $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns);
-
         return new JsonResponse($response);
     }
 

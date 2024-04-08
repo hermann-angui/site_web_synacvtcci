@@ -20,8 +20,6 @@ use Symfony\Component\Validator\Constraints\File;
 
 class MemberRegistrationType extends AbstractType
 {
-
-
     public function __construct(private CommunesRepository $communesRepository, private VillesRepository $villesRepository)
     {
     }
@@ -112,7 +110,7 @@ class MemberRegistrationType extends AbstractType
                 'label' => "Nationalité",
                 'mapped' => true,
                 'required' => true,
-                'data' => $data->getNationality() ?? "IVOIRIENNE"
+                'data' => $data->getNationality() ?? null
             ])
             ->add('whatsapp', TelType::class, [
                 'label' => "Whatsapp",

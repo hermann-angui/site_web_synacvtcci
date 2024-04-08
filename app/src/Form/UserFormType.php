@@ -43,8 +43,8 @@ class UserFormType extends AbstractType
                 'required' => false,
                 'mapped' => true,
                 'choices' => [
-                    'monsieur' => 'Homme',
-                    'madame' => 'Femme',
+                    'Homme' => 'Homme',
+                    'Femme' => 'Femme',
                 ],
                 'empty_data' => 'Homme',
                 'data' => 'Homme',
@@ -59,10 +59,15 @@ class UserFormType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
+            ->add('isActive', CheckboxType::class, [
+                'label' => 'Activé',
+                'mapped' => true,
+                'required' => false
+            ])
             ->add('phoneNumber', TextType::class, [
                 'label' => 'Téléphone',
                 'mapped' => true,
-                'required' => true
+                'required' => false
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -75,12 +80,11 @@ class UserFormType extends AbstractType
                 'required' => false,
                 'choices' => [
                     "AGENT" => "ROLE_AGENT",
+                    "AGENT SUPERVISOR" => "ROLE_AGENT_SUPERVISOR",
                     "DISTRICT" => "ROLE_DISTRICT",
                     "ADMININISTRATEUR" => "ROLE_ADMIN",
                     "SUPER ADMINISTRATEUR" => "ROLE_SUPER_ADMIN",
                 ],
-                'empty_data' => null,
-                'data' => null,
             ])
             ->add('password', RepeatedType::class, [
                 'label' => 'Mot de passe',

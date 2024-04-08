@@ -77,8 +77,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $type;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $status;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $is_active = true;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $created_at;
@@ -540,5 +540,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isIsActive(): bool
+    {
+        return $this->is_active;
+    }
+
+    /**
+     * @param bool $is_active
+     * @return User
+     */
+    public function setIsActive(bool $is_active): User
+    {
+        $this->is_active = $is_active;
+        return $this;
+    }
 
 }

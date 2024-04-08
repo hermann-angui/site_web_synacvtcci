@@ -11,6 +11,7 @@ use App\Helper\PasswordHelper;
 use App\Helper\PdfGenerator;
 use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
+use App\Service\ConfigurationService\ConfigurationService;
 use Clegginabox\PDFMerger\PDFMerger;
 use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -27,8 +28,6 @@ use Symfony\Component\Uid\Uuid;
  */
 class MemberService
 {
-
-    private const WEBSITE_URL = "https://synacvtcci.org";
     private const MEDIA_DIR = "/var/www/html/public/members/";
     public function __construct(
         private ContainerInterface             $container,
@@ -38,6 +37,7 @@ class MemberService
         private ChildRepository                $childRepository,
         private UserPasswordHasherInterface    $userPasswordHasher,
         private PdfGenerator                   $pdfGenerator,
+        private ConfigurationService           $configurationService,
         private ActivityLogger                 $activityLogger,
         private CsvReaderHelper                $csvReaderHelper)
     {
@@ -75,9 +75,6 @@ class MemberService
             $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
 
             if(!empty($images)) $this->storeMemberImages($member, $images);
-
-            $member->setStatus("PENDING");
-            $member->setTitre("CHAUFFEUR");
 
             $this->memberRepository->add($member, true);
             $member->setCountry($member->getBirthCountry());
@@ -117,7 +114,6 @@ class MemberService
             $member->setCountry($member->getBirthCountry());
 
             if(!empty($images)) $this->storeMemberImages($member, $images);
-            $member->setTitre("CHAUFFEUR");
             $this->saveMember($member);
 
             if($children = $member->getChildren()){
@@ -328,7 +324,6 @@ class MemberService
         date_default_timezone_set("Africa/Abidjan");
         $sampleRealPath = $this->container->getParameter('kernel.project_dir') . "/public/assets/files/sample.csv";
         $columns = [
-            "TITRE",
             "MATRICULE",
             "NOM",
             "PRENOMS",
@@ -408,7 +403,6 @@ class MemberService
                     if (isset($row["COMMUNE"])) $member->setCommune(mb_strtoupper($row["COMMUNE"], 'UTF-8'));
                     if (isset($row["MOBILE"])) $member->setMobile($row["MOBILE"]);
                     if (isset($row["FIXE"])) $member->setPhone($row["FIXE"]);
-                    if (isset($row["TITRE"])) $member->setTitre(mb_strtoupper(trim($row["TITRE"])));
 
                     $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
 
@@ -599,7 +593,7 @@ class MemberService
     {
         try {
            // $qrCodeData = self::WEBSITE_URL . "/admin/member/" . $member->getId();
-            $qrCodeData = self::WEBSITE_URL . "/profile/" . $member->getMatricule();
+            $qrCodeData = $this->configurationService->getParameter('app.base_url') . "/profile/" . $member->getMatricule();
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
             $folder = self::MEDIA_DIR . $member->getReference() . '/';
             if(!file_exists($folder)) mkdir($folder, 0777, true);
@@ -623,6 +617,16 @@ class MemberService
             if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
             if(file_exists($folder . "_receipt.pdf")) \unlink($folder . "_receipt.pdf");
         }
+    }
+
+    public function generateFicheAdhesionSynacvtcci(?Member $member){
+
+        $folder = self::MEDIA_DIR . $member->getReference() . '/';
+        $viewTemplate = 'admin/member/synacvtcci/fiche_adhesion_synacvtcci.html.twig';
+        $receipt_file = $folder . time() . uniqid() . ".pdf";
+        $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
+        file_put_contents($receipt_file, $content);
+        return $content;
     }
 
     /**
@@ -662,7 +666,7 @@ class MemberService
 
         $output = $folder . time() . uniqid() . ".pdf";
         $member->setMergedDocumentsPdf(basename($output));
-        $member->setStatus("COMPLETED");
+        $member->setEtape(4);
         $this->saveMember($member);
         $res = $pdf->merge($outputmode, uniqid() . '.pdf');
         return $output;

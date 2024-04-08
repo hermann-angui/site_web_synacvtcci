@@ -11,7 +11,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: '`member`')]
 #[ORM\HasLifecycleCallbacks()]
@@ -50,9 +49,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $matricule = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $titre = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $subscription_date = null;
@@ -144,12 +140,8 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $partner_last_name = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $status = 'PENDING';
-
     #[ORM\Column(type: 'string', length: 600, nullable: true)]
     private ?string $photoPiece_front = null;
-
 
     #[ORM\Column(type: 'string', length: 600, nullable: true)]
     private ?string $photoPiece_back = null;
@@ -171,6 +163,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $is_syndicat_member = false;
+
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    private ?int $etape = null;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $has_paid_frais_enrollement = false;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $has_paid_for_syndicat = false;
@@ -203,6 +201,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $activity_geo_location = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $cnmci_numero_rm = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $cnmci_numero_carte_professionelle = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $activity_country_location = null;
@@ -278,18 +282,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setMatricule(?string $matricule): self
     {
         $this->matricule = $matricule;
-
-        return $this;
-    }
-
-    public function getTitre(): ?string
-    {
-        return $this->titre;
-    }
-
-    public function setTitre(?string $titre): self
-    {
-        $this->titre = $titre;
 
         return $this;
     }
@@ -665,33 +657,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public static function getTitres()
-    {
-        return  [
-            'CHAUFFEUR' => 'CHAUFFEUR',
-            'Secrétaire général' => 'Secrétaire général',
-            "Secrétaire de section d'Abobo" => "Secrétaire de section d'Abobo",
-            "Secrétaire de section d'Adjamé" => "Secrétaire de section d'Adjamé",
-            "Secrétaire de section de Port-Bouët" => "Secrétaire de section de Port-Bouët",
-            "Secrétaire de section de Bingerville" => "Secrétaire de section de Bingerville",
-            "Adjoint au secrétaire de section d'Abobo" => "Adjoint au secrétaire de section d'Abobo",
-            "Secrétaire de section de Marcory" => "Secrétaire de section de Marcory",
-            "Conseillé du secrétaire général" => "Conseillé du secrétaire général",
-            "Conseillé en communication du secrétaire général" => "Conseillé en communication du secrétaire général",
-            'SN au contrôle informatique' => 'SN au contrôle informatique',
-            'SN aux finances' => 'SN aux finances',
-            'SN à l’administration' => 'SN à l’administration',
-            'Secrétaire général adjoint' => 'Secrétaire général adjoint',
-            'SN à l’organisation' => 'SN à l’organisation',
-            'SN à la communication' => 'SN à la communication',
-            'SN à la formation' => 'SN à la formation',
-            'SN chargé  des applications' => 'SN chargé  des applications',
-            'SN Adjointe aux finances' => 'SN Adjointe aux finances',
-            'Chef de section Marcory' => "Chef de section Marcory",
-            'Conseillé' => "Conseillé",
-        ];
-    }
-
     /**
      * @return Collection<int, Child>
      */
@@ -989,24 +954,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPartnerLastName(?string $partner_last_name): Member
     {
         $this->partner_last_name = $partner_last_name;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string|null $status
-     * @return Member
-     */
-    public function setStatus(?string $status): Member
-    {
-        $this->status = $status;
         return $this;
     }
 
@@ -1453,6 +1400,78 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPaymentReceiptCarteSyndicatPdf(?string $payment_receipt_carte_syndicat_pdf): Member
     {
         $this->payment_receipt_carte_syndicat_pdf = $payment_receipt_carte_syndicat_pdf;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getEtape(): ?int
+    {
+        return $this->etape;
+    }
+
+    /**
+     * @param int|null $etape
+     * @return Member
+     */
+    public function setEtape(?int $etape): Member
+    {
+        $this->etape = $etape;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getHasPaidFraisEnrollement(): ?bool
+    {
+        return $this->has_paid_frais_enrollement;
+    }
+
+    /**
+     * @param bool|null $has_paid_frais_enrollement
+     * @return Member
+     */
+    public function setHasPaidFraisEnrollement(?bool $has_paid_frais_enrollement): Member
+    {
+        $this->has_paid_frais_enrollement = $has_paid_frais_enrollement;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCnmciNumeroRm(): ?string
+    {
+        return $this->cnmci_numero_rm;
+    }
+
+    /**
+     * @param string|null $cnmci_numero_rm
+     * @return Member
+     */
+    public function setCnmciNumeroRm(?string $cnmci_numero_rm): Member
+    {
+        $this->cnmci_numero_rm = $cnmci_numero_rm;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCnmciNumeroCarteProfessionelle(): ?string
+    {
+        return $this->cnmci_numero_carte_professionelle;
+    }
+
+    /**
+     * @param string|null $cnmci_numero_carte_professionelle
+     * @return Member
+     */
+    public function setCnmciNumeroCarteProfessionelle(?string $cnmci_numero_carte_professionelle): Member
+    {
+        $this->cnmci_numero_carte_professionelle = $cnmci_numero_carte_professionelle;
         return $this;
     }
 

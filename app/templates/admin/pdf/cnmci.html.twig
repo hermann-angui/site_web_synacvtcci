@@ -11,36 +11,41 @@
           type="text/css"/>
     <style>
 
-        .form-check-input.top-row  {
-            width: 1.7em;
-            height: 1.7em;
-            border:1px solid #000000;
-            border-radius: 0;
-            -webkit-border-radius: 0;
-            background-color: #ffffff;
+        .head {
+            background-color: #ffd4f9;
+            color: #000000;
+        }
+        #top-row .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
             margin-top: 0.4em;
         }
 
         .form-check-input:checked[type=radio] {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e")
         }
-
+        /*
+                    .form-label,
+                    .col-form-label,
+                    .form-check-label {
+                        font-size: 14px;
+                    }
+        */
         .form-check-input {
             width: 0.85em;
             height: 0.85em;
-            border:1px solid #000000;
-            border-radius: 0;
-            -webkit-border-radius: 0;
-            background-color: #ffffff;
+            margin-top: 0.4em;
+            background-color: #cecece;
         }
 
         .form-check-input:checked {
             background-color: #101011;
-            border:0px solid #000000;
+            border-color: #000000;
         }
 
+
         .form-check-input[type=radio] {
-            border-radius: 0;
+            border-radius: 0.2em;
         }
 
         input[type="text"],
@@ -51,38 +56,35 @@
             height: 2em;
         }
 
-        @media print{
-            *{
-                margin: 0;
-                padding:0;
-            }
-            table {
-                width: 100%;
-                page-break-inside: avoid;
-            }
-
-
-            @page {
-                margin: 0.1cm;
-            }
-
-            @page :first {
-                margin: 0.1cm
-            }
-            body {transform: scale(.7);}
+        .page-header {
+            height: 160px !important;
         }
 
-        table tr td {
-            padding: 0.3em 0.3em;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        table tr th {
-            border: none;
-            border-width: 0 0px 0px 0 !important;
-            border-collapse: collapse;
+        .row {
+            display: -webkit-box;
+            display: flex;
         }
 
+        .row>div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+        .row>div:last-child {
+            margin-right: 0;
+        }
+
+        table {
+            border-collapse: separate !important;
+        }
+
+        th,
+        td {
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
     </style>
 </head>
 <body>
