@@ -34,7 +34,7 @@ services:
     depends_on:
       - db
     environment:
-      - APP_ENV=prod
+      - APP_ENV=dev
       - XDEBUG_MODES=off
       - TZ=Africa/Abidjan
       - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/synacvtcci_db?serverVersion=14
