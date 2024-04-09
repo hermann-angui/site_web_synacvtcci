@@ -55,16 +55,11 @@ class PaymentController extends AbstractController
     public function doSyndicatPayment(Member $member, WaveService $waveService, PaymentService $paymentService, ActivityLogger $activityLogger, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
         try{
-
-            echo $configurationService->getParameter('app.montant_frais_carte_synacvtcci');
-            echo $configurationService->getParameter('app.montant_frais_carte_taxi');
-            echo $configurationService->getParameter('app.app.montant_frais_carte_falci');
             $montant = match ($member->getActivity()) {
                 "CHAUFFEUR VTC" => $configurationService->getParameter('app.montant_frais_carte_synacvtcci'),
                 "CHAUFFEUR TAXI" => $configurationService->getParameter('app.montant_frais_carte_taxi'),
                 "CHAUFFEUR LIVREUR" => $configurationService->getParameter('app.montant_frais_carte_falci')
             };
-            echo $montant;
             $response = $waveService->makePayment($montant);
             if ($response) {
                 $payment = $paymentService->create(
@@ -161,6 +156,7 @@ class PaymentController extends AbstractController
     public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
         $paymentService->generatePaymentReceipt($payment);
+        echo "Here";
         $member = $payment->getPaymentFor();
         $member->setEtape(5);
         $memberRepository->add($member, true);
