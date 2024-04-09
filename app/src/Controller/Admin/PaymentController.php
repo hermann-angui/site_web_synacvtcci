@@ -155,9 +155,9 @@ class PaymentController extends AbstractController
     #[Route(path: '/carte-syndicat/success/{id}', name: 'payment_succes_carte_syndicat', methods: ['POST', 'GET'])]
     public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
-        $res = $paymentService->generatePaymentReceipt($payment);
-        return $this->json($res);
-      //  return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
+       // $res = $paymentService->generatePaymentReceipt($payment);
+       // return $this->json($res);
+        return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
     }
 
 }
