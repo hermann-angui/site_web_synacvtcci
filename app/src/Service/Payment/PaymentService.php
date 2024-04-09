@@ -41,9 +41,9 @@ class PaymentService
 
      /**
      * @param Payment|null $payment
-     * @return string|null
+     * @return mixed
      */
-    public function generatePaymentReceipt(?Payment $payment): ?string
+    public function generatePaymentReceipt(?Payment $payment)
     {
         try {
             $member = $payment->getPaymentFor();
@@ -85,7 +85,7 @@ class PaymentService
 
             if(file_exists($barcode_file)) \unlink($barcode_file);
             echo "Here ";
-            return $content ?? null;
+            return $content;
 
         }catch(\Exception $e){
             echo $e->getMessage() . PHP_EOL;
