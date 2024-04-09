@@ -72,6 +72,23 @@ class MemberRepository extends ServiceEntityRepository
         return $data;
     }
 
+    public function getLastNDays(int $days){
+        $to = new \DateTime();
+        $temp = new \DateTime();
+        $from = $temp->modify("-$days days");
+        return $this->createQueryBuilder('m')
+           // ->where('m.subscription_date BETWEEN :from AND :to')
+             ->andWhere('m.subscription_date >= :from')
+             ->andWhere('m.subscription_date <= :to')
+             ->andWhere('m.etape >= 3')
+            ->setParameter('from', $from->format('Y-m-d H:i:s'))
+            ->setParameter('to',  $to->format('Y-m-d H:i:s'))
+            ->getQuery()
+            ->getResult()
+            ;
+
+    }
+
 //    public function findOneBySomeField($value): ?Member
 //    {
 //        return $this->createQueryBuilder('m')
