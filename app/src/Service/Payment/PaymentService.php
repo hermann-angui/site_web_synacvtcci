@@ -53,7 +53,7 @@ class PaymentService
                 $member->setMatricule($matricule);
                 $this->memberRepository->add($member, true);
             }
-            echo "Here1";
+
             $qrCodeData = $this->configurationService->getParameter('app.base_url') . "profile/" . $member->getReference();
 
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
@@ -65,7 +65,7 @@ class PaymentService
 
             $receipt_file = $folder . time() . uniqid() . ".pdf";
             $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
-            echo "Here 2";
+
             if($payment->getTarget()  === "FRAIS_CARTE_SYNDICAT"){
                 $viewTemplate = 'admin/payment/payment-receipt-carte-syndicat-pdf.html.twig';
                 $member->setHasPaidForSyndicat(true);
@@ -77,18 +77,18 @@ class PaymentService
                 $viewTemplate = 'admin/payment/payment-receipt-service-technique-pdf.html.twig';
                 $member->setPaymentReceiptServiceTechniquePdf(basename($receipt_file));
             }
-            echo "Here 3";
+
             $this->memberRepository->add($member, true);
-            echo "Here 4";
+
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
             file_put_contents($receipt_file, $content);
 
             if(file_exists($barcode_file)) \unlink($barcode_file);
-            echo "Here 5";
+            echo $content;
+            echo "here 6";
             return $content ?? null;
 
         }catch(\Exception $e){
-
             echo $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
             if(file_exists($barcode_file)) \unlink($barcode_file);
