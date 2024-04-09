@@ -84,7 +84,7 @@ class PaymentService
             file_put_contents($receipt_file, $content);
 
             if(file_exists($barcode_file)) \unlink($barcode_file);
-            return $content;
+            return $content ?? null;
 
         }catch(\Exception $e){
             echo $e->getMessage() . PHP_EOL;
