@@ -97,6 +97,7 @@ class WaveService
                 ->setClientReference(Uuid::v4()->toRfc4122())
                 ->setSuccessUrl($this->configurationService->getParameter('app.wave.checkout_success_url'));
 
+            dump($waveCheckoutRequest);
             $waveResponse = $this->checkOutRequest($waveCheckoutRequest);
             if($waveResponse) return $waveResponse;
             else return null;
