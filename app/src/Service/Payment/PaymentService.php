@@ -92,7 +92,7 @@ class PaymentService
             if(file_exists($barcode_file)) \unlink($barcode_file);
             if(file_exists($receipt_file)) \unlink($receipt_file);
         }
-
+        echo "Here ";
         return null;
     }
 
