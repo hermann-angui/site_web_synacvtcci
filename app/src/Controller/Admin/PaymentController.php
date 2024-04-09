@@ -54,6 +54,7 @@ class PaymentController extends AbstractController
     #[Route(path: '/carte/syndicat/{id}', name: 'do_payment_carte_syndicat')]
     public function doSyndicatPayment(Member $member, WaveService $waveService, PaymentService $paymentService, ActivityLogger $activityLogger, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
+        echo $member->getActivity();
         try{
             $montant = match ($member->getActivity()) {
                 "CHAUFFEUR VTC" => $configurationService->getParameter('app.montant_frais_carte_synacvtcci'),
