@@ -156,9 +156,8 @@ class PaymentController extends AbstractController
     public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
         $res = $paymentService->generatePaymentReceipt($payment);
-        dump($res);
-        die("HERE");
-        return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
+        return $this->json($res);
+      //  return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
     }
 
 }
