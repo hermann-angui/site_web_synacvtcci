@@ -111,8 +111,8 @@ class PaymentController extends AbstractController
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
             $payment->setStatus("PAID");
             $paymentRepository->add($payment, true);
-            if ($payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE") return $this->redirectToRoute('admin_payment_success_page', ["id" => $payment->getId(), "status" => $status]);
-            elseif ($payment->getTarget() === "FRAIS_CARTE_SYNDICAT") return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId(), "status" => $status]);
+            if ($payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE") return $this->redirectToRoute('admin_payment_success_page', ["id" => $payment->getId()]);
+            elseif ($payment->getTarget() === "FRAIS_CARTE_SYNDICAT") return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId()]);
         }
         return $this->redirectToRoute('admin_index');
     }
@@ -156,10 +156,11 @@ class PaymentController extends AbstractController
     public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
         $paymentService->generatePaymentReceipt($payment);
-        echo "Here 6";
         $member = $payment->getPaymentFor();
         $member->setEtape(5);
         $memberRepository->add($member, true);
+        dump($member);
+        die;
         return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
     }
 
