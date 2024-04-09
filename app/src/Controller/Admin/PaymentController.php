@@ -156,7 +156,7 @@ class PaymentController extends AbstractController
     public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
         $paymentService->generatePaymentReceipt($payment);
-        echo "Here";
+        echo "Here 6";
         $member = $payment->getPaymentFor();
         $member->setEtape(5);
         $memberRepository->add($member, true);
