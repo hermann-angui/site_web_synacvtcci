@@ -145,10 +145,10 @@ class PaymentController extends AbstractController
     #[Route(path: '/successpage/{id}', name: 'admin_payment_success_page', methods: ['POST', 'GET'])]
     public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
-        $member = $payment->getPaymentFor();
-        $member->setEtape(3);
-        $memberRepository->add($member, true);
         $paymentService->generatePaymentReceipt($payment);
+        $member = $payment->getPaymentFor();
+        $member->setEtape(5);
+        $memberRepository->add($member, true);
         return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
     }
 
@@ -156,6 +156,8 @@ class PaymentController extends AbstractController
     public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
     {
         $paymentService->generatePaymentReceipt($payment);
+        dump($payment);
+        dump($payment->getPaymentFor());
         $member = $payment->getPaymentFor();
         $member->setEtape(5);
         $memberRepository->add($member, true);
