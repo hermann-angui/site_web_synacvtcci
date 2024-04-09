@@ -54,29 +54,34 @@ class PaymentController extends AbstractController
     #[Route(path: '/carte/syndicat/{id}', name: 'do_payment_carte_syndicat')]
     public function doSyndicatPayment(Member $member, WaveService $waveService, PaymentService $paymentService, ActivityLogger $activityLogger, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
-        $montant = match ($member->getActivity()) {
-            "CHAUFFEUR VTC" => $configurationService->getParameter('app.montant_frais_carte_synacvtcci'),
-            "CHAUFFEUR TAXI" => $configurationService->getParameter('app.app.montant_frais_carte_taxi'),
-            "CHAUFFEUR LIVREUR" => $configurationService->getParameter('app.montant_frais_carte_falci')
-        };
+        try{
+            $montant = match ($member->getActivity()) {
+                "CHAUFFEUR VTC" => $configurationService->getParameter('app.montant_frais_carte_synacvtcci'),
+                "CHAUFFEUR TAXI" => $configurationService->getParameter('app.app.montant_frais_carte_taxi'),
+                "CHAUFFEUR LIVREUR" => $configurationService->getParameter('app.montant_frais_carte_falci')
+            };
 
-        $response = $waveService->makePayment($montant);
+            $response = $waveService->makePayment($montant);
 
-        if ($response) {
-            $payment = $paymentService->create(
-                $member,
-                $this->getUser(),
-                $montant,
-                $response->getClientReference(),
-                "FRAIS_CARTE_SYNDICAT",
-                strtoupper($response->getPaymentStatus()),
-                'MOBILE_MONEY',
-                "WAVE"
-            );
-            $activityLogger->create($payment, "Payment carte syndical initié");
-            return $this->redirect($response->getWaveLaunchUrl());
+            if ($response) {
+                $payment = $paymentService->create(
+                    $member,
+                    $this->getUser(),
+                    $montant,
+                    $response->getClientReference(),
+                    "FRAIS_CARTE_SYNDICAT",
+                    strtoupper($response->getPaymentStatus()),
+                    'MOBILE_MONEY',
+                    "WAVE"
+                );
+                $activityLogger->create($payment, "Payment carte syndical initié");
+                return $this->redirect($response->getWaveLaunchUrl());
 
-        } else return $this->redirectToRoute('admin_index');
+            } else return $this->redirectToRoute('admin_index');
+        }catch(\Exception $e){
+            return new Response($e->getTraceAsString());
+        }
+
     }
 
     #[Route(path: '/do/{id}', name: 'do_payment')]
