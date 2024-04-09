@@ -157,12 +157,7 @@ class PaymentController extends AbstractController
     {
         $res = $paymentService->generatePaymentReceipt($payment);
         dump($res);
-/*        dump($payment->getPaymentFor());
-        $member = $payment->getPaymentFor();
-        $member->setEtape(5);
-        $memberRepository->add($member, true);
-        dump($member);
-        die;*/
+        die("HERE");
         return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
     }
 
