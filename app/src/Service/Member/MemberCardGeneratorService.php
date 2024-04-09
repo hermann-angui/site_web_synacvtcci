@@ -48,6 +48,7 @@ class MemberCardGeneratorService
             case "CHAUFFEUR TAXI":
                 $data['cardbg'] = "/var/www/html/public/assets/files/carte_taxi_front.jpg";
                 $data['twig_view'] = "admin/print/carte_taxi.html.twig";
+                $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
                 $data['qrcode_color'] = [14, 119, 12];
                 break;
         }
