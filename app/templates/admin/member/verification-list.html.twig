@@ -123,7 +123,7 @@
                             <div class="tab-pane" id="completed" role="tabpanel">
                                 <div class="row">
                                     {% for member in members %}
-                                        {% if member.etape >= 3 %}
+                                        {% if member.etape > 3 %}
                                             <div class="col-md-3 col-sm-3">
                                                 <div class="card text-center">
                                                     <div class="card-body">
