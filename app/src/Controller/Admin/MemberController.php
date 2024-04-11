@@ -50,7 +50,7 @@ class MemberController extends AbstractController
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
-        $members = $memberRepository->getLastNDays(5);
+        $members = $memberRepository->getLastNDays(10);
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
 
