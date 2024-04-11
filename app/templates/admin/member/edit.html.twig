@@ -244,10 +244,10 @@
 <script>
       $('document').ready(function() {
 
-          if($("#member_registration_actvity").val() !== "CHAUFFEUR VTC") {
-                $("#registration_company_container").hide();
-                $("#member_registration_company").val("AUTRE").trigger('change');
-          }
+          // if($("#member_registration_actvity").val() !== "CHAUFFEUR VTC") {
+          //       $("#registration_company_container").hide();
+          //       $("#member_registration_company").val("AUTRE").trigger('change');
+          // }
            // window.addEventListener('online', () => toastr.success('Vous êtes de nouveau connecté.'));
            // window.addEventListener('offline', () => toastr.error('Attention!! Vous avez perdu la connexion internet.'));
            // console.log(window.navigator.onLine);
@@ -345,9 +345,9 @@
               var act = $(this).val();
               if( act !== "CHAUFFEUR VTC"){
                   $("#member_registration_company").val("AUTRE").trigger('change');
-                  console.log($("#member_registration_company").val());
                   $("#registration_company_container").hide();
               }else{
+                 $("#member_registration_company").val(null).trigger('change');
                   $("#registration_company_container").show();
               }
           });
