@@ -65,6 +65,7 @@ services:
     container_name: app
     restart: always
     build:
+      target: dev
       context: ./docker
     depends_on:
       - db

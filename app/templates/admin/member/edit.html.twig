@@ -244,6 +244,10 @@
 <script>
       $('document').ready(function() {
 
+          if($("#member_registration_actvity").val() !== "CHAUFFEUR VTC") {
+                $("#registration_company_container").hide();
+                $("#member_registration_company").val("AUTRE").trigger('change');
+          }
            // window.addEventListener('online', () => toastr.success('Vous êtes de nouveau connecté.'));
            // window.addEventListener('offline', () => toastr.error('Attention!! Vous avez perdu la connexion internet.'));
            // console.log(window.navigator.onLine);
@@ -340,6 +344,8 @@
           $("#member_registration_activity").change(function(data){
               var act = $(this).val();
               if( act !== "CHAUFFEUR VTC"){
+                  $("#member_registration_company").val("AUTRE").trigger('change');
+                  console.log($("#member_registration_company").val());
                   $("#registration_company_container").hide();
               }else{
                   $("#registration_company_container").show();
@@ -416,11 +422,11 @@
           $(".select2-multiple").select2({
                 multiple: true
           });
+
           var companies = [];
           {% for company in member.company  %}
              companies.push('{{ company }}');
           {% endfor %}
-          console.log(companies);
           $(".select2-multiple").val(companies);
           $(".select2-multiple").trigger('change');
       });

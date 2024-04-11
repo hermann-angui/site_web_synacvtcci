@@ -55,7 +55,7 @@
                                         <table class="table table-condensed table-bordered px-5">
                                             <tbody>
                                             <tr>
-                                                <td colspan="2">
+                                                <th colspan="2" width="5%">
                                                     <div class="d-flex justify-content-center">
                                                         <label for="member_registration_edit_photo" class="d-block d-flex justify-content-center align-content-center">
                                                             {% if member.photo is null %}
@@ -65,7 +65,7 @@
                                                             {% endif %}
                                                         </label>
                                                     </div>
-                                                </td>
+                                                </th>
                                             </tr>
                                             <tr>
                                                 <th>Matricule</th>
@@ -263,8 +263,11 @@
                                     </div>
                                     {% endif %}
                                     <div class="row d-flex justify-content-center mt-5">
-                                        <a href="{{ path('admin_index')}}" class="btn btn-primary btn-lg waves-effect waves-light col-md-2 offset-1"><i class="fa fa-save fa-1x"></i>  &nbsp; Enregistrer et quitter</a>
-                                        <a href="{{ path('admin_payment_choose',{'id': member.id}) }}" class="btn btn-success btn-lg waves-effect waves-light col-md-2 offset-1"> Passer au paiement &nbsp;<i class="fa fa-arrow-right fa-1x"></i></a>
+                                        {% if member.etape == 2 %}
+                                            <a href="{{ path('admin_payment_choose',{'id': member.id}) }}" class="btn btn-success btn-lg waves-effect waves-light col-md-3"> Enregistrer et passer au paiement &nbsp;<i class="fa fa-arrow-right fa-1x"></i></a>
+                                        {% else %}
+                                            <a href="{{ path('admin_index')}}" class="btn btn-primary btn-lg waves-effect waves-light col-md-3"><i class="fa fa-save fa-1x"></i>  &nbsp; Enregistrer et quitter</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

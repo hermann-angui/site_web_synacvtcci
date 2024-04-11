@@ -102,9 +102,9 @@ class MemberRegistrationType extends AbstractType
                     "GREEN VTC" => "GREEN VTC",
                     "IVOIRE TAXI" => "IVOIRE TAXI",
                     "SB DRIVE" => "SB DRIVE",
-                    "AUTRE" => "AUTRE"
+                    "AUTRE" => "AUTRE",
                 ],
-                'empty_data' => null,
+                'empty_data' => null
             ])
             ->add('nationality', TextType::class, [
                 'label' => "Nationalité",
