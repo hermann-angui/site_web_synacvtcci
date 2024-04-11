@@ -358,7 +358,7 @@ class MemberController extends AbstractController
             'db'   => $paramDB['dbname'],
             'host' => $paramDB['host']
         );
-        $whereResult= " etape = 1";
+        $whereResult= " etape = 2 ";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -520,7 +520,7 @@ class MemberController extends AbstractController
                 }
             }
 
-            $member->setEtape(2);
+            if($member->getEtape() === 1) $member->setEtape(2);
             $memberService->updateMember($member, $images);
             $activityLogger->update($member, "Mise à jour des données du souscripteur");
 
