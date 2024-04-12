@@ -344,10 +344,10 @@
           $("#member_registration_activity").change(function(data){
               var act = $(this).val();
               if( act !== "CHAUFFEUR VTC"){
-                  $("#member_registration_company").val("AUTRE").trigger('change');
+                //  $("#member_registration_company").val("AUTRE").trigger('change');
                   $("#registration_company_container").hide();
               }else{
-                 $("#member_registration_company").val(null).trigger('change');
+                //  $("#member_registration_company").val(null).trigger('change');
                   $("#registration_company_container").show();
               }
           });
