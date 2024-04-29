@@ -232,6 +232,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $sigle_enseigne_etabl = null;
 
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $status = false;
+
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $activity_date_debut = null;
 
@@ -1514,6 +1517,17 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRaisonSocialEtabl(?string $raison_socialEtabl): Member
     {
         $this->raison_socialEtabl = $raison_socialEtabl;
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?bool $status): Member
+    {
+        $this->status = $status;
         return $this;
     }
 
