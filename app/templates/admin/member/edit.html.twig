@@ -207,7 +207,6 @@
                                         <li class="breadcrumb-item active">Enregistrement</li>
                                     </ol>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -244,9 +243,6 @@
 <script>
       $('document').ready(function() {
 
-          if($("#member_registration_actvity").val() !== "CHAUFFEUR VTC") {
-                $("#registration_company_container").hide();
-          }
 
            // window.addEventListener('online', () => toastr.success('Vous êtes de nouveau connecté.'));
            // window.addEventListener('offline', () => toastr.error('Attention!! Vous avez perdu la connexion internet.'));
@@ -344,7 +340,6 @@
           $("#member_registration_activity").change(function(data){
               var act = $(this).val();
               if( act !== "CHAUFFEUR VTC"){
-                  alert();
                   $("#member_registration_company").val("AUTRE").trigger('change');
                   $("#registration_company_container").hide();
               }else{

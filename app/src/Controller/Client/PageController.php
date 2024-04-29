@@ -134,8 +134,8 @@ class PageController extends AbstractController
     public function pdfGenerate(Member $member, MemberService $memberService): Response
     {
         set_time_limit(0);
-        $content = $memberService->generateRegistrationReceipt($member);
-        return new PdfResponse($content, 'recu_syndicat.pdf');
+        $content = $memberService->generateOnlineRegistrationReceipt($member);
+        return new PdfResponse($content, 'recu_inscriptoin.pdf');
     }
 
     #[Route('/download/syndicat/receipt/{id}', name: 'download_payment_receipt_carte_syndicat_pdf', methods: ['GET'])]
@@ -143,7 +143,7 @@ class PageController extends AbstractController
     {
         set_time_limit(0);
         $content = $paymentService->generatePaymentReceipt($payment);
-        return new PdfResponse($content, 'recu_syndicat.pdf');
+        return new PdfResponse($content, 'recu_payment.pdf');
     }
 
 

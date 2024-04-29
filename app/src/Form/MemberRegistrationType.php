@@ -379,7 +379,7 @@ class MemberRegistrationType extends AbstractType
                 'data' => $data->getSocioprofessionnelleCategory()?? "ARTISAN"
             ])
             ->add('activity', ChoiceType::class, [
-                'label' => "Activité",
+                'label' => "Activité principale exercée",
                 'mapped' => true,
                 'required' => true,
                 'choices' => [
@@ -388,6 +388,24 @@ class MemberRegistrationType extends AbstractType
                     "CHAUFFEUR LIVREUR" => "CHAUFFEUR LIVREUR",
                 ],
                 'data' => $data->getActivity() ?? null
+            ])
+            ->add('activity_secondary', TextType::class, [
+                'label' => "Activité secondaire",
+                'mapped' => true,
+                'required' => true,
+                'data' => $data->getActivitySecondary() ?? null
+            ])
+            ->add('raisonSocialEtabl', TextType::class, [
+                'label' => "Raison sociale",
+                'mapped' => true,
+                'required' => true,
+                'data' => $data->getRaisonSocialEtabl() ?? null
+            ])
+            ->add('sigle_enseigne_etabl', TextType::class, [
+                'label' => "Sigle ou enseigne",
+                'mapped' => true,
+                'required' => true,
+                'data' => $data->getSigleEnseigneEtabl() ?? null
             ])
             ->add('activity_date_debut', DateType::class, [
                 'label' => "Date debut d'activité",

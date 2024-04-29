@@ -223,6 +223,15 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $activity = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $activity_secondary = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $raison_socialEtabl = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $sigle_enseigne_etabl = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $activity_date_debut = null;
 
@@ -1475,6 +1484,38 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getActivitySecondary(): ?string
+    {
+        return $this->activity_secondary;
+    }
+
+    public function setActivitySecondary(?string $activity_secondary): Member
+    {
+        $this->activity_secondary = $activity_secondary;
+        return $this;
+    }
+
+    public function getSigleEnseigneEtabl(): ?string
+    {
+        return $this->sigle_enseigne_etabl;
+    }
+
+    public function setSigleEnseigneEtabl(?string $sigle_enseigne_etabl): Member
+    {
+        $this->sigle_enseigne_etabl = $sigle_enseigne_etabl;
+        return $this;
+    }
+
+    public function getRaisonSocialEtabl(): ?string
+    {
+        return $this->raison_socialEtabl;
+    }
+
+    public function setRaisonSocialEtabl(?string $raison_socialEtabl): Member
+    {
+        $this->raison_socialEtabl = $raison_socialEtabl;
+        return $this;
+    }
 
 
 }

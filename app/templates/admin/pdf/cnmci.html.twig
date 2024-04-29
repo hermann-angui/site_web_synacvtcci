@@ -97,7 +97,9 @@
                 <span>Chambre Nationale de<br>Métiers de Cote d'Ivoire</span>
             </td>
             <td style="margin-left:850px;padding:5px 5px;border-collapse: collapse;border:1px solid white">
+                {% if member.activity == "CHAUFFEUR VTC" %}
                 <img src="/var/www/html/public/assets/frontend/img/logo-synacvtcci.jpg" width="95" height="85" alt="logo synacvtcci"/>
+                {% endif %}
             </td>
             <div style="position:absolute;top:-5px;right:20px;">
                 <div>
@@ -229,17 +231,17 @@
             <th colspan="3" style="margin-top: 0.2em;margin-bottom: 0em;">C. RENSEIGNEMENTS SUR L'ETABLISSEMENT </th>
         </tr>
         <tr style="border:0;">
-            <td colspan="3">Activité principale exercée : : <span></span></td>
+            <td colspan="3">Activité principale exercée : <span>{{ member.activity}}</span></td>
         </tr>
         <tr style="border:0;">
-            <td colspan="3">Activité secondaire :<span></span></td>
+            <td colspan="3">Activité secondaire :<span>{{ member.activitySecondary }}</span></td>
         </tr>
         <tr style="border:0;">
             <td>Raison social :<span></span></td>
-            <td colspan="2">Sigle ou Enseigne :<span></span></td>
+            <td colspan="2">Sigle ou Enseigne :<span>{{ member.sigleEnseigneEtabl }}</span></td>
         </tr>
         <tr style="border:0;">
-            <td colspan="3">Date de début d'activité :<span></span></td>
+            <td colspan="3">Date de début d'activité :<span>{{ member.activityDateDebut| date('d/m/y') }}</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="3">

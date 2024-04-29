@@ -9,7 +9,9 @@
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-end">
+                {% if member.activity == 'CHAUFFEUR VTC' %}
                 <img src="{{ asset('assets/frontend/img/logo-synacvtcci.jpg') }}" width="100" height="85" alt="logo synacvtcci"/>
+                {% endif %}
             </div>
         </div>
             <div class="row my-1 border-top border-bottom border-dark d-flex justify-content-center">
@@ -312,7 +314,7 @@
                             <label for="principalActiviteEtabl" class="col-form-label">Activité principale exercée :</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="principalActiviteEtabl" name="principalActiviteEtabl" class="form-control" aria-labelledby="principalActiviteEtabl" disabled>
+                            <input type="text" id="principalActiviteEtabl" name="principalActiviteEtabl" value="{{ member.activity }}" class="form-control" aria-labelledby="principalActiviteEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -320,7 +322,7 @@
                             <label for="activiteSecondaireEtabl" class="col-form-label">Activité secondaire :</label>
                         </div>
                         <div class="col-9">
-                            <input type="text" id="activiteSecondaireEtabl" name="activiteSecondaireEtabl" class="form-control" aria-labelledby="activiteSecondaireEtabl" disabled>
+                            <input type="text" id="activiteSecondaireEtabl" name="activiteSecondaireEtabl" value="{{ member.activitySecondary }}" class="form-control" aria-labelledby="activiteSecondaireEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -328,13 +330,13 @@
                             <label for="raisonSocialEtabl" class="col-form-label">Raison social :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" class="form-control" aria-labelledby="raisonSocialEtabl" disabled>
+                            <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" value="{{ member.raisonSocialEtabl }}" class="form-control" aria-labelledby="raisonSocialEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="sigleEnseigneEtabl" class="col-form-label">Sigle ou Enseigne :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl" class="form-control" aria-labelledby="sigleEnseigneEtabl" disabled>
+                            <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl"  value="{{ member.sigleEnseigneEtabl }}"  class="form-control" aria-labelledby="sigleEnseigneEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -342,7 +344,7 @@
                             <label for="dateDebutActiviteEtabl" class="col-form-label">Date de début d'activité :</label>
                         </div>
                         <div class="col-9">
-                            <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" aria-labelledby="dateDebutActiviteEtabl" disabled>
+                            <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" value="{{ member.activityDateDebut| date('d/m/y') }}" aria-labelledby="dateDebutActiviteEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -430,14 +432,14 @@
                             <label for="" class="col-form-label">Adresse géographique :</label>
                             <label for="deptEtabl" class="col-form-label">Département :</label>
                         </div>
-                        <div class="col-5">
+                        <div class="col-4">
                             <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="communeEtabl" class="col-form-label">Commune :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" aria-labelledby="communeEtabl" disabled>
+                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" value="{{ member.activityCityLocation }}" aria-labelledby="communeEtabl" disabled>
                         </div>
                     </div>
 
@@ -452,7 +454,7 @@
                             <label for="quartierEtabl" class="col-form-label">Quartier :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="quartEtabl" name="quartEtabl" class="form-control" aria-labelledby="quartEtabl" disabled>
+                            <input type="text" id="quartEtabl" name="quartEtabl" value="{{ member.activityQuartierLocation }}" class="form-control" aria-labelledby="quartEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="villageEtabl" class="col-form-label">Village :</label>
@@ -504,7 +506,7 @@
                 </div>
             </div>
             <div class="row border border-1 border-dark">
-                <div class="fw-bold text-center border-bottom border-dark"  style="background-color: #f2d0e9;">C. RENSEIGNEMENT SUR PERSONNE POUVANT ENGAGER L'ENTREPRISE</div>
+                <div class="fw-bold text-center border-bottom border-dark"  style="background-color: #f2d0e9;">D. RENSEIGNEMENT SUR PERSONNE POUVANT ENGAGER L'ENTREPRISE</div>
                 <div class="p-3">
                     <div class="row g-3 align-items-center">
                         <div class="col-1 col-xs-6">

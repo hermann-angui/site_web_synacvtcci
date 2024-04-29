@@ -2,16 +2,9 @@
 
 {% block stylesheet %}
     {{ parent() }}
-    <link href="{{ asset('assets/admin/css/app.min.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ asset('assets/admin/libs/toastr/build/toastr.min.css') }}" type="text/css" rel="stylesheet">
     <style>
-        .wizard .steps > ul > li a {
-            font-size: 12px;
-            font-weight: bold;
-            color: #000000;
-        }
-
         .form-control, .form-select {
             padding: 0.5rem 0.55rem;
             font-size: 0.95rem;
@@ -31,6 +24,7 @@
         .form-switch .form-check-input {
             border: 2px solid #ffbb00;
         }
+
         .form-check-input:checked {
             background-color: #117b01;
             border: 2px solid #117b01;
@@ -113,23 +107,6 @@
             line-height: 28px;
         }
 
-        .select2-container--default .select2-selection--multiple {
-            background-color: white;
-            border: 1px solid #ffbb00;
-            border-radius: 4px;
-            cursor: text;
-            min-height: 50px;
-        }
-
-        .select2-container .select2-selection--single {
-            height: 41px;
-        }
-
-        .select2-container--default .select2-selection--single {
-            background-color: #fff;
-            border: 2px solid #ffbb00;
-            border-radius: 0px;
-        }
 
         input.select2-search__field {
             border: 1px solid black;
@@ -173,6 +150,26 @@
             border: 1px dashed #adb5bd;
             padding: 10px 10px;
         }
+        .select2-container .select2-container--default,
+        .select2-selection .select2-selection--multiple,
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border: 1px solid #ffbb00;
+            border-radius: 4px;
+            cursor: text;
+            min-height: 50px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 41px;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 2px solid #ffbb00;
+            border-radius: 0px;
+        }
+
     </style>
 {% endblock %}
 
@@ -182,13 +179,17 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
 
-        {{ include('admin/_partials/header.html.twig') }}
-
-        <!-- ========== Left Sidebar Start ========== -->
         {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
             {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
         {% endif %}
-        <!-- Left Sidebar End -->
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
 
         <!-- ============================================================== -->
         <!-- Start right Content here -->

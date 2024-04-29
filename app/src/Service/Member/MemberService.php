@@ -497,7 +497,6 @@ class MemberService
             if ($fileName) $member->setMergedDocumentsPdf($fileName->getFilename());
         }
 
-
         return $member;
     }
 
@@ -585,10 +584,9 @@ class MemberService
      * @param string $viewTemplate
      * @return string|null
      */
-    public function generateRegistrationReceipt(?Member $member)
+    public function generateOnlineRegistrationReceipt(?Member $member)
     {
         try {
-           // $qrCodeData = self::WEBSITE_URL . "/admin/member/" . $member->getId();
             $qrCodeData = $this->configurationService->getParameter('app.base_url') . "/profile/" . $member->getMatricule();
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
             $folder = self::MEDIA_DIR . $member->getReference() . '/';
@@ -597,7 +595,7 @@ class MemberService
             $barcode_file = $folder . "_barcode.png";
             file_put_contents($barcode_file, $content);
 
-            $viewTemplate = 'admin/member/receipt-pdf.html.twig';
+            $viewTemplate = 'admin/member/online-receipt-pdf.html.twig';
             $receipt_file = $folder . time() . uniqid() . ".pdf";
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
             file_put_contents($receipt_file, $content);

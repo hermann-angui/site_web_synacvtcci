@@ -564,7 +564,7 @@ class MemberController extends AbstractController
         if($form->has('mergedDocumentsPdf'))  $images['mergedDocumentsPdf'] = $form->get('mergedDocumentsPdf')?->getData();
 
         $data = $request->request->all();
-        if(isset($data['child'])){
+        if(!empty($data) && isset($data['child'])){
             foreach($data['child'] as $childItem){
                 $child=  new Child();
                 $child->setLastName($childItem['lastname']);
