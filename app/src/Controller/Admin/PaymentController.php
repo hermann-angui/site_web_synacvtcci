@@ -109,10 +109,22 @@ class PaymentController extends AbstractController
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
-            $payment->setStatus("PAID");
-            $paymentRepository->add($payment, true);
-            if ($payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE") return $this->redirectToRoute('admin_payment_success_page', ["id" => $payment->getId()]);
-            elseif ($payment->getTarget() === "FRAIS_CARTE_SYNDICAT") return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId()]);
+
+            if ($payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE") {
+                $payment->setStatus("PAID");
+                $member = $payment->getPaymentFor();
+                $paymentRepository->add($payment, true);
+                $member->setHasPaidFraisEnrollement(true);
+                $memberRepository->add($member, true);
+                return $this->redirectToRoute('admin_payment_success_page', ["id" => $payment->getId()]);
+            }
+            elseif ($payment->getTarget() === "FRAIS_CARTE_SYNDICAT") {
+                $payment->setStatus("PAID");
+                $member = $payment->getPaymentFor();
+                $member->setHasPaidForSyndicat(true);
+                $paymentRepository->add($payment, true);
+                return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId()]);
+            }
         }
         return $this->redirectToRoute('admin_index');
     }
@@ -147,7 +159,7 @@ class PaymentController extends AbstractController
     {
         $paymentService->generatePaymentReceipt($payment);
         $member = $payment->getPaymentFor();
-        $member->setEtape(5);
+        $member->setEtape(3);
         $memberRepository->add($member, true);
         return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
     }

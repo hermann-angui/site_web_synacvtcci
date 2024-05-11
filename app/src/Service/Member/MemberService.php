@@ -127,89 +127,6 @@ class MemberService
     }
 
     /**
-     * @param $data
-     * @return Member
-     */
-    public function createCnmiOrUpdate(?Member $member, $data, bool $update = false)
-    {
-        if(!$update && !$member) $member =  new Member();
-
-        $member->setCodeSticker(!empty($data["CodeSticker"]) ? $data["CodeSticker"] : null);
-        if (!$member->getReference()) $member->setReference(str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18)));
-
-        if (!$member->getMatricule()) {
-            $member->setRoles(['ROLE_USER']);
-            $date = new \DateTime('now');
-            $member->setSubscriptionDate($date);
-
-            if (!$member->getMatricule()) {
-                $matricule = MemberService::generateMatricule($member);
-                $member->setMatricule($matricule);
-            }
-
-            $expiredDate = $date->format('Y-12-31');
-            $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
-            $member->setPassword($this->userPasswordHasher->hashPassword($member, PasswordHelper::generate()));
-        }
-
-        if (!empty($data["member_registration_photo"])) {
-            $fileName = $this->memberAssetHelper->uploadAsset($data["member_registration_photo"], $member->getReference());
-            if ($fileName) $member->setPhoto($fileName);
-        }
-        if (!empty($data["lastName"]) && $member->getLastName() !== $data["lastName"]) {
-            $member->setLastName($data["lastName"]);
-        }
-        if (!empty($data["firstName"]) && $member->getFirstName() !== $data["firstName"]) {
-            $member->setFirstName($data["firstName"]);
-        }
-        if (!empty($data["birthCity"]) && $member->getBirthCity() !== $data["birthCity"]) {
-            $member->setBirthCity($data["birthCity"]);
-        }
-        if (!empty($data["nationality"]) && $member->getNationality() !== $data["nationality"]) {
-            $member->setNationality($data["nationality"]);
-        }
-        if (!empty($data["sex"]) && $member->getSex() !== $data["sex"]) {
-            $member->setSex($data["sex"]);
-        }
-        if (!empty($data["commune"]) && $member->getCity() !== $data["commune"]) {
-            $member->setCommune($data["commune"]);
-        }
-        if (!empty($data["idType"]) && $member->getIdType() !== strtoupper($data["idType"])) {
-            $member->setIdType($data["idType"]);
-        }
-        if (!empty($data["dateOfBirth"]) && $member->getDateOfBirth()->format("d/m/Y") != $data["dateOfBirth"]) {
-            $member->setDateOfBirth(DateTime::createFromFormat('d/m/Y', $data["dateOfBirth"]));
-        }
-        if (!empty($data["idNumber"]) && $member->getIdNumber() !== $data["idNumber"]) {
-            $member->setIdNumber($data["idNumber"]);
-        }
-        if (!empty($data["idDeliveryPlace"]) && $member->getIdDeliveryPlace() !== $data["idDeliveryPlace"]) {
-            $member->setIdDeliveryPlace($data["idDeliveryPlace"]);
-        }
-        if (!empty($data["idDeliveryDate"]) && $member->getIdDeliveryDate()->format("d/m/Y") !== $data["idDeliveryDate"]) {
-            $member->setIdDeliveryDate(DateTime::createFromFormat('d/m/Y', $data["idDeliveryDate"]));
-        }
-        if (!empty($data["etatCivil"]) && $member->getEtatCivil() !== $data["etatCivil"]) {
-            $member->setEtatCivil($data["etatCivil"]);
-        }
-        if (!empty($data["mobile"]) && $member->getMobile() !== $data["mobile"]) {
-            $member->setMobile($data["mobile"]);
-        }
-        if (!empty($data["email"]) && $member->getEmail() !== $data["email"]) {
-            $member->setEmail($data["email"]);
-        }
-
-       // $this->saveMember($member);
-
-        /*************STORE IMAGE FILES*********************/
-        $this->storeMemberImages($member, $data);
-
-        $this->saveMember($member);
-
-        return $member;
-    }
-
-    /**
      * @param Member|null $member
      * @return void
      */
@@ -520,12 +437,12 @@ class MemberService
 
     /**
      * @param Member|null $payment
-     * @param string $viewTemplate
      * @return PdfResponse
      */
-    public function downloadCNMCIPdf(?Member $member, string $viewTemplate){
+    public function downloadCNMCIPdf(?Member $member){
         set_time_limit(0);
-        $content = $this->generateCNMCIPdf($member, $viewTemplate);
+       // $content = $this->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+        $content = $this->generateCNMCIPdf($member, "pdf/cnmci.html.twig");
         return new PdfResponse($content, 'fiche_cnmci.pdf');
     }
 
@@ -635,7 +552,8 @@ class MemberService
         $folder = $this->getMemberDir($member);
 
         if(!$member->getFormulaireCnmciPdf()) {
-            $this->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+           // $this->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+            $this->generateCNMCIPdf($member, "pdf/cnmci.html.twig");
         }
         $pdf->addPDF($folder . $member->getFormulaireCnmciPdf());
 
@@ -665,24 +583,22 @@ class MemberService
 
     /**
      * @param array $members
+     * @param string $file
      * @return string|null
      */
-    public function archiveMemberDocuments(array $members): ?string
+    public function archiveMemberDocuments(array $members, string $file): ?string
     {
         $zipArchive = new \ZipArchive();
+
         $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/cnmci/download.zip';;
         if(file_exists($zipFile)) \unlink($zipFile);
-        $isOpen = $zipArchive->open($zipFile, \ZipArchive::CREATE);
 
-        if($isOpen === true)
-        {
-            $fileInscrits = $this->container->getParameter('kernel.project_dir') . '/public/cnmci/inscrits.xls';
-            if(file_exists($fileInscrits)) {
-                $zipArchive->addFile($fileInscrits, 'inscrits.xls');
-            }
+        if($zipArchive->open($zipFile, \ZipArchive::CREATE)) {
+
+            if(file_exists($file)) $zipArchive->addFile($file, 'inscrits.xls');
+
             /** @var Member $member **/
-            foreach($members as $member)
-            {
+            foreach($members as $member) {
                 if(is_file($this->getMemberDir($member) . $member->getPhoto())) {
                     $info = new SplFileInfo($this->getMemberDir($member) . $member->getPhoto());
                     $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
@@ -695,6 +611,23 @@ class MemberService
                     $zipArchive->addFile($this->getMemberDir($member) . $member->getMergedDocumentsPdf(), $outputFile);
                 }
             }
+            $zipArchive->close();
+            return $zipFile;
+        }
+        return null;
+    }
+
+    /**
+     * @param string $file
+     * @return string|null
+     */
+    public function archiveMatriceEncaissement(string $file): ?string
+    {
+        $zipArchive = new \ZipArchive();
+        $zipFile = $this->container->getParameter('kernel.project_dir') . '/public/cnmci/' . uniqid() . '.zip';
+        if(file_exists($zipFile)) \unlink($zipFile);
+        if($zipArchive->open($zipFile, \ZipArchive::CREATE)) {
+            if(file_exists($file)) $zipArchive->addFile($file, 'matrice_encaissement.xls');
             $zipArchive->close();
             return $zipFile;
         }

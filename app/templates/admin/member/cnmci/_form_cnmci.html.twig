@@ -330,13 +330,13 @@
                             <label for="raisonSocialEtabl" class="col-form-label">Raison social :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" value="{{ member.raisonSocialEtabl }}" class="form-control" aria-labelledby="raisonSocialEtabl" disabled>
+                            <input type="text" id="raisonSocialEtabl" name="raisonSocialEtabl" value="{{ member.lastName ~ " " ~  member.firstName }}" class="form-control" aria-labelledby="raisonSocialEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="sigleEnseigneEtabl" class="col-form-label">Sigle ou Enseigne :</label>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl"  value="{{ member.sigleEnseigneEtabl }}"  class="form-control" aria-labelledby="sigleEnseigneEtabl" disabled>
+                            <input type="text" id="sigleEnseigneEtabl" name="sigleEnseigneEtabl"  value="{{ member.lastName|first|upper ~ member.firstName|first|upper}}"  class="form-control" aria-labelledby="sigleEnseigneEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -344,7 +344,7 @@
                             <label for="dateDebutActiviteEtabl" class="col-form-label">Date de début d'activité :</label>
                         </div>
                         <div class="col-9">
-                            <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" value="{{ member.activityDateDebut| date('d/m/y') }}" aria-labelledby="dateDebutActiviteEtabl" disabled>
+                            <input type="text" id="dateDebutActiviteEtabl" name="dateDebutActiviteEtabl" class="form-control" value="{{ member.activityDateDebut| date('d/m/Y') }}" aria-labelledby="dateDebutActiviteEtabl" disabled>
                         </div>
                     </div>
                     <div class="row g-3 align-items-center">
@@ -395,13 +395,13 @@
                         <div class="col-auto">
                             <label for="identifiantCNPSEtabl" class="col-form-label">Identifiant CNPS de l'entreprise ou de l'artisan :</label>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <input type="text" id="identifiantCNPSEtabl" name="identifiantCNPSEtabl" class="form-control" aria-labelledby="identifiantCNPSEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="numCompteContribuableEtabl" class="col-form-label">N° Compte contribuable :</label>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <input type="text" id="numCompteContribuableEtabl" name="numCompteContribuableEtabl" class="form-control" aria-labelledby="numCompteContribuableEtabl" disabled>
                         </div>
                     </div>
@@ -439,7 +439,7 @@
                             <label for="communeEtabl" class="col-form-label">Commune :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" value="{{ member.activityCityLocation }}" aria-labelledby="communeEtabl" disabled>
+                            <input type="text" id="communeEtabl" name="communeEtabl" class="form-control" value="{{ member.commune }}" aria-labelledby="communeEtabl" disabled>
                         </div>
                     </div>
 
@@ -454,7 +454,7 @@
                             <label for="quartierEtabl" class="col-form-label">Quartier :</label>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="quartEtabl" name="quartEtabl" value="{{ member.activityQuartierLocation }}" class="form-control" aria-labelledby="quartEtabl" disabled>
+                            <input type="text" id="quartEtabl" name="quartEtabl" value="{{ member.quartier }}" class="form-control" aria-labelledby="quartEtabl" disabled>
                         </div>
                         <div class="col-auto">
                             <label for="villageEtabl" class="col-form-label">Village :</label>
@@ -676,7 +676,7 @@
                 <div class="col-9 small">(*) Les promoteurs des entreprises artisanales participant personnellement et continuellement à l'actvité et possédant une qualification professionnelle dans le métier exercé peuvent introduire une demande de carte professionnelle d'artisant</div>
                 <div class="col-3 small">
                     Déclaration certifiée sincère <br>
-                    A ............................................................. le ........................................
+                    A ........................................ le .....................................
                 </div>
             </div>
     </div>

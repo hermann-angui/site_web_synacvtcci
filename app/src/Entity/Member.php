@@ -226,14 +226,11 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $activity_secondary = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $raison_socialEtabl = null;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $sigle_enseigne_etabl = null;
-
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $status = false;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $is_payment_validate = false;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $activity_date_debut = null;
@@ -1498,28 +1495,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSigleEnseigneEtabl(): ?string
-    {
-        return $this->sigle_enseigne_etabl;
-    }
-
-    public function setSigleEnseigneEtabl(?string $sigle_enseigne_etabl): Member
-    {
-        $this->sigle_enseigne_etabl = $sigle_enseigne_etabl;
-        return $this;
-    }
-
-    public function getRaisonSocialEtabl(): ?string
-    {
-        return $this->raison_socialEtabl;
-    }
-
-    public function setRaisonSocialEtabl(?string $raison_socialEtabl): Member
-    {
-        $this->raison_socialEtabl = $raison_socialEtabl;
-        return $this;
-    }
-
     public function getStatus(): ?bool
     {
         return $this->status;
@@ -1528,6 +1503,17 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStatus(?bool $status): Member
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getIsPaymentValidate(): ?bool
+    {
+        return $this->is_payment_validate;
+    }
+
+    public function setIsPaymentValidate(?bool $is_payment_validate): Member
+    {
+        $this->is_payment_validate = $is_payment_validate;
         return $this;
     }
 

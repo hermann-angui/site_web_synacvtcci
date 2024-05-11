@@ -2,157 +2,44 @@
 
 {% block stylesheet %}
     {{ parent() }}
-    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/select.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .btn-cnmci {
             background-color: #6e0000;
             color: #ffffff;
         }
-        .table>thead {
-            background-color: #6e0000;
-            color: #ffffff;
-        }
-        .active>.page-link, .page-link.active {
-            background-color: #6e0000;
-            border-color: #6e0000;
-        }
     </style>
 {% endblock %}
 
 {% block body %}
-        <div class="container-fluid">
-            <div class="d-flex justify-content-center">
+        <div class="container-fluid mt-5">
+            <div class="d-flex justify-content-center mt-5">
                 <img src="{{ asset('assets/frontend/img/cnmci.png') }}" alt="logo syncvtcci" width="150" alt="logo cnmci" style="border-collapse: collapse;border-width:0px 0px;" />
             </div>
-            <!-- start page title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0 font-size-18">Liste des inscrits</h4>
-                        <div class="page-title-right">
-                            <ol class="breadcrumb m-0">
-                            </ol>
-                        </div>
+            <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
+                <div class="col-md-4">
+                    <div class="card card-body d-flex justify-content-center align-items-center p-4">
+                        <h3 class="my-3">SUIVI DES SOUSCRIPTIONS</h3>
+                        <div class="mb-3"><i class="fa fa-6x fa-database"></i></div>
+                        <p class="card-text mb-3">Voir la liste détaillée des souscripteurs.</p>
+                        <a href="{{ path('cnmci_souscripteurs') }}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
+                    </div>
+                </div>
+                <div class="col-md-4 m-4">
+                    <div class="card card-body d-flex justify-content-center align-items-center p-4">
+                        <h3 class="my-3">SUIVI DES STATISTIQUES</h3>
+                        <div class="mb-3"><i class="fa fa-6x fa-chart-line"></i></div>
+                        <p class="card-text mb-3">Voir les statistiques détaillées des souscriptions.</p>
+                        <a href="{{ path('cnmci_stats')}}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
                     </div>
                 </div>
             </div>
-            <!-- end page title -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body border-bottom">
-                            <div class="d-flex align-items-center">
-                                <h5 class="mb-0 card-title flex-grow-1"></h5>
-                                <div class="flex-shrink-0">
-                                    <button class="btn btn-cnmci" id="btnMatrice"><span class="fa fa-download fa-1x"></span> Télécharger la matrice des encaissements</button>
-                                    <button class="btn btn-cnmci" id="btnList"><span class="fa fa-download fa-1x"></span> Télécharger la liste des souscripteurs</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body border-bottom">
-                            <div class="row g-3">
-                                <div class="col-xxl-1 col-lg-1">
-                                </div>
-                                <div class="col-xxl-1 col-lg-1">
-                                    <div class="mt-2 fw-bold float-end"> Du : </div>
-                                </div>
-                                <div class="col-xxl-2 col-lg-6">
-                                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ from }}">
-                                </div>
-                                <div class="col-xxl-2 col-lg-1">
-                                    <div class="mt-2 fw-bold float-end"> Au : </div>
-                                </div>
-                                <div class="col-xxl-2 col-lg-6">
-                                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ to }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                {{ include('cnmci/_adherents_datatable.html.twig') }}
-                            </div>
-                            <!--end row-->
-                        </div>
-                    </div><!--end card-->
-                </div><!--end col-->
-            </div><!--end row-->
         </div>
 {% endblock %}
 
 {% block javascript %}
 {{ parent() }}
-<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-
-        var datatable = initDatatable();
-
-        $("#matricule,#last_name,#driving_license_number,#id_number,#sex").change(function (e) {
-           datatable.draw();
-        });
-
-        $('#btnMatrice').click(function(){
-           $.post("{{ path('cnmci_download_matrice') }}", {date_from: $('#date_start').val(), date_to: $('#date_end').val()}, function(data){
-               console.log(data);
-           });
-        })
-        $('#btnList').click(function(){
-           $.post("{{ path('cnmci_download_list') }}", {date_from: $('#date_start').val(), date_to: $('#date_end').val()}, function(data){
-               console.log(data);
-           });
-        })
-
-       function initDatatable(){
-            /* DATATABLE INIT */
-            var dt = $('#datatable').DataTable( {
-                'bLengthChange' : false,
-                'responsive': true,
-                'searching': false,
-                'pageLength': 5,
-                'language': {
-                    url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
-                   // processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
-                    sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />",
-                    info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-                    infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
-                    lengthMenu: "Afficher _MENU_ entrées",
-                    zeroRecords: "Aucune entrée correspondante trouvée",
-                    paginate: {
-                        first: '',
-                        last: '',
-                        next: '<i class="fa-solid fa-angle-right"></i>',
-                        previous: '<i class="fa-solid fa-angle-left"></i>'
-                    },
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
-                },
-                "processing": true,
-                "serverSide": true,
-                "ajax": {
-                    "url": '{{ path('cnmci_souscription_datatable') }}',
-                    "data": function (d) {
-                        d.matricule = $("#matricule").val();
-                        d.last_name = $("#last_name").val();
-                        d.driving_license_number = $("#driving_license_number").val();
-                        d.id_number = $("#id_number").val();
-                        d.title = $("#title").val();
-                    }
-                },
-                "columns": [
-                    {"data":  "id"},
-                    {"data":  "last_name"},
-                    {"data":  "first_name"},
-                    { "data": "subscription_date" },
-                    { "data": "driving_license_number" },
-                    { "data": "id_number" },
-                    { "data": "" }
-                ],
-                "order": [[1, 'desc']]
-            } );
-            return dt;
-       }
     });
 </script>
 {% endblock %}

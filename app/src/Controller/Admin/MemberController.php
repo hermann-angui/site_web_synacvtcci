@@ -35,7 +35,7 @@ class MemberController extends AbstractController
     public function index(Request $request): Response
     {
         if(in_array("ROLE_AGENT", $this->getUser()->getRoles()))  {
-            return $this->redirectToRoute('admin_index_agent');
+            return $this->redirectToRoute('admin_index');
         } else {
             return $this->render('admin/member/synacvtcci/index.html.twig');
         }
@@ -50,7 +50,6 @@ class MemberController extends AbstractController
     #[Route(path: '/verificationlist', name: 'admin_member_verification_list')]
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
-        //$members = $memberRepository->getLastNDays(10);
         $members = $memberRepository->findAll();
         return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
     }
@@ -58,20 +57,6 @@ class MemberController extends AbstractController
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
     public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
     {
-        return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
-    }
-
-    #[Route('/cnmci/{id}/edit', name: 'admin_member_cncmi_edit', methods: ['GET','POST'])]
-    public function cnmciEdit(Member $member, Request  $request, MemberService $memberService, ActivityLogger $activityLogger): Response
-    {
-        if($request->getMethod() === "GET"){
-            return $this->render('admin/member/cnmci/cnmci_edit.html.twig', ['member' => $member]);
-        }elseif($request->getMethod() === "POST") {
-            $memberService->createCnmiOrUpdate($member, $request->request->all(), 1);
-            $memberService->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
-            $activityLogger->update($member, "Mise à jour des données du formulaire de la chambre nationale de métiers");
-            return $this->redirectToRoute('admin_member_cncmi_show', ['id' => $member->getId()]);
-        }
         return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
     }
 
@@ -85,7 +70,7 @@ class MemberController extends AbstractController
     #[Route('/cnmci-pdf/{id}', name: 'admin_download_cnmci_pdf', methods: ['GET'])]
     public function downloadCnmciPdf(Member $member, MemberService $memberService, ActivityLogger $activityLogger): Response {
         $activityLogger->create($member, "Téléchargement fiche de la chambre nationale de métier");
-        return $memberService->downloadCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
+        return $memberService->downloadCNMCIPdf($member);
     }
 
     #[Route('/photostep', name: 'admin_member_photostep', methods: ['GET', 'POST'])]
@@ -359,7 +344,7 @@ class MemberController extends AbstractController
             'db'   => $paramDB['dbname'],
             'host' => $paramDB['host']
         );
-        $whereResult= " etape = 2 ";
+        $whereResult= " etape = 1 ";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);

@@ -395,18 +395,6 @@ class MemberRegistrationType extends AbstractType
                 'required' => true,
                 'data' => $data->getActivitySecondary() ?? null
             ])
-            ->add('raisonSocialEtabl', TextType::class, [
-                'label' => "Raison sociale",
-                'mapped' => true,
-                'required' => true,
-                'data' => $data->getRaisonSocialEtabl() ?? null
-            ])
-            ->add('sigle_enseigne_etabl', TextType::class, [
-                'label' => "Sigle ou enseigne",
-                'mapped' => true,
-                'required' => true,
-                'data' => $data->getSigleEnseigneEtabl() ?? null
-            ])
             ->add('activity_date_debut', DateType::class, [
                 'label' => "Date debut d'activité",
                 'attr' => ['class' => 'js-datepicker'],

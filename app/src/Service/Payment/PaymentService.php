@@ -64,7 +64,7 @@ class PaymentService
             file_put_contents($barcode_file, $content);
 
             $receipt_file = $folder . time() . uniqid() . ".pdf";
-            $viewTemplate = 'admin/payment/payment-receipt-pdf.html.twig';
+            $viewTemplate = 'admin/payment/payment-receipt-service-technique-pdf.html.twig';
 
             if($payment->getTarget()  === "FRAIS_CARTE_SYNDICAT"){
                 $viewTemplate = 'admin/payment/payment-receipt-carte-syndicat-pdf.html.twig';

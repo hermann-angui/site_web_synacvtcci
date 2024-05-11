@@ -22,17 +22,37 @@ use PhpOffice\PhpSpreadsheet\Style\ConditionalFormatting\Wizard;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-#[Route('/public/cnmci')]
+
+#[Route('/admin/cnmci')]
 class CnmciController extends AbstractController
 {
-    #[Route('/adherents', name: 'cnmci_index', methods: ['GET', 'POST'])]
+    #[Route('', name: 'cnmci_index', methods: ['GET', 'POST'])]
+    public function dashboard(Request $request): Response
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        return $this->render('cnmci/index.html.twig');
+    }
+
+    #[Route('/stats', name: 'cnmci_stats', methods: ['GET', 'POST'])]
+    public function stats(Request $request, MemberRepository $memberRepository): Response
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        $from = new \DateTime();
+        $from = $from->modify('yesterday');
+        $to = new \DateTime();
+        $members = $memberRepository->findAll();
+        return $this->render('cnmci/dashboard.html.twig', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d'), 'members' => $members]);
+    }
+
+    #[Route('/adherents', name: 'cnmci_souscripteurs', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         $from = new \DateTime();
         $from = $from->modify('yesterday');
         $to = new \DateTime();
-        return $this->render('cnmci/index.html.twig', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
+        return $this->render('cnmci/souscripteurs.html.twig', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
+
     }
 
     #[Route('/telecharger/photo/{id}', name: 'cnmci_download_photo', methods: ['GET', 'POST'])]
@@ -40,11 +60,10 @@ class CnmciController extends AbstractController
     {
         date_default_timezone_set("Africa/Abidjan");
         ini_set('max_execution_time', '-1');
-        $imageUrl = '/var/www/html/public/members/' . $member->getReference() . "/" . basename($member->getPhoto());
-
+        $imageUrl = $this->getParameter("kernel.project_dir") . "/public/members/" . $member->getReference() . "/" . basename($member->getPhoto());
         $info = new SplFileInfo($imageUrl);
-        $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
-        return $this->file($imageUrl, $outputFile );
+        $outputFile = $member->getReference() . '_' . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
+        return $this->file($imageUrl, $outputFile);
     }
 
     #[Route('/telecharger/documents/{id}', name: 'cnmci_download_documents', methods: ['GET', 'POST'])]
@@ -65,24 +84,23 @@ class CnmciController extends AbstractController
         $from = $request->get('date_from');
         $to = $request->get('date_to');
         $members = $memberRepository->findAdherentsFromTo($from, $to);
-        if(!$members) return $this->json(null);
+        if (!$members) return $this->json(null);
         $file = $this->generateAdherentListXlsxFile($members);
-        $outputFile = $memberService->archiveMemberDocuments($members);
-
+        $outputFile = $memberService->archiveMemberDocuments($members, $file);
         return $this->file($outputFile, 'liste_adherents.zip');
     }
 
     #[Route('/telecharger/matrice', name: 'cnmci_download_matrice', methods: ['POST', 'GET'])]
-    public function downloadMatrice(Request $request, MemberRepository $memberRepository): Response
+    public function downloadMatriceEncaissement(Request $request, MemberRepository $memberRepository, MemberService $memberService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
         ini_set('max_execution_time', '-1');
         $from = $request->get('date_from');
         $to = $request->get('date_to');
         $members = $memberRepository->findAdherentsFromTo($from, $to);
-        if(!$members) return $this->json(null);
-        $file = $this->generateMatriceEncaissementXlsxFile($members);
-        return $this->file($file, 'encaissements.xls');
+        if (!$members) return $this->json(null);
+        $fileXls = $this->generateMatriceEncaissementXlsxFile($members);
+        return $this->file($fileXls, basename($fileXls));
     }
 
     #[Route('/souscription/dt', name: 'cnmci_souscription_datatable', methods: ['GET', 'POST'])]
@@ -97,9 +115,9 @@ class CnmciController extends AbstractController
             [
                 'db' => 'id',
                 'dt' => 'id',
-                'formatter' => function( $d, $row ){
-                    $imageUrl = $row['reference'] . "/" . $row['photo'] ;
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-lg rounded-circle img-thumbnail' width='150'>";
+                'formatter' => function ($d, $row) {
+                    $imageUrl = $row['reference'] . "/" . $row['photo'];
+                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail' width='100'>";
                     return $content;
                 }
             ],
@@ -120,23 +138,39 @@ class CnmciController extends AbstractController
                 'dt' => 'driving_license_number'
             ],
             [
-                'db' => 'id_number',
-                'dt' => 'id_number'
+                'db' => 'is_payment_validate',
+                'dt' => 'is_payment_validate',
+                'formatter' => function ($d, $row) {
+                    if($d) $content = sprintf("<span class='badge badge-pill bg-success font-size-14'>%s</span>", "VALIDER");
+                    else $content = sprintf("<span class='badge badge-pill bg-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
+                    return $content;
+                }
             ],
             [
-                'db'        => 'id',
-                'dt'        => '',
-                'formatter' => function($d, $row) {
+                'db' => 'status',
+                'dt' => 'status',
+                'formatter' => function ($d, $row) {
+                    if($d) $content = sprintf("<span class='badge badge-pill bg-success font-size-14'>%s</span>", "VALIDER");
+                    else $content = sprintf("<span class='badge badge-pill bg-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
+                    return $content;
+                }
+            ],
+            [
+                'db' => 'id',
+                'dt' => '',
+                'formatter' => function ($d, $row) {
                     $id = $row['id'];
-                    $content =  "<div class='d-flex gap-2 flex-wrap justify-content-end'>
+                    $content = "<div class='d-flex gap-2 flex-wrap justify-content-start'>
                                     <div class='btn-group'>
                                         <button class='btn btn-cnmci dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/public/cnmci/fiche/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
-                                            <a class='dropdown-item' href='/public/cnmci/telecharger/documents/$id'><i class='mdi mdi-eye'></i> Documents</a>
-                                            <a class='dropdown-item' href='/public/cnmci/telecharger/photo/$id'><i class='mdi mdi-eye'></i> Télécharger la photo</a>
+                                            <a class='dropdown-item' href='/admin/cnmci/fiche/$id'><i class='mdi mdi-eye'></i> Voir la fiche CNMCI</a>
+                                            <a class='dropdown-item' href='/admin/cnmci/telecharger/documents/$id'><i class='mdi mdi-file-download'></i> Télécharger les documents</a>
+                                            <a class='dropdown-item' href='/admin/cnmci/telecharger/photo/$id'><i class='mdi mdi-download'></i> Télécharger la photo</a>
+                                            <a id='btn-validate-souscription' class='dropdown-item' href='#' data-id='$id'><i class='mdi mdi-check'></i> Valider l'inscription</a>
+                                            <a id='btn-validate-payment' class='dropdown-item' href='#' data-id='$id'><i class='mdi mdi-check-circle'></i> Valider paiement</a>
                                         </div>
                                     </div>
                                 </div> ";
@@ -156,32 +190,14 @@ class CnmciController extends AbstractController
         $sql_details = [
             'user' => $paramDB['user'],
             'pass' => $paramDB['password'],
-            'db'   => $paramDB['dbname'],
+            'db' => $paramDB['dbname'],
             'host' => $paramDB['host']
         ];
 
         $whereResult = '';
-
-        if(!empty($params['matricule'])){
-            $whereResult .= " matricule LIKE '%". $params['matricule'] . "%' AND";
-        }
-
-        if(!empty($params['driving_license_number'])) {
-            $whereResult .= " driving_license_number LIKE '%". $params['driving_license_number']. "%' AND";
-        }
-
-        if(!empty($params['last_name'])) {
-            $whereResult .= " last_name LIKE '%". $params['last_name']. "%' AND";
-        }
-
-        if(!empty($params['id_number'])) {
-            $whereResult .= " id_number	LIKE '%". $params['id_number'] . "%' AND";
-        }
-
-        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+        $whereResult = " etape >= 4 AND subscription_date BETWEEN '" . $params['date_start'] . "' AND '" . $params['date_end'] . "' ";
 
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
-
         return new JsonResponse($response);
     }
 
@@ -191,11 +207,28 @@ class CnmciController extends AbstractController
         return $this->render('cnmci/show.html.twig', ['member' => $member]);
     }
 
+    #[Route('/validate-souscription/{id}', name: 'cnmci_validate_souscription', methods: ['GET', 'POST'])]
+    public function validateSouscription(Member $member, MemberRepository $memberRepository): Response
+    {
+        $member->setStatus('VALIDER');
+        $memberRepository->add($member, true);
+        return $this->json('OK');
+    }
+
+    #[Route('/validate-paiement-souscription/{id}', name: 'cnmci_validate_sousription', methods: ['GET', 'POST'])]
+    public function validatePayment(Member $member, MemberRepository $memberRepository): Response
+    {
+        $member->setIsPaymentValidate(true);
+        $memberRepository->add($member, true);
+        return $this->render('cnmci/show.html.twig', ['member' => $member]);
+    }
+
     private function generateMatriceEncaissementXlsxFile($members): ?string
     {
         try {
-            $dir = "/var/www/html/public/cnmci/" ;
-            if(!file_exists($dir)) mkdir($dir, 0777, true);
+
+            $dir = $this->getCnmciDir();
+            if (!file_exists($dir)) mkdir($dir, 0777, true);
 
             $inputFileName = $dir . "CNMCI-Matrice des encaissements.xls";
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
@@ -204,9 +237,8 @@ class CnmciController extends AbstractController
 
             $count = 1;
             $cel = 3;
-            /** @var Member $member  */
-            foreach ($members as $member)
-            {
+            /** @var Member $member */
+            foreach ($members as $member) {
                 $d = [
                     $count++,
                     "Registre des metiers et Carte d Artisans",
@@ -232,9 +264,9 @@ class CnmciController extends AbstractController
             );
 
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $outputFileName = $dir . "encaissements.xls";
+            $outputFileName = $dir . time() . uniqid() . ".xls";
 
-            if(file_exists($outputFileName)) \unlink($outputFileName);
+            if (file_exists($outputFileName)) \unlink($outputFileName);
             $writer->save($outputFileName);
 
             $spreadsheet->disconnectWorksheets();
@@ -242,7 +274,7 @@ class CnmciController extends AbstractController
 
             return $outputFileName;
 
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             echo $e->getMessage();
         }
 
@@ -252,8 +284,8 @@ class CnmciController extends AbstractController
     private function generateAdherentListXlsxFile($members): ?string
     {
         try {
-            $dir = "/var/www/html/public/cnmci/" ;
-            if(!file_exists($dir)) mkdir($dir, 0777, true);
+            $dir = $this->getCnmciDir();
+            if (!file_exists($dir)) mkdir($dir, 0777, true);
 
             $inputFileName = $dir . "CNMCI-Matrice des inscrits.xls";
 
@@ -263,16 +295,16 @@ class CnmciController extends AbstractController
 
             $count = 1;
             $cel = 3;
-            /** @var Member $member  **/
+            /** @var Member $member * */
             foreach ($members as $member) {
-                try{
+                try {
                     $d = [
-                        "N°" =>  $count++,
+                        "N°" => $count++,
                         "EMAIL" => $member->getEmail(),
                         "NOM" => $member->getLastName(),
                         "PRENOMS" => $member->getFirstName(),
                         "ACTIVITE" => $member->getActivity(),
-                        "DATE SOUSCRIPTION" =>  $member->getSubscriptionDate()?->format('d/m/Y'),
+                        "DATE SOUSCRIPTION" => $member->getSubscriptionDate()?->format('d/m/Y'),
                         "SEXE" => $member->getSex(),
                         "PHOTO" => $member->getPhoto(),
                         "DATE DE NAISSANCE" => $member->getDateOfBirth()?->format('d/m/Y'),
@@ -292,7 +324,7 @@ class CnmciController extends AbstractController
                         "NATIONALITE" => $member->getNationality(),
                         "QUARTIER DE RESIDENCE" => $member->getQuartier(),
                         "WHATSAPP" => $member->getWhatsapp(),
-                        "ENTREPRISES" => implode("|", $member->getCompany()),
+                        "ENTREPRISES" => !empty($member->getCompany()) ? implode("|", $member->getCompany()): '',
                         "NOM CONJOINT" => $member->getPartnerLastName(),
                         "PRENOMS CONJOINT" => $member->getFirstName(),
                         "LIEU DE DELIVRANCE PIECE" => $member->getIdDeliveryPlace(),
@@ -312,11 +344,11 @@ class CnmciController extends AbstractController
                         "DATE DEBUT ACTIVITE " => $member->getActivityDateDebut()?->format('d/m/Y'),
                         "PRENOMS PERSONNE A CONTACTER" => $member->getPartnerFirstName(),
                         "NOM PERSONNE A CONTACTER" => $member->getPartnerLastName(),
-                  //    "TELEPHONE PERSONNE A CONTACTER" => "",
-                  //    "RECU ORANGE MONEY" => "",
-                  //    "FORMULAIRE CNMCI" => "",
-                  //    "DOCUMENTS" => "",
-                  //    "DOCUMENTS IDENTITE" => ""
+                        //    "TELEPHONE PERSONNE A CONTACTER" => "",
+                        //    "RECU ORANGE MONEY" => "",
+                        //    "FORMULAIRE CNMCI" => "",
+                        //    "DOCUMENTS" => "",
+                        //    "DOCUMENTS IDENTITE" => ""
                     ];
                     $r = array_values($d);
                     $worksheet->fromArray(
@@ -325,17 +357,15 @@ class CnmciController extends AbstractController
                         "A" . $cel++     // Top left coordinate of the worksheet range where we want to set these values (default is A1)
                     );
 
-                }catch (\Exception $e){
-                    echo  $e->getMessage() . PHP_EOL;
+                } catch (\Exception $e) {
+                    echo $e->getMessage() . PHP_EOL;
                 }
             }
 
             $spreadsheet->getActiveSheet()->setAutoFilter($spreadsheet->getActiveSheet()->calculateWorksheetDimension());
-
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $outputFileName = $dir . "inscrits.xls";
-
-            if(file_exists($outputFileName)) \unlink($outputFileName);
+            $outputFileName = $dir . uniqid(). ".xls";
+            if (file_exists($outputFileName)) \unlink($outputFileName);
             $writer->save($outputFileName);
 
             $spreadsheet->disconnectWorksheets();
@@ -343,15 +373,17 @@ class CnmciController extends AbstractController
 
             return $outputFileName;
 
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             echo $e->getMessage();
         }
 
         return null;
     }
 
-
-
+    private function getCnmciDir()
+    {
+        return $this->getParameter("kernel.project_dir") . "/public/cnmci/";
+    }
 
 
 }
