@@ -172,11 +172,6 @@ class MemberService
     {
         date_default_timezone_set("Africa/Abidjan");
         if ($member) {
-            if(empty($member->getCnmciCardPhoto())) return null;
-            if($member->getCnmciCardPhoto()){
-                $file = $this->getMemberDir($member) . $member->getCnmciCardPhoto();
-                if(file_exists($file))  unlink($file);
-            }
             $cardImage = $this->memberCardGeneratorService->generateCardCnmci($member);
             $member->setCnmciCardPhoto($cardImage->getFilename());
             $member->setModifiedAt(new DateTime());

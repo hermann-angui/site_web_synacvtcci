@@ -102,7 +102,6 @@ class PaymentService
          $this->paymentRepository->add($payment, true);
     }
 
-
     /**
      * @param Member|null $member
      * @param UserInterface|null $user

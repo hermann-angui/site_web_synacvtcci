@@ -263,8 +263,6 @@ class CnmciController extends AbstractController
         return $this->render('cnmci/show.html.twig', ['member' => $member]);
     }
 
-
-
     private function generateMatriceEncaissementXlsxFile($members): ?string
     {
         try {

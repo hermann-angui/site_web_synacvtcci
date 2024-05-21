@@ -72,6 +72,7 @@ class MemberCardGeneratorService
         $data['metier'] = $member->getActivity();
         $data['birth_date'] = $member->getDateOfBirth()->format('d/m/y');
         $data['birth_place'] = $member->getBirthCity();
+        $data['card_bg'] = "/var/www/html/public/assets/files/carte_cnmci.jpg";
 
         $data['numero_rm'] = $member->getCnmciNumeroRm();
         $data['numero_carte_professionnelle'] = $member->getCnmciNumeroCarteProfessionelle();
