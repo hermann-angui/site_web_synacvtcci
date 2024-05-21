@@ -1600,7 +1600,6 @@ body[data-layout=horizontal][data-layout-size=boxed] .container-fluid, body[data
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    background-color: #556ee6;
     color: #fff;
     display: -webkit-box;
     display: -ms-flexbox;

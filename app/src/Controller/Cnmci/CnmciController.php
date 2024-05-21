@@ -22,6 +22,7 @@ use PhpOffice\PhpSpreadsheet\Style\ConditionalFormatting\Wizard;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 #[Route('/admin/cnmci')]
 class CnmciController extends AbstractController
@@ -40,8 +41,35 @@ class CnmciController extends AbstractController
         $from = new \DateTime();
         $from = $from->modify('yesterday');
         $to = new \DateTime();
-        $members = $memberRepository->findAll();
-        return $this->render('cnmci/dashboard.html.twig', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d'), 'members' => $members]);
+
+        $totalInscription = $memberRepository->getTotalMembers();
+        $actgroups = $memberRepository->getTotalGroupByActivity();
+
+        $stats = [
+            "CHAUFFEUR VTC" => 0,
+            "CHAUFFEUR TAXI" => 0,
+            "CHAUFFEUR LIVREUR" => 0,
+        ];
+
+        foreach ($actgroups as $group) {
+            $stats[$group['activity']] = $group['total'];
+        }
+        $latest = $memberRepository->getLastest();
+
+        $totals = [
+            "total_souscriptions" => $totalInscription,
+            "total_vtc" => $stats["CHAUFFEUR VTC"] ? : 0,
+            "total_taxi" => $stats["CHAUFFEUR TAXI"] ? : 0,
+            "total_livreurs" => $stats["CHAUFFEUR LIVREUR"] ? : 0,
+            "total_validation_paiement" => 0,
+            "total_validation_souscription" => 0
+        ];
+
+        return $this->render('cnmci/dashboard.html.twig', [
+            'from' => $from->format('Y-m-d'),
+            'to' => $to->format('Y-m-d'), 'latest' => $latest,
+            'totals' => $totals
+        ]);
     }
 
     #[Route('/adherents', name: 'cnmci_souscripteurs', methods: ['GET', 'POST'])]
@@ -138,11 +166,11 @@ class CnmciController extends AbstractController
                 'dt' => 'driving_license_number'
             ],
             [
-                'db' => 'is_payment_validate',
-                'dt' => 'is_payment_validate',
+                'db' => 'is_payment_validated',
+                'dt' => 'is_payment_validated',
                 'formatter' => function ($d, $row) {
-                    if($d) $content = sprintf("<span class='badge badge-pill bg-success font-size-14'>%s</span>", "VALIDER");
-                    else $content = sprintf("<span class='badge badge-pill bg-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
+                    if($d) $content = sprintf("<span class='badge badge-pill badge-soft-success font-size-14'>%s</span>", "VALIDER");
+                    else $content = sprintf("<span class='badge badge-pill badge-soft-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
                     return $content;
                 }
             ],
@@ -150,8 +178,8 @@ class CnmciController extends AbstractController
                 'db' => 'status',
                 'dt' => 'status',
                 'formatter' => function ($d, $row) {
-                    if($d) $content = sprintf("<span class='badge badge-pill bg-success font-size-14'>%s</span>", "VALIDER");
-                    else $content = sprintf("<span class='badge badge-pill bg-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
+                    if($d) $content = sprintf("<span class='badge badge-pill badge-soft-success font-size-14'>%s</span>", "VALIDER");
+                    else $content = sprintf("<span class='badge badge-pill badge-soft-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
                     return $content;
                 }
             ],
@@ -168,12 +196,11 @@ class CnmciController extends AbstractController
                                         <div class='dropdown-menu' style=''>
                                             <a class='dropdown-item' href='/admin/cnmci/fiche/$id'><i class='mdi mdi-eye'></i> Voir la fiche CNMCI</a>
                                             <a class='dropdown-item' href='/admin/cnmci/telecharger/documents/$id'><i class='mdi mdi-file-download'></i> Télécharger les documents</a>
-                                            <a class='dropdown-item' href='/admin/cnmci/telecharger/photo/$id'><i class='mdi mdi-download'></i> Télécharger la photo</a>
-                                            <a id='btn-validate-souscription' class='dropdown-item' href='#' data-id='$id'><i class='mdi mdi-check'></i> Valider l'inscription</a>
-                                            <a id='btn-validate-payment' class='dropdown-item' href='#' data-id='$id'><i class='mdi mdi-check-circle'></i> Valider paiement</a>
-                                        </div>
-                                    </div>
-                                </div> ";
+                                            <a class='dropdown-item' href='/admin/cnmci/telecharger/photo/$id'><i class='mdi mdi-download'></i> Télécharger la photo</a>";
+
+                    if(!$row['is_payment_validated'])  $content.="<a class='dropdown-item btn-validate-payment' href='#' data-id='$id'><i class='mdi mdi-check-circle'></i> Valider paiement</a>";
+                    if(!$row['is_inscription_validated'])  $content.="<a class='dropdown-item btn-validate-souscription' href='#' data-id='$id'><i class='mdi mdi-check'></i> Valider l'inscription</a>";
+                    $content.="</div></div></div> ";
                     return $content;
                 }
             ],
@@ -185,6 +212,10 @@ class CnmciController extends AbstractController
                 'db' => 'photo',
                 'dt' => 'photo'
             ],
+            [
+                'db' => 'is_inscription_validated',
+                'dt' => 'is_inscription_validated'
+            ],
         ];
 
         $sql_details = [
@@ -195,7 +226,7 @@ class CnmciController extends AbstractController
         ];
 
         $whereResult = '';
-        $whereResult = " etape >= 4 AND subscription_date BETWEEN '" . $params['date_start'] . "' AND '" . $params['date_end'] . "' ";
+        if(isset($params['date_start']) && isset($params['date_end']))  $whereResult = " etape >= 4 AND subscription_date BETWEEN '" . $params['date_start'] . "' AND '" . $params['date_end'] . "' ";
 
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
         return new JsonResponse($response);
@@ -207,21 +238,32 @@ class CnmciController extends AbstractController
         return $this->render('cnmci/show.html.twig', ['member' => $member]);
     }
 
-    #[Route('/validate-souscription/{id}', name: 'cnmci_validate_souscription', methods: ['GET', 'POST'])]
-    public function validateSouscription(Member $member, MemberRepository $memberRepository): Response
+    #[Route('/validation/souscription', name: 'cnmci_validation_souscription', methods: ['POST'])]
+    public function validateSouscription(Request $request, MemberRepository $memberRepository, MemberService $memberService): Response
     {
-        $member->setStatus('VALIDER');
+        $request = $request->request;
+        $member = $memberRepository->find($request->get('member_id'));
+        if(!$member?->getIsPaymentValidated()) return $this->json('FAILED');
+        $member->setCnmciNumeroRm($request->get('cnmci_numero_rm'));
+        $member->setCnmciNumeroCarteProfessionelle($request->get('cnmci_carte_professionelle'));
+        $member->setIsInscriptionValidated(true);
+        $member->setStatus("VALIDER");
+
+        $memberService->generateSingleCnmciCard($member);
+
         $memberRepository->add($member, true);
         return $this->json('OK');
     }
 
-    #[Route('/validate-paiement-souscription/{id}', name: 'cnmci_validate_sousription', methods: ['GET', 'POST'])]
+    #[Route('/validate-paiement-souscription/{id}', name: 'cnmci_validate_payment', methods: ['GET', 'POST'])]
     public function validatePayment(Member $member, MemberRepository $memberRepository): Response
     {
-        $member->setIsPaymentValidate(true);
+        $member->setIsPaymentValidated(true);
         $memberRepository->add($member, true);
         return $this->render('cnmci/show.html.twig', ['member' => $member]);
     }
+
+
 
     private function generateMatriceEncaissementXlsxFile($members): ?string
     {
@@ -384,6 +426,5 @@ class CnmciController extends AbstractController
     {
         return $this->getParameter("kernel.project_dir") . "/public/cnmci/";
     }
-
 
 }

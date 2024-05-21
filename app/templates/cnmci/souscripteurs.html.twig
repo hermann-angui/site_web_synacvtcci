@@ -12,81 +12,153 @@
             background-color: #6e0000;
             color: #ffffff;
         }
-
-        .table > thead {
+        .btn:hover {
+            color: #fff;
+            text-decoration: none;
+            background-color: #343a40;
+            border-color: var(--bs-btn-hover-border-color);
+        }
+        .table>thead {
             background-color: #6e0000;
             color: #ffffff;
         }
-
-        .active > .page-link, .page-link.active {
+        .active>.page-link, .page-link.active {
             background-color: #6e0000;
             border-color: #6e0000;
+        }
+        .vertical-collpsed .main-content {
+            margin-left: 10px !important;
+        }
+        .page-content {
+            padding: 10px 0 0 0;
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid mt-5">
-        <div class="d-flex py-4">
-            <a href="{{ path('cnmci_index')}}" class="btn btn-link waves-effect waves-light"><i class="fa fa-arrow-left"></i> Revenir à l'accueil</a>
-        </div>
-        <div class="d-flex justify-content-center">
-            <img src="{{ asset('assets/frontend/img/cnmci.png') }}" alt="logo syncvtcci" width="150" alt="logo cnmci"
-                 style="border-collapse: collapse;border-width:0px 0px;"/>
-        </div>
-        <!-- start page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Liste des inscrits</h4>
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                        </ol>
+    <div class="layout-wrapper">
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-center">
+                        <img src="{{ asset('assets/frontend/img/cnmci.png') }}" alt="logo syncvtcci" width="120" alt="logo cnmci" style="border-collapse: collapse;border-width:0px 0px;" />
                     </div>
-                </div>
-            </div>
-        </div>
-        <!-- end page title -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body border-bottom">
-                        <div class="row g-3">
-                            <div class="col-auto">
-                                <div class="mt-2 fw-bold float-end"> Du :</div>
+                    <div class="d-flex justify-content-between py-4">
+                        <div class="col-lg-9"><a href="{{ path('cnmci_index')}}" class="btn btn-link waves-effect waves-light"><i class="fa fa-arrow-left"></i> Revenir à l'accueil</a></div>
+                        <div class="col-lg-3 justify-content-end ">
+                            <div class="d-flex align-items-center">
+                                {% if app.user.photo %}
+                                    <img src="{{ asset('users/') ~ app.user.photo }}" alt="" class="avatar-sm rounded">
+                                {% else %}
+                                    <img src="{{ asset('/assets/images/avatar/avatar.jpg') }}" alt="" class="avatar-sm rounded">
+                                {% endif %}
+                                <div class="ms-3 flex-grow-1">
+                                    <h5 class="mb-2 card-title">Bienvenue, {{ app.user.lastName|upper ~ ' ' ~ app.user.firstName}}</h5>
+                                </div>
                             </div>
-                            <div class="col-xxl-2 col-lg-2">
-                                <input type="date" class="form-control js-datepicker" id="date_start" name="date_start"
-                                       value="{{ from }}">
-                            </div>
-                            <div class="col-auto">
-                                <div class="mt-2 fw-bold float-end"> Au :</div>
-                            </div>
-                            <div class="col-xxl-2 col-lg-2">
-                                <input type="date" class="form-control js-datepicker" id="date_end" name="date_end"
-                                       value="{{ to }}">
-                            </div>
-                            <div class="col-xxl-1 col-lg-1">
-                                <button class="btn btn-dark" id="search"><i class="fa fa-search"></i></button>
-                            </div>
-                            <div class="col-xxl-6 col-lg-5">
-                                <div class="d-flex align-items-end">
-                                    <h5 class="mb-0 card-title flex-grow-1"></h5>
-                                    <div class="flex-shrink-0">
-                                        <a id="btnMatrice" href="#" class="btn btn-cnmci"><span class="fa fa-file-download fa-1x"></span> Télécharger la matrice des encaissements</a>
-                                        <a id="btnList" href="#" class="btn btn-cnmci"><span class="fa fa-download fa-1x"></span> Télécharger la liste des souscripteurs</a>
-                                    </div>
+                        </div><!--end col-->
+                    </div>
+                    <!-- start page title -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Liste des souscripteurs</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                    </ol>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        {{ include('cnmci/_adherents_datatable.html.twig') }}
-                    </div>
-                </div><!--end card-->
-            </div><!--end col-->
-        </div><!--end row-->
+                    <!-- end page title -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body border-bottom">
+                                    <div class="row g-3">
+                                        <div class="col-auto">
+                                            <div class="mt-2 fw-bold float-end"> Du :</div>
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-2">
+                                            <input type="date" class="form-control js-datepicker" id="date_start" name="date_start"
+                                                   value="{{ from }}">
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="mt-2 fw-bold float-end"> Au :</div>
+                                        </div>
+                                        <div class="col-xxl-2 col-lg-2">
+                                            <input type="date" class="form-control js-datepicker" id="date_end" name="date_end"
+                                                   value="{{ to }}">
+                                        </div>
+                                        <div class="col-xxl-1 col-lg-1">
+                                            <button class="btn btn-dark" id="btn-filter"><i class="fa fa-search"></i></button>
+                                        </div>
+                                        <div class="col-xxl-6 col-lg-5">
+                                            <div class="d-flex align-items-end">
+                                                <h5 class="mb-0 card-title flex-grow-1"></h5>
+                                                <div class="flex-shrink-0">
+                                                    <a id="btnMatrice" href="#" class="btn btn-cnmci"><span class="fa fa-file-download fa-1x"></span> Télécharger la matrice des encaissements</a>
+                                                    <a id="btnList" href="#" class="btn btn-cnmci"><span class="fa fa-download fa-1x"></span> Télécharger la liste des souscripteurs</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {{ include('cnmci/_adherents_datatable.html.twig') }}
+                                </div>
+                            </div><!--end card-->
+                        </div><!--end col-->
+                    </div><!--end row-->
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- subscribeModal -->
+    <div class="modal fade" id="valider-inscription-modal" tabindex="-1" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="avatar-md mx-auto mb-4">
+                        <div class="avatar-title bg-light rounded-circle text-primary h1">
+                            <i class="mdi mdi-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="row mb-3 p-3">
+                        <div class="alert alert-warning">
+                            <p><i class="mdi mdi-alert-circle mdi-24px"></i>  Vous vous apprêtez à valider l'inscription de cet artisan.<br> Assurez vous que toutes les vérifications necessaire ont été faites.</p>
+                        </div>
+                        <form id="validationFrm" name="validationFrm" method="post" action="{{ path('cnmci_validation_souscription') }}">
+                            <div class="mb-3">
+                                <label for="numero_rm" class="form-label">N° RM</label>
+                                <input type="text" class="form-control" name="numero_rm" placeholder="Numéro RM ">
+                            </div>
+                            <div class="mb-3">
+                                <label for="numero_carte_professionelle" class="form-label">N° Carte professionnelle</label>
+                                <input type="text" class="form-control" name="numero_carte_professionelle" placeholder="Numéro carte proffessionnelle">
+                            </div>
+                            <input type="hidden" class="form-control" value="" name="member_id" hidden="hidden" aria-hidden="true">
+                            <hr>
+                            <div class="row justify-content-end">
+                                <div class="col-sm-9">
+                                    <div>
+                                        <button type="button" class="btn btn-info me-1" data-dismiss="modal"> Annuler</button>
+                                        <button type="submit" class="btn btn-dark me-1" data-dismiss="modal"> Enregister</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal -->
+
 {% endblock %}
 
 {% block javascript %}
@@ -100,7 +172,7 @@
     jQuery(document).ready(function ($) {
         var datatable = initDatatable();
 
-        $("#search").click(function(){
+        $("#btn-filter").click(function(){
             datatable.draw();
         });
 
@@ -114,7 +186,7 @@
             window.location.href = "{{ path('cnmci_download_list') }}?date_from=" +  $('#date_start').val() +  "&date_to=" + $('#date_end').val();
         });
 
-        $(document).on('click', '#btn-validate-souscription', function(e){
+        $(document).on('click', '.btn-validate-payment', function(e){
            e.preventDefault();
            var id =  $(this).data('id');
            Swal.fire({
@@ -127,21 +199,78 @@
             confirmButtonText: "Oui",
             cancelButtonText: "Annuler"
           }).then(function(t) {
-               $.get("/admin/cnmci/validate-souscription/" + id, function(data){
-                   // console.log(data);
-                   t.value && Swal.fire("Valider!", "Cette souscription a été validée.", "success")
+               $.get("/admin/cnmci/validate-paiement-souscription/" + id, function(data){
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        datatable.draw();
+                    });
                    datatable.draw();
                });
            });
         });
 
-        // $('.js-datepicker').datetimepicker({
-        //         timepicker: false,
-        //         format:  'd/m/Y',
-        //         scrollMonth : false,
-	    //         scrollInput : false
-        //         // mask: true, // '9999/19/39 29:59' - digit is the maximum possible for a cell
-        // });
+        $(document).on('click', '.btn-validate-souscription', function(e){
+             $("input[name='member_id']").val($(this).data('id'));
+             $('#valider-inscription-modal').modal('show');
+        });
+
+       $(document).on("submit", "form[name='validationFrm']", function(event) {
+                event.preventDefault();
+                var form = $("form[name='validationFrm']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                })
+                .done(function(data) {
+                    if(data=== 'OK'){
+                         Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Enregistrement effectuée avec succès",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#valider-inscription-modal').modal('hide');
+                            datatable.draw();
+                        });
+                    }else{
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Enregistrement a échoué",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#valider-inscription-modal').modal('hide');
+                        });
+                    }
+
+                })
+                .fail(function(data) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Enregistrement a échoué",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        form[0].reset();
+                        $('#valider-inscription-modal').modal('hide');
+                    });
+                });
+       });
 
        function initDatatable(){
             /* DATATABLE INIT */
@@ -181,7 +310,7 @@
                     {"data":  "first_name"},
                     { "data": "subscription_date" },
                     { "data": "driving_license_number" },
-                    { "data": "is_payment_validate" },
+                    { "data": "is_payment_validated" },
                     { "data": "status" },
                     { "data": "" }
                 ],
@@ -189,6 +318,7 @@
             } );
             return dt;
        }
+
     });
 </script>
 {% endblock %}

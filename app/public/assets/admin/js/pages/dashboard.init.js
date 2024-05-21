@@ -1,3 +1,4 @@
+/*
 function getChartColorsArray(e) {
     if (null !== document.getElementById(e)) {
         var t = document.getElementById(e).getAttribute("data-colors");
@@ -110,3 +111,277 @@ ApplicationReveicedTimeColors && (options = {
 },
     (chart = new ApexCharts(document.querySelector("#application-received-time"),options)).render());
 console.log(ApplicationReveicedTimeColors);
+
+*/
+
+function getChartColorsArray(t) {
+    if (null !== document.getElementById(t)) {
+        var e = document.getElementById(t).getAttribute("data-colors");
+        if (e)
+            return (e = JSON.parse(e)).map(function(t) {
+                var e = t.replace(" ", "");
+                if (-1 === e.indexOf(",")) {
+                    var o = getComputedStyle(document.documentElement).getPropertyValue(e);
+                    return o || e
+                }
+                var a = t.split(",");
+                return 2 != a.length ? e : "rgba(" + getComputedStyle(document.documentElement).getPropertyValue(a[0]) + "," + a[1] + ")"
+            });
+        console.warn("data-colors Attribute not found on:", t)
+    }
+}
+
+var sexChartColors = getChartColorsArray("sex-chart");
+var nationalityChartColors = getChartColorsArray("nationality-chart");
+var activityChartColors = getChartColorsArray("activity-chart");
+
+var sexChart = document.getElementById("sex-chart");
+var nationalityChart = document.getElementById("nationality-chart");
+var activityChart = document.getElementById("activity-chart");
+var souscriptionDom = document.getElementById("souscription-chart");
+
+sexChart = echarts.init(sexChart, 'roma');
+nationalityChart = echarts.init(nationalityChart, 'roma');
+activityChart = echarts.init(activityChart, 'roma');
+souscriptionChart = echarts.init(souscriptionDom);
+
+$.get('/admin/stats').done(function(data) {
+
+    option = null;
+    option = {
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+            orient: "vertical",
+            x: "left",
+            data: data.sex.legend,
+            textStyle: {
+                color: "#8791af"
+            }
+        },
+    //    color: sexChartColors,
+        series: [{
+            name: "Total",
+            type: "pie",
+            radius: ["50%", "70%"],
+            avoidLabelOverlap: !(app = {}),
+            label: {
+                normal: {
+                    show: !1,
+                    position: "center"
+                },
+                emphasis: {
+                    show: !0,
+                    textStyle: {
+                        fontSize: "30",
+                        fontWeight: "bold"
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: !1
+                }
+            },
+            data: data.sex.data
+        }]
+    };
+    sexChart.setOption(option, !0);
+
+    option = null;
+    option = {
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+            orient: "horizontal",
+            x: "left",
+            data: data.nationality.legend,
+            textStyle: {
+                color: "#8791af"
+            }
+        },
+       // color: nationalityChartColors,
+        series: [{
+            name: "Total",
+            type: "pie",
+            radius: ["45%", "70%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+                borderRadius: 10,
+                borderColor: '#fff',
+                borderWidth: 2
+            },
+           // avoidLabelOverlap: !(app = {}),
+            label: {
+                normal: {
+                    show: !1,
+                    position: "center"
+                },
+                emphasis: {
+                    show: !0,
+                    textStyle: {
+                        fontSize: "16",
+                        fontWeight: "bold"
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: !1
+                }
+            },
+            data: data.nationality.data
+        }]
+    };
+    nationalityChart.setOption(option, !0);
+
+    option = null;
+    option = {
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: "vertical",
+            left: "left",
+            data: data.activity.legend,
+            textStyle: {
+                color: "#8791af"
+            }
+        },
+       // color: activityChartColors,
+        series: [{
+            name: "Total",
+            type: "pie",
+            radius: "55%",
+            center: ["50%", "60%"],
+            data: data.activity.data,
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: "rgba(0, 0, 0, 0.5)"
+                }
+            }
+        }]
+    };
+    activityChart.setOption(option, !0);
+
+
+    option = null;
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {},
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: data.months
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: 'VTC',
+                type: 'bar',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: data.vtc
+            },
+            {
+                name: 'Taxi',
+                type: 'bar',
+                stack: 'Ad',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: data.taxi
+            },
+            {
+                name: 'Livreur',
+                type: 'bar',
+                stack: 'Ad',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: data.livreur
+            }
+        ]
+    };
+    option && souscriptionChart.setOption(option);
+
+});
+
+var chartDom = document.getElementById('commune-chart','roma');
+var communeChart = echarts.init(chartDom);
+var option = null;
+
+option = {
+    title: {
+      //  text: 'Total par commune'
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    legend: {},
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    yAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01]
+    },
+    xAxis: {
+        type: 'category',
+        data: ['ABOBO', 'YOPOUGON', 'ANYAMA', 'COCODY', 'BINGERVILLE', 'MARCORY']
+    },
+    series: [
+        {
+            name: 'VTC',
+            type: 'line',
+            data: [12, 28, 5, 8, 15, 25]
+        },
+        {
+            name: 'TAXI',
+            type: 'line',
+            data: [ 5, 2, 5, 30, 8, 10]
+        },
+        {
+            name: 'LIVREUR',
+            type: 'line',
+            data: [2, 18, 5, 4, 10, 5]
+        }
+    ]
+};
+
+option && communeChart.setOption(option);
+
+
+
+
+

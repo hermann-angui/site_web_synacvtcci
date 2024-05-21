@@ -8,6 +8,7 @@ use App\Entity\Payment;
 use App\Form\MemberOnlineRegistrationType;
 use App\Form\MemberRegistrationType;
 use App\Repository\MemberRepository;
+use App\Service\ConfigurationService\ConfigurationService;
 use App\Service\Member\MemberService;
 use App\Service\Payment\PaymentService;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -166,5 +167,25 @@ class PageController extends AbstractController
             'member' => $member,
             'form' => $form,
         ]);
+    }
+
+
+    #[Route('/checkvalidity/{cnmci_numero_rm}', name: 'check_validity', methods: ['GET']), ]
+    public function checkValidityByRmNumber (string $cnmci_numero_rm, MemberRepository $memberRepository,ConfigurationService $configurationService): Response
+    {
+        date_default_timezone_set("Africa/Abidjan");
+
+        $member = $memberRepository->findOneBy(['cnmci_numero_rm' => $cnmci_numero_rm]);
+        if($member) {
+            return $this->json([
+                'success' => true,
+                'image_url' => $configurationService->getParameter('app.base_url') . 'members/' . $member->getReference() . '/' . $member->getCnmciCardPhoto()
+            ]);
+        } else {
+            return $this->json([
+                'error' => true,
+                'image_url' => $configurationService->getParameter('app.base_url') . "assets/files/carte_cnmci_fake.jpg"
+            ]);
+        }
     }
 }

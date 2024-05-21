@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Card</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1013, height=642, initial-scale=1, shrink-to-fit=no">
+    <style>
+        body{
+            background-image: url('{{ cardbg }}');
+            background-repeat: no-repeat;
+            padding: 0;
+            margin: 0;
+            width: auto;/*1013px;*/
+            height: 642px;
+        }
+        #photo{
+            position: absolute;
+            left:14px;
+            top: 278px;
+            width: 250px;
+            height: 275px;
+            background-position:center;
+            background-repeat: no-repeat;
+            background-size:auto;
+        }
+
+        #info {
+            position: absolute;
+            text-align: center;
+            top: 220px;
+            left: 250px;
+            width: 650px;
+            /*border: 1px solid red;*/
+        }
+
+
+        #matricule{
+            position: relative;
+            display: inline-block;
+            margin: 15px 0px 10px 0px;
+            padding: 0 0;
+            letter-spacing: 3px;
+            text-align: center;
+            font-weight: 1.0;
+            height: auto;
+            width: 100%;
+            font-family: 'Arial', sans-serif;
+            font-size: 20pt;
+            /*border: 1px solid red;*/
+        }
+
+        #fullname {
+            margin: 20px 0px 10px 0px;
+            padding: 0 0;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            /*letter-spacing: 1px;*/
+            line-height: 1.2;
+            font-weight: bolder;
+            text-align: center;
+            height: auto;
+            font-family: 'Arial Black';
+            font-size: 25pt;
+            /*border: 1px solid red;*/
+
+        }
+
+        #titre{
+            margin: 15px 0px 0px 0px;
+            padding: 0 0;
+            display: inline-block;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            text-align: center;
+            height: auto;
+            width: 100%;
+            font-family: 'Arial Black';
+            font-size: 22pt;
+            color: black;
+            /*border: 1px solid red;*/
+
+        }
+
+        #expiredate {
+            position: absolute;
+            letter-spacing: 2px;
+            left: 650px;
+            top: 600px;
+            width: 300px;
+            font-weight: bolder;
+            color: white;
+            font-family: 'Arial Black';
+            font-size: 14pt;
+        }
+
+
+        #qrcode  {
+            position: absolute;
+            left: 825px;
+            top: 450px;
+            padding: 5px 5px;
+            background-color: white;
+            z-index: 2;
+            /*border: 1px solid red;*/
+
+        }
+
+        #qrcode img {
+            width: 100px;
+            height: 100px;
+            z-index: 10;
+        }
+        #footer {
+            position: absolute;
+            left: 1px;
+            top: 590px;
+            width: 400px;
+            height: 50px;
+            /*border: 1px solid red;*/
+        }
+
+    </style>
+</head>
+<body>
+<img id="photo" src="{{ photo_path }}" alt="">
+<div id="info">
+    <p id="metier">Métier &nbsp; {{ metier }}</p>
+    <p id="numero_rm">N° RM : {{ numero_rm }}</p>
+    <p id="last_name">Nom : {{ last_name }}</p>
+    <p id="first_name">Pr&eacute;nom(s){{ first_name }}</p>
+    <p id="birth_date">Date de naissance{{ birth_date }}</p>
+    <p id="birth_place">Lieu de naissance{{ birth_place }}</p>
+</div>
+
+<div id="footer"></div>
+
+</body>

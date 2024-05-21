@@ -155,8 +155,30 @@ class MemberService
                 $file = $this->getMemberDir($member) . $member->getCardPhoto();
                 if(file_exists($file))  unlink($file);
             }
-            $cardImage = $this->memberCardGeneratorService->generate($member);
+            $cardImage = $this->memberCardGeneratorService->generateCardSynacvtcci($member);
             $member->setCardPhoto($cardImage->getFilename());
+            $member->setModifiedAt(new DateTime());
+            $this->memberRepository->add($member, true);
+            return $member;
+        }
+        return null;
+    }
+
+    /**
+     * @param Member|null $member
+     * @return Member|null
+     */
+    public function generateSingleCnmciCard(?Member $member): ?Member
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        if ($member) {
+            if(empty($member->getCnmciCardPhoto())) return null;
+            if($member->getCnmciCardPhoto()){
+                $file = $this->getMemberDir($member) . $member->getCnmciCardPhoto();
+                if(file_exists($file))  unlink($file);
+            }
+            $cardImage = $this->memberCardGeneratorService->generateCardCnmci($member);
+            $member->setCnmciCardPhoto($cardImage->getFilename());
             $member->setModifiedAt(new DateTime());
             $this->memberRepository->add($member, true);
             return $member;

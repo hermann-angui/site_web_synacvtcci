@@ -209,6 +209,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $cnmci_numero_carte_professionelle = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $cnmci_card_photo = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $activity_country_location = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -226,11 +229,14 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $activity_secondary = null;
 
-    #[ORM\Column(type: 'boolean', nullable: true)]
-    private ?bool $status = false;
+    #[ORM\Column(type: 'string', length: 65, nullable: true)]
+    private ?string $status = null;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
-    private ?bool $is_payment_validate = false;
+    private ?bool $is_inscription_validated = false;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $is_payment_validated = false;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $activity_date_debut = null;
@@ -1495,25 +1501,48 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getStatus(): ?bool
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(?bool $status): Member
+    public function setStatus(?string $status): Member
     {
         $this->status = $status;
         return $this;
     }
 
-    public function getIsPaymentValidate(): ?bool
+    public function getIsInscriptionValidated(): ?bool
     {
-        return $this->is_payment_validate;
+        return $this->is_inscription_validated;
     }
 
-    public function setIsPaymentValidate(?bool $is_payment_validate): Member
+    public function setIsInscriptionValidated(?bool $is_inscription_validated): Member
     {
-        $this->is_payment_validate = $is_payment_validate;
+        $this->is_inscription_validated = $is_inscription_validated;
+        return $this;
+    }
+
+
+    public function getIsPaymentValidated(): ?bool
+    {
+        return $this->is_payment_validated;
+    }
+
+    public function setIsPaymentValidated(?bool $is_payment_validated): Member
+    {
+        $this->is_payment_validated = $is_payment_validated;
+        return $this;
+    }
+
+    public function getCnmciCardPhoto(): ?string
+    {
+        return $this->cnmci_card_photo;
+    }
+
+    public function setCnmciCardPhoto(?string $cnmci_card_photo): Member
+    {
+        $this->cnmci_card_photo = $cnmci_card_photo;
         return $this;
     }
 

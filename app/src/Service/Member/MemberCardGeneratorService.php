@@ -23,7 +23,7 @@ class MemberCardGeneratorService
      * @param Member|null $member
      * @return array|null
      */
-    public function mapToCardViewModel(?Member $member): ?array
+    public function mapToSynacvtcciCardViewModel(?Member $member): ?array
     {
         $data['fullname'] = $member->getLastName() . " " . $member->getFirstName();
         $data['titre'] = $member->getActivity();
@@ -63,13 +63,50 @@ class MemberCardGeneratorService
 
     /**
      * @param Member|null $member
+     * @return array|null
+     */
+    public function mapToCnmciCardViewModel(?Member $member): ?array
+    {
+        $data['last_name'] = $member->getLastName();
+        $data['first_name'] =  $member->getFirstName();
+        $data['metier'] = $member->getActivity();
+        $data['birth_date'] = $member->getDateOfBirth()->format('d/m/y');
+        $data['birth_place'] = $member->getBirthCity();
+
+        $data['numero_rm'] = $member->getCnmciNumeroRm();
+        $data['numero_carte_professionnelle'] = $member->getCnmciNumeroCarteProfessionelle();
+        $data['twig_view'] = "admin/print/carte_cnmci.html.twig";
+        $data['outputdir'] = "/var/www/html/public/members/" . $member->getReference() . "/";
+        if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
+
+        $data['photo_path']  =  $data['outputdir'] . $member->getPhoto();
+        $data['card_path']   = $data['outputdir'] . $member->getReference() . '_card_cnmci.png' ;
+
+        return $data;
+    }
+
+
+
+    /**
+     * @param Member|null $member
      * @return string|null
      */
-    public function generate(?Member $member): ?File
+    public function generateCardSynacvtcci(?Member $member): ?File
     {
         if(!$member) return null;
-        $cardData = $this->mapToCardViewModel($member);
+        $cardData = $this->mapToSynacvtcciCardViewModel($member);
         $cardData['qrcode_path'] = $this->imageGenerator->generateBarCode($cardData['qrcode_url'], $cardData['qrcode_path'], $cardData['qrcode_color'],50, 50);
+        return $this->imageGenerator->generate($cardData);
+    }
+
+    /**
+     * @param Member|null $member
+     * @return string|null
+     */
+    public function generateCardCnmci(?Member $member): ?File
+    {
+        if(!$member) return null;
+        $cardData = $this->mapToCnmciCardViewModel($member);
         return $this->imageGenerator->generate($cardData);
     }
 

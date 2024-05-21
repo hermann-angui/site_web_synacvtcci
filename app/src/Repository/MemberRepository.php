@@ -48,6 +48,26 @@ class MemberRepository extends ServiceEntityRepository
             ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
             ;
     }
+
+    public function getTotalMembers(): ?int
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
+            ;
+    }
+
+    public function getLastest(): ?array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('m')
+            ->orderBy('m.subscription_date', 'DESC')
+            ->setMaxResults(12)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
     public function setAutoIncrementToLast(int $value): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
@@ -89,13 +109,62 @@ class MemberRepository extends ServiceEntityRepository
 
     }
 
-//    public function findOneBySomeField($value): ?Member
-//    {
+    public function getTotalGroupBySex(): ?array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.sex) AS total, m.sex AS sex')
+            ->groupBy('m.sex')
+            ->where('m.sex IS NOT NULL')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getTotalGroupByActivity(): ?array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.activity) AS total, m.activity AS activity')
+            ->groupBy('m.activity')
+            ->where('m.activity IS NOT NULL')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getTotalGroupByActivityAndMonth(): ?array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT COUNT(`m`.`activity`) AS `total`,  `m`.`activity` , MONTH( `m`.`subscription_date`) AS `month_number` FROM `member` AS `m`  WHERE `m`.`activity` IS NOT NULL GROUP BY MONTH(`m`.`subscription_date`), `m`.`activity`;";
+        $stmt = $conn->prepare($sql);
+        return $stmt->executeQuery()->fetchAllAssociative();
 //        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
+//            ->select('COUNT(m.activity) AS total, m.activity AS activity, MONTH(m.subscription_date) AS month')
+//            ->groupBy('m.activity, m.subscription_date')
+//            ->where('m.activity IS NOT NULL')
 //            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+//            ->getResult()
+//            ;
+    }
+
+    public function getTotalGroupByNationality(): ?array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.nationality) AS total, m.nationality AS nationality')
+            ->groupBy('m.nationality')
+            ->where('m.nationality IS NOT NULL')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getTotalGroupByCommune(): ?array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.nationality) AS total, m.commune AS commune')
+            ->groupBy('m.commune')
+            ->where('m.commune IS NOT NULL')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
