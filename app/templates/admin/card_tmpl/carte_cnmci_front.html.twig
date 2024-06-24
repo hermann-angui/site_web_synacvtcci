@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Card</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1067, height=676, initial-scale=1, shrink-to-fit=no">
+    <style>
+        body {
+            background-image: url('{{ card_bg }}');
+            background-repeat: no-repeat;
+            padding: 0;
+            margin: 0;
+            width: 1067px;
+            height: 676px;
+        }
+
+        #photo {
+            position: absolute;
+            left:60px;
+            top: 300px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: auto;
+            width: 264px;
+            height: 264px;
+        }
+
+        #metier {
+            position: absolute;
+            left:350px;
+            top: 230px;
+            font-weight: bold;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 21pt;
+            width: 620px;
+        }
+
+        #numero_rm {
+            position: absolute;
+            left:350px;
+            top: 300px;
+            font-weight: bold;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 21pt;
+            width: 620px;
+        }
+
+        #last_name {
+            position: absolute;
+            left:350px;
+            top: 355px;
+            font-weight: bold;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 21pt;
+            width: 620px;
+        }
+
+        #first_name {
+            position: absolute;
+            left:350px;
+            top: 405px;
+            font-weight: bold;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 21pt;
+            width: 620px;
+        }
+
+        #birth_date {
+            position: absolute;
+            left:350px;
+            top: 485px;
+            font-weight: bold;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 21pt;
+            width: 620px;
+        }
+
+        #birth_place {
+            position: absolute;
+            left:350px;
+            top: 530px;
+            font-weight: bold;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 21pt;
+            width: 620px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <img id="photo" src="{{ photo_path }}" alt="">
+    <div id="metier">M&eacute;tier : {{ metier }}</div>
+    <div id="numero_rm">N° RM: {{ numero_rm }}</div>
+    <div id="last_name">Nom: {{ last_name }}</div>
+    <div id="first_name">Prénom(s): {{ first_name }}</div>
+    <div id="birth_date">Date de Naissance: {{ birth_date }}</div>
+    <div id="birth_place">Lieu de Naissance: {{ birth_place }}</div>
+</div>
+
+
+</body>

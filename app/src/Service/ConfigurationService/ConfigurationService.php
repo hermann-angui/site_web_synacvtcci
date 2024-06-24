@@ -24,6 +24,7 @@ class ConfigurationService
                'int' => (int)$configuration?->getValue(),
                'float' => (float)$configuration?->getValue(),
                'datetime' => new \DateTime($configuration?->getValue()),
+               'string' => (string) $configuration?->getValue(),
                default => $configuration?->getValue(),
            };
        }

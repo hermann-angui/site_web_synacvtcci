@@ -8,6 +8,7 @@ app/*.zip
 app/*.tar.gz
 *.tar.gz
 *.zip
+app/public/*.tar.gz
 app/public/users/
 app/public/frontend/media
 app/public/uploads/

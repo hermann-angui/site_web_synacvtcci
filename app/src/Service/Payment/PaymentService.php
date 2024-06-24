@@ -5,6 +5,7 @@ namespace App\Service\Payment;
 use App\Entity\Member;
 use App\Entity\Payment;
 use App\Entity\User;
+use App\Helper\FileHelper;
 use App\Helper\PdfGenerator;
 use App\Repository\MemberRepository;
 use App\Repository\PaymentRepository;
@@ -17,9 +18,10 @@ use Symfony\Component\Uid\Uuid;
 
 class PaymentService
 {
-    private const MEDIA_DIR = "/var/www/html/public/members/";
-
-    public function __construct(private PdfGenerator $pdfGenerator, private MemberRepository $memberRepository, private ConfigurationService $configurationService, private PaymentRepository $paymentRepository)
+    public function __construct(private PdfGenerator $pdfGenerator,
+                                private MemberService $memberService,
+                                private ConfigurationService $configurationService,
+                                private PaymentRepository $paymentRepository)
     {}
 
     /**
@@ -48,16 +50,10 @@ class PaymentService
         try {
             $member = $payment->getPaymentFor();
 
-            if (!$member->getMatricule()) {
-                $matricule = MemberService::generateMatricule($member);
-                $member->setMatricule($matricule);
-                $this->memberRepository->add($member, true);
-            }
-
             $qrCodeData = $this->configurationService->getParameter('app.base_url') . "profile/" . $member->getReference();
 
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
-            $folder = self::MEDIA_DIR . $member->getReference() . '/';
+            $folder = $this->memberService->getMemberDir($member)  . $member->getReference() . '/';
             if(!file_exists($folder)) mkdir($folder, 0777, true);
 
             $barcode_file = $folder . "payment_barcode.png";
@@ -70,25 +66,28 @@ class PaymentService
                 $viewTemplate = 'admin/payment/payment-receipt-carte-syndicat-pdf.html.twig';
                 $member->setHasPaidForSyndicat(true);
                 $member->setIsSyndicatMember(true);
+                FileHelper::deleteExistingFile($folder . $member->getPaymentReceiptCarteSyndicatPdf());
                 $member->setPaymentReceiptCarteSyndicatPdf(basename($receipt_file));
             }
 
             if($payment->getTarget()  === "FRAIS_SERVICE_TECHNIQUE"){
                 $viewTemplate = 'admin/payment/payment-receipt-service-technique-pdf.html.twig';
+                FileHelper::deleteExistingFile($folder . $member->getPaymentReceiptServiceTechniquePdf());
                 $member->setPaymentReceiptServiceTechniquePdf(basename($receipt_file));
             }
 
-            $this->memberRepository->add($member, true);
+            $this->memberService->saveMember($member, true);
 
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['payment' => $payment]);
             file_put_contents($receipt_file, $content);
 
-            if(file_exists($barcode_file)) \unlink($barcode_file);
+            FileHelper::deleteExistingFile($barcode_file);
+
             return $content ?? null;
 
         }catch(\Exception $e){
-            if(file_exists($barcode_file)) \unlink($barcode_file);
-            if(file_exists($receipt_file)) \unlink($receipt_file);
+            FileHelper::deleteExistingFile($barcode_file);
+            FileHelper::deleteExistingFile($receipt_file);
         }
         return null;
     }
@@ -131,6 +130,5 @@ class PaymentService
          $this->store($payment);
          return $payment;
     }
-
 
 }

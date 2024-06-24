@@ -3,7 +3,7 @@
 {% block stylesheet %}
     {{ parent() }}
     <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/select.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .btn-cnmci {
             background-color: #6e0000;
@@ -347,7 +347,7 @@
 
         var datatable = initDatatable();
 
-         function initDatatable(){
+        function initDatatable(){
             /* DATATABLE INIT */
             var dt = $('#datatable').DataTable( {
                 'bLengthChange' : false,
@@ -356,42 +356,37 @@
                 'pageLength': 5,
                 'language': {
                     url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
-                   processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
-                    sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />",
                     info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
                     infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
                     lengthMenu: "Afficher _MENU_ entrées",
                     zeroRecords: "Aucune entrée correspondante trouvée",
-                    paginate: {
-                        first: '',
-                        last: '',
-                        next: '<i class="fa-solid fa-angle-right"></i>',
-                        previous: '<i class="fa-solid fa-angle-left"></i>'
+                    oPaginate: {
+                        sNext: '<i class="mdi mdi-chevron-right"></i>',
+                        sPrevious: '<i class="mdi mdi-chevron-left"></i>'
                     },
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                   // processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
                 },
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
                     "url": '{{ path('cnmci_souscription_datatable') }}',
                     "data": function (d) {
+                        d.date_start = $("#date_start").val();
+                        d.date_end = $("#date_end").val();
                     }
                 },
                 "columns": [
-                    {"data":  "id"},
-                    {"data":  "last_name"},
-                    {"data":  "first_name"},
+                    {"data":  "id" , "sortable": false},
+                    {"data":  "photo" },
+                    {"data":  "last_name" },
+                    {"data":  "first_name" },
                     { "data": "subscription_date" },
                     { "data": "driving_license_number" },
-                    { "data": "is_payment_validate" },
-                    { "data": "status" },
-                    { "data": "" }
+                    { "data": "is_payment_validated" },
+                    { "data": "is_inscription_validated" },
+                    { "data": "reference" }
                 ],
-                "select": {
-                    style: 'multi+shift',
-                    selector: 'td:first-child'
-                },
-                "order": [[1, 'desc']]
+                "order": [[1, 'desc']],
             } );
             return dt;
        }

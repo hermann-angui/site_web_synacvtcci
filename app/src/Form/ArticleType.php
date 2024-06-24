@@ -33,7 +33,7 @@ class ArticleType extends AbstractType
                     "Video" => "Vidéo"
                 ]
             ])
-            ->add('content', TextareaType::class,[
+            ->add('content', TextareaType::class, [
                 'label' => 'Contenu',
                 'mapped' => true,
                 'required' => true

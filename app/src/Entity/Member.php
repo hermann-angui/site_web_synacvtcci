@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: '`member`')]
@@ -209,7 +210,10 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $cnmci_numero_carte_professionelle = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $cnmci_card_photo = null;
+    private ?string $cnmci_card_front_image = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $cnmci_card_back_image = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $activity_country_location = null;
@@ -1535,16 +1539,25 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCnmciCardPhoto(): ?string
+    public function getCnmciCardFrontImage(): ?string
     {
-        return $this->cnmci_card_photo;
+        return $this->cnmci_card_front_image;
     }
 
-    public function setCnmciCardPhoto(?string $cnmci_card_photo): Member
+    public function setCnmciCardFrontImage(?string $cnmci_card_front_image): Member
     {
-        $this->cnmci_card_photo = $cnmci_card_photo;
+        $this->cnmci_card_front_image = $cnmci_card_front_image;
         return $this;
     }
 
+    public function getCnmciCardBackImage(): ?string
+    {
+        return $this->cnmci_card_back_image;
+    }
 
+    public function setCnmciCardBackImage(?string $cnmci_card_back_image): Member
+    {
+        $this->cnmci_card_back_image = $cnmci_card_back_image;
+        return $this;
+    }
 }

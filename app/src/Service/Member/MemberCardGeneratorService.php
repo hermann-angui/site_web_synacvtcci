@@ -34,20 +34,20 @@ class MemberCardGeneratorService
         switch($member->getActivity()){
             case "CHAUFFEUR VTC":
                 $data['cardbg'] = "/var/www/html/public/assets/files/carte_synacvtcci_front.jpg";
-                $data['twig_view'] = "admin/print/carte_synacvtcci.html.twig";
+                $data['twig_view'] = "admin/card_tmpl/carte_synacvtcci.html.twig";
                 $data['website']    = "www.synacvtcci.org";
                 $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
                 $data['qrcode_color'] = [14, 119, 12];
                 break;
             case "CHAUFFEUR LIVREUR":
                 $data['cardbg'] = "/var/www/html/public/assets/files/carte_falci_front.jpg";
-                $data['twig_view'] = "admin/print/carte_falci.html.twig";
+                $data['twig_view'] = "admin/card_tmpl/carte_falci.html.twig";
                 $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
                 $data['qrcode_color'] = [0, 0, 0];
                 break;
             case "CHAUFFEUR TAXI":
                 $data['cardbg'] = "/var/www/html/public/assets/files/carte_taxi_front.jpg";
-                $data['twig_view'] = "admin/print/carte_taxi.html.twig";
+                $data['twig_view'] = "admin/card_tmpl/carte_taxi.html.twig";
                 $data['expiredate'] = "Expire le " . $member->getSubscriptionExpireDate()->format('d/m/Y');
                 $data['qrcode_color'] = [14, 119, 12];
                 break;
@@ -65,23 +65,49 @@ class MemberCardGeneratorService
      * @param Member|null $member
      * @return array|null
      */
-    public function mapToCnmciCardViewModel(?Member $member): ?array
+    public function mapToCnmciCardFrontViewModel(?Member $member): ?array
     {
         $data['last_name'] = $member->getLastName();
         $data['first_name'] =  $member->getFirstName();
         $data['metier'] = $member->getActivity();
         $data['birth_date'] = $member->getDateOfBirth()->format('d/m/y');
         $data['birth_place'] = $member->getBirthCity();
-        $data['card_bg'] = "/var/www/html/public/assets/files/carte_cnmci.jpg";
+        $data['card_bg'] = "/var/www/html/public/assets/files/carte_cnmci_front.jpg";
 
         $data['numero_rm'] = $member->getCnmciNumeroRm();
         $data['numero_carte_professionnelle'] = $member->getCnmciNumeroCarteProfessionelle();
-        $data['twig_view'] = "admin/print/carte_cnmci.html.twig";
+        $data['twig_view'] = "admin/card_tmpl/carte_cnmci_front.html.twig";
         $data['outputdir'] = "/var/www/html/public/members/" . $member->getReference() . "/";
         if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
 
         $data['photo_path']  =  $data['outputdir'] . $member->getPhoto();
-        $data['card_path']   = $data['outputdir'] . $member->getReference() . '_card_cnmci.png' ;
+        $data['card_path']   = $data['outputdir'] . $member->getReference() . '_card_cnmci_front.png' ;
+
+        return $data;
+    }
+
+
+    /**
+     * @param Member|null $member
+     * @return array|null
+     */
+    public function mapToCnmciCardBackViewModel(?Member $member): ?array
+    {
+        $data['last_name'] = $member->getLastName();
+        $data['first_name'] =  $member->getFirstName();
+        $data['metier'] = $member->getActivity();
+        $data['birth_date'] = $member->getDateOfBirth()->format('d/m/y');
+        $data['birth_place'] = $member->getBirthCity();
+        $data['card_bg'] = "/var/www/html/public/assets/files/carte_cnmci_back.jpg";
+
+        $data['numero_rm'] = $member->getCnmciNumeroRm();
+        $data['numero_carte_professionnelle'] = $member->getCnmciNumeroCarteProfessionelle();
+        $data['twig_view'] = "admin/card_tmpl/carte_cnmci_back.html.twig";
+        $data['outputdir'] = "/var/www/html/public/members/" . $member->getReference() . "/";
+        if(!file_exists($data['outputdir'])) mkdir($data['outputdir'], 0777, true);
+
+        $data['photo_path']  =  $data['outputdir'] . $member->getPhoto();
+        $data['card_path']   = $data['outputdir'] . $member->getReference() . '_card_cnmci_back.png' ;
 
         return $data;
     }
@@ -102,13 +128,21 @@ class MemberCardGeneratorService
 
     /**
      * @param Member|null $member
-     * @return string|null
+     * @return bool|null
      */
-    public function generateCardCnmci(?Member $member): ?File
+    public function generateCardCnmci(?Member $member): ?Member
     {
-        if(!$member) return null;
-        $cardData = $this->mapToCnmciCardViewModel($member);
-        return $this->imageGenerator->generate($cardData);
+        if(!$member) return false;
+
+        $cardData = $this->mapToCnmciCardFrontViewModel($member);
+        $cardImage = $this->imageGenerator->generate($cardData);
+        $member->setCnmciCardFrontImage($cardImage->getFilename());
+
+        $cardData = $this->mapToCnmciCardBackViewModel($member);
+        $cardImage = $this->imageGenerator->generate($cardData);
+        $member->setCnmciCardBackImage($cardImage->getFilename());
+        $member->setModifiedAt(new \DateTime());
+        return $member;
     }
 
 }

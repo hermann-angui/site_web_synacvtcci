@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,8 +46,7 @@ class MemberRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->select('MAX(m.id)')
             ->getQuery()
-            ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
-            ;
+            ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
     }
 
     public function getTotalMembers(): ?int
@@ -54,8 +54,7 @@ class MemberRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->select('COUNT(m.id)')
             ->getQuery()
-            ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR)
-            ;
+            ->getResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
     }
 
     public function getLastest(): ?array
@@ -65,9 +64,9 @@ class MemberRepository extends ServiceEntityRepository
             ->orderBy('m.subscription_date', 'DESC')
             ->setMaxResults(12)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
+
     public function setAutoIncrementToLast(int $value): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
@@ -81,32 +80,14 @@ class MemberRepository extends ServiceEntityRepository
     {
         $data = $this->createQueryBuilder('m')
             ->where('m.subscription_date BETWEEN :from AND :to')
-           // ->andWhere('m.subscription_date >= :from')
-           // ->andWhere('m.subscription_date <= :to')
+            // ->andWhere('m.subscription_date >= :from')
+            // ->andWhere('m.subscription_date <= :to')
             ->setParameter('from', $date_start)
             ->setParameter('to', $date_end)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
 
         return $data;
-    }
-
-    public function getLastNDays(int $days){
-        $to = new \DateTime();
-        $temp = new \DateTime();
-        $from = $temp->modify("-$days days");
-        return $this->createQueryBuilder('m')
-           // ->where('m.subscription_date BETWEEN :from AND :to')
-//             ->andWhere('m.subscription_date >= :from')
-//             ->andWhere('m.subscription_date <= :to')
-//             ->andWhere('m.etape >= 3')
-//            ->setParameter('from', $from->format('Y-m-d H:i:s'))
-//            ->setParameter('to',  $to->format('Y-m-d H:i:s'))
-            ->getQuery()
-            ->getResult()
-            ;
-
     }
 
     public function getTotalGroupBySex(): ?array
@@ -116,8 +97,7 @@ class MemberRepository extends ServiceEntityRepository
             ->groupBy('m.sex')
             ->where('m.sex IS NOT NULL')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     public function getTotalGroupByActivity(): ?array
@@ -127,8 +107,7 @@ class MemberRepository extends ServiceEntityRepository
             ->groupBy('m.activity')
             ->where('m.activity IS NOT NULL')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function getTotalGroupByActivityAndMonth(): ?array
@@ -137,13 +116,6 @@ class MemberRepository extends ServiceEntityRepository
         $sql = "SELECT COUNT(`m`.`activity`) AS `total`,  `m`.`activity` , MONTH( `m`.`subscription_date`) AS `month_number` FROM `member` AS `m`  WHERE `m`.`activity` IS NOT NULL GROUP BY MONTH(`m`.`subscription_date`), `m`.`activity`;";
         $stmt = $conn->prepare($sql);
         return $stmt->executeQuery()->fetchAllAssociative();
-//        return $this->createQueryBuilder('m')
-//            ->select('COUNT(m.activity) AS total, m.activity AS activity, MONTH(m.subscription_date) AS month')
-//            ->groupBy('m.activity, m.subscription_date')
-//            ->where('m.activity IS NOT NULL')
-//            ->getQuery()
-//            ->getResult()
-//            ;
     }
 
     public function getTotalGroupByNationality(): ?array
@@ -153,8 +125,7 @@ class MemberRepository extends ServiceEntityRepository
             ->groupBy('m.nationality')
             ->where('m.nationality IS NOT NULL')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function getTotalGroupByCommune(): ?array
@@ -164,7 +135,29 @@ class MemberRepository extends ServiceEntityRepository
             ->groupBy('m.commune')
             ->where('m.commune IS NOT NULL')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
+    }
+
+    public function validatePaymentByIds(array $ids)
+    {
+        $params = implode(',', $ids);
+        return $this->createQueryBuilder('m')
+            ->update()
+            ->set('m.is_payment_validated', 1)
+            ->where("m.id IN ($params)")
+            ->getQuery()
+            ->getScalarResult();
+    }
+
+    public function validateSouscriptionByIds(array $ids)
+    {
+        $params = implode(',', $ids);
+        return $this->createQueryBuilder('m')
+            ->update()
+            ->set('m.is_inscription_validated', 1)
+            ->where("m.id IN ($params)")
+            ->andWhere('m.is_payment_validated = 1')
+            ->getQuery()
+            ->getScalarResult();
     }
 }

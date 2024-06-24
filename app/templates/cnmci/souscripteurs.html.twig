@@ -2,37 +2,12 @@
 
 {% block stylesheet %}
     {{ parent() }}
-    <link href="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-          type="text/css"/>
-    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/select.dataTables.min.css') }}" rel="stylesheet"
-          type="text/css"/>
-    <style>
-        .btn-cnmci {
-            background-color: #6e0000;
-            color: #ffffff;
-        }
-        .btn:hover {
-            color: #fff;
-            text-decoration: none;
-            background-color: #343a40;
-            border-color: var(--bs-btn-hover-border-color);
-        }
-        .table>thead {
-            background-color: #6e0000;
-            color: #ffffff;
-        }
-        .active>.page-link, .page-link.active {
-            background-color: #6e0000;
-            border-color: #6e0000;
-        }
-        .vertical-collpsed .main-content {
-            margin-left: 10px !important;
-        }
-        .page-content {
-            padding: 10px 0 0 0;
-        }
-    </style>
+    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+{#    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/select.bootstrap4.css') }}" rel="stylesheet" type="text/css"/>#}
+{#    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/select.dataTables.min.css') }}" rel="stylesheet" type="text/css"/>#}
+
 {% endblock %}
 
 {% block body %}
@@ -97,8 +72,26 @@
                                             <div class="d-flex align-items-end">
                                                 <h5 class="mb-0 card-title flex-grow-1"></h5>
                                                 <div class="flex-shrink-0">
-                                                    <a id="btnMatrice" href="#" class="btn btn-cnmci"><span class="fa fa-file-download fa-1x"></span> Télécharger la matrice des encaissements</a>
-                                                    <a id="btnList" href="#" class="btn btn-cnmci"><span class="fa fa-download fa-1x"></span> Télécharger la liste des souscripteurs</a>
+                                                    <div class="btn-group" id="validation-btn-group">
+                                                        <button type="button" class="btn btn-soft-success"><i class="mdi mdi-check-all"></i> Valider (<span id="selected"></span>)</button>
+                                                        <button type="button" class="btn btn-soft-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="mdi mdi-chevron-down"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" style="">
+                                                            <a id="btn-validate-payments-batch" class="dropdown-item p-2" href="#"><span class="fa fa-money-check fa-1x"></span> Tous les paiements</a>
+                                                            <a id="btn-validate-souscriptions-batch" class="dropdown-item p-2" href="#"><span class="fa fa-file fa-1x"></span> Toutes les souscriptions</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-soft-success"><i class="mdi mdi-download"></i> Télécharger</button>
+                                                        <button type="button" class="btn btn-soft-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="mdi mdi-chevron-down"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" style="">
+                                                            <a id="btnMatrice" class="dropdown-item p-2" href="#"><span class="fa fa-file-download fa-1x"></span> La matrice des encaissements</a>
+                                                            <a id="btnList" class="dropdown-item p-2" href="#"><span class="fa fa-download fa-1x"></span> La liste des souscripteurs</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,19 +127,19 @@
                         </div>
                         <form id="validationFrm" name="validationFrm" method="post" action="{{ path('cnmci_validation_souscription') }}">
                             <div class="mb-3">
-                                <label for="numero_rm" class="form-label">N° RM</label>
-                                <input type="text" class="form-control" name="numero_rm" placeholder="Numéro RM ">
+                                <label for="cnmci_numero_rm" class="form-label">N° RM</label>
+                                <input type="text" class="form-control" name="cnmci_numero_rm" placeholder="Numéro RM ">
                             </div>
                             <div class="mb-3">
-                                <label for="numero_carte_professionelle" class="form-label">N° Carte professionnelle</label>
-                                <input type="text" class="form-control" name="numero_carte_professionelle" placeholder="Numéro carte proffessionnelle">
+                                <label for="cnmci_carte_professionelle" class="form-label">N° Carte professionnelle</label>
+                                <input type="text" class="form-control" name="cnmci_carte_professionelle" placeholder="Numéro carte proffessionnelle">
                             </div>
                             <input type="hidden" class="form-control" value="" name="member_id" hidden="hidden" aria-hidden="true">
                             <hr>
                             <div class="row justify-content-end">
                                 <div class="col-sm-9">
                                     <div>
-                                        <button type="button" class="btn btn-info me-1" data-dismiss="modal"> Annuler</button>
+                                        <button type="button" class="btn btn-info me-1" data-dismiss="modal" id="modal-btn-close"> Annuler</button>
                                         <button type="submit" class="btn btn-dark me-1" data-dismiss="modal"> Enregister</button>
                                     </div>
                                 </div>
@@ -163,13 +156,25 @@
 
 {% block javascript %}
 {{ parent() }}
+<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
-<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/js/dataTables.responsive.min.js') }}"></script>
+{#<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.fixedColumns.js') }}"></script>#}
+{#<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.js') }}"></script>#}
+{#<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.select.js') }}"></script>#}
+{#<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/fixedColumns.bootstrap4.js') }}"></script>#}
+{#<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/popper.min.js') }}"></script>#}
+{#<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/select.bootstrap4.js') }}"></script>#}
 
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
+
+        $('#validation-btn-group').hide();
+        var selectedRow = [];
+
         var datatable = initDatatable();
 
         $("#btn-filter").click(function(){
@@ -181,9 +186,57 @@
             window.location.href = "{{ path('cnmci_download_matrice') }}?date_from=" +  $('#date_start').val() +  "&date_to=" + $('#date_end').val();
         });
 
+        $('#btn-validate-souscriptions-batch').click(function(){
+            $.post('/admin/cnmci/validate/souscription-cnmci/batch', {ids: selectedRow}, function(d){
+                datatable.draw();
+            });
+        });
+
+        $('#btn-validate-payments-batch').click(function(){
+            $.post('/admin/cnmci/validate/paiement-souscription/batch', {ids: selectedRow}, function(d){
+                datatable.draw();
+            });
+        });
+
         $('#btnList').click(function(e){
             e.preventDefault();
             window.location.href = "{{ path('cnmci_download_list') }}?date_from=" +  $('#date_start').val() +  "&date_to=" + $('#date_end').val();
+        });
+
+        $(document).on('click', '#row-selector-all', function(){
+            $('input.row-selector:checkbox').not(this).prop('checked', this.checked);
+            selectedRow = [];
+            $('input.row-selector:checkbox').each(function (item) {
+                if($(this).is(":checked")){
+                    $(this).parents().closest('tr').css('background-color', "#fffef3");
+                    selectedRow.push($(this).data('id'));
+                }else{
+                    $(this).parents().closest('tr').css('background-color', "transparent");
+                }
+            });
+            if(selectedRow.length > 1 ) {
+                $('#validation-btn-group').show();
+                $('#selected').text(selectedRow.length + ' selectionnés')
+            }
+            else $('#validation-btn-group').hide();
+        });
+
+        $(document).on('change', '.row-selector', function(e){
+            var id = $(this).data('id');
+            if($(this).is(":checked")){
+                $(this).parents().closest('tr').css('background-color', "#f8f7e3");
+                selectedRow.push(id);
+            }else{
+                $(this).parents().closest('tr').css('background-color', "transparent");
+                selectedRow = selectedRow.filter(function(item) {
+                    return item !== id
+                });
+            }
+            if(selectedRow.length > 1 ) {
+                $('#validation-btn-group').show();
+                $('#selected').text(selectedRow.length + ' selectionnés')
+            }
+            else $('#validation-btn-group').hide();
         });
 
         $(document).on('click', '.btn-validate-payment', function(e){
@@ -199,7 +252,7 @@
             confirmButtonText: "Oui",
             cancelButtonText: "Annuler"
           }).then(function(t) {
-               $.get("/admin/cnmci/validate-paiement-souscription/" + id, function(data){
+               $.get("/admin/cnmci/validate/paiement-souscription/" + id, function(data){
                     Swal.fire({
                         position: "center",
                         icon: "success",
@@ -208,8 +261,9 @@
                         timer: 1500
                     }).then(function (result) {
                         datatable.draw();
+                        datatable.addClass("form-select form-select-sm");
+                        datatable.addClass("pagination-rounded");
                     });
-                   datatable.draw();
                });
            });
         });
@@ -217,6 +271,12 @@
         $(document).on('click', '.btn-validate-souscription', function(e){
              $("input[name='member_id']").val($(this).data('id'));
              $('#valider-inscription-modal').modal('show');
+        });
+
+        $(document).on("click", "#modal-btn-close", function(){
+            var form1 = $("form[name='validationFrm']");
+            form1[0].reset();
+            $('#valider-inscription-modal').modal('hide');
         });
 
        $(document).on("submit", "form[name='validationFrm']", function(event) {
@@ -232,7 +292,7 @@
                     processData: false
                 })
                 .done(function(data) {
-                    if(data=== 'OK'){
+                    if(data=== 'SUCCESS'){
                          Swal.fire({
                             position: "center",
                             icon: "success",
@@ -275,47 +335,48 @@
        function initDatatable(){
             /* DATATABLE INIT */
             var dt = $('#datatable').DataTable( {
-                'bLengthChange' : false,
-                'responsive': true,
-                'searching': false,
-                'pageLength': 5,
-                'language': {
+                bLengthChange : true,
+                responsive: true,
+                searching: false,
+                pageLength: 15,
+                language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
-                   // processing: "<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }}' />",
-                    sLoadingRecords :"<img height='32' width='32' src='{{ asset("assets/images/preloaders/5.svg") }} />",
                     info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
                     infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
                     lengthMenu: "Afficher _MENU_ entrées",
                     zeroRecords: "Aucune entrée correspondante trouvée",
-                    paginate: {
-                        first: '',
-                        last: '',
-                        next: '<i class="fa-solid fa-angle-right"></i>',
-                        previous: '<i class="fa-solid fa-angle-left"></i>'
+                    oPaginate: {
+                        sNext: '<i class="mdi mdi-chevron-right"></i>',
+                        sPrevious: '<i class="mdi mdi-chevron-left"></i>'
                     },
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                   // processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
                 },
-                "processing": true,
-                "serverSide": true,
-                "ajax": {
+                processing: true,
+                serverSide: true,
+                ajax: {
                     "url": '{{ path('cnmci_souscription_datatable') }}',
                     "data": function (d) {
                         d.date_start = $("#date_start").val();
                         d.date_end = $("#date_end").val();
                     }
                 },
-                "columns": [
-                    {"data":  "id"},
-                    {"data":  "last_name"},
-                    {"data":  "first_name"},
+                columns: [
+                    {"data":  "id" , "sortable": false},
+                    {"data":  "photo" },
+                    {"data":  "last_name" },
+                    {"data":  "first_name" },
                     { "data": "subscription_date" },
                     { "data": "driving_license_number" },
                     { "data": "is_payment_validated" },
-                    { "data": "status" },
-                    { "data": "" }
+                    { "data": "is_inscription_validated" },
+                    { "data": "reference" }
                 ],
-                "order": [[1, 'desc']]
-            } );
+                order: [[1, 'desc']],
+                drawCallback: function () {
+                   $(".dataTables_paginate").addClass("pagination-rounded");
+                }
+            });
+
             return dt;
        }
 

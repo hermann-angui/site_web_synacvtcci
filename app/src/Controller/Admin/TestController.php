@@ -18,34 +18,7 @@ class TestController extends AbstractController
     #[Route(path: '/test', name: 'debug_test')]
     public function test(Request $request, MemberService $memberService): Response
     {
-        $members = $memberService->getAllMembers();
-
-        foreach($members as $member){
-            if (empty($member->getReference())){
-                $member->setReference(
-                    str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
-                );
-                $memberService->saveMember($member);
-            }
-
-            $sourceDir =  "/var/www/html/public/members/" . $member->getMatricule() . "/";
-            $destDir =  "/var/www/html/public/members/" . $member->getReference() . "/";
-
-            if(!file_exists($sourceDir)) continue;
-            if(!file_exists($destDir)) mkdir($destDir, 0777, true);
-
-            $f = new Finder();
-            $files = $f->in($sourceDir)->name('*.*')->files();
-            foreach($files as $file) {
-                $fs = new Filesystem();
-                $fs->copy($file->getRealPath(), $destDir . '/' . $file->getFilename());
-                if($file->getFilename() === $member->getPhoto()) {
-                    // $thumbnail = new File($destDir . substr($member->getPhoto(), 0,-4) . "_thumbnail." . $file->getExtension(),false );
-                    $thumbnail = new File($destDir . $member->getPhoto(),false );
-                    $memberService->createThumbnail($thumbnail, $member, 100, 100);
-                }
-            }
-        }
+        $memberService->generateAllPhotoThumbnails();
         return $this->json([]);
     }
 }

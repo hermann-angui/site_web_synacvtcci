@@ -117,11 +117,11 @@ class MemberController extends AbstractController
         date_default_timezone_set("Africa/Abidjan");
         set_time_limit(0);
         /* @var UploadedFile $file */
-        if(!empty($file = $request->files->get('file'))){
+        if(!empty($file = $request->files->get('file'))) {
             $mime = $file->getMimeType();
             $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/';
             if(in_array($mime, ['image/png','image/jpeg','image/jpg','image/gif','text/csv','text/plain'])){
-                $fileUploadHelper->upload($file, $uploadDir,true);
+                $fileUploadHelper->upload($file, $uploadDir);
             }
         }
         return $this->renderForm('admin/member/synacvtcci/upload.html.twig');
@@ -224,7 +224,7 @@ class MemberController extends AbstractController
                 'dt' => 'photo',
                 'formatter' => function( $d, $row ){
                     $imageUrl = $row['reference'] . "/" . $d;
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
+                    $content = "<div class='avatar-md img-fluid rounded-circle'><img src='/members/$imageUrl' alt='' class='img-fluid d-block rounded-circle'></div>";
                     return $content;
                 }
             ],
@@ -283,7 +283,11 @@ class MemberController extends AbstractController
             'host' => $paramDB['host']
         );
 
-        $whereResult= "`has_withdraw_syndicat_carte` = 1 OR `has_paid_for_syndicat` = 1";
+        $whereResult = null;
+        if(!empty($params['activity'])){
+            $whereResult = " activity ='". $params['activity'] . "' AND ";
+        }
+        $whereResult .= "(`has_withdraw_syndicat_carte` = 1 OR `has_paid_for_syndicat` = 1)";
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -303,7 +307,7 @@ class MemberController extends AbstractController
                 'dt' => 'id',
                 'formatter' => function( $d, $row ) use ($memberRepository){
                     $imageUrl = $row['reference'] . "/" . $row['photo'];
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
+                    $content = "<div class='avatar-md img-fluid rounded-circle'><img src='/members/$imageUrl' alt='' class='img-fluid d-block rounded-circle'></div>";
                     return $content;
                 }
             ],
@@ -364,7 +368,7 @@ class MemberController extends AbstractController
                 'dt' => 'photo',
                 'formatter' => function( $d, $row) {
                     $imageUrl = $row['reference'] . "/" . $d;
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail'>";
+                    $content = "<div class='avatar-md img-fluid rounded-circle'><img src='/members/$imageUrl' alt='' class='img-fluid d-block rounded-circle'></div>";
                     return $content;
                 }
             ],

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Card</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1188, height=1496, initial-scale=1, shrink-to-fit=no">
+    <style>
+        body {
+            background-image: url('{{ card_bg }}');
+            background-repeat: no-repeat;
+            padding: 0;
+            margin: 0;
+            width: 1188px; /*1013px;*/
+            height: 1496px;
+        }
+
+        #bottom-container {
+            position: absolute;
+            left:10px;
+            top: 10px;
+            width: 1155px;
+            height: 370px;
+        }
+
+        #crm {
+            position: relative;
+            margin: 5px 0 0 120px;
+            width: 600px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 25pt;
+        }
+        #activity_localite {
+            position: relative;
+            margin: 30px 0 0 440px;
+            width: 600px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 25pt;
+        }
+        #domicile {
+            position: relative;
+            margin: 30px 0 0 180px;
+            width: 600px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 25pt;
+        }
+        #date_emission {
+            position: relative;
+            margin: 32px 0 0 310px;
+            width: 300px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 25pt;
+        }
+        #date_expiration {
+            position: relative;
+            margin: -45px 0 0 950px;
+            width: 200px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 25pt;
+        }
+        #numero_carte_pro {
+            position: relative;
+            margin: 35px 0 0 460px;
+            width: 650px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            height: auto;
+            font-family: 'Arial', sans-serif;
+            font-size: 25pt;
+        }
+    </style>
+</head>
+<body>
+<div >
+    <div id="crm">{{ metier }}</div>
+    <div id="activity_localite">{{ numero_rm }}</div>
+    <div id="domicile">{{ metier }}</div>
+    <div id="date_emission">{{ birth_date }}</div>
+    <div id="date_expiration">{{ birth_date }}</div>
+    <div id="numero_carte_pro">{{ numero_rm }}</div>
+</div>
+
+</body>

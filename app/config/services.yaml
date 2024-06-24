@@ -44,8 +44,10 @@ services:
             $container: '@service_container'
 
     App\Helper\CsvReaderHelper:
-        arguments:
-            $container: '@service_container'
+
+    App\Helper\FileUploadHelperHelper:
+
+    App\Helper\FileHelper:
 
     App\Helper\UserHelper:
         arguments:

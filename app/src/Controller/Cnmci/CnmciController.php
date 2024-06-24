@@ -77,10 +77,9 @@ class CnmciController extends AbstractController
     {
         date_default_timezone_set("Africa/Abidjan");
         $from = new \DateTime();
-        $from = $from->modify('yesterday');
+        $from = $from->modify('-1 year');
         $to = new \DateTime();
         return $this->render('cnmci/souscripteurs.html.twig', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
-
     }
 
     #[Route('/telecharger/photo/{id}', name: 'cnmci_download_photo', methods: ['GET', 'POST'])]
@@ -113,7 +112,7 @@ class CnmciController extends AbstractController
         $to = $request->get('date_to');
         $members = $memberRepository->findAdherentsFromTo($from, $to);
         if (!$members) return $this->json(null);
-        $file = $this->generateAdherentListXlsxFile($members);
+        $file = $memberService->generateAdherentListXlsxFile($members);
         $outputFile = $memberService->archiveMemberDocuments($members, $file);
         return $this->file($outputFile, 'liste_adherents.zip');
     }
@@ -127,7 +126,7 @@ class CnmciController extends AbstractController
         $to = $request->get('date_to');
         $members = $memberRepository->findAdherentsFromTo($from, $to);
         if (!$members) return $this->json(null);
-        $fileXls = $this->generateMatriceEncaissementXlsxFile($members);
+        $fileXls = $memberService->generateMatriceEncaissementXlsxFile($members);
         return $this->file($fileXls, basename($fileXls));
     }
 
@@ -144,8 +143,19 @@ class CnmciController extends AbstractController
                 'db' => 'id',
                 'dt' => 'id',
                 'formatter' => function ($d, $row) {
-                    $imageUrl = $row['reference'] . "/" . $row['photo'];
-                    $content = "<img src='/members/" . $imageUrl . "' alt='' class='avatar-md rounded-circle img-thumbnail' width='100'>";
+                    $content = "<div class='form-check form-check-dark font-size-16'>
+                                     <input class='form-check-input row-selector' type='checkbox' data-id='$d'>
+                                     <label class='form-check-label' for='transactionCheck02'></label>
+                               </div>";
+                    return $content;
+                }
+            ],
+            [
+                'db' => 'photo',
+                'dt' => 'photo',
+                'formatter' => function ($d, $row) {
+                    $imageUrl = $row['reference'] . "/$d";
+                    $content = "<div class='avatar-md img-fluid rounded-circle'><img src='/members/$imageUrl' alt='' class='img-fluid d-block rounded-circle'></div>";
                     return $content;
                 }
             ],
@@ -169,28 +179,28 @@ class CnmciController extends AbstractController
                 'db' => 'is_payment_validated',
                 'dt' => 'is_payment_validated',
                 'formatter' => function ($d, $row) {
-                    if($d) $content = sprintf("<span class='badge badge-pill badge-soft-success font-size-14'>%s</span>", "VALIDER");
-                    else $content = sprintf("<span class='badge badge-pill badge-soft-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
+                    if($d) $content = sprintf("<span class='badge rounded-pill badge-soft-success font-size-12'>%s</span>", "VALIDER");
+                    else $content = sprintf("<span class='badge rounded-pill badge-soft-warning font-size-12'>%s</span>", "EN ATTENTE DE VALIDATION");
                     return $content;
                 }
             ],
             [
-                'db' => 'status',
-                'dt' => 'status',
+                'db' => 'is_inscription_validated',
+                'dt' => 'is_inscription_validated',
                 'formatter' => function ($d, $row) {
-                    if($d) $content = sprintf("<span class='badge badge-pill badge-soft-success font-size-14'>%s</span>", "VALIDER");
-                    else $content = sprintf("<span class='badge badge-pill badge-soft-warning font-size-14'>%s</span>", "EN ATTENTE DE VALIDATION");
+                    if($d) $content = sprintf("<span class='badge rounded-pill badge-soft-success font-size-12'>%s</span>", "VALIDER");
+                    else $content = sprintf("<span class='badge rounded-pill badge-soft-warning font-size-12'>%s</span>", "EN ATTENTE DE VALIDATION");
                     return $content;
                 }
             ],
             [
-                'db' => 'id',
-                'dt' => '',
+                'db' => 'reference',
+                'dt' => 'reference',
                 'formatter' => function ($d, $row) {
                     $id = $row['id'];
-                    $content = "<div class='d-flex gap-2 flex-wrap justify-content-start'>
+                    $content = "<div class='d-flex gap-2 flex-wrap justify-content-center'>
                                     <div class='btn-group'>
-                                        <button class='btn btn-cnmci dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                        <button class='btn btn-soft-success dropdown-toggle btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
@@ -198,23 +208,11 @@ class CnmciController extends AbstractController
                                             <a class='dropdown-item' href='/admin/cnmci/telecharger/documents/$id'><i class='mdi mdi-file-download'></i> Télécharger les documents</a>
                                             <a class='dropdown-item' href='/admin/cnmci/telecharger/photo/$id'><i class='mdi mdi-download'></i> Télécharger la photo</a>";
 
-                    if(!$row['is_payment_validated'])  $content.="<a class='dropdown-item btn-validate-payment' href='#' data-id='$id'><i class='mdi mdi-check-circle'></i> Valider paiement</a>";
-                    if(!$row['is_inscription_validated'])  $content.="<a class='dropdown-item btn-validate-souscription' href='#' data-id='$id'><i class='mdi mdi-check'></i> Valider l'inscription</a>";
+                    if(!$row['is_payment_validated'])      $content.="<a class='dropdown-item btn-validate-payment' href='#' data-id='$id'><i class='mdi mdi-check-circle'></i> Valider paiement</a>";
+                    if(!$row['is_inscription_validated'] && $row['is_payment_validated'])  $content.="<a class='dropdown-item btn-validate-souscription' href='#' data-id='$id'><i class='mdi mdi-check'></i> Valider l'inscription</a>";
                     $content.="</div></div></div> ";
                     return $content;
                 }
-            ],
-            [
-                'db' => 'reference',
-                'dt' => 'reference'
-            ],
-            [
-                'db' => 'photo',
-                'dt' => 'photo'
-            ],
-            [
-                'db' => 'is_inscription_validated',
-                'dt' => 'is_inscription_validated'
             ],
         ];
 
@@ -238,191 +236,45 @@ class CnmciController extends AbstractController
         return $this->render('cnmci/show.html.twig', ['member' => $member]);
     }
 
-    #[Route('/validation/souscription', name: 'cnmci_validation_souscription', methods: ['POST'])]
-    public function validateSouscription(Request $request, MemberRepository $memberRepository, MemberService $memberService): Response
+    #[Route('/validate/paiement-souscription/batch', name: 'cnmci_validate_payment_batch', methods: ['GET', 'POST'])]
+    public function validateBatchPayment(Request $request, MemberService $memberService): Response
     {
-        $request = $request->request;
-        $member = $memberRepository->find($request->get('member_id'));
-        if(!$member?->getIsPaymentValidated()) return $this->json('FAILED');
-        $member->setCnmciNumeroRm($request->get('cnmci_numero_rm'));
-        $member->setCnmciNumeroCarteProfessionelle($request->get('cnmci_carte_professionelle'));
-        $member->setIsInscriptionValidated(true);
-        $member->setStatus("VALIDER");
+        if(!empty($request->get('ids'))) $memberService->validatePaymentBatch($request->get('ids'));
+        return $this->json('SUCCESS');
+    }
 
+    #[Route('/validate/souscription-cnmci/batch', name: 'cnmci_validation_souscription_batch', methods: ['POST'])]
+    public function validateSouscriptionBatch(Request $request, MemberService $memberService): Response
+    {
+        if(!empty($request->get('ids'))) $memberService->validateSouscriptionBatch($request->get('ids'));
+        return $this->json('SUCCESS');
+    }
+
+    #[Route('/validate/souscription-cnmci', name: 'cnmci_validation_souscription', methods: ['POST', 'GET'])]
+    public function validateSouscription(Request $request, MemberService $memberService): Response
+    {
+        $response = $memberService->validateSouscription(
+            intval($request->get('member_id')),
+            $request->get('cnmci_numero_rm'),
+            $request->get('cnmci_carte_professionelle')
+        );
+        if($response) return $this->json('SUCCESS');
+        else return $this->json('FAILED');
+    }
+
+    #[Route('/validate/paiement-souscription/{id}', name: 'cnmci_validate_payment', methods: ['GET', 'POST'])]
+    public function validatePayment(Member $member, MemberService $memberService): Response
+    {
+        if($member && !$member->getIsPaymentValidated()) $memberService->validatePayment($member);
+        return $this->json('SUCCESS');
+    }
+
+    #[Route('/generate/virtual-cnmci-carte/{id}', name: 'cnmci_generate_virtual-cnmci-carte', methods: ['GET', 'POST'])]
+    public function generateCnmciCard(Member $member, MemberService $memberService): Response
+    {
         $memberService->generateSingleCnmciCard($member);
-
-        $memberRepository->add($member, true);
-        return $this->json('OK');
-    }
-
-    #[Route('/validate-paiement-souscription/{id}', name: 'cnmci_validate_payment', methods: ['GET', 'POST'])]
-    public function validatePayment(Member $member, MemberRepository $memberRepository): Response
-    {
-        $member->setIsPaymentValidated(true);
-        $memberRepository->add($member, true);
-        return $this->render('cnmci/show.html.twig', ['member' => $member]);
-    }
-
-    private function generateMatriceEncaissementXlsxFile($members): ?string
-    {
-        try {
-
-            $dir = $this->getCnmciDir();
-            if (!file_exists($dir)) mkdir($dir, 0777, true);
-
-            $inputFileName = $dir . "CNMCI-Matrice des encaissements.xls";
-            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-            $spreadsheet = $reader->load($inputFileName);
-            $worksheet = $spreadsheet->getSheet(0);
-
-            $count = 1;
-            $cel = 3;
-            /** @var Member $member */
-            foreach ($members as $member) {
-                $d = [
-                    $count++,
-                    "Registre des metiers et Carte d Artisans",
-                    '15000',
-                    $member->getPaymentReceiptCnmciCode(), //$row['payment_receipt_cnmci_code']  $member->get,
-                    $member->getSubscriptionDate()->format('d/m/Y'), //$row['subscription_date']->format('d/m/Y'),
-                    $member->getLastName() . '' . $member->getFirstName(),
-                    $member->getActivity(),
-                    $member->getActivityGeoLocation(),
-                    $member->getMobile(),
-                    '',
-                ];
-
-                $worksheet->fromArray(
-                    $d,             // The data to set
-                    NULL,        // Array values with this value will not be set
-                    "A" . $cel++         // Top left coordinate of the worksheet range where we want to set these values (default is A1)
-                );
-            }
-
-            $spreadsheet->getActiveSheet()->setAutoFilter(
-                $spreadsheet->getActiveSheet()->calculateWorksheetDimension()
-            );
-
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $outputFileName = $dir . time() . uniqid() . ".xls";
-
-            if (file_exists($outputFileName)) \unlink($outputFileName);
-            $writer->save($outputFileName);
-
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
-
-            return $outputFileName;
-
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
-
-        return null;
-    }
-
-    private function generateAdherentListXlsxFile($members): ?string
-    {
-        try {
-            $dir = $this->getCnmciDir();
-            if (!file_exists($dir)) mkdir($dir, 0777, true);
-
-            $inputFileName = $dir . "CNMCI-Matrice des inscrits.xls";
-
-            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-            $spreadsheet = $reader->load($inputFileName);
-            $worksheet = $spreadsheet->getSheet(0);
-
-            $count = 1;
-            $cel = 3;
-            /** @var Member $member * */
-            foreach ($members as $member) {
-                try {
-                    $d = [
-                        "N°" => $count++,
-                        "EMAIL" => $member->getEmail(),
-                        "NOM" => $member->getLastName(),
-                        "PRENOMS" => $member->getFirstName(),
-                        "ACTIVITE" => $member->getActivity(),
-                        "DATE SOUSCRIPTION" => $member->getSubscriptionDate()?->format('d/m/Y'),
-                        "SEXE" => $member->getSex(),
-                        "PHOTO" => $member->getPhoto(),
-                        "DATE DE NAISSANCE" => $member->getDateOfBirth()?->format('d/m/Y'),
-                        "VILLE NAISSANCE" => $member->getBirthLocality(),
-                        "N° PERMIS DE CONDUIRE" => $member->getDrivingLicenseNumber(),
-                        "NUMERO PIECE D'IDENTITE" => $member->getIdNumber(),
-                        "TYPE DE PIECE" => $member->getIdType(),
-                        "PAYS" => $member->getCountry(),
-                        "VILLE" => $member->getCity(),
-                        "COMMUNE" => $member->getCommune(),
-                        "MOBILE" => $member->getMobile(),
-                        "TEL" => $member->getPhone(),
-                        "PHOTO PIECE RECTO" => $member->getPhotoPieceFront(),
-                        "PHOTO PIECE VERSO" => $member->getPhotoPieceBack(),
-                        "PHOTO PERMIS RECTO" => $member->getPhotoPermisFront(),
-                        "PHOTO PERMIS VERSO" => $member->getPhotoPermisBack(),
-                        "NATIONALITE" => $member->getNationality(),
-                        "QUARTIER DE RESIDENCE" => $member->getQuartier(),
-                        "WHATSAPP" => $member->getWhatsapp(),
-                        "ENTREPRISES" => !empty($member->getCompany()) ? implode("|", $member->getCompany()): '',
-                        "NOM CONJOINT" => $member->getPartnerLastName(),
-                        "PRENOMS CONJOINT" => $member->getFirstName(),
-                        "LIEU DE DELIVRANCE PIECE" => $member->getIdDeliveryPlace(),
-                        "DATE DE DELIVRANCE PIECE" => $member->getIdDeliveryDate()?->format('d/m/Y'),
-                        "ETAT CIVIL" => $member->getEtatCivil(),
-                        "REFERENCE" => $member->getReference(),
-                        "PAYS DE NAISSANCE" => $member->getIdDeliveryPlace(),
-                        "LOCALITE NAISSANCE" => $member->getBirthLocality(),
-                        "AUTORITE DE DELIVRANCE PIECE" => $member->getIdDeliveryAuthority(),
-                        "BOITE POSTALE" => $member->getPostalCode(),
-                        "PAIEMENT ORANGE MONEY" => $member->getPaymentReceiptCnmciCode(),
-                        "LOCALISATION GEOGRAPHIQUE DE L'ACTIVITE" => $member->getIdDeliveryPlace(),
-                        "PAYS DE L'ACTIVITE" => $member->getActivityCountryLocation(),
-                        "VILLE DE L'ACTIVITE" => $member->getActivityCityLocation(),
-                        "QUARTIER DE L'ACTIVITE" => $member->getActivityQuartierLocation(),
-                        "CATEGORIE SOCIOPROFESSIONNELLE" => $member->getSocioprofessionnelleCategory(),
-                        "DATE DEBUT ACTIVITE " => $member->getActivityDateDebut()?->format('d/m/Y'),
-                        "PRENOMS PERSONNE A CONTACTER" => $member->getPartnerFirstName(),
-                        "NOM PERSONNE A CONTACTER" => $member->getPartnerLastName(),
-                        //    "TELEPHONE PERSONNE A CONTACTER" => "",
-                        //    "RECU ORANGE MONEY" => "",
-                        //    "FORMULAIRE CNMCI" => "",
-                        //    "DOCUMENTS" => "",
-                        //    "DOCUMENTS IDENTITE" => ""
-                    ];
-                    $r = array_values($d);
-                    $worksheet->fromArray(
-                        $r,     // The data to set
-                        NULL,               // Array values with this value will not be set
-                        "A" . $cel++     // Top left coordinate of the worksheet range where we want to set these values (default is A1)
-                    );
-
-                } catch (\Exception $e) {
-                    echo $e->getMessage() . PHP_EOL;
-                }
-            }
-
-            $spreadsheet->getActiveSheet()->setAutoFilter($spreadsheet->getActiveSheet()->calculateWorksheetDimension());
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $outputFileName = $dir . uniqid(). ".xls";
-            if (file_exists($outputFileName)) \unlink($outputFileName);
-            $writer->save($outputFileName);
-
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
-
-            return $outputFileName;
-
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
-
-        return null;
-    }
-
-    private function getCnmciDir()
-    {
-        return $this->getParameter("kernel.project_dir") . "/public/cnmci/";
+      //  if($member && $member->getIsInscriptionValidated()) $memberService->generateSingleCnmciCard($member);
+        return $this->json('SUCCESS');
     }
 
 }

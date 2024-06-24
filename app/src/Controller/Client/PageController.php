@@ -188,4 +188,21 @@ class PageController extends AbstractController
             ]);
         }
     }
+
+    #[Route('/showcnmci/{id}', name: 'check_validity', methods: ['GET']), ]
+    public function showCnmci (Member $member, ConfigurationService $configurationService): Response
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        if($member) {
+            return $this->json([
+                'success' => true,
+                'image_url' => $configurationService->getParameter('app.base_url') . 'members/' . $member->getReference() . '/' . $member->getCnmciCardPhoto()
+            ]);
+        } else {
+            return $this->json([
+                'error' => true,
+                'image_url' => $configurationService->getParameter('app.base_url') . "assets/files/carte_cnmci_fake.jpg"
+            ]);
+        }
+    }
 }

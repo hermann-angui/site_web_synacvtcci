@@ -41,7 +41,7 @@ class MemberAssetHelper implements AssetHelperInterface
         }
     }
 
-    public function uploadAsset(?File $file, ?string $destDirectory): ?File
+    public function uploadAsset(?File $file, ?string $destDirectory, ?string $newName = null): ?File
     {
         return $this->fileUploadHelper->upload($file, $this->getUploadDirectory($destDirectory));
     }
@@ -52,8 +52,16 @@ class MemberAssetHelper implements AssetHelperInterface
     }
 
 
-    public function createThumbnail(?File $file, ?string $destDirectory,$width, $height){
-        $this->imageHelper->createThumbnail($file->getPathname(), $this->getUploadDirectory($destDirectory), $width, $height);
+    public function createThumbnail(String $file, ?string $destDirectory,$width, $height): ?string{
+        $filePath = new File($this->getUploadDirectory($destDirectory) . $file);
+        return $this->imageHelper->createThumbnail($filePath, $this->getUploadDirectory($destDirectory), $width, $height);
     }
 
+    /**
+     * @param Member $member
+     * @return string
+     */
+    public function getMemberDir(Member $member){
+        return $this->uploadDirectory . "/public/members/" . $member->getReference() . "/";
+    }
 }

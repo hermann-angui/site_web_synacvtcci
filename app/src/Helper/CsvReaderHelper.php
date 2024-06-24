@@ -9,13 +9,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class CsvReaderHelper
 {
-    protected ContainerInterface $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    public function read(string $file)
+    public function read(string $file_path, string $separator = ',', string $enclosure = '"', string $escape = '\\')
     {
         $context = [
             CsvEncoder::DELIMITER_KEY => ',',
@@ -24,7 +18,7 @@ class CsvReaderHelper
             CsvEncoder::KEY_SEPARATOR_KEY => ',',
         ];
         $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
-        return $serializer->decode(file_get_contents($file), 'csv', $context);
+        return $serializer->decode(file_get_contents($file_path), 'csv', $context);
     }
 }
 

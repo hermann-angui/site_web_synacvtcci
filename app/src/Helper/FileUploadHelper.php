@@ -2,28 +2,18 @@
 
 namespace App\Helper;
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Path;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Psr\Log\LoggerInterface;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploadHelper
 {
-
-    public function __construct()
-    {
-    }
-
-    public function upload(?File $file, ?string $destinationDirectory = null, ?bool $keepName = false): ?File
+    public function upload(?File $file, ?string $destinationDirectory, ?string $newName = null): ?File
     {
         try {
             if(!$file) return null;
 
-            if(!$keepName) $fileName = time() . uniqid() .'.'. ($file->guessExtension() ? $file->guessExtension(): $file->getExtension());
-            else $fileName = $file->getClientOriginalName();
+            if(!$newName) $fileName = FileHelper::generateUniqFileName($file);
+            else $fileName = $newName;
 
             if(!file_exists($destinationDirectory)) mkdir($destinationDirectory, 0777, true);
             return $file->move($destinationDirectory, $fileName);

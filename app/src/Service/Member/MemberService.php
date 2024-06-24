@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Entity\Payment;
 use App\Helper\ActivityLogger;
 use App\Helper\CsvReaderHelper;
+use App\Helper\FileHelper;
 use App\Helper\MemberAssetHelper;
 use App\Helper\PasswordHelper;
 use App\Helper\PdfGenerator;
@@ -28,7 +29,18 @@ use Symfony\Component\Uid\Uuid;
  */
 class MemberService
 {
-    private const MEDIA_DIR = "/var/www/html/public/members/";
+    /**
+     * @param ContainerInterface $container
+     * @param MemberCardGeneratorService $memberCardGeneratorService
+     * @param MemberAssetHelper $memberAssetHelper
+     * @param MemberRepository $memberRepository
+     * @param ChildRepository $childRepository
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param PdfGenerator $pdfGenerator
+     * @param ConfigurationService $configurationService
+     * @param ActivityLogger $activityLogger
+     * @param CsvReaderHelper $csvReaderHelper
+     */
     public function __construct(
         private ContainerInterface             $container,
         private MemberCardGeneratorService     $memberCardGeneratorService,
@@ -64,11 +76,6 @@ class MemberService
                 );
             }
 
-            if (!$member->getMatricule()) {
-                $matricule = MemberService::generateMatricule($member);
-                $member->setMatricule($matricule);
-            }
-
             $expiredDate = $date->format('Y-12-31');
             $member->setSubscriptionExpireDate(new \DateTime($expiredDate));
 
@@ -100,11 +107,6 @@ class MemberService
                 $member->setReference(
                     str_replace("-", "", substr(Uuid::v4()->toRfc4122(), 0, 18))
                 );
-            }
-
-            if (!$member->getMatricule()) {
-                $matricule = MemberService::generateMatricule($member);
-                $member->setMatricule($matricule);
             }
 
             $member->setCountry($member->getBirthCountry());
@@ -152,7 +154,7 @@ class MemberService
         if ($member) {
             if(empty($member->getPhoto())) return null;
             if($member->getCardPhoto()){
-                $file = $this->getMemberDir($member) . $member->getCardPhoto();
+                $file = $this->memberAssetHelper->getMemberDir($member) . $member->getCardPhoto();
                 if(file_exists($file))  unlink($file);
             }
             $cardImage = $this->memberCardGeneratorService->generateCardSynacvtcci($member);
@@ -172,9 +174,7 @@ class MemberService
     {
         date_default_timezone_set("Africa/Abidjan");
         if ($member) {
-            $cardImage = $this->memberCardGeneratorService->generateCardCnmci($member);
-            $member->setCnmciCardPhoto($cardImage->getFilename());
-            $member->setModifiedAt(new DateTime());
+            $member = $this->memberCardGeneratorService->generateCardCnmci($member);
             $this->memberRepository->add($member, true);
             return $member;
         }
@@ -216,16 +216,16 @@ class MemberService
             /**@var Member $member **/
             foreach($members as $member)
             {
-                $file = $this->getMemberDir($member) . $member->getPhoto();
+                $file = $this->memberAssetHelper->getMemberDir($member) . $member->getPhoto();
                 if(is_file($file)) {
                     $zipArchive->addFile($file, $member->getReference() . '_photo.png');
                 }
-                $file = $this->getMemberDir($member) . $member->getCardPhoto();
+                $file = $this->memberAssetHelper->getMemberDir($member) . $member->getCardPhoto();
                 if(is_file($file)) {
                     $zipArchive->addFile($file, $member->getReference() . '_card.png');
                 }
 
-                $barCodePhotoRealPath = $this->getMemberDir($member) . $member->getReference() . "_barcode.png";
+                $barCodePhotoRealPath = $this->memberAssetHelper->getMemberDir($member) . $member->getReference() . "_barcode.png";
                 if(is_file($barCodePhotoRealPath)) {
                     $zipArchive->addFile($barCodePhotoRealPath, $member->getReference() . '_barcode.png');
                 }
@@ -389,45 +389,65 @@ class MemberService
     {
         if (isset($images['photo'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['photo'], $member->getReference());
+            $existingFile = $member->getPhoto() ? $this->getMemberDir($member) . $member->getPhoto(): null;
+            FileHelper::deleteExistingFile($existingFile);
             if ($fileName) $member->setPhoto($fileName->getFilename());
         }
 
         if (isset($images['photoPieceFront'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['photoPieceFront'], $member->getReference());
+            $existingFile = $member->getPhotoPieceFront() ? $this->getMemberDir($member) . $member->getPhotoPieceFront(): null;
+            if(file_exists($existingFile)) unlink($existingFile);
             if ($fileName) $member->setPhotoPieceFront($fileName->getFilename());
         }
 
         if (isset($images['photoPieceBack'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['photoPieceBack'], $member->getReference());
+            $existingFile = $member->getPhotoPieceBack() ? $this->getMemberDir($member) . $member->getPhotoPermisFront(): null;
+            if(file_exists($existingFile)) unlink($existingFile);
             if ($fileName) $member->setPhotoPieceBack($fileName->getFilename());
         }
 
         if (isset($images['photoPermisFront'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['photoPermisFront'], $member->getReference());
+            $existingFile = $member->getPhotoPermisFront() ? $this->getMemberDir($member) . $member->getPhotoPermisFront(): null;
+            if(file_exists($existingFile)) unlink($existingFile);
             if ($fileName) $member->setPhotoPermisFront($fileName->getFilename());
         }
 
         if (isset($images['photoPermisBack'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['photoPermisBack'], $member->getReference());
+            $existingFile = $member->getPhotoPermisBack() ? $this->getMemberDir($member) . $member->getPhotoPermisBack(): null;
+            if(file_exists($existingFile)) unlink($existingFile);
             if ($fileName) $member->setPhotoPermisBack($fileName->getFilename());
         }
 
         if (isset($images['paymentReceiptCnmciPdf'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptCnmciPdf'], $member->getReference());
-            if ($fileName) $member->setPaymentReceiptCnmciPdf($fileName->getFilename());
+            if ($fileName) {
+                $existingFile = $member->getPaymentReceiptCnmciPdf() ? $this->getMemberDir($member) . $member->getPaymentReceiptCnmciPdf(): null;
+                if(file_exists($existingFile)) unlink($existingFile);
+                $member->setPaymentReceiptCnmciPdf($fileName->getFilename());
+            }
         }
         if (isset($images['paymentReceiptSyndicatPdf'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['paymentReceiptSyndicatPdf'], $member->getReference());
+            $existingFile = $member->getPaymentReceiptCnmciPdf() ? $this->getMemberDir($member) . $member->getPaymentReceiptCnmciPdf(): null;
+            if(file_exists($existingFile)) unlink($existingFile);
             if ($fileName) $member->setPaymentReceiptCnmciPdf($fileName->getFilename());
         }
 
         if (isset($images['scanDocumentIdentitePdf'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['scanDocumentIdentitePdf'], $member->getReference());
+            $existingFile = $member->getScanDocumentIdentitePdf() ? $this->getMemberDir($member) . $member->getScanDocumentIdentitePdf(): null;
+            if(file_exists($existingFile)) unlink($existingFile);
             if ($fileName) $member->setScanDocumentIdentitePdf($fileName->getFilename());
         }
 
         if (isset($images['mergedDocumentsPdf'])) {
             $fileName = $this->memberAssetHelper->uploadAsset($images['mergedDocumentsPdf'], $member->getReference());
+            $existingFile = $member->getMergedDocumentsPdf() ? $this->getMemberDir($member) . $member->getMergedDocumentsPdf(): null;
+            if(file_exists($existingFile)) unlink($existingFile);
             if ($fileName) $member->setMergedDocumentsPdf($fileName->getFilename());
         }
 
@@ -451,7 +471,6 @@ class MemberService
         }
     }
 
-
     /**
      * @param Member|null $payment
      * @return PdfResponse
@@ -463,7 +482,6 @@ class MemberService
         return new PdfResponse($content, 'fiche_cnmci.pdf');
     }
 
-
     /**
      * @param Member|null $member
      * @param string $viewTemplate
@@ -473,7 +491,7 @@ class MemberService
     {
         try {
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
-            $file = $this->getMemberDir($member) . time() . uniqid() . ".pdf";
+            $file = $this->memberAssetHelper->getMemberDir($member) . time() . uniqid() . ".pdf";
             $member->setFormulaireCnmciPdf(basename($file));
             $this->saveMember($member);
             file_put_contents($file, $content);
@@ -484,23 +502,24 @@ class MemberService
     }
 
     /**
-     * @param File|null $file
      * @param Member $member
      * @param $width
      * @param $height
      * @return void
      */
-    public function createThumbnail(?File $file, Member $member, $width, $height){
-        $this->memberAssetHelper->createThumbnail($file,  $member->getReference(), $width, $height);
+    public function createThumbnail(Member $member, $width, $height){
+        $this->memberAssetHelper->createThumbnail($member->getPhoto(),  $member->getReference(), $width, $height);
     }
 
-
     /**
-     * @param Member $member
-     * @return string
+     * @return void
      */
-    public function getMemberDir(Member $member){
-        return $this->container->getParameter('kernel.project_dir') . "/public/members/" . $member->getReference() . "/";
+    public function generateAllPhotoThumbnails(){
+        $members = $this->memberRepository->findAll();
+        foreach($members as $member){
+            FileHelper::deleteExistingFile($this->memberAssetHelper->getMemberDir($member) . $member->getPhoto());
+            $this->createThumbnail($member, 128, 128);
+        }
     }
 
     /**
@@ -512,7 +531,6 @@ class MemberService
         $this->memberRepository->add($member, true);
     }
 
-
     /**
      * @param Payment|null $payment
      * @param string $viewTemplate
@@ -523,7 +541,7 @@ class MemberService
         try {
             $qrCodeData = $this->configurationService->getParameter('app.base_url') . "/profile/" . $member->getMatricule();
             $content = $this->pdfGenerator->generateBarCode($qrCodeData, 50, 50);
-            $folder = self::MEDIA_DIR . $member->getReference() . '/';
+            $folder = $this->memberAssetHelper->getMemberDir();
             if(!file_exists($folder)) mkdir($folder, 0777, true);
 
             $barcode_file = $folder . "_barcode.png";
@@ -547,9 +565,13 @@ class MemberService
         }
     }
 
+    /**
+     * @param Member|null $member
+     * @return string|null
+     */
     public function generateFicheAdhesionSynacvtcci(?Member $member){
 
-        $folder = self::MEDIA_DIR . $member->getReference() . '/';
+        $folder = $this->memberAssetHelper->getMemberDir();
         $viewTemplate = 'admin/member/synacvtcci/fiche_adhesion_synacvtcci.html.twig';
         $receipt_file = $folder . time() . uniqid() . ".pdf";
         $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
@@ -566,23 +588,23 @@ class MemberService
      */
     public function combinePdfsForPrint(Member $member, $excludeReceipt = false, $outputmode = 'browser'){
         $pdf = new PDFMerger;
-        $folder = $this->getMemberDir($member);
+        $folder = $this->memberAssetHelper->getMemberDir($member);
 
         if(!$member->getFormulaireCnmciPdf()) {
            // $this->generateCNMCIPdf($member, "admin/pdf/cnmci.html.twig");
             $this->generateCNMCIPdf($member, "pdf/cnmci.html.twig");
         }
-        $pdf->addPDF($folder . $member->getFormulaireCnmciPdf());
+        if(is_file($folder . $member->getFormulaireCnmciPdf())) $pdf->addPDF($folder . $member->getFormulaireCnmciPdf());
 
-        if($member->getPaymentReceiptCnmciPdf()) {
+        if($member->getPaymentReceiptCnmciPdf() && is_file($folder . $member->getPaymentReceiptCnmciPdf())) {
             $pdf->addPDF($folder . $member->getPaymentReceiptCnmciPdf());
         }
 
-        if(!$excludeReceipt && $member->getPaymentReceiptServiceTechniquePdf()) {
-            $pdf->addPDF($folder . $member->getPaymentReceiptServiceTechniquePdf());
+        if(!$excludeReceipt && is_file($folder . $member->getPaymentReceiptServiceTechniquePdf())) {
+             $pdf->addPDF($folder . $member->getPaymentReceiptServiceTechniquePdf());
         }
 
-        if($member->getScanDocumentIdentitePdf()) {
+        if($member->getScanDocumentIdentitePdf() && is_file($folder . $member->getScanDocumentIdentitePdf())) {
             $pdf->addPDF($folder . $member->getScanDocumentIdentitePdf());
         }
 //        if($member->getOnlineRegistrationReceiptPdf()) {
@@ -596,7 +618,6 @@ class MemberService
         $res = $pdf->merge($outputmode, uniqid() . '.pdf');
         return $output;
     }
-
 
     /**
      * @param array $members
@@ -616,16 +637,16 @@ class MemberService
 
             /** @var Member $member **/
             foreach($members as $member) {
-                if(is_file($this->getMemberDir($member) . $member->getPhoto())) {
-                    $info = new SplFileInfo($this->getMemberDir($member) . $member->getPhoto());
-                    $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
-                    $zipArchive->addFile($this->getMemberDir($member) . $member->getPhoto(), $outputFile);
+                $dir = $this->memberAssetHelper->getMemberDir($member);
+                $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' ;
+                if(is_file( $dir . $member->getPhoto())) {
+                    $info = new SplFileInfo($dir . $member->getPhoto());
+                    $zipArchive->addFile($dir. $member->getPhoto(), $outputFile . $info->getExtension());
                 }
 
-                if(is_file($this->getMemberDir($member) . $member->getMergedDocumentsPdf())) {
-                    $info = new SplFileInfo($this->getMemberDir($member) . $member->getMergedDocumentsPdf());
-                    $outputFile = $member->getReference() . '_'  . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
-                    $zipArchive->addFile($this->getMemberDir($member) . $member->getMergedDocumentsPdf(), $outputFile);
+                if(is_file($dir . $member->getMergedDocumentsPdf())) {
+                    $info = new SplFileInfo($dir . $member->getMergedDocumentsPdf());
+                    $zipArchive->addFile($dir . $member->getMergedDocumentsPdf(), $outputFile . $info->getExtension());
                 }
             }
             $zipArchive->close();
@@ -651,12 +672,11 @@ class MemberService
         return null;
     }
 
-
     /**
      * @param Member|null $member
      * @return string|null
      */
-    public static function createSynacvtcciMatricule(?Member $member): ?string
+    public static function createVtcMatricule(?Member $member): ?string
     {
         $sexCode = null;
         $date = new DateTime('now');
@@ -673,7 +693,7 @@ class MemberService
      * @param Member|null $member
      * @return string
      */
-    public static function createFalciMatricule(?Member $member): string
+    public static function createLivreurMatricule(?Member $member): string
     {
         $prefix = "FALCI";
         $matricule = sprintf('%s%05d', $prefix, $member->getId());
@@ -684,27 +704,280 @@ class MemberService
      * @param Member|null $member
      * @return string
      */
-    public static function createTaxiMatricule(?Member $member): string
+    public static function createTaxiCompteurMatricule(?Member $member): string
     {
-        $prefix = "TAXI";
+        $prefix = "TAXCPT";
         $matricule = sprintf('%s%05d', $prefix, $member->getId());
         return $matricule;
     }
 
+    /**
+     * @param Member|null $member
+     * @return string
+     */
+    public static function createTaxiCommunalMatricule(?Member $member): string
+    {
+        $prefix = "TAXCOM";
+        $matricule = sprintf('%s%05d', $prefix, $member->getId());
+        return $matricule;
+    }
+
+    /**
+     * @param Member|null $member
+     * @return string
+     */
+    public static function createTricycleMatricule(?Member $member): string
+    {
+        $prefix = "TRI";
+        $matricule = sprintf('%s%05d', $prefix, $member->getId());
+        return $matricule;
+    }
 
     /**
      * @param Member|null $member
      * @return string|null
      */
-    public static function generateMatricule(?Member $member): ?string{
+    public static function generateMatricule(?Member $member): ?string {
         if(!$member->getActivity()) return null;
         $matricule = match($member->getActivity()){
-            "CHAUFFEUR VTC" => self::createSynacvtcciMatricule($member),
-            "CHAUFFEUR TAXI" => self::createTaxiMatricule($member),
-            "CHAUFFEUR LIVREUR" => self::createFalciMatricule($member)
+            "CHAUFFEUR VTC" => self::createVtcMatricule($member),
+            "CHAUFFEUR TAXI COMPTEUR" => self::createTaxiCompteurMatricule($member),
+            "CHAUFFEUR COMMUNAL" => self::createTaxiCommunalMatricule($member),
+            "CHAUFFEUR LIVREUR" => self::createLivreurMatricule($member),
+            "CHAUFFEUR TRICYCLE" => self::createTricycleMatricule($member)
         };
 
         return $matricule;
+    }
+
+    /**
+     * @param int $member_id
+     * @param string $cnmci_numero_rm
+     * @param string $cnmci_carte_professionelle
+     * @return bool
+     */
+    public function validateSouscription(int $member_id, string $cnmci_numero_rm, string $cnmci_carte_professionelle)
+    {
+        try {
+            $member = $this->memberRepository->find($member_id);
+            if(!$member?->getIsPaymentValidated()) return false;
+            $member->setCnmciNumeroRm($cnmci_numero_rm);
+            $member->setCnmciNumeroCarteProfessionelle($cnmci_carte_professionelle);
+            $member->setIsInscriptionValidated(true);
+            $member->setStatus("VALIDER");
+            $this->generateSingleCnmciCard($member);
+            $this->memberRepository->add($member, true);
+            return true;
+        }catch(\Exception $e){
+            return false;
+        }
+    }
+
+    /**
+     * @param Member $member
+     * @return void
+     */
+    public function validatePayment(Member $member) {
+        $member->setIsPaymentValidated(true);
+        $this->memberRepository->add($member, true);
+    }
+
+    /**
+     * @param array $ids
+     * @return void
+     */
+    public function validatePaymentBatch(array $ids) {
+        $this->memberRepository->validatePaymentByIds($ids);
+    }
+
+    /**
+     * @param array $ids
+     * @return void
+     */
+    public function validateSouscriptionBatch(array $ids) {
+        $this->memberRepository->validateSouscriptionByIds($ids);
+    }
+
+    /**
+     * @param $members
+     * @return string|null
+     */
+    public function generateMatriceEncaissementXlsxFile($members): ?string
+    {
+        try {
+
+            $dir = $this->getCnmciDir();
+            if (!file_exists($dir)) mkdir($dir, 0777, true);
+
+            $inputFileName = $dir . "CNMCI-Matrice des encaissements.xls";
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+            $spreadsheet = $reader->load($inputFileName);
+            $worksheet = $spreadsheet->getSheet(0);
+
+            $count = 1;
+            $cel = 3;
+            /** @var Member $member */
+            foreach ($members as $member) {
+                $d = [
+                    $count++,
+                    "Registre des metiers et Carte d Artisans",
+                    '15000',
+                    $member->getPaymentReceiptCnmciCode(), //$row['payment_receipt_cnmci_code']  $member->get,
+                    $member->getSubscriptionDate()->format('d/m/Y'), //$row['subscription_date']->format('d/m/Y'),
+                    $member->getLastName() . '' . $member->getFirstName(),
+                    $member->getActivity(),
+                    $member->getActivityGeoLocation(),
+                    $member->getMobile(),
+                    '',
+                ];
+
+                $worksheet->fromArray(
+                    $d,             // The data to set
+                    NULL,        // Array values with this value will not be set
+                    "A" . $cel++         // Top left coordinate of the worksheet range where we want to set these values (default is A1)
+                );
+            }
+
+            $spreadsheet->getActiveSheet()->setAutoFilter(
+                $spreadsheet->getActiveSheet()->calculateWorksheetDimension()
+            );
+
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+            $outputFileName = $dir . time() . uniqid() . ".xls";
+
+            if (file_exists($outputFileName)) \unlink($outputFileName);
+            $writer->save($outputFileName);
+
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+
+            return $outputFileName;
+
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $members
+     * @return string|null
+     */
+    public function generateAdherentListXlsxFile($members): ?string
+    {
+        try {
+            $dir = $this->getCnmciDir();
+            if (!file_exists($dir)) mkdir($dir, 0777, true);
+
+            $inputFileName = $dir . "CNMCI-Matrice des inscrits.xls";
+
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+            $spreadsheet = $reader->load($inputFileName);
+            $worksheet = $spreadsheet->getSheet(0);
+
+            $count = 1;
+            $cel = 3;
+            /** @var Member $member * */
+            foreach ($members as $member) {
+                try {
+                    $d = [
+                        "N°" => $count++,
+                        "EMAIL" => $member->getEmail(),
+                        "NOM" => $member->getLastName(),
+                        "PRENOMS" => $member->getFirstName(),
+                        "ACTIVITE" => $member->getActivity(),
+                        "DATE SOUSCRIPTION" => $member->getSubscriptionDate()?->format('d/m/Y'),
+                        "SEXE" => $member->getSex(),
+                        "PHOTO" => $member->getPhoto(),
+                        "DATE DE NAISSANCE" => $member->getDateOfBirth()?->format('d/m/Y'),
+                        "VILLE NAISSANCE" => $member->getBirthLocality(),
+                        "N° PERMIS DE CONDUIRE" => $member->getDrivingLicenseNumber(),
+                        "NUMERO PIECE D'IDENTITE" => $member->getIdNumber(),
+                        "TYPE DE PIECE" => $member->getIdType(),
+                        "PAYS" => $member->getCountry(),
+                        "VILLE" => $member->getCity(),
+                        "COMMUNE" => $member->getCommune(),
+                        "MOBILE" => $member->getMobile(),
+                        "TEL" => $member->getPhone(),
+                        "PHOTO PIECE RECTO" => $member->getPhotoPieceFront(),
+                        "PHOTO PIECE VERSO" => $member->getPhotoPieceBack(),
+                        "PHOTO PERMIS RECTO" => $member->getPhotoPermisFront(),
+                        "PHOTO PERMIS VERSO" => $member->getPhotoPermisBack(),
+                        "NATIONALITE" => $member->getNationality(),
+                        "QUARTIER DE RESIDENCE" => $member->getQuartier(),
+                        "WHATSAPP" => $member->getWhatsapp(),
+                        "ENTREPRISES" => !empty($member->getCompany()) ? implode("|", $member->getCompany()): '',
+                        "NOM CONJOINT" => $member->getPartnerLastName(),
+                        "PRENOMS CONJOINT" => $member->getFirstName(),
+                        "LIEU DE DELIVRANCE PIECE" => $member->getIdDeliveryPlace(),
+                        "DATE DE DELIVRANCE PIECE" => $member->getIdDeliveryDate()?->format('d/m/Y'),
+                        "ETAT CIVIL" => $member->getEtatCivil(),
+                        "REFERENCE" => $member->getReference(),
+                        "PAYS DE NAISSANCE" => $member->getIdDeliveryPlace(),
+                        "LOCALITE NAISSANCE" => $member->getBirthLocality(),
+                        "AUTORITE DE DELIVRANCE PIECE" => $member->getIdDeliveryAuthority(),
+                        "BOITE POSTALE" => $member->getPostalCode(),
+                        "PAIEMENT ORANGE MONEY" => $member->getPaymentReceiptCnmciCode(),
+                        "LOCALISATION GEOGRAPHIQUE DE L'ACTIVITE" => $member->getIdDeliveryPlace(),
+                        "PAYS DE L'ACTIVITE" => $member->getActivityCountryLocation(),
+                        "VILLE DE L'ACTIVITE" => $member->getActivityCityLocation(),
+                        "QUARTIER DE L'ACTIVITE" => $member->getActivityQuartierLocation(),
+                        "CATEGORIE SOCIOPROFESSIONNELLE" => $member->getSocioprofessionnelleCategory(),
+                        "DATE DEBUT ACTIVITE " => $member->getActivityDateDebut()?->format('d/m/Y'),
+                        "PRENOMS PERSONNE A CONTACTER" => $member->getPartnerFirstName(),
+                        "NOM PERSONNE A CONTACTER" => $member->getPartnerLastName(),
+                        //    "TELEPHONE PERSONNE A CONTACTER" => "",
+                        //    "RECU ORANGE MONEY" => "",
+                        //    "FORMULAIRE CNMCI" => "",
+                        //    "DOCUMENTS" => "",
+                        //    "DOCUMENTS IDENTITE" => ""
+                    ];
+                    $r = array_values($d);
+                    $worksheet->fromArray(
+                        $r,     // The data to set
+                        NULL,               // Array values with this value will not be set
+                        "A" . $cel++     // Top left coordinate of the worksheet range where we want to set these values (default is A1)
+                    );
+
+                } catch (\Exception $e) {
+                    echo $e->getMessage() . PHP_EOL;
+                }
+            }
+
+            $spreadsheet->getActiveSheet()->setAutoFilter($spreadsheet->getActiveSheet()->calculateWorksheetDimension());
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+            $outputFileName = $dir . uniqid(). ".xls";
+            if (file_exists($outputFileName)) \unlink($outputFileName);
+            $writer->save($outputFileName);
+
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+
+            return $outputFileName;
+
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCnmciDir()
+    {
+        return $this->getParameter("kernel.project_dir") . "/public/cnmci/";
+    }
+
+    /**
+     * @param Member|null $member
+     * @return string
+     */
+    public function getMemberDir(?Member $member): string
+    {
+        return $this->memberAssetHelper->getMemberDir($member);
     }
 }
 
