@@ -2,14 +2,14 @@
     <table  style="margin-top: 5px;border-collapse: collapse;table-layout: fixed;width: 100%;">
         <tr style="border-collapse: collapse;">
             <td colspan="2" style="border-collapse: collapse;text-align: center">
-                <p style="font-weight: bolder; font-size: 25px; text-transform: capitalize;text-align: center">RECU DE PAIEMENT CNMCI</p>
+                <p style="font-weight: bolder; font-size: 25px; text-transform: capitalize;text-align: center">RECU D'ENR&Ocirc;LEMENT A LA CHAMBRE NATIONALE DE METIERS</p>
             </td>
         </tr>
         <tr style="border-collapse: collapse;">
-            <td style="border-collapse: collapse;padding: 15px 5px;">
-               <img src="/var/www/html/public/assets/frontend/img/cnmci.jpg" width="100">
+            <td style="border-collapse: collapse;padding: 100px 5px;">
+               <img src="/var/www/html/public/assets/frontend/img/cnmci.png" width="150" height="150">
             </td>
-            <td style="border-collapse: collapse;padding: 15px 15px;text-align: center">
+            <td style="border-collapse: collapse;padding: 100px 15px;text-align: center">
                 <img id="imagePreview" src="/var/www/html/public/members/{{ payment.paymentFor.reference }}/{{ payment.paymentFor.photo }}" alt="" width="150" height="150">
             </td>
         </tr>
@@ -27,11 +27,11 @@
             <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.paymentFor.lastName }}</td>
         </tr>
         <tr  style="border-collapse: collapse;">
-            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Pr&eacute;noms</td>
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Pr&eacute;noms</th>
             <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.paymentFor.firstName }}</td>
         </tr>
         <tr  style="border-collapse: collapse;">
-            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Mode de paiement</td>
+            <th style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">Mode de paiement</th>
             <td style="border: 1px solid black; border-collapse: collapse; padding: 5px 5px;">{{ payment.type|upper }}</td>
         </tr>
 {#        <tr>#}

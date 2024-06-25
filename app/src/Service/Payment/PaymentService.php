@@ -138,5 +138,3 @@ class PaymentService
 
     }
 }
-//
-// enlever le montant
