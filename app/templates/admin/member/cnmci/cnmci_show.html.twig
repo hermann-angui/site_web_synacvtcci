@@ -108,6 +108,8 @@
                                                onclick="window.open('{{ path('admin_show_and_download_pdf', {id: member.id}) }}','popup','width=600,height=600,scrollbars=no,resizable=no'); return false;">
                                                 <span class="bx bx-printer"></span>  Générer le dossier final à imprimer
                                             </a>
+                                            <a href="{{ path('download_payment_receipt_pdf', {id: payment.id })}}" class="btn btn-primary waves-effect waves-light mx-3">Télécharger le reçu</a>
+
                                         </div>
                                         <ul class="list-inline user-chat-nav text-end mb-0">
                                             <li class="list-inline-item">

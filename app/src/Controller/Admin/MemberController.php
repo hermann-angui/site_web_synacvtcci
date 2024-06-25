@@ -13,6 +13,7 @@ use App\Helper\FileUploadHelper;
 use App\Repository\MemberRepository;
 use App\Repository\VillesRepository;
 use App\Service\Member\MemberService;
+use App\Service\Payment\PaymentService;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Expression;
 use Doctrine\DBAL\Connection;
@@ -55,9 +56,11 @@ class MemberController extends AbstractController
     }
 
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
-    public function formCnmciShow(Request $request, Member $member, MemberService $memberService): Response
+    public function formCnmciShow(Request $request, Member $member, PaymentService $paymentService): Response
     {
-        return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member]);
+        $payment = $paymentService->findMemberPaymentByTarget($member, "FRAIS_SERVICE_TECHNIQUE");
+        $paymentService->generatePaymentReceipt($payment);
+        return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member, "payment" => $payment]);
     }
 
     #[Route('/printdocs/{id}', name: 'admin_show_and_download_pdf', methods: ['GET'])]

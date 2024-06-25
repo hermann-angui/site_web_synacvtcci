@@ -12,7 +12,9 @@ use App\Helper\PasswordHelper;
 use App\Helper\PdfGenerator;
 use App\Repository\ChildRepository;
 use App\Repository\MemberRepository;
+use App\Repository\PaymentRepository;
 use App\Service\ConfigurationService\ConfigurationService;
+use App\Service\Payment\PaymentService;
 use Clegginabox\PDFMerger\PDFMerger;
 use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -33,7 +35,6 @@ class MemberService
      * @param ContainerInterface $container
      * @param MemberCardGeneratorService $memberCardGeneratorService
      * @param MemberAssetHelper $memberAssetHelper
-     * @param MemberRepository $memberRepository
      * @param ChildRepository $childRepository
      * @param UserPasswordHasherInterface $userPasswordHasher
      * @param PdfGenerator $pdfGenerator
@@ -46,6 +47,7 @@ class MemberService
         private MemberCardGeneratorService     $memberCardGeneratorService,
         private MemberAssetHelper              $memberAssetHelper,
         private MemberRepository               $memberRepository,
+        private PaymentService                 $paymentService,
         private ChildRepository                $childRepository,
         private UserPasswordHasherInterface    $userPasswordHasher,
         private PdfGenerator                   $pdfGenerator,
@@ -600,8 +602,14 @@ class MemberService
             $pdf->addPDF($folder . $member->getPaymentReceiptCnmciPdf());
         }
 
-        if(!$excludeReceipt && is_file($folder . $member->getPaymentReceiptServiceTechniquePdf())) {
-             $pdf->addPDF($folder . $member->getPaymentReceiptServiceTechniquePdf());
+        if(!$excludeReceipt) {
+            $filePath = $folder . $member->getPaymentReceiptServiceTechniquePdf();
+            if(!is_file($filePath)){
+                $payment = $this->paymentService->findMemberPaymentByTarget($member, "FRAIS_SERVICE_TECHNIQUE");
+                $this->paymentService->generatePaymentReceipt($payment);
+            }else{
+                $pdf->addPDF($filePath);
+            }
         }
 
         if($member->getScanDocumentIdentitePdf() && is_file($folder . $member->getScanDocumentIdentitePdf())) {
@@ -979,5 +987,7 @@ class MemberService
     {
         return $this->memberAssetHelper->getMemberDir($member);
     }
+
+
 }
 
