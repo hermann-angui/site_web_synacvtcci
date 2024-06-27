@@ -21,36 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class PageController extends AbstractController
 {
     #[Route(path: '/', name: 'home')]
-    public function home(Request $request): Response
-    {
-        $flashInfos = [
-            "Suite à la bastonnade d'un chauffeur à ..",
-            "La SYNACVTCCI apporte son assistance au chauffeur bastonné ..",
-            "La SYNACVTCCI signe une convetion avec la maison d'assurance santé VITAS Santé",
-        ];
-
-        $imageTextActivities = [
-            [
-                "title"  => "",
-                "description"  => "",
-                "images" => ["","",""],
-                "url" => ""
-            ],
-        ];
-
-        $videoActivities = [
-            [
-                "title"  => "",
-                "description"  => "",
-                "url" => ""
-            ],
-        ];
-
-        return $this->render('frontend/pages/index.html.twig',[
-            "flashInfos" => $flashInfos,
-            "videoActivities" => $videoActivities,
-            "imageTextActivities" => $imageTextActivities,
-        ]);
+    public function home(Request $request): Response {
+        return $this->redirectToRoute('admin_index');
     }
 
     #[Route(path: '/success/{id}', name: 'success')]
