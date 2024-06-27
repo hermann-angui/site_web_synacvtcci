@@ -549,7 +549,7 @@ class MemberService
             $barcode_file = $folder . "_barcode.png";
             file_put_contents($barcode_file, $content);
 
-            $viewTemplate = 'admin/member/online-receipt-pdf.html.twig';
+            $viewTemplate = 'admin/artisan/online-receipt-pdf.html.twig';
             $receipt_file = $folder . time() . uniqid() . ".pdf";
             $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
             file_put_contents($receipt_file, $content);
@@ -565,20 +565,6 @@ class MemberService
             if(file_exists($folder . "_barcode.png")) \unlink($folder . "_barcode.png");
             if(file_exists($folder . "_receipt.pdf")) \unlink($folder . "_receipt.pdf");
         }
-    }
-
-    /**
-     * @param Member|null $member
-     * @return string|null
-     */
-    public function generateFicheAdhesionSynacvtcci(?Member $member){
-
-        $folder = $this->memberAssetHelper->getMemberDir();
-        $viewTemplate = 'admin/member/synacvtcci/fiche_adhesion_synacvtcci.html.twig';
-        $receipt_file = $folder . time() . uniqid() . ".pdf";
-        $content = $this->pdfGenerator->generatePdf($viewTemplate, ['member' => $member]);
-        file_put_contents($receipt_file, $content);
-        return $content;
     }
 
     /**
@@ -678,67 +664,6 @@ class MemberService
             return $zipFile;
         }
         return null;
-    }
-
-    /**
-     * @param Member|null $member
-     * @return string|null
-     */
-    public static function createVtcMatricule(?Member $member): ?string
-    {
-        $sexCode = null;
-        $date = new DateTime('now');
-        if ($member->getSex() === "H") $sexCode = "SY1";
-        elseif ($member->getSex() === "F") $sexCode = "SY2";
-        if ($sexCode) {
-            $matricule = sprintf('%s%s%05d', $sexCode, $date->format('Y'), $member->getId());
-            return $matricule;
-        }
-        return null;
-    }
-
-    /**
-     * @param Member|null $member
-     * @return string
-     */
-    public static function createLivreurMatricule(?Member $member): string
-    {
-        $prefix = "FALCI";
-        $matricule = sprintf('%s%05d', $prefix, $member->getId());
-        return $matricule;
-    }
-
-    /**
-     * @param Member|null $member
-     * @return string
-     */
-    public static function createTaxiCompteurMatricule(?Member $member): string
-    {
-        $prefix = "TAXCPT";
-        $matricule = sprintf('%s%05d', $prefix, $member->getId());
-        return $matricule;
-    }
-
-    /**
-     * @param Member|null $member
-     * @return string
-     */
-    public static function createTaxiCommunalMatricule(?Member $member): string
-    {
-        $prefix = "TAXCOM";
-        $matricule = sprintf('%s%05d', $prefix, $member->getId());
-        return $matricule;
-    }
-
-    /**
-     * @param Member|null $member
-     * @return string
-     */
-    public static function createTricycleMatricule(?Member $member): string
-    {
-        $prefix = "TRI";
-        $matricule = sprintf('%s%05d', $prefix, $member->getId());
-        return $matricule;
     }
 
     /**
@@ -987,7 +912,6 @@ class MemberService
     {
         return $this->memberAssetHelper->getMemberDir($member);
     }
-
 
 }
 

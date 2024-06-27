@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/stats')]
+#[Route('/stats')]
 class StatsController extends AbstractController
 {
     #[Route('', name: 'admin_stats_index', methods: ['GET'])]
@@ -72,9 +72,12 @@ class StatsController extends AbstractController
         $months = ['Janv', 'Fev', 'Mars', 'Avri', 'Mai', 'Jun', 'Juil', 'Aout', 'Sep', 'Oct', 'Nov', 'Dec'];
         $values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        $t["CHAUFFEUR VTC"] =  $values;
-        $t["CHAUFFEUR TAXI"] = $values;
-        $t["CHAUFFEUR LIVREUR"] = $values;
+        $t["CONDUCTEUR VTC"] =  $values;
+        $t["CONDUCTEUR TAXI COMPTEUR"] = $values;
+        $t["CONDUCTEUR TAXI COMMUNAL"] = $values;
+        $t["CONDUCTEUR MOTO TAXI"] = $values;
+        $t["CONDUCTEUR LIVREUR"] = $values;
+        $t["CONDUCTEUR TRICYCLE"] = $values;
 
         $stats = $memberRepository->getTotalGroupByActivityAndMonth();
 
@@ -82,15 +85,25 @@ class StatsController extends AbstractController
             $t[$stat['activity']][$stat['month_number'] - 1 ] = $stat['total'];
         }
 
-        return $this->json([
-            "sex" => ["data" => $sex_stat, "legend" => array_column($sex_stat, 'name')],
-            "activity" => ["data" => $activity_stat, "legend" => array_column($activity_stat, 'name')],
+        $payload = [
+            "sex" => [
+                "data" => $sex_stat,
+                "legend" => array_column($sex_stat, 'name')
+            ],
+            "activity" => [
+                "data" => $activity_stat,
+                "legend" => array_column($activity_stat, 'name')
+            ],
             'nationality' => ["data" => $nationality_stat, "legend" => array_column($nationality_stat, 'name')],
             'months' => $months,
-            'vtc' =>  $t['CHAUFFEUR VTC'],
-            'taxi' => $t['CHAUFFEUR TAXI'],
-            'livreur' => $t['CHAUFFEUR LIVREUR'],
-        ]);
+            'vtc' =>  $t['CONDUCTEUR VTC'],
+            'taxi_compteur' => $t['CONDUCTEUR TAXI COMPTEUR'],
+            'taxi_communal' => $t['CONDUCTEUR TAXI COMMUNAL'],
+            'moto_taxi' => $t['CONDUCTEUR MOTO TAXI'],
+            'livreur' => $t['CONDUCTEUR LIVREUR'],
+            'tricycle' => $t['CONDUCTEUR TRICYCLE'],
+        ];
+        return $this->json($payload);
     }
 
 }

@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/member')]
+#[Route('/member')]
 class MemberController extends AbstractController
 {
     #[Route('', name: 'admin_member_index', methods: ['GET'])]
@@ -38,7 +38,7 @@ class MemberController extends AbstractController
         if(in_array("ROLE_AGENT", $this->getUser()->getRoles()))  {
             return $this->redirectToRoute('admin_index');
         } else {
-            return $this->render('admin/member/synacvtcci/index.html.twig');
+            return $this->render('admin/artisan/synacvtcci/index.html.twig');
         }
     }
 
@@ -52,7 +52,7 @@ class MemberController extends AbstractController
     public function verificationList(Request $request, MemberRepository $memberRepository): Response
     {
         $members = $memberRepository->findAll();
-        return $this->render('admin/member/verification-list.html.twig', ["members" => $members]);
+        return $this->render('admin/artisan/verification-list.html.twig', ["members" => $members]);
     }
 
     #[Route('/cnmci/{id}', name: 'admin_member_cncmi_show', methods: ['GET'])]
@@ -60,7 +60,7 @@ class MemberController extends AbstractController
     {
         $payment = $paymentService->findMemberPaymentByTarget($member, "FRAIS_SERVICE_TECHNIQUE");
         $paymentService->generatePaymentReceipt($payment);
-        return $this->render('admin/member/cnmci/cnmci_show.html.twig', ['member' => $member, "payment" => $payment]);
+        return $this->render('admin/artisan/cnmci/cnmci_show.html.twig', ['member' => $member, "payment" => $payment]);
     }
 
     #[Route('/printdocs/{id}', name: 'admin_show_and_download_pdf', methods: ['GET'])]
@@ -89,7 +89,7 @@ class MemberController extends AbstractController
             $activityLogger->create($member, "Création d'un nouveau dossier souscripteur et upload des fichiers (photo, scan des documents d'identités et reçu orange money)");
             return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
         }
-        return $this->renderForm('admin/member/etape-photo.html.twig', [
+        return $this->renderForm('admin/artisan/etape-photo.html.twig', [
             'member' => $member,
             'form' => $form,
         ]);
@@ -108,7 +108,7 @@ class MemberController extends AbstractController
             return $this->redirectToRoute('admin_payment_choose', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
 
         }
-        return $this->renderForm('admin/member/new.html.twig', [
+        return $this->renderForm('admin/artisan/new.html.twig', [
             'member' => $member,
             'form' => $form,
         ]);
@@ -127,7 +127,7 @@ class MemberController extends AbstractController
                 $fileUploadHelper->upload($file, $uploadDir);
             }
         }
-        return $this->renderForm('admin/member/synacvtcci/upload.html.twig');
+        return $this->renderForm('admin/artisan/synacvtcci/upload.html.twig');
     }
 
     #[Route('/import', name: 'admin_member_import', methods: ['GET', 'POST'])]
@@ -148,11 +148,11 @@ class MemberController extends AbstractController
     public function showCard(Request $request, Member $member): Response
     {
         $carte_img_back = match($member->getActivity()){
-            "CHAUFFEUR VTC" => "carte_synacvtcci_back.jpg",
-            "CHAUFFEUR LIVREUR" => "carte_falci_back.jpg",
-            "CHAUFFEUR TAXI" => "carte_taxi_back.jpg",
+            "CONDUCTEUR VTC" => "carte_synacvtcci_back.jpg",
+            "CONDUCTEUR LIVREUR" => "carte_falci_back.jpg",
+            "CONDUCTEUR TAXI" => "carte_taxi_back.jpg",
         };
-        return $this->render('admin/member/synacvtcci/show_card.html.twig', ['member' => $member, "carte_img_back" => $carte_img_back]);
+        return $this->render('admin/artisan/synacvtcci/show_card.html.twig', ['member' => $member, "carte_img_back" => $carte_img_back]);
     }
 
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
@@ -198,19 +198,19 @@ class MemberController extends AbstractController
     #[Route('/adherents/synacvtcci', name: 'admin_adherents_synacvtcci', methods: ['GET'])]
     public function  showListAdherentsSynacvtcci(Request $request): Response
     {
-        return $this->render('admin/member/synacvtcci/adherents-list.html.twig');
+        return $this->render('admin/artisan/synacvtcci/adherents-list.html.twig');
     }
 
     #[Route('/adherents/taxi', name: 'admin_adherents_taxi', methods: ['GET'])]
     public function  showListAdherentsTaxi(Request $request): Response
     {
-        return $this->render('admin/member/taxi/adherents-list.html.twig');
+        return $this->render('admin/artisan/taxi/adherents-list.html.twig');
     }
 
     #[Route('/adherents/livreurs', name: 'admin_adherents_livreurs', methods: ['GET'])]
     public function showListAdherentsLivreurs(Request $request): Response
     {
-        return $this->render('admin/member/livreurs/adherents-list.html.twig');
+        return $this->render('admin/artisan/livreurs/adherents-list.html.twig');
     }
 
     #[Route('/adherents/dt', name: 'admin_adherents_list_dt', methods: ['GET'])]
@@ -265,9 +265,9 @@ class MemberController extends AbstractController
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
-                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>";
-                    if(!$row["has_withdraw_syndicat_carte"]) $content.= "<a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-eye'></i> Délivrée</a>";
+                                            <a class='dropdown-item' href='/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
+                                            <a class='dropdown-item' href='/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>";
+                    if(!$row["has_withdraw_syndicat_carte"]) $content.= "<a class='dropdown-item' href='/member/$id/edit'><i class='mdi mdi-eye'></i> Délivrée</a>";
                     $content.= "</div></div></div> ";
                     return $content;
                 }
@@ -331,7 +331,7 @@ class MemberController extends AbstractController
                 'dt'        => '',
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
-                    $content =  "<a class='btn btn-primary btn-sm btn-rounded waves-effect waves-light' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Traiter le dossier</a>";
+                    $content =  "<a class='btn btn-primary btn-sm btn-rounded waves-effect waves-light' href='/member/$id/edit'><i class='mdi mdi-pen'></i> Traiter le dossier</a>";
                     return $content;
                 }
             ],
@@ -414,10 +414,10 @@ class MemberController extends AbstractController
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
-                                            <a class='dropdown-item' href='/admin/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
-                                            <a class='dropdown-item' href='/admin/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>";
-                    if(!$row['has_paid_for_syndicat']) $content .= "<a class='dropdown-item' href='/admin/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>";
+                                            <a class='dropdown-item' href='/member/$id'><i class='mdi mdi-eye'></i> Fiche Artisan</a>
+                                            <a class='dropdown-item' href='/member/cnmci/$id'><i class='mdi mdi-eye'></i> Fiche CNMCI</a>
+                                            <a class='dropdown-item' href='/member/$id/edit'><i class='mdi mdi-pen'></i> Editer</a>";
+                    if(!$row['has_paid_for_syndicat']) $content .= "<a class='dropdown-item' href='/payment/carte/syndicat/$id'><i class='mdi mdi-cash'></i> Payer l'adhésion syndicat</a>";
                     $content.= "</div></div></div> ";
                     return $content;
                 }
@@ -471,13 +471,13 @@ class MemberController extends AbstractController
     #[Route('/{id}', name: 'admin_member_show', methods: ['GET'])]
     public function show(Member $member): Response
     {
-        return $this->render('admin/member/show.html.twig', ['member' => $member,]);
+        return $this->render('admin/artisan/show.html.twig', ['member' => $member,]);
     }
 
     #[Route('/recap/{id}', name: 'admin_member_recapitulatif', methods: ['GET'])]
     public function recapitulatif(Member $member): Response
     {
-        return $this->render('admin/member/recapitulatif.html.twig', ['member' => $member]);
+        return $this->render('admin/artisan/recapitulatif.html.twig', ['member' => $member]);
     }
 
     #[Route('/{id}/edit', name: 'admin_member_edit', methods: ['GET', 'POST'])]

@@ -64,21 +64,5 @@ class WavePaymentController extends AbstractController
         return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
     }
 
-    #[Route(path: '/carte-syndicat/success/{id}', name: 'payment_succes_carte_syndicat', methods: ['POST', 'GET'])]
-    public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberService $memberService): Response
-    {
-        $member = $payment->getPaymentFor();
-        $member->setEtape(5);
-        $memberService->saveMember($member);
-        $paymentService->generatePaymentReceipt($payment);
-        $memberService->generateSingleMemberCard($payment->getPaymentFor());
-        return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
-    }
 
-    #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
-    public function pdfGenerate(Payment $payment, PaymentService $paymentService, ActivityLogger $activityLogger): Response
-    {
-        $activityLogger->create($payment, "Téléchargement de reçu");
-        return $paymentService->downloadMemberPaymentReceipt($payment);
-    }
 }

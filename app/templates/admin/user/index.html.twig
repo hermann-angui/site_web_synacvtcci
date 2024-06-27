@@ -167,7 +167,7 @@
         });
 
         $(document).on('click','.btn-user-show', function(){
-            var url = "/admin/user/" + $(this).data('id');
+            var url = "/user/" + $(this).data('id');
             $.ajax({
                 url: url,
                 type: 'GET',
@@ -178,7 +178,7 @@
             });
         });
         $(document).on('click', '.btn-user-edit',  function(){
-            var url = "/admin/user/" + $(this).data('id') + '/edit';
+            var url = "/user/" + $(this).data('id') + '/edit';
             $.ajax({
                 url: url,
                 type: 'GET',

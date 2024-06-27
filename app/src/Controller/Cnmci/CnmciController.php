@@ -24,10 +24,10 @@ use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-#[Route('/admin/cnmci')]
+#[Route('/cnmci')]
 class CnmciController extends AbstractController
 {
-    #[Route('', name: 'cnmci_index', methods: ['GET', 'POST'])]
+    #[Route('/index', name: 'cnmci_index', methods: ['GET'])]
     public function dashboard(Request $request): Response
     {
         date_default_timezone_set("Africa/Abidjan");
@@ -46,9 +46,12 @@ class CnmciController extends AbstractController
         $actgroups = $memberRepository->getTotalGroupByActivity();
 
         $stats = [
-            "CHAUFFEUR VTC" => 0,
-            "CHAUFFEUR TAXI" => 0,
-            "CHAUFFEUR LIVREUR" => 0,
+            "CONDUCTEUR VTC" => 0,
+            "CONDUCTEUR TAXI COMPTEUR" => 0,
+            "CONDUCTEUR TAXI COMMUNAL" => 0,
+            "CONDUCTEUR MOTO TAXI" => 0,
+            "CONDUCTEUR LIVREUR" => 0,
+            "CONDUCTEUR TRICYCLE" => 0,
         ];
 
         foreach ($actgroups as $group) {
@@ -58,9 +61,12 @@ class CnmciController extends AbstractController
 
         $totals = [
             "total_souscriptions" => $totalInscription,
-            "total_vtc" => $stats["CHAUFFEUR VTC"] ? : 0,
-            "total_taxi" => $stats["CHAUFFEUR TAXI"] ? : 0,
-            "total_livreurs" => $stats["CHAUFFEUR LIVREUR"] ? : 0,
+            "total_vtc" => $stats["CONDUCTEUR VTC"] ? : 0,
+            "total_taxi_compteur" => $stats["CONDUCTEUR TAXI COMPTEUR"] ? : 0,
+            "total_taxi_communal" => $stats["CONDUCTEUR TAXI COMMUNAL"] ? : 0,
+            "total_moto_taxi" => $stats["CONDUCTEUR MOTO TAXI"] ? : 0,
+            "total_livreur" => $stats["CONDUCTEUR LIVREUR"] ? : 0,
+            "total_tricyle" => $stats["CONDUCTEUR TRICYCLE"] ? : 0,
             "total_validation_paiement" => 0,
             "total_validation_souscription" => 0
         ];
@@ -80,54 +86,6 @@ class CnmciController extends AbstractController
         $from = $from->modify('-1 year');
         $to = new \DateTime();
         return $this->render('cnmci/souscripteurs.html.twig', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
-    }
-
-    #[Route('/telecharger/photo/{id}', name: 'cnmci_download_photo', methods: ['GET', 'POST'])]
-    public function downloadPhoto(Request $request, Member $member): Response
-    {
-        date_default_timezone_set("Africa/Abidjan");
-        ini_set('max_execution_time', '-1');
-        $imageUrl = $this->getParameter("kernel.project_dir") . "/public/members/" . $member->getReference() . "/" . basename($member->getPhoto());
-        $info = new SplFileInfo($imageUrl);
-        $outputFile = $member->getReference() . '_' . $member->getLastName() . ' ' . $member->getFirstName() . '.' . $info->getExtension();
-        return $this->file($imageUrl, $outputFile);
-    }
-
-    #[Route('/telecharger/documents/{id}', name: 'cnmci_download_documents', methods: ['GET', 'POST'])]
-    public function downloadAllDocs(Request $request, Member $member, MemberService $memberService): Response
-    {
-        date_default_timezone_set("Africa/Abidjan");
-        ini_set('max_execution_time', '-1');
-
-        $outputFile = $memberService->combinePdfsForPrint($member, true, 'download');
-        return $this->file($outputFile);
-    }
-
-    #[Route('/telecharger/adherents', name: 'cnmci_download_list', methods: ['POST', 'GET'])]
-    public function downloadList(Request $request, MemberRepository $memberRepository, MemberService $memberService): Response
-    {
-        date_default_timezone_set("Africa/Abidjan");
-        ini_set('max_execution_time', '-1');
-        $from = $request->get('date_from');
-        $to = $request->get('date_to');
-        $members = $memberRepository->findAdherentsFromTo($from, $to);
-        if (!$members) return $this->json(null);
-        $file = $memberService->generateAdherentListXlsxFile($members);
-        $outputFile = $memberService->archiveMemberDocuments($members, $file);
-        return $this->file($outputFile, 'liste_adherents.zip');
-    }
-
-    #[Route('/telecharger/matrice', name: 'cnmci_download_matrice', methods: ['POST', 'GET'])]
-    public function downloadMatriceEncaissement(Request $request, MemberRepository $memberRepository, MemberService $memberService): Response
-    {
-        date_default_timezone_set("Africa/Abidjan");
-        ini_set('max_execution_time', '-1');
-        $from = $request->get('date_from');
-        $to = $request->get('date_to');
-        $members = $memberRepository->findAdherentsFromTo($from, $to);
-        if (!$members) return $this->json(null);
-        $fileXls = $memberService->generateMatriceEncaissementXlsxFile($members);
-        return $this->file($fileXls, basename($fileXls));
     }
 
     #[Route('/souscription/dt', name: 'cnmci_souscription_datatable', methods: ['GET', 'POST'])]
@@ -155,7 +113,7 @@ class CnmciController extends AbstractController
                 'dt' => 'photo',
                 'formatter' => function ($d, $row) {
                     $imageUrl = $row['reference'] . "/$d";
-                    $content = "<div class='avatar-md img-fluid rounded-circle'><img src='/members/$imageUrl' alt='' class='img-fluid d-block rounded-circle'></div>";
+                    $content = "<div class='avatar-sm img-fluid rounded-circle'><img src='/members/$imageUrl' alt='' class='img-fluid d-block rounded-circle'></div>";
                     return $content;
                 }
             ],
@@ -204,9 +162,9 @@ class CnmciController extends AbstractController
                                             <small></small><i class='mdi mdi-menu'></i>
                                         </button>
                                         <div class='dropdown-menu' style=''>
-                                            <a class='dropdown-item' href='/admin/cnmci/fiche/$id'><i class='mdi mdi-eye'></i> Voir la fiche CNMCI</a>
-                                            <a class='dropdown-item' href='/admin/cnmci/telecharger/documents/$id'><i class='mdi mdi-file-download'></i> Télécharger les documents</a>
-                                            <a class='dropdown-item' href='/admin/cnmci/telecharger/photo/$id'><i class='mdi mdi-download'></i> Télécharger la photo</a>";
+                                            <a class='dropdown-item' href='/cnmci/fiche/$id'><i class='mdi mdi-eye'></i> Voir la fiche CNMCI</a>
+                                            <a class='dropdown-item' href='/cnmci/telecharger/documents/$id'><i class='mdi mdi-file-download'></i> Télécharger les documents</a>
+                                            <a class='dropdown-item' href='/cnmci/telecharger/photo/$id'><i class='mdi mdi-download'></i> Télécharger la photo</a>";
 
                     if(!$row['is_payment_validated'])      $content.="<a class='dropdown-item btn-validate-payment' href='#' data-id='$id'><i class='mdi mdi-check-circle'></i> Valider paiement</a>";
                     if(!$row['is_inscription_validated'] && $row['is_payment_validated'])  $content.="<a class='dropdown-item btn-validate-souscription' href='#' data-id='$id'><i class='mdi mdi-check'></i> Valider l'inscription</a>";
@@ -236,39 +194,6 @@ class CnmciController extends AbstractController
         return $this->render('cnmci/show.html.twig', ['member' => $member]);
     }
 
-    #[Route('/validate/paiement-souscription/batch', name: 'cnmci_validate_payment_batch', methods: ['GET', 'POST'])]
-    public function validateBatchPayment(Request $request, MemberService $memberService): Response
-    {
-        if(!empty($request->get('ids'))) $memberService->validatePaymentBatch($request->get('ids'));
-        return $this->json('SUCCESS');
-    }
-
-    #[Route('/validate/souscription-cnmci/batch', name: 'cnmci_validation_souscription_batch', methods: ['POST'])]
-    public function validateSouscriptionBatch(Request $request, MemberService $memberService): Response
-    {
-        if(!empty($request->get('ids'))) $memberService->validateSouscriptionBatch($request->get('ids'));
-        return $this->json('SUCCESS');
-    }
-
-    #[Route('/validate/souscription-cnmci', name: 'cnmci_validation_souscription', methods: ['POST', 'GET'])]
-    public function validateSouscription(Request $request, MemberService $memberService): Response
-    {
-        $response = $memberService->validateSouscription(
-            intval($request->get('member_id')),
-            $request->get('cnmci_numero_rm'),
-            $request->get('cnmci_carte_professionelle')
-        );
-        if($response) return $this->json('SUCCESS');
-        else return $this->json('FAILED');
-    }
-
-    #[Route('/validate/paiement-souscription/{id}', name: 'cnmci_validate_payment', methods: ['GET', 'POST'])]
-    public function validatePayment(Member $member, MemberService $memberService): Response
-    {
-        if($member && !$member->getIsPaymentValidated()) $memberService->validatePayment($member);
-        return $this->json('SUCCESS');
-    }
-
     #[Route('/generate/virtual-cnmci-carte/{id}', name: 'cnmci_generate_virtual-cnmci-carte', methods: ['GET', 'POST'])]
     public function generateCnmciCard(Member $member, MemberService $memberService): Response
     {
@@ -276,5 +201,13 @@ class CnmciController extends AbstractController
       //  if($member && $member->getIsInscriptionValidated()) $memberService->generateSingleCnmciCard($member);
         return $this->json('SUCCESS');
     }
+
+    #[Route('/sticker/{id}', name: 'member_cncmi_sticker', methods: ['GET'])]
+    public function member_cncmi_sticker($id, MemberRepository $memberRepository): Response
+    {
+        $member = $memberRepository->findOneBy(['code_sticker' => $id]);
+        return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
+    }
+
 
 }

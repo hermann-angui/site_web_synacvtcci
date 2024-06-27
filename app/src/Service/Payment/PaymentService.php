@@ -63,14 +63,6 @@ class PaymentService
             $receipt_file = $folder . time() . uniqid() . ".pdf";
             $viewTemplate = 'admin/payment/payment-receipt-service-technique-pdf.html.twig';
 
-            if($payment->getTarget()  === "FRAIS_CARTE_SYNDICAT") {
-                $viewTemplate = 'admin/payment/payment-receipt-carte-syndicat-pdf.html.twig';
-                $member->setHasPaidForSyndicat(true);
-                $member->setIsSyndicatMember(true);
-                FileHelper::deleteExistingFile($folder . $member->getPaymentReceiptCarteSyndicatPdf());
-                $member->setPaymentReceiptCarteSyndicatPdf(basename($receipt_file));
-            }
-
             if($payment->getTarget()  === "FRAIS_SERVICE_TECHNIQUE") {
                 $viewTemplate = 'admin/payment/payment-receipt-service-technique-pdf.html.twig';
                 FileHelper::deleteExistingFile($folder . $member->getPaymentReceiptServiceTechniquePdf());

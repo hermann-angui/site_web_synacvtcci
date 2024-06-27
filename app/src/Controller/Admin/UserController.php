@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-#[Route('/admin/user')]
+#[Route('/user')]
 class UserController extends AbstractController
 {
     #[Route('/', name: 'admin_user_index', methods: ['GET'])]

@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Uuid;
 
-#[Route('/admin/payment')]
+#[Route('/payment')]
 class PaymentController extends AbstractController
 {
     #[Route(path: '', name: 'admin_payment_index')]
@@ -51,42 +51,10 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
     }
 
-    #[Route(path: '/carte/syndicat/{id}', name: 'do_payment_carte_syndicat')]
-    public function doSyndicatPayment(Member $member, WaveService $waveService, PaymentService $paymentService, ActivityLogger $activityLogger, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
-    {
-        try{
-            $montant = match ($member->getActivity()) {
-                "CHAUFFEUR VTC" => $configurationService->getParameter('app.montant_frais_carte_synacvtcci'),
-                "CHAUFFEUR TAXI" => $configurationService->getParameter('app.montant_frais_carte_taxi'),
-                "CHAUFFEUR LIVREUR" => $configurationService->getParameter('app.montant_frais_carte_falci')
-            };
-            $response = $waveService->makePayment($montant);
-            if ($response) {
-                $payment = $paymentService->create(
-                    $member,
-                    $this->getUser(),
-                    $montant,
-                    $response->getClientReference(),
-                    "FRAIS_CARTE_SYNDICAT",
-                    strtoupper($response->getPaymentStatus()),
-                    'MOBILE_MONEY',
-                    "WAVE"
-                );
-                $activityLogger->create($payment, "Payment carte syndical initié");
-                return $this->redirect($response->getWaveLaunchUrl());
-
-            } else return $this->redirectToRoute('admin_index');
-        }catch(\Exception $e){
-            return new Response($e->getTraceAsString());
-        }
-
-    }
-
     #[Route(path: '/do/{id}', name: 'do_payment')]
     public function doPaymentServiceTechnique(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentService $paymentService, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
     {
         $response = $waveService->makePayment($configurationService->getParameter('app.montant_frais_service_technique'));
-
         if ($response) {
             $payment = $paymentService->create(
                 $member,
@@ -102,6 +70,7 @@ class PaymentController extends AbstractController
             $activityLogger->create($payment, "Payment frais service technique initié");
             return $this->redirect($response->getWaveLaunchUrl());
         } else return $this->redirectToRoute('admin_index');
+
     }
 
     #[Route(path: '/wave/checkout/{status}', name: 'admin_wave_payment_callback')]
@@ -109,7 +78,6 @@ class PaymentController extends AbstractController
     {
         $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
         if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
-
             if ($payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE") {
                 $payment->setStatus("PAID");
                 $member = $payment->getPaymentFor();
@@ -174,4 +142,10 @@ class PaymentController extends AbstractController
         return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
     }
 
+    #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
+    public function pdfGenerate(Payment $payment, PaymentService $paymentService, ActivityLogger $activityLogger): Response
+    {
+        $activityLogger->create($payment, "Téléchargement de reçu");
+        return $paymentService->downloadMemberPaymentReceipt($payment);
+    }
 }

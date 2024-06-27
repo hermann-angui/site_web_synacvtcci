@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
-#[Route('/admin')]
+#[Route('')]
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'admin_login')]

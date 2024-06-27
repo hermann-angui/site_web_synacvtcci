@@ -383,11 +383,12 @@ class MemberRegistrationType extends AbstractType
                 'mapped' => true,
                 'required' => true,
                 'choices' => [
-                    "CHAUFFEUR VTC" => "CHAUFFEUR VTC",
-                    "CHAUFFEUR TAXI COMPTEUR" => "CHAUFFEUR TAXI COMPTEUR",
-                    "CHAUFFEUR TAXI COMMUNAL" => "CHAUFFEUR TAXI COMMUNAL",
-                    "CHAUFFEUR LIVREUR" => "CHAUFFEUR LIVREUR",
-                    "CHAUFFEUR TRICYCLE" => "CHAUFFEUR TRICYCLE",
+                    "CONDUCTEUR VTC" => "CONDUCTEUR VTC",
+                    "CONDUCTEUR TAXI COMPTEUR" => "CONDUCTEUR TAXI COMPTEUR",
+                    "CONDUCTEUR TAXI COMMUNAL" => "CONDUCTEUR TAXI COMMUNAL",
+                    "CONDUCTEUR  MOTO TAXI" => "CONDUCTEUR  MOTO TAXI",
+                    "CONDUCTEUR LIVREUR" => "CONDUCTEUR LIVREUR",
+                    "CONDUCTEUR TRICYCLE" => "CONDUCTEUR TRICYCLE",
                 ],
                 'data' => $data->getActivity() ?? null
             ])

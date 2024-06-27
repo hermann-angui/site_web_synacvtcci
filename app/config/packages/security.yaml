@@ -14,7 +14,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            pattern: ^/admin
+           # pattern: ^/
            # user_checker: App\Security\UserChecker
             security: true
             lazy: true
@@ -32,7 +32,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^(?!/(admin/login|admin/register|reset-password)), roles: ROLE_USER }
+         - { path: ^(?!/(login|register|reset-password)), roles: ROLE_USER }
 when@test:
     security:
         password_hashers:

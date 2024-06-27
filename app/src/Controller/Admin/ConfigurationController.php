@@ -6,7 +6,6 @@ use App\Entity\Configuration;
 use App\Form\ConfigurationType;
 use App\Helper\DataTableHelper;
 use App\Repository\ConfigurationRepository;
-use App\Repository\MemberRepository;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/configuration')]
+#[Route('/configuration')]
 class ConfigurationController extends AbstractController
 {
     #[Route('/', name: 'admin_configuration_index', methods: ['GET'])]
@@ -26,9 +25,7 @@ class ConfigurationController extends AbstractController
     }
 
     #[Route('/dt', name: 'admin_configuration_dt', methods: ['GET'])]
-    public function configurationDT(Request $request,
-                                Connection $connection,
-                                ConfigurationRepository $configurationRepository)
+    public function configurationDT(Request $request, Connection $connection, ConfigurationRepository $configurationRepository)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
@@ -63,8 +60,8 @@ class ConfigurationController extends AbstractController
                 'formatter' => function($d, $row) {
                     $id = $row['id'];
                     $content =  "<div class='d-flex justify-content-center'>
-                                    <a href='/admin/configuration/$id/edit' class='btn btn-success btn-sm mx-1'><i class='fa fa-pen'></i></a>
-                                    <a href='/admin/configuration/$id/delete' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a>
+                                    <a href='/configuration/$id/edit' class='btn btn-success btn-sm mx-1'><i class='fa fa-pen'></i></a>
+                                    <a href='/configuration/$id/delete' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a>
                                  </div>";
                     return $content;
                 }

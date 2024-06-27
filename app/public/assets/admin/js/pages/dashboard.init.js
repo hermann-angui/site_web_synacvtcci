@@ -145,7 +145,7 @@ nationalityChart = echarts.init(nationalityChart, 'roma');
 activityChart = echarts.init(activityChart, 'roma');
 souscriptionChart = echarts.init(souscriptionDom);
 
-$.get('/admin/stats').done(function(data) {
+$.get('/stats').done(function(data) {
 
     option = null;
     option = {
@@ -308,78 +308,106 @@ $.get('/admin/stats').done(function(data) {
                 data: data.vtc
             },
             {
-                name: 'Taxi',
+                name: 'TAXI COMPTEUR',
                 type: 'bar',
                 stack: 'Ad',
                 emphasis: {
                     focus: 'series'
                 },
-                data: data.taxi
+                data: data.taxi_compteur
             },
             {
-                name: 'Livreur',
+                name: 'TAXI COMMUNAL',
+                type: 'bar',
+                stack: 'Ad',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: data.taxi_communal
+            },
+            {
+                name: 'MOTO TAXI',
+                type: 'bar',
+                stack: 'Ad',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: data.moto_taxi
+            },
+            {
+                name: 'LIVREUR',
                 type: 'bar',
                 stack: 'Ad',
                 emphasis: {
                     focus: 'series'
                 },
                 data: data.livreur
+            },
+            {
+                name: 'TRICYCLE',
+                type: 'bar',
+                stack: 'Ad',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: data.tricycle
             }
+
         ]
     };
     option && souscriptionChart.setOption(option);
 
 });
 
-var chartDom = document.getElementById('commune-chart','roma');
-var communeChart = echarts.init(chartDom);
-var option = null;
-
-option = {
-    title: {
-      //  text: 'Total par commune'
-    },
-    tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-            type: 'shadow'
-        }
-    },
-    legend: {},
-    grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-    },
-    yAxis: {
-        type: 'value',
-        boundaryGap: [0, 0.01]
-    },
-    xAxis: {
-        type: 'category',
-        data: ['ABOBO', 'YOPOUGON', 'ANYAMA', 'COCODY', 'BINGERVILLE', 'MARCORY']
-    },
-    series: [
-        {
-            name: 'VTC',
-            type: 'line',
-            data: [12, 28, 5, 8, 15, 25]
-        },
-        {
-            name: 'TAXI',
-            type: 'line',
-            data: [ 5, 2, 5, 30, 8, 10]
-        },
-        {
-            name: 'LIVREUR',
-            type: 'line',
-            data: [2, 18, 5, 4, 10, 5]
-        }
-    ]
-};
-
-option && communeChart.setOption(option);
+// var chartDom = document.getElementById('commune-chart','roma');
+// var communeChart = echarts.init(chartDom);
+// var option = null;
+//
+// option = {
+//     title: {
+//       //  text: 'Total par commune'
+//     },
+//     tooltip: {
+//         trigger: 'axis',
+//         axisPointer: {
+//             type: 'shadow'
+//         }
+//     },
+//     legend: {},
+//     grid: {
+//         left: '3%',
+//         right: '4%',
+//         bottom: '3%',
+//         containLabel: true
+//     },
+//     yAxis: {
+//         type: 'value',
+//         boundaryGap: [0, 0.01]
+//     },
+//     xAxis: {
+//         type: 'category',
+//         data: ['ABOBO', 'YOPOUGON', 'ANYAMA', 'COCODY', 'BINGERVILLE', 'MARCORY']
+//     },
+//     series: [
+//         {
+//             name: 'VTC',
+//             type: 'line',
+//             data: [12, 28, 5, 8, 15, 25]
+//         },
+//         {
+//             name: 'TAXI',
+//             type: 'line',
+//             data: [ 5, 2, 5, 30, 8, 10]
+//         },
+//         {
+//             name: 'LIVREUR',
+//             type: 'line',
+//             data: [2, 18, 5, 4, 10, 5]
+//         }
+//     ]
+// };
+//
+// option && communeChart.setOption(option);
 
 
 
