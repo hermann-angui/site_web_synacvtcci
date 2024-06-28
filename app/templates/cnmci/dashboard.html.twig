@@ -43,27 +43,17 @@
 
 {% block body %}
     <div class="layout-wrapper">
+
+        {{ include('admin/_partials/header.html.twig') }}
+
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
-                    <div class="d-flex justify-content-center">
-                        <img src="{{ asset('assets/frontend/img/cnmci.png') }}" alt="logo syncvtcci" width="150" alt="logo cnmci" style="border-collapse: collapse;border-width:0px 0px;" />
-                    </div>
+
                     <div class="d-flex justify-content-between py-4">
                         <div class="col-lg-9"><a href="{{ path('cnmci_index')}}" class="btn btn-link waves-effect waves-light"><i class="fa fa-arrow-left"></i> Revenir à l'accueil</a></div>
-                        <div class="col-lg-3 justify-content-end ">
-                            <div class="d-flex align-items-center">
-                                {% if app.user.photo %}
-                                    <img src="{{ asset('users/') ~ app.user.photo }}" alt="" class="avatar-sm rounded">
-                                {% else %}
-                                    <img src="{{ asset('/assets/images/avatar/avatar.jpg') }}" alt="" class="avatar-sm rounded">
-                                {% endif %}
-                                <div class="ms-3 flex-grow-1">
-                                    <h5 class="mb-2 card-title">Bienvenue, {{ app.user.lastName|upper ~ ' ' ~ app.user.firstName}}</h5>
-                                </div>
-                            </div>
-                        </div><!--end col-->
                     </div>
+
                     <div class="row mb-3" >
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -95,12 +85,33 @@
                                 </div>
                             </div>
                         </div><!--end col-->
+
                         <div class="col-lg-3">
                             <div class="card mini-stats-wid">
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">TOTAL VTC</p>
+                                            <p class="text-muted fw-medium">CONTRAVENTIONS</p>
+                                            <h4 class="mb-0">n/a</h4>
+                                        </div>
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="mini-stat-icon avatar-sm rounded-circle bg-success">
+                                                <span class="avatar-title">
+                                                    <i class="fa fa-ticket-alt font-size-24"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--end col-->
+
+                        <div class="col-lg-3">
+                            <div class="card mini-stats-wid">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">VTC</p>
                                             <h4 class="mb-0">{{ totals.total_vtc }}</h4>
                                         </div>
                                         <div class="flex-shrink-0 align-self-center">
@@ -119,7 +130,7 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">TOTAL TAXI COMPTEUR</p>
+                                            <p class="text-muted fw-medium">TAXIS COMPTEURS</p>
                                             <h4 class="mb-0">{{ totals.total_taxi_compteur }}</h4>
                                         </div>
                                         <div class="flex-shrink-0 align-self-center">
@@ -138,7 +149,7 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">TOTAL TAXI COMMUNAL</p>
+                                            <p class="text-muted fw-medium">TAXIS COMMUNAUX</p>
                                             <h4 class="mb-0">{{ totals.total_taxi_communal }}</h4>
                                         </div>
                                         <div class="flex-shrink-0 align-self-center">
@@ -157,7 +168,7 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">TOTAL MOTO TAXI</p>
+                                            <p class="text-muted fw-medium">MOTOS TAXI</p>
                                             <h4 class="mb-0">{{ totals.total_moto_taxi }}</h4>
                                         </div>
                                         <div class="flex-shrink-0 align-self-center">
@@ -176,7 +187,7 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">TOTAL LIVREUR</p>
+                                            <p class="text-muted fw-medium">LIVREURS</p>
                                             <h4 class="mb-0">{{ totals.total_livreur }}</h4>
                                         </div>
                                         <div class="flex-shrink-0 align-self-center">
@@ -195,7 +206,7 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">TOTAL LIVREUR</p>
+                                            <p class="text-muted fw-medium">TRICYCLES</p>
                                             <h4 class="mb-0">{{ totals.total_tricyle }}</h4>
                                         </div>
                                         <div class="flex-shrink-0 align-self-center">
@@ -218,11 +229,11 @@
                                     <h4 class="card-title mb-4">Statistiques des souscriptions</h4>
                                     <div class="row">
                                         <div class="col-lg-7">
-                                            <div data-colors='["--bs-primary", "--bs-success", "--bs-warning", "--bs-info"]' class="e-charts" id="souscription-chart"></div>
+                                            <div data-colors='["--bs-primary", "--bs-success", "--bs-warning", "--bs-info"]' class="e-charts" style="width: 100%;" id="souscription-chart"></div>
                                         </div>
                                         <div class="col-lg-5">
                                             <div class="table-responsive">
-                                                <table class="table table-condensed table-sm mb-0">
+                                                <table class="table table-hover table-condensed table-sm mb-0">
                                                     <thead>
                                                     <tr>
                                                         <th></th>
@@ -244,17 +255,28 @@
                                                     <tr>
                                                         <td scope="row" class="fw-bold">VTC</td>
                                                         <td scope="row">10</td>
+                                                        <td scope="row">10</td>
+                                                        <td scope="row">14</td>
+                                                        <td scope="row">6</td>
+                                                        <td scope="row">5</td>
+                                                        <td scope="row">6</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
-                                                        <td scope="row">0</td>
-                                                        <td scope="row">0</td>
-                                                        <td scope="row">0</td>
+                                                        <td scope="row">25</td>
+                                                        <td scope="row">30</td>
                                                     </tr>
                                                     <tr>
                                                         <td scope="row" class="fw-bold">Taxi compteur</td>
-                                                        <td scope="row">10</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
@@ -262,7 +284,14 @@
                                                     </tr>
                                                     <tr>
                                                         <td scope="row" class="fw-bold">Taxi communal</td>
-                                                        <td scope="row">14</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
@@ -270,7 +299,14 @@
                                                     </tr>
                                                     <tr>
                                                         <td scope="row" class="fw-bold">Moto taxi</td>
-                                                        <td scope="row">6</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
@@ -278,7 +314,14 @@
                                                     </tr>
                                                     <tr>
                                                         <td scope="row" class="fw-bold">Livreur</td>
-                                                        <td scope="row">5</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
@@ -286,7 +329,14 @@
                                                     </tr>
                                                     <tr>
                                                         <td scope="row" class="fw-bold">Tricyle</td>
-                                                        <td scope="row">10</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
+                                                        <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>
                                                         <td scope="row">0</td>

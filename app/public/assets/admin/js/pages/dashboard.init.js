@@ -301,6 +301,11 @@ $.get('/stats').done(function(data) {
         series: data.conducteurs
     };
     option && souscriptionChart.setOption(option);
+    window.addEventListener('resize', function() {
+        activityChart.resize();
+        nationalityChart.resize();
+        souscriptionChart.resize();
+    });
 
 });
 
