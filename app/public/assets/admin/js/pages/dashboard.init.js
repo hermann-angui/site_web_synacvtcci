@@ -154,7 +154,7 @@ $.get('/stats').done(function(data) {
             formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
-            orient: "vertical",
+            orient: "horizontal",
             x: "left",
             data: data.sex.legend,
             textStyle: {
@@ -197,7 +197,7 @@ $.get('/stats').done(function(data) {
             formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
-            orient: "horizontal",
+            orient: "vertical",
             x: "left",
             data: data.nationality.legend,
             textStyle: {
@@ -298,62 +298,7 @@ $.get('/stats').done(function(data) {
                 type: 'value'
             }
         ],
-        series: [
-            {
-                name: 'VTC',
-                type: 'bar',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data.vtc
-            },
-            {
-                name: 'TAXI COMPTEUR',
-                type: 'bar',
-                stack: 'Ad',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data.taxi_compteur
-            },
-            {
-                name: 'TAXI COMMUNAL',
-                type: 'bar',
-                stack: 'Ad',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data.taxi_communal
-            },
-            {
-                name: 'MOTO TAXI',
-                type: 'bar',
-                stack: 'Ad',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data.moto_taxi
-            },
-            {
-                name: 'LIVREUR',
-                type: 'bar',
-                stack: 'Ad',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data.livreur
-            },
-            {
-                name: 'TRICYCLE',
-                type: 'bar',
-                stack: 'Ad',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: data.tricycle
-            }
-
-        ]
+        series: data.conducteurs
     };
     option && souscriptionChart.setOption(option);
 

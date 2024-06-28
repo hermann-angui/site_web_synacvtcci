@@ -35,26 +35,22 @@ class StatsController extends AbstractController
     public function getSexStats(Request $request, MemberRepository $memberRepository): Response
     {
         $stats = $memberRepository->getTotalGroupBySex();
-        $sex_stat = [
-            ["value" => 0, "name" => "Homme"],
-            ["value" => 0, "name" => "Femme"],
-        ];
-       for($i = 0 ; $i < 2; $i++){
-           foreach ($stats as $stat){
-               if($stat['sex'] === "H" && $sex_stat[$i]['name'] === 'Homme'){
-                   $sex_stat[$i]["value"] = $stat['total'];
-               }
-               if($stat['sex'] === "F" && $sex_stat[$i]['name'] === 'Femme'){
-                   $sex_stat[$i]["value"] = $stat['total'];
-               }
-           }
-       }
+
+        foreach($stats as $stat) {
+            if(in_array($stat['sex'], ['H', 'Homme'])) $key = "Homme (${stat['total']})";
+            if(in_array($stat['sex'], ['F', 'Femme'])) $key = "Femme (${stat['total']})";
+            $sex_stat[] = [
+                "name" => $key,
+                "value" => $stat['total'],
+            ];
+        }
+
         unset($stats);
 
         $stats = $memberRepository->getTotalGroupByActivity();
         $activity_stat = array_map(function ($v){
             return [
-                "name" => $v['activity'],
+                "name" =>  "${v['activity']} (${v['total']})",
                 "value" => $v['total'],
             ];
         }, $stats);
@@ -63,7 +59,7 @@ class StatsController extends AbstractController
         $stats = $memberRepository->getTotalGroupByNationality();
         $nationality_stat = array_map(function ($v){
             return [
-                "name" => $v["nationality"],
+                "name" => "${v["nationality"]} (${v["total"]})",
                 "value" => $v["total"]
             ];
         }, $stats);
@@ -72,17 +68,28 @@ class StatsController extends AbstractController
         $months = ['Janv', 'Fev', 'Mars', 'Avri', 'Mai', 'Jun', 'Juil', 'Aout', 'Sep', 'Oct', 'Nov', 'Dec'];
         $values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        $t["CONDUCTEUR VTC"] =  $values;
-        $t["CONDUCTEUR TAXI COMPTEUR"] = $values;
-        $t["CONDUCTEUR TAXI COMMUNAL"] = $values;
-        $t["CONDUCTEUR MOTO TAXI"] = $values;
-        $t["CONDUCTEUR LIVREUR"] = $values;
-        $t["CONDUCTEUR TRICYCLE"] = $values;
-
         $stats = $memberRepository->getTotalGroupByActivityAndMonth();
-
+        $conducteurs = [];
         foreach ($stats as $stat){
-            $t[$stat['activity']][$stat['month_number'] - 1 ] = $stat['total'];
+            if(!array_key_exists($stat['activity'], $conducteurs)) $conducteurs[$stat['activity']] = $values;
+            $conducteurs[$stat['activity']][$stat['month_number'] - 1 ] = $stat['total'];
+        }
+
+        $stats_conducteurs = [];
+        foreach($conducteurs as $k => $v){
+            $sum = array_sum($v);
+            $stats_conducteurs[] =  [
+                'name' => substr($k, strlen("CONDUCTEUR ")) . " ($sum)",
+                'type' =>  'bar',
+                'label' => [
+                    'show' => 'true',
+                    'position' => 'inside'
+               ],
+                'emphasis'=> [
+                    'focus' => 'series'
+                ],
+                'data' => $v
+            ];
         }
 
         $payload = [
@@ -94,15 +101,14 @@ class StatsController extends AbstractController
                 "data" => $activity_stat,
                 "legend" => array_column($activity_stat, 'name')
             ],
-            'nationality' => ["data" => $nationality_stat, "legend" => array_column($nationality_stat, 'name')],
+            'nationality' => [
+                "data" => $nationality_stat,
+                "legend" => array_column($nationality_stat, 'name')
+            ],
             'months' => $months,
-            'vtc' =>  $t['CONDUCTEUR VTC'],
-            'taxi_compteur' => $t['CONDUCTEUR TAXI COMPTEUR'],
-            'taxi_communal' => $t['CONDUCTEUR TAXI COMMUNAL'],
-            'moto_taxi' => $t['CONDUCTEUR MOTO TAXI'],
-            'livreur' => $t['CONDUCTEUR LIVREUR'],
-            'tricycle' => $t['CONDUCTEUR TRICYCLE'],
+            "conducteurs" => $stats_conducteurs
         ];
+
         return $this->json($payload);
     }
 
