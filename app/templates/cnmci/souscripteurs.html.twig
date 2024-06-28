@@ -193,7 +193,7 @@
         });
 
         $('#btn-validate-payments-batch').click(function(){
-            $.post('/admin/cnmci/validate/paiement-souscription/batch', {ids: selectedRow}, function(d){
+            $.post('/cnmci/validate/paiement-souscription/batch', {ids: selectedRow}, function(d){
                 datatable.draw();
             });
         });
@@ -252,7 +252,7 @@
             confirmButtonText: "Oui",
             cancelButtonText: "Annuler"
           }).then(function(t) {
-               $.get("/admin/cnmci/validate/paiement-souscription/" + id, function(data){
+               $.get("/cnmci/validate/paiement-souscription/" + id, function(data){
                     Swal.fire({
                         position: "center",
                         icon: "success",
