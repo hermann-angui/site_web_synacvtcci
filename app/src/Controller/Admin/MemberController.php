@@ -38,7 +38,7 @@ class MemberController extends AbstractController
         if(in_array("ROLE_AGENT", $this->getUser()->getRoles()))  {
             return $this->redirectToRoute('admin_index');
         } else {
-            return $this->render('admin/artisan/synacvtcci/index.html.twig');
+            return $this->render('admin/artisan/index.html.twig');
         }
     }
 
@@ -60,7 +60,7 @@ class MemberController extends AbstractController
     {
         $payment = $paymentService->findMemberPaymentByTarget($member, "FRAIS_SERVICE_TECHNIQUE");
         $paymentService->generatePaymentReceipt($payment);
-        return $this->render('admin/artisan/cnmci/cnmci_show.html.twig', ['member' => $member, "payment" => $payment]);
+        return $this->render('admin/artisan/cnmci_show.html.twig', ['member' => $member, "payment" => $payment]);
     }
 
     #[Route('/printdocs/{id}', name: 'admin_show_and_download_pdf', methods: ['GET'])]
@@ -127,7 +127,7 @@ class MemberController extends AbstractController
                 $fileUploadHelper->upload($file, $uploadDir);
             }
         }
-        return $this->renderForm('admin/artisan/synacvtcci/upload.html.twig');
+        return $this->renderForm('admin/artisan/upload.html.twig');
     }
 
     #[Route('/import', name: 'admin_member_import', methods: ['GET', 'POST'])]
@@ -152,7 +152,7 @@ class MemberController extends AbstractController
             "CONDUCTEUR LIVREUR" => "carte_falci_back.jpg",
             "CONDUCTEUR TAXI" => "carte_taxi_back.jpg",
         };
-        return $this->render('admin/artisan/synacvtcci/show_card.html.twig', ['member' => $member, "carte_img_back" => $carte_img_back]);
+        return $this->render('admin/artisan/show_card.html.twig', ['member' => $member, "carte_img_back" => $carte_img_back]);
     }
 
     #[Route('/download/card/{id}', name: 'admin_member_download_card', methods: ['GET'])]
@@ -198,19 +198,19 @@ class MemberController extends AbstractController
     #[Route('/adherents/synacvtcci', name: 'admin_adherents_synacvtcci', methods: ['GET'])]
     public function  showListAdherentsSynacvtcci(Request $request): Response
     {
-        return $this->render('admin/artisan/synacvtcci/adherents-list.html.twig');
+        return $this->render('admin/artisan/adherents-list.html.twig');
     }
 
     #[Route('/adherents/taxi', name: 'admin_adherents_taxi', methods: ['GET'])]
     public function  showListAdherentsTaxi(Request $request): Response
     {
-        return $this->render('admin/artisan/taxi/adherents-list.html.twig');
+        return $this->render('admin/artisan/adherents-list.html.twig');
     }
 
     #[Route('/adherents/livreurs', name: 'admin_adherents_livreurs', methods: ['GET'])]
     public function showListAdherentsLivreurs(Request $request): Response
     {
-        return $this->render('admin/artisan/livreurs/adherents-list.html.twig');
+        return $this->render('admin/artisan/adherents-list.html.twig');
     }
 
     #[Route('/adherents/dt', name: 'admin_adherents_list_dt', methods: ['GET'])]
