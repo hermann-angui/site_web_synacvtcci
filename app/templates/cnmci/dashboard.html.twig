@@ -6,7 +6,11 @@
     <link href="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .btn-cnmci {
-            background-color: #6e0000;
+            background-color: #c23531;
+            color: #ffffff;
+        }
+        .bg-cnmci {
+            background-color: #c23531;
             color: #ffffff;
         }
         .btn:hover {
@@ -65,6 +69,55 @@
                             </div>
                         </div>
                     </div><!-- end row -->
+
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap align-items-start">
+                                        <div class="me-2">
+                                            <h5 class="card-title mb-3">Revenus en FCA</h5>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="mt-3">
+                                                <p class="text-muted mb-1">Souscriptions</p>
+                                                <h5>{{ (totals.total_souscriptions * 15000)|number_format(0, ' ', ' ')  }} CFA<span class="text-success font-size-13"> 0.1 % <i class="mdi mdi-arrow-up ms-1"></i></span></h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="mt-3">
+                                                <p class="text-muted mb-1">Contraventions</p>
+                                                <h5>0 CFA </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">
+                                                    <div class="py-0">
+                                                        <h5 class="font-size-14">Souscriptions <span class="float-end">{{ (totals.total_souscriptions * 15000)|number_format(0, ' ', ' ')  }}</span></h5>
+                                                        <div class="progress animated-progess progress-md">
+                                                            <div class="progress-bar bg-cnmci" role="progressbar" style="width: 100%" aria-valuenow="{{ (totals.total_souscriptions * 15000)|number_format(0, ' ', ' ')  }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="py-0">
+                                                        <h5 class="font-size-14">Contraventions <span class="float-end">n/a</span></h5>
+                                                        <div class="progress animated-progess progress-md">
+                                                            <div class="progress-bar bg-dark" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="card mini-stats-wid">
