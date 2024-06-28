@@ -55,7 +55,7 @@ class PageController extends AbstractController
     public function memberProfile(Request $request, MemberRepository $memberRepository): Response
     {
         $member = $memberRepository->findOneBy(["reference" => $request->get("reference")]);
-        if($member)  return $this->render('admin/member/synacvtcci/public_profile.html.twig', ["member" => $member]);
+        if($member)  return $this->render('admin/artisan/public_profile.html.twig', ["member" => $member]);
         else return $this->redirectToRoute('home');
     }
 

@@ -520,7 +520,7 @@ class MemberController extends AbstractController
             return $this->redirectToRoute('admin_member_recapitulatif', ['id' => $member->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/member/edit.html.twig', [
+        return $this->renderForm('admin/artisan/edit.html.twig', [
             'member' => $member,
             'form' => $form,
         ]);

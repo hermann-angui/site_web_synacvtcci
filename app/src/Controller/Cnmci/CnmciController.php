@@ -206,7 +206,7 @@ class CnmciController extends AbstractController
     public function member_cncmi_sticker($id, MemberRepository $memberRepository): Response
     {
         $member = $memberRepository->findOneBy(['code_sticker' => $id]);
-        return $this->render('admin/member/cnmci/cnmci_show_sticker.html.twig', ['member' => $member]);
+        return $this->render('admin/artisan/cnmci_show_sticker.html.twig', ['member' => $member]);
     }
 
 
