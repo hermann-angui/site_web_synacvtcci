@@ -90,7 +90,7 @@
         <div class="row">
             <div class="d-block d-flex justify-content-center align-content-center">
                 <div>
-                    <img id="imagePreview" src="/var/www/html/public/members/SY1202300001/167575685363e205354fc80.jpg" alt="" width="100" class="rounded-circle">
+                    <img id="imagePreview" src="/var/www/html/public/artisans/SY1202300001/167575685363e205354fc80.jpg" alt="" width="100" class="rounded-circle">
                 </div>
             </div>
         </div>
@@ -114,44 +114,44 @@
             <div class="mt-sm-3 border border-1 border-dark">
                 <div class="fw-bold text-center border-bottom border-dark" style="background-color: #f2d0e9;">A. RENSEIGNEMENT SUR L'EXPLOITANT</div>
                     <div class="row align-content-between" style="display: inline-flex; padding: 10px 10px; width: 100%">
-                        <div>Nom : <span class="p-sm-3" style="background-color: #eaeaea;">{{ member.lastName }}</span></div>
-                        <div>Prénoms : <span class="p-sm-3" style="background-color: #eaeaea;">{{ member.firstName }}</span></div>
+                        <div>Nom : <span class="p-sm-3" style="background-color: #eaeaea;">{{ artisan.lastName }}</span></div>
+                        <div>Prénoms : <span class="p-sm-3" style="background-color: #eaeaea;">{{ artisan.firstName }}</span></div>
                     </div>
 
                     <div class="row py-sm-3 mb-sm-2" style="display: inline-flex; padding: 10px 10px; width: 100%">
-                        <div class="col-form-label">Né(e) le : <span>{{ member.dateOfBirth | date('d-m-Y') }}</span></div>
-                        <div class="col-form-label">à : <span>{{ member.birthCity }}</span></div>
-                        <div class="col-form-label">Nationalité : <span>{{ member.nationality }}</span></div>
+                        <div class="col-form-label">Né(e) le : <span>{{ artisan.dateOfBirth | date('d-m-Y') }}</span></div>
+                        <div class="col-form-label">à : <span>{{ artisan.birthCity }}</span></div>
+                        <div class="col-form-label">Nationalité : <span>{{ artisan.nationality }}</span></div>
                     </div>
 
                     <div class="row mb-sm-2 py-sm-3" style="display:flex; -webkit-justify-content: space-between; padding: 10px 10px; width: 100%">
                         <div class="col-form-label">Sexe :
-                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="H" {{ member.sex == 'H' ? 'checked' : ''}}> Homme</span>
-                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="F" {{ member.sex == 'F' ? 'checked' : ''}}> Femme</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="H" {{ artisan.sex == 'H' ? 'checked' : ''}}> Homme</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantSex" name="exploitantSex" value="F" {{ artisan.sex == 'F' ? 'checked' : ''}}> Femme</span>
                         </div>
-                        <div class="col-form-label">Domicilié (e) à : <span>{{ member.domicile }}</span></div>
+                        <div class="col-form-label">Domicilié (e) à : <span>{{ artisan.domicile }}</span></div>
                     </div>
 
                     <div class="row mb-sm-2 py-sm-3" style="display:flex; -webkit-justify-content: space-between; padding: 10px 10px; width: 100%">
                         <div class="form-check-label">Type de document :
-                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CNI" {{ member.idType == 'CNI' ? 'checked' : '' }}>CNI</span>
-                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CC" {{ member.idType == 'CC' ? 'checked' : '' }}>CC</span>
-                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="PASSEPORT" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>PASSEPORT</span>
-                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CARTE DE RESIDENT" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>Carte de résident</span>
-                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="AUTRE" {{ member.idType == 'AUTRE' ? 'checked' : '' }}>Autre</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CNI" {{ artisan.idType == 'CNI' ? 'checked' : '' }}>CNI</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CC" {{ artisan.idType == 'CC' ? 'checked' : '' }}>CC</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="PASSEPORT" {{ artisan.idType == 'PASSEPORT' ? 'checked' : '' }}>PASSEPORT</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CARTE DE RESIDENT" {{ artisan.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>Carte de résident</span>
+                            <span class="form-check-label"><input class="form-check-input" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="AUTRE" {{ artisan.idType == 'AUTRE' ? 'checked' : '' }}>Autre</span>
                             <span class="form-check-label"></span>
                         </div>
                     </div>
 
                     <div class="row mb-sm-2 py-sm-3" style="display:flex; -webkit-justify-content: space-between; padding: 10px 10px; width: 100%">
                         <div class="col-sm-2">
-                            N° : {{ member.idNumber }}
+                            N° : {{ artisan.idNumber }}
                         </div>
                         <div class="col-sm-2">
-                            Délivré à : {{ member.idDeliveryPlace }}>
+                            Délivré à : {{ artisan.idDeliveryPlace }}>
                         </div>
                         <div class="col-sm-1">
-                            Le : {{ member.idDeliveryDate| date('d-md-Y') }}
+                            Le : {{ artisan.idDeliveryDate| date('d-md-Y') }}
                         </div>
                     </div>
 
@@ -161,13 +161,13 @@
                         </div>
                         <div class="col-sm-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ member.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ artisan.etatCivil == "MARIE(E)" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Marié</label>
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="CELIBATAIRE" {{ member.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="CELIBATAIRE" {{ artisan.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Célibataire</label>
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE(E)" {{ member.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE(E)" {{ artisan.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Divorcé(e)</label>
-                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF(VE)" {{ member.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF(VE)" {{ artisan.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="exploitantEtatCivil">Veuf(ve)</label>
                             </div>
                         </div>
@@ -175,10 +175,10 @@
 
                     <div class="row mb-sm-2 py-sm-3">
                         <div class="col-sm-2">
-                            Telephone : {{ member.mobile }}
+                            Telephone : {{ artisan.mobile }}
                         </div>
                         <div class="col-sm-1">
-                            Email : {{ member.email }}
+                            Email : {{ artisan.email }}
                         </div>
                     </div>
                 </div>
@@ -471,13 +471,13 @@
                             <label for="referantNom" class="col-form-label">Nom :</label>
                         </div>
                         <div class="col-sm-5 col-xs-6">
-                            <input type="text" id="referantNom" name="referantNom" class="form-control" aria-labelledby="referantNom" value="{{ member.lastName }}">
+                            <input type="text" id="referantNom" name="referantNom" class="form-control" aria-labelledby="referantNom" value="{{ artisan.lastName }}">
                         </div>
                         <div class="col-sm-1 col-xs-6">
                             <label for="referantPrenom" class="col-form-label">Prénoms :</label>
                         </div>
                         <div class="col-sm-5 col-xs-6">
-                            <input type="text" id="referantPrenom" name="firstname" class="form-control" aria-labelledby="referantPrenom" value="{{ member.firstName }}">
+                            <input type="text" id="referantPrenom" name="firstname" class="form-control" aria-labelledby="referantPrenom" value="{{ artisan.firstName }}">
                         </div>
                     </div>
 
@@ -486,19 +486,19 @@
                             <label for="referantDateNais" class="col-form-label">Né(e) le :</label>
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" id="referantDateNais" name="referantDateNais" class="form-control input-mask" aria-labelledby="referantDateNais" value="{{ member.dateOfBirth | date('d-m-Y') }}">
+                            <input type="text" id="referantDateNais" name="referantDateNais" class="form-control input-mask" aria-labelledby="referantDateNais" value="{{ artisan.dateOfBirth | date('d-m-Y') }}">
                         </div>
                         <div class="col-sm-auto">
                             <label for="referantLieuNais" class="col-form-label">à :</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" id="referantLieuNais" name="referantLieuNais" class="form-control" aria-labelledby="referantLieuNais" value="{{ member.birthCity }}">
+                            <input type="text" id="referantLieuNais" name="referantLieuNais" class="form-control" aria-labelledby="referantLieuNais" value="{{ artisan.birthCity }}">
                         </div>
                         <div class="col-sm-auto">
                             <label for="referantNationalite" class="col-form-label">Nationalité :</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" id="referantNationalite" name="nationality" class="form-control" aria-labelledby="referantNationalite" value="{{ member.nationality }}">
+                            <input type="text" id="referantNationalite" name="nationality" class="form-control" aria-labelledby="referantNationalite" value="{{ artisan.nationality }}">
                         </div>
                     </div>
 
@@ -508,11 +508,11 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="sex" name="referantSex" value="H" {{ member.sex == 'H' ? 'checked' : ''}}>
+                                <input class="form-check-input" type="radio" id="sex" name="referantSex" value="H" {{ artisan.sex == 'H' ? 'checked' : ''}}>
                                 <label class="form-check-label" for="referantSex">Homme</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantSex" name="referantSex" value="F" {{ member.sex == 'F' ? 'checked' : ''}}>
+                                <input class="form-check-input" type="radio" id="referantSex" name="referantSex" value="F" {{ artisan.sex == 'F' ? 'checked' : ''}}>
                                 <label class="form-check-label" for="referantSex">Femme</label>
                             </div>
                         </div>
@@ -520,7 +520,7 @@
                             <label for="referantDomicile" class="col-form-label">Domicilié (e) à :</label>
                         </div>
                         <div class="col-sm-5">
-                            <input type="text" id="referantDomicile" name="referantDomicile" class="form-control" aria-labelledby="referantDomicile" value="{{ member.city }}">
+                            <input type="text" id="referantDomicile" name="referantDomicile" class="form-control" aria-labelledby="referantDomicile" value="{{ artisan.city }}">
                         </div>
                     </div>
 
@@ -530,23 +530,23 @@
                         </div>
                         <div class="col-sm-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cni" {{ member.idType == 'CNI' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cni" {{ artisan.idType == 'CNI' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantTypeDoc">CNI</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cc" {{ member.idType == 'CC' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="cc" {{ artisan.idType == 'CC' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantTypeDoc">CC</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="passeport" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="passeport" {{ artisan.idType == 'PASSEPORT' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantTypeDoc">Passeport</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="Carte de résident" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="Carte de résident" {{ artisan.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantTypeDoc">Carte de résident</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="document" name="referantTypeDoc" value="autre"  {{ member.idType == 'AUTRE' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="document" name="referantTypeDoc" value="autre"  {{ artisan.idType == 'AUTRE' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantTypeDoc">Autre</label>
                             </div>
                         </div>
@@ -561,15 +561,15 @@
                     <div class="align-items-center">
                         <div class="col-sm-auto">
                             <label for="referantNumDoc" class="col-form-label">N° :</label>
-                            <input type="text" id="referantNumDoc" name="referantNumDoc" class="form-control" aria-labelledby="referantNumDoc"  value="{{ member.idNumber }}">
+                            <input type="text" id="referantNumDoc" name="referantNumDoc" class="form-control" aria-labelledby="referantNumDoc"  value="{{ artisan.idNumber }}">
                         </div>
                         <div class="col-sm-auto">
                             <label for="referantDocLieuDelivrance" class="col-form-label">Délivré à :</label>
-                            <input type="text" id="referantDocLieuDelivrance" name="referantDocLieuDelivrance" class="form-control" aria-labelledby="referantDocLieuDelivrance"   value="{{ member.idDeliveryPlace }}">
+                            <input type="text" id="referantDocLieuDelivrance" name="referantDocLieuDelivrance" class="form-control" aria-labelledby="referantDocLieuDelivrance"   value="{{ artisan.idDeliveryPlace }}">
                         </div>
                         <div class="col-sm-auto">
                             <label for="referantDocDateDelivrance" class="col-form-label">Le :</label>
-                            <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control" aria-labelledby="referantDocDateDelivrance"  value="{{ member.idDeliveryDate| date('d-md-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                            <input type="text" id="referantDocDateDelivrance" name="referantDocDateDelivrance" class="form-control" aria-labelledby="referantDocDateDelivrance"  value="{{ artisan.idDeliveryDate| date('d-md-Y') }}" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
                         </div>
                     </div>
 
@@ -579,19 +579,19 @@
                         </div>
                         <div class="col-sm-auto">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="MARIE"  {{ member.etatCivil == "MARIE" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="MARIE"  {{ artisan.etatCivil == "MARIE" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantEtatCivil">Marié</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="CELIBATAIRE" {{ member.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="CELIBATAIRE" {{ artisan.etatCivil == "CELIBATAIRE" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantEtatCivil">Célibataire</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="DIVORCE(E)"  {{ member.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="DIVORCE(E)"  {{ artisan.etatCivil == "DIVORCE(E)" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantEtatCivil">Divorcé(e)</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="VEUF(VE)"  {{ member.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="VEUF(VE)"  {{ artisan.etatCivil == "VEUF(VE)" ? 'checked' : '' }}>
                                 <label class="form-check-label" for="referantEtatCivil">Veuf(ve)</label>
                             </div>
                         </div>
@@ -602,13 +602,13 @@
                             <label for="referantTel" class="col-form-label">Telephone :</label>
                         </div>
                         <div class="col-sm-auto">
-                            <input type="text" id="referantTel" name="mobile" class="form-control input-mask" aria-labelledby="referantTel" value="{{ member.mobile }}"  data-inputmask="'mask': '9999999999'">
+                            <input type="text" id="referantTel" name="mobile" class="form-control input-mask" aria-labelledby="referantTel" value="{{ artisan.mobile }}"  data-inputmask="'mask': '9999999999'">
                         </div>
                         <div class="col-sm-auto">
                             <label for="referantEmail" class="col-form-label">Email :</label>
                         </div>
                         <div class="col-sm-auto">
-                            <input type="text" id="referantEmail" name="referantEmail" class="form-control" aria-labelledby="referantEmail"  value="{{ member.email }}">
+                            <input type="text" id="referantEmail" name="referantEmail" class="form-control" aria-labelledby="referantEmail"  value="{{ artisan.email }}">
                         </div>
                     </div>
 

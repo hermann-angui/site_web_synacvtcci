@@ -57,7 +57,7 @@ class Configuration
 
     /**
      * @param \DateTimeInterface|null $created_at
-     * @return Member
+     * @return Artisan
      */
     public function setCreatedAt(?\DateTimeInterface $created_at): self
     {
@@ -75,7 +75,7 @@ class Configuration
 
     /**
      * @param \DateTimeInterface|null $modified_at
-     * @return Member
+     * @return Artisan
      */
     public function setModifiedAt(?\DateTimeInterface $modified_at): self
     {

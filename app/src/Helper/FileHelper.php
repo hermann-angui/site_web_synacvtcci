@@ -8,7 +8,7 @@ use Symfony\Component\Uid\Uuid;
 class FileHelper {
 
     public static function deleteExistingFile($file): void {
-        if(is_file($file) && file_exists($file)) \unlink( $file);
+        if(is_file($file)) \unlink( $file);
     }
 
     public static function generateUniqFileName(File $file): string {

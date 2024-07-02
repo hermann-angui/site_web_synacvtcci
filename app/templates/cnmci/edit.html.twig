@@ -1,0 +1,254 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}" type="text/css" rel="stylesheet">
+    <style>
+        .form-control, .form-select {
+            padding: 0.5rem 0.55rem;
+            font-size: 0.95rem;
+            color: #6e0000;
+            font-weight: bolder;
+            border-radius: 0rem;
+            border: 2px solid #6e0000;
+            text-transform: uppercase;
+        }
+
+        .form-control:focus, .form-select:focus {
+            outline: 0;
+            box-shadow: none;
+            border-color: #6e0000;
+        }
+
+        .form-switch .form-check-input {
+            border: 2px solid #6e0000;
+        }
+
+        .form-check-input:checked {
+            background-color: #6e0000;
+            border: 2px solid #6e0000;
+        }
+        .col-form-label {
+            padding-top: calc(0.375rem + 1px);
+            padding-bottom: calc(0.375rem + 1px);
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #2a3042;
+        }
+
+        .form-check-label {
+            font-size: 0.82rem;
+        }
+
+        .form-check-input {
+            margin-top: 0.4em;
+        }
+
+        #field {
+            margin-left: .5em;
+            float: left;
+        }
+
+        #field, label {
+            float: left;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: small;
+        }
+
+        br {
+            clear: both;
+        }
+
+        input {
+            border: 1px solid black;
+            margin-bottom: .5em;
+        }
+
+        input.error {
+            border: 1px solid red;
+        }
+
+        label.error {
+            padding-left: 0px;
+            margin-left: 0em;
+        }
+
+        label.valid {
+            display: block;
+            width: 16px;
+            height: 16px;
+        }
+
+        .select2 span.select2-selection__rendered,
+        li.select2-results__option {
+            font-size: 1.05rem;
+            color: #6e0000;
+            font-weight: bolder;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #6e0000;
+            /*font-size: 0.75rem;*/
+            font-size: 1.05rem;
+            color: #fff;
+            font-weight: bolder;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #6e0000;
+            line-height: 28px;
+        }
+
+
+        input.select2-search__field {
+            border: 1px solid black;
+            margin-bottom: 0.0em;
+        }
+
+
+        @media (max-width: 768px) {
+            .page-header-info h2 {
+                font-size: 26px;
+                line-height: 36px;
+            }
+        }
+
+        label.required:after {
+            content: " *";
+            color: red;
+        }
+
+
+        #stepperform h3{
+            background-color: #6e0000;
+            padding: 5px 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        fieldset > div {
+            padding: 10px 25px;
+            margin-top: 5px;
+        }
+
+        .image-upload-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 450px;
+            min-height: 200px;
+            margin: auto;
+            border: 1px dashed #adb5bd;
+            padding: 10px 10px;
+        }
+        .select2-container .select2-container--default,
+        .select2-selection .select2-selection--multiple,
+        .select2-container--default .select2-selection--multiple,
+        .select2-container .select2-selection--multiple {
+            background-color: white;
+            border-radius: 0px;
+            cursor: text;
+            min-height: 43px;
+            min-height: 38px;
+            border: 2px solid #6e0000 !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 41px;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 2px solid #6e0000;
+            border-radius: 0px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
+        {% endif %}
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Fiche artisan enrôlé à la CNMCi</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="{{path('cnmci_souscripteurs')}}"><i class="fa fa-arrow-left"></i>  Revenir à l'accueil</a></li>
+                                        <li class="breadcrumb-item active">Fiche artisan</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            {{ include('cnmci/_form_disabled.html.twig') }}
+                        </div>
+                    </div>
+                </div> <!-- container-fluid -->
+            </div><!-- End Page-content -->
+
+            {{ include('admin/_partials/footer.html.twig') }}
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
+<script>
+      $('document').ready(function() {
+
+          $(".select2-multiple").select2({
+                multiple: true
+          });
+
+          var companies = [];
+          {% for company in artisan.company  %}
+             companies.push('{{ company }}');
+          {% endfor %}
+          $(".select2-multiple").val(companies);
+          $(".select2-multiple").trigger('change');
+      });
+  </script>
+
+{% endblock %}
+
+

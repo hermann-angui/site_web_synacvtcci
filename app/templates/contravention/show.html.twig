@@ -1,0 +1,231 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .btn-cnmci {
+            background-color: #6e0000;
+            color: #ffffff;
+        }
+        .btn:hover {
+            color: #fff;
+            text-decoration: none;
+            background-color: #343a40;
+            border-color: var(--bs-btn-hover-border-color);
+        }
+        .table>thead {
+            background-color: #6e0000;
+            color: #ffffff;
+        }
+        .active>.page-link, .page-link.active {
+            background-color: #6e0000;
+            border-color: #6e0000;
+        }
+        .vertical-collpsed .main-content {
+            margin-left: 10px !important;
+        }
+        .field, .form-select{
+            background-color:#fce9da;
+            color: #400404;
+            font-weight: bolder;
+            border: 0;
+            height: 35px;
+            border-bottom: 1px solid #350000;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="layout-wrapper">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
+        {% endif %}
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">DETAILS CONTRAVENTION</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 p-3">
+                            <div class="row" style="background-color:#fce9da;">
+                                <div class="text-center mb-1">
+                                    <h4 class="text-center fw-bold py-2">VERBALISATION DU CONDUCTEUR ARTISAN</h4>
+                                    {#                                <h2 class="text-center fw-bold py-2" >CHAMBRE NATIONAL DE METIERS DE COTE D'IVOIRE</h2>#}
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-lg-10">
+                                        <p class="text-center small-title">La CNMCI est une institution consulaire créée par le décret N° 93-01 du 7 janvier 1993. Elle représente les intérêts des
+                                            opérateurs économiques du secteur de l’artisanat et des entreprises de métiers auprès des Pouvoirs Publics.</p>
+                                        <div class="row">
+                                            <div class="col-lg-8 d-flex">
+                                                <span style="padding: 10px;font-size:2.0rem; color: red;width:100px; text-align: center">N° :</span>
+                                                <div style="background-color:#fce9da;font-size:2.0rem; color: red; border: 0; border-bottom: 1px solid #350000;">{{ contravention.contraventionNumero }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <img src="{{ asset('assets/frontend/img/cnmci.png') }}" alt="" height="110">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-3" style="background-color:#fcd5b4;">
+                                <div class="row mb-2">
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFORMATIONS SUR L' AGENT CONTRÔLEUR</p>
+                                        <div class="row mb-3">
+                                            <span>Nom: </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.nomControleur }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFRACTION</p>
+                                        <div class="row mb-1">
+                                            <span>Type : </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.infractionType }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <span>Date : </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.infractionDate|date('d/m/Y') }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <span>Lieu : </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.infractionLieu }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row my-3">
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFORMATIONS SUR LE CONTREVENANT</p>
+                                        <div class="row mb-1">
+                                            <span>Nom et prénoms : </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.contrevenantNom }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <span>N° Permis de conduire : </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.contrevenantNumeroPermis }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <span>N° Téléphone : </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.contrevenantTelephone }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFORMATIONS SUR LE VEHICULE</p>
+                                        <div class="row mb-1">
+                                            <span>Numéro plaque d'immatriculation: </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.vehiculeImmatriculation }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <span>Marque : </span>
+                                            <div class="col-md-11">
+                                                <div class="field">{{ contravention.vehiculeMarque }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="d-flex col-10 justify-content-between mt-4 form-check-dark">
+                                            {% for activity in contravention.contrevenantActivites %}
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" value="{{ activity }}" checked>
+                                                    <label class="form-check-label" for="contravention_contrevenantActivites_0">{{ activity }}</label>
+                                                </div>
+                                            {% endfor %}
+                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row my-3">
+                                    <p class="fw-bolder">PIECES CONFISQUES</p>
+                                    <div class="col-lg-12">
+                                        <span>RAPPORT DE L'AGENT:</span>
+                                        <div class="field" style="width:100%; height: 200px;background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;">{{ contravention.rapportAgent }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center p-3" style="background-color:#f4e4d5;">
+                                <a href="{{ path('cnmci_index') }}" class="btn btn-dark w-25 waves-effect waves-light mx-2">Fermer</a>
+                                <a href="{{ path('cnmci_contravention_edit', {id: contravention.id }) }}" class="btn btn-dark w-25 waves-effect waves-light mx-2">Modifier</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+         $("input").keyup(function(e) {
+               var ss = e.target.selectionStart;
+               var se = e.target.selectionEnd;
+               e.target.value = e.target.value.toUpperCase();
+               e.target.selectionStart = ss;
+               e.target.selectionEnd = se;
+         });
+
+          $(document).on("submit", "form[name='contravention']", function(event) {
+                event.preventDefault();
+                var form = $("form[name='contravention']");
+                var formData = new FormData(form[0]);
+                $("i.btn-spin").removeClass("visually-hidden");
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    console.log(data);
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $("i.btn-spin").addClass("visually-hidden");
+                        $("form[name='contravention']").resetForm();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+    });
+</script>
+{% endblock %}

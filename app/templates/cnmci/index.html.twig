@@ -24,39 +24,102 @@
         .vertical-collpsed .main-content {
             margin-left: 10px !important;
         }
-        .page-content {
-            padding: 10px 0 0 0;
-        }
     </style>
 {% endblock %}
 
 {% block body %}
-        <div class="container-fluid mt-5">
-            <div class="d-flex py-4">
-                <a href="{{ path('admin_index')}}" class="btn btn-link waves-effect waves-light"><i class="fa fa-arrow-left"></i> Revenir à l'accueil</a>
-            </div>
-            <div class="d-flex justify-content-center mt-5">
-                <img src="{{ asset('assets/frontend/img/cnmci.png') }}" alt="logo syncvtcci" width="150" alt="logo cnmci" style="border-collapse: collapse;border-width:0px 0px;" />
-            </div>
-            <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
-                <div class="col-md-4">
-                    <div class="card card-body d-flex justify-content-center align-items-center p-4">
-                        <h3 class="my-3">SUIVI DES SOUSCRIPTIONS</h3>
-                        <div class="mb-3"><i class="fa fa-6x fa-database"></i></div>
-                        <p class="card-text mb-3">Voir la liste détaillée des souscripteurs.</p>
-                        <a href="{{ path('cnmci_souscripteurs') }}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
+
+    <div id="layout-wrapper">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
+        {% endif %}
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
+        <div class="page-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">MENU CNMCI</h4>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4 m-4">
-                    <div class="card card-body d-flex justify-content-center align-items-center p-4">
-                        <h3 class="my-3">SUIVI DES STATISTIQUES</h3>
-                        <div class="mb-3"><i class="fa fa-6x fa-chart-line"></i></div>
-                        <p class="card-text mb-3">Voir les statistiques détaillées des souscriptions.</p>
-                        <a href="{{ path('cnmci_stats')}}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
-                    </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <div class="mb-3"><i class="fa fa-5x fa-database"></i></div>
+                                    <a href="{{ path('cnmci_souscripteurs') }}" class="text-body">
+                                        <h5 class="mt-4 mb-2 font-size-15">SUIVI DES SOUSCRIPTIONS</h5>
+                                    </a>
+                                    <p class="mb-0 text-muted">Voir la liste détaillée des souscripteurs.</p>
+                                </div>
+                                <div>
+                                    <a href="{{ path('cnmci_souscripteurs') }}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
+                                </div>
+                            </div>
+                        </div><!--end card-->
+                    </div><!--end col-->
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <div class="mb-3"><i class="fa fa-5x fa-chart-line"></i></div>
+                                    <a href="{{ path('cnmci_stats')}}"  class="text-body">
+                                        <h5 class="mt-4 mb-2 font-size-15">SUIVI DES STATISTIQUES</h5>
+                                    </a>
+                                    <p class="mb-0 text-muted">Voir les statistiques détaillées des souscriptions.</p>
+                                </div>
+                                <div>
+                                    <a href="{{ path('cnmci_stats')}}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
+                                </div>
+                            </div>
+                        </div><!--end card-->
+                    </div><!--end col-->
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <div class="mb-3"><i class="fa fa-5x fa-plus-square"></i></div>
+                                    <a href="{{ path('cnmci_new_contravention')}}" class="text-body">
+                                        <h5 class="mt-4 mb-2 font-size-15">ENREGISTRER UNE CONTRAVENTION</h5>
+                                    </a>
+                                    <p class="mb-0 text-muted">Enregistrer une nouvelle contravention.</p>
+                                </div>
+                                <div>
+                                    <a href="{{ path('cnmci_new_contravention')}}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
+                                </div>
+                            </div>
+                        </div><!--end card-->
+                    </div><!--end col-->
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <div class="mb-3"><i class="fa fa-5x fa-file"></i></div>
+                                    <a href="{{ path('cnmci_list_contravention')}}" class="text-body">
+                                        <h5 class="mt-4 mb-2 font-size-15">SUIVI DES CONTRAVENTIONS</h5>
+                                    </a>
+                                    <p class="mb-0 text-muted">Suivi et gérer les contraventions.</p>
+                                </div>
+                                <div>
+                                    <a href="{{ path('cnmci_list_contravention')}}"  class="btn btn-cnmci w-100 waves-effect waves-light">Afficher</a>
+                                </div>
+                            </div>
+                        </div><!--end card-->
+                    </div><!--end col-->
                 </div>
             </div>
         </div>
+    </div>
 {% endblock %}
 
 {% block javascript %}

@@ -3,12 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Child;
-use App\Entity\Member;
+use App\Entity\Artisan;
 use App\Entity\Payment;
-use App\Form\MemberRegistrationType;
-use App\Repository\MemberRepository;
+use App\Form\ArtisanRegistrationType;
+use App\Repository\ArtisanRepository;
 use App\Service\ConfigurationService\ConfigurationService;
-use App\Service\Member\MemberService;
+use App\Service\Artisan\ArtisanService;
 use App\Service\Payment\PaymentService;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,7 +36,7 @@ class PageController extends AbstractController
     }
 
     #[Route(path: '/generate/tracking_codes', name: 'admin_generate_tracking_codes')]
-    public function generateTrackingCodes(Request $request, MemberRepository $memberRepository): Response
+    public function generateTrackingCodes(Request $request, ArtisanRepository $artisanRepository): Response
     {
         $trackingCodes = [];
         $from = $request->get('from') ;
@@ -51,15 +51,15 @@ class PageController extends AbstractController
         return $this->render('admin/pages/generate_tracking_codes.html.twig', ['tracking_codes' => $trackingCodes]);
     }
 
-    #[Route(path: '/profile/{reference}', name: 'public_member_profile')]
-    public function memberProfile(Request $request, MemberRepository $memberRepository): Response
+    #[Route(path: '/profile/{reference}', name: 'public_artisan_profile')]
+    public function artisanProfile(Request $request, ArtisanRepository $artisanRepository): Response
     {
-        $member = $memberRepository->findOneBy(["reference" => $request->get("reference")]);
-        if($member)  return $this->render('admin/artisan/public_profile.html.twig', ["member" => $member]);
+        $artisan = $artisanRepository->findOneBy(["reference" => $request->get("reference")]);
+        if($artisan)  return $this->render('admin/artisan/public_profile.html.twig', ["artisan" => $artisan]);
         else return $this->redirectToRoute('home');
     }
 
-    private function handleFormCreation(Request $request, FormInterface $form, Member &$member, MemberService $memberService): Member {
+    private function handleFormCreation(Request $request, FormInterface $form, Artisan &$artisan, ArtisanService $artisanService): Artisan {
 
         $images = [];
 
@@ -79,19 +79,19 @@ class PageController extends AbstractController
                 $child->setLastName($childItem['lastname']);
                 $child->setFirstName($childItem['firstname']);
                 $child->setSex($childItem['sex']);
-                $child->setMember($member);
-                $member->addChild($child);
+                $child->setArtisan($artisan);
+                $artisan->addChild($child);
             }
         }
-        $memberService->createMember($member, $images);
-        return $member;
+        $artisanService->createArtisan($artisan, $images);
+        return $artisan;
     }
 
     #[Route('/download/receipt/{id}', name: 'download_receipt_pdf', methods: ['GET'])]
-    public function pdfGenerate(Member $member, MemberService $memberService): Response
+    public function pdfGenerate(Artisan $artisan, ArtisanService $artisanService): Response
     {
         set_time_limit(0);
-        $content = $memberService->generateOnlineRegistrationReceipt($member);
+        $content = $artisanService->generateOnlineRegistrationReceipt($artisan);
         return new PdfResponse($content, 'recu_inscriptoin.pdf');
     }
 
@@ -104,36 +104,36 @@ class PageController extends AbstractController
     }
 
     #[Route('/preinscription/{tracking_code}', name: 'presubscribe', methods: ['GET']), ]
-    public function presubscribe (string $tracking_code, Request $request, MemberRepository $memberRepository): Response
+    public function presubscribe (string $tracking_code, Request $request, ArtisanRepository $artisanRepository): Response
     {
         date_default_timezone_set("Africa/Abidjan");
 
-        $member = $memberRepository->findOneBy(['tracking_code' => $tracking_code]);
-        $form = $this->createForm(MemberRegistrationType::class, $member);
+        $artisan = $artisanRepository->findOneBy(['tracking_code' => $tracking_code]);
+        $form = $this->createForm(ArtisanRegistrationType::class, $artisan);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $memberRepository->add($member, true);
+            $artisanRepository->add($artisan, true);
 
             return $this->redirectToRoute('home');
         }
 
-        return $this->renderForm('frontend/member/self_subscription.html.twig', [
-            'member' => $member,
+        return $this->renderForm('frontend/artisan/self_subscription.html.twig', [
+            'artisan' => $artisan,
             'form' => $form,
         ]);
     }
 
     #[Route('/checkvalidity/{cnmci_numero_rm}', name: 'check_validity', methods: ['GET']), ]
-    public function checkValidityByRmNumber (string $cnmci_numero_rm, MemberRepository $memberRepository,ConfigurationService $configurationService): Response
+    public function checkValidityByRmNumber (string $cnmci_numero_rm, ArtisanRepository $artisanRepository,ConfigurationService $configurationService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
 
-        $member = $memberRepository->findOneBy(['cnmci_numero_rm' => $cnmci_numero_rm]);
-        if($member) {
+        $artisan = $artisanRepository->findOneBy(['cnmci_numero_rm' => $cnmci_numero_rm]);
+        if($artisan) {
             return $this->json([
                 'success' => true,
-                'image_url' => $configurationService->getParameter('app.base_url') . 'members/' . $member->getReference() . '/' . $member->getCnmciCardPhoto()
+                'image_url' => $configurationService->getParameter('app.base_url') . 'artisans/' . $artisan->getReference() . '/' . $artisan->getCnmciCardPhoto()
             ]);
         } else {
             return $this->json([
@@ -144,13 +144,13 @@ class PageController extends AbstractController
     }
 
     #[Route('/showcnmci/{id}', name: 'check_validity', methods: ['GET']), ]
-    public function showCnmci (Member $member, ConfigurationService $configurationService): Response
+    public function showCnmci (Artisan $artisan, ConfigurationService $configurationService): Response
     {
         date_default_timezone_set("Africa/Abidjan");
-        if($member) {
+        if($artisan) {
             return $this->json([
                 'success' => true,
-                'image_url' => $configurationService->getParameter('app.base_url') . 'members/' . $member->getReference() . '/' . $member->getCnmciCardPhoto()
+                'image_url' => $configurationService->getParameter('app.base_url') . 'artisans/' . $artisan->getReference() . '/' . $artisan->getCnmciCardPhoto()
             ]);
         } else {
             return $this->json([

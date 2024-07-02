@@ -73,16 +73,16 @@
                                 <div class="card-body border-bottom" >
                                     <div class="d-flex justify-content-end">
                                         <div class="flex-shrink-0">
-                                            <a href="{{ path('admin_member_show',{'id': member.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" >Revenir</a>
+                                            <a href="{{ path('admin_artisan_show',{'id': artisan.id}) }}" class="btn btn-success btn-sm waves-effect waves-light" >Revenir</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body" style="height: 80vh;">
-                                    <h4 class="card-title mb-5">Fiche membre : <strong class="badge bg-gradient bg-info">{{ member.matricule }}</strong></h4>
+                                    <h4 class="card-title mb-5">Fiche membre : <strong class="badge bg-gradient bg-info"></strong></h4>
                                     <div class="flip-card d-flex justify-content-center">
                                         <div class="flip-card-inner">
                                             <div class="flip-card-front center">
-                                                <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.cardPhoto }}" alt="Avatar" class="w-75">
+                                                <img src="{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.cardPhoto }}" alt="Avatar" class="w-75">
                                             </div>
                                             <div class="flip-card-back">
                                                 <img src="{{ asset('assets/files/' ~ carte_img_back)}}" alt="Avatar" class="w-75">

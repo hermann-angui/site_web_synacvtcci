@@ -1,6 +1,6 @@
 
     {{ form_start(form, {'method': 'POST', 'attr': {'id': 'stepperform'}}) }}
-        <h3>INFORMATIONS PERSONNELLES - <span class="mx-5"> MATRICULE : {{ member.matricule??''}}</span></h3>
+        <h3>INFORMATIONS PERSONNELLES</h3>
         <fieldset>
             <div id="step0">
                 <div class="my-custom-class-for-errors">
@@ -8,11 +8,11 @@
                 </div>
                 <div class="row mb-4 mt-2">
                     <div class="d-flex justify-content-center">
-                        <label for="member_registration_photo" class="d-block d-flex justify-content-center align-content-center">
+                        <label for="artisan_registration_photo" class="d-block d-flex justify-content-center align-content-center">
                             <div class="d-flex flex-column justify-content-center align-items-center">
-                                {% if member.photo %}
-{#                                    <img id="imagePreview" src="/members/{{ member.reference }}/{{ member.photo }}" alt="" width="150">#}
-                                    <img id="imagePreview" src="/members/{{ member.reference }}/{{ member.photo|image_path }}" alt="" width="150">
+                                {% if artisan.photo %}
+{#                                    <img id="imagePreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photo }}" alt="" width="150">#}
+                                    <img id="imagePreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photo|image_path }}" alt="" width="150">
                                     <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
                                         {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div>Télécharger une photo</div>
@@ -32,9 +32,6 @@
                         {{ form_row(form.tracking_code) }}
                     </div>
                     <div class="col-md-7"></div>
-                    <div class="col-md-2">
-                       {{ form_row(form.codeSticker) }}
-                    </div>
                 </div>
                 <div class="row mb-3 mt-4">
                     <div class="col-md-2">
@@ -65,7 +62,7 @@
                     <div class="col-md-2">
                         {{ form_row(form.birth_city) }}
                     </div>
-                    <div class="col-md-2" id="member_registration_birth_city_other_container">
+                    <div class="col-md-2" id="artisan_registration_birth_city_other_container">
                         {{ form_row(form.birth_city_other) }}
                     </div>
                     <div class="col-md-3">
@@ -123,16 +120,16 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="member_registration_photoPieceFront" class="form-label">Copie scannée de la pièce (recto)
-                            {% if member.photoPieceFront %}
+                        <label for="artisan_registration_photoPieceFront" class="form-label">Copie scannée de la pièce (recto)
+                            {% if artisan.photoPieceFront %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPieceFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPieceFront|image_path }}" alt="" width="80%" style="width:80%;">
+                                    <img id="artisan_registration_photoPieceFrontPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPieceFront|image_path }}" alt="" width="80%" style="width:80%;">
                                     {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPieceFrontPreview" src="" alt="">
+                                    <img id="artisan_registration_photoPieceFrontPreview" src="" alt="">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
@@ -142,16 +139,16 @@
                         </label>
                     </div>
                     <div class="col-md-6">
-                        <label for="member_registration_photoPieceBack" class="form-label">Copie scannée de la pièce (verso)
-                            {% if member.photoPieceBack %}
+                        <label for="artisan_registration_photoPieceBack" class="form-label">Copie scannée de la pièce (verso)
+                            {% if artisan.photoPieceBack %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPieceBackPreview" src="/members/{{ member.reference }}/{{ member.photoPieceBack|image_path }}" alt="" width="80%" style="width:80%;">
+                                    <img id="artisan_registration_photoPieceBackPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPieceBack|image_path }}" alt="" width="80%" style="width:80%;">
                                     {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPieceBackPreview" src="" alt="">
+                                    <img id="artisan_registration_photoPieceBackPreview" src="" alt="">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
@@ -163,16 +160,16 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="member_registration_photoPermisFront" class="form-label">Copie scannée du permis (recto)
-                            {% if member.photoPermisFront %}
+                        <label for="artisan_registration_photoPermisFront" class="form-label">Copie scannée du permis (recto)
+                            {% if artisan.photoPermisFront %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPermisFrontPreview" src="/members/{{ member.reference }}/{{ member.photoPermisFront|image_path }}" alt="" width="80%" style="width:80%;">
+                                    <img id="artisan_registration_photoPermisFrontPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPermisFront|image_path }}" alt="" width="80%" style="width:80%;">
                                     {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPermisFrontPreview" src="" alt="" style="width:80%;">
+                                    <img id="artisan_registration_photoPermisFrontPreview" src="" alt="" style="width:80%;">
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
                                     </div>
@@ -183,16 +180,16 @@
 
                     </div>
                     <div class="col-md-6">
-                        <label for="member_registration_photoPermisBack" class="form-label">Copie scannée du permis (verso)
-                            {% if member.photoPermisBack %}
+                        <label for="artisan_registration_photoPermisBack" class="form-label">Copie scannée du permis (verso)
+                            {% if artisan.photoPermisBack %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPermisBackPreview" src="/members/{{ member.reference }}/{{ member.photoPermisBack|image_path }}" alt="" width="100" style="width:80%">
+                                    <img id="artisan_registration_photoPermisBackPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPermisBack }}" alt="" width="100" style="width:80%">
                                     {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden'}}) }}
                                     <div style="margin-top:0px" class="upload-icon">Télécharger une image</div>
                                 </div>
                             {% else %}
                                 <div class="image-upload-container">
-                                    <img id="member_registration_photoPermisBackPreview" src="" alt="" width="100" style="width:80%" >
+                                    <img id="artisan_registration_photoPermisBackPreview" src="" alt="" width="100" style="width:80%" >
                                     <div style="margin-top:0px"  class="upload-icon">
                                         <i class="fa fa-upload fa-4x d-block"></i>Télécharger une image
                                     </div>
@@ -272,11 +269,11 @@
                 <div class="row mb-3">
                     Avez-vous un/des enfant(s) ? &nbsp;&nbsp;
                     <div class="d-flex">
-                        <input type="checkbox" name="has_child" id="has_child" switch="{{ member.children|length ? 'Oui': 'Non' }}" {{ member.children|length ? 'checked': '' }}/>
+                        <input type="checkbox" name="has_child" id="has_child" switch="{{ artisan.children|length ? 'Oui': 'Non' }}" {{ artisan.children|length ? 'checked': '' }}/>
                         <label for="has_child" data-on-label="Oui" data-off-label="Non"></label>
                     </div>
                     <br>
-                    <div id="child-row" {{ member.children|length ? '': 'style="display:none;"' }}>
+                    <div id="child-row" {{ artisan.children|length ? '': 'style="display:none;"' }}>
                         <div id="children_bock"  class="pt-2">
                             {% for  child in form.children %}
                                 <div class="d-flex justify-content-between w-75">
@@ -307,21 +304,12 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-5 mx-3">
-                            {% if member.paymentReceiptCnmciPdf %}
-                                <label for="member_registration_paymentReceiptCnmciPdf" class="form-label">Reçu de paiement Orange Money) CNMCI (format .pdf)
+                            {% if artisan.paymentReceiptCnmciPdf %}
+                                <label for="artisan_registration_paymentReceiptCnmciPdf" class="form-label">Reçu de paiement Orange Money) CNMCI (format .pdf)
                                     {{ form_widget(form.paymentReceiptCnmciPdf, {'attr': {'class': 'visually-hidden'}}) }}
                                     <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
                                 </label>
-                                <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmciPdf|image_path }}" width="500" height="375" type="application/pdf">
-                            {% endif %}
-                        </div>
-                        <div class="col-md-5 mx-3">
-                            {% if member.scanDocumentIdentitePdf %}
-                                <label for="member_registration_scanDocumentIdentitePdf" class="form-label">Pièces d'identité scannées (format .pdf)
-                                    {{ form_widget(form.scanDocumentIdentitePdf, {'attr': {'class': 'visually-hidden'}}) }}
-                                    <span class="btn btn-rounded btn-success btn-sm">Cliquer ici pour changer le fichier</span>
-                                </label>
-                                <embed src="/members/{{ member.reference }}/{{ member.scanDocumentIdentitePdf|image_path }}" width="500" height="375" type="application/pdf">
+                                <embed src="/artisans/{{ artisan.reference }}/{{ artisan.paymentReceiptCnmciPdf|image_path }}" width="500" height="375" type="application/pdf">
                             {% endif %}
                         </div>
                     </div>

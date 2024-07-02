@@ -2,120 +2,53 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Member;
+use App\Entity\Artisan;
 use App\Entity\Payment;
 use App\Helper\ActivityLogger;
-use App\Repository\MemberRepository;
-use App\Repository\PaymentRepository;
-use App\Service\ConfigurationService\ConfigurationService;
-use App\Service\Member\MemberService;
+use App\Repository\ArtisanRepository;
+use App\Repository\ServiceRepository;
+use App\Service\Artisan\ArtisanService;
 use App\Service\Payment\PaymentService;
-use App\Service\Wave\WaveService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Uid\Uuid;
 
 #[Route('/payment')]
 class PaymentController extends AbstractController
 {
     #[Route(path: '', name: 'admin_payment_index')]
-    public function index(Request $request, MemberRepository $memberRepository): Response
+    public function index(Request $request, ArtisanRepository $artisanRepository): Response
     {
-        $members = $memberRepository->findAll();
-        return $this->render('admin/pages/index.html.twig', ["members" => $members]);
+        $artisans = $artisanRepository->findAll();
+        return $this->render('admin/pages/index.html.twig', ["artisans" => $artisans]);
     }
 
     #[Route(path: '/choose/{id}', name: 'admin_payment_choose')]
-    public function searchMain(Member $member): Response
+    public function searchMain(Artisan $artisan): Response
     {
-        return $this->render('admin/payment/choose.html.twig', ['member' => $member]);
+        return $this->render('admin/payment/choose.html.twig', ['artisan' => $artisan]);
     }
 
-    #[Route(path: '/cashin/{id}', name: 'admin_payment_cash')]
-    public function cashin(Member $member, PaymentService $paymentService, ConfigurationService $configurationService, ActivityLogger $activityLogger): Response
+    #[Route(path: '/cashin', name: 'admin_payment_cash')]
+    public function cashin(Requestt $request, ServiceRepository $serviceRepository, PaymentService $paymentService, ArtisanService $artisanService, ActivityLogger $activityLogger): Response
     {
-        $payment = $paymentService->create(
-            $member,
+        $payload = $request->request->all();
+        $service = $serviceRepository->find($payload['service_id']);
+        $artisan = $artisanService->find($payload['artisan_id']);
+        $payment = $paymentService->cashIn(
+            $artisan,
             $this->getUser(),
-            $configurationService->getParameter('app.montant_frais_service_technique'),
+            $service->getMontant(),
             null,
-            "FRAIS_SERVICE_TECHNIQUE",
-            'PAID',
-            'CASH',
-            null
+            $service->getId()
         );
         $paymentService->generatePaymentReceipt($payment);
-        $activityLogger->create($payment, "Paiement cash effectuée");
-        return $this->redirectToRoute('payment_succes_page', ['id' => $payment->getId()]);
+        $activityLogger->create($payment, $service->getDescription());
+        return $this->redirectToRoute('payment_success_page', ['id' => $payment->getId()]);
     }
 
-    #[Route(path: '/do/{id}', name: 'do_payment')]
-    public function doPaymentServiceTechnique(Member $member, WaveService $waveService, ActivityLogger $activityLogger, PaymentService $paymentService, ConfigurationService $configurationService, PaymentRepository $paymentRepository): Response
-    {
-        $response = $waveService->makePayment($configurationService->getParameter('app.montant_frais_service_technique'));
-        if ($response) {
-            $payment = $paymentService->create(
-                $member,
-                $this->getUser(),
-                $response->getAmount(),
-                $response->getClientReference(),
-                "FRAIS_SERVICE_TECHNIQUE",
-                $response->getPaymentStatus(),
-                'MOBILE_MONEY',
-                "WAVE"
-            );
-
-            $activityLogger->create($payment, "Payment frais service technique initié");
-            return $this->redirect($response->getWaveLaunchUrl());
-        } else return $this->redirectToRoute('admin_index');
-
-    }
-
-    #[Route(path: '/wave/checkout/{status}', name: 'admin_wave_payment_callback')]
-    public function wavePaymentCheckoutStatusCallback($status, Request $request, MemberRepository $memberRepository, PaymentRepository $paymentRepository): Response
-    {
-        $payment = $paymentRepository->findOneBy(["reference" => $request->get("ref")]);
-        if ($payment && (strtoupper(trim($status)) === "SUCCESS")) {
-            if ($payment->getTarget() === "FRAIS_SERVICE_TECHNIQUE") {
-                $payment->setStatus("PAID");
-                $member = $payment->getPaymentFor();
-                $paymentRepository->add($payment, true);
-                $member->setHasPaidFraisEnrollement(true);
-                $memberRepository->add($member, true);
-                return $this->redirectToRoute('admin_payment_success_page', ["id" => $payment->getId()]);
-            }
-            elseif ($payment->getTarget() === "FRAIS_CARTE_SYNDICAT") {
-                $payment->setStatus("PAID");
-                $member = $payment->getPaymentFor();
-                $member->setHasPaidForSyndicat(true);
-                $paymentRepository->add($payment, true);
-                return $this->redirectToRoute('payment_succes_carte_syndicat', ["id" => $payment->getId()]);
-            }
-        }
-        return $this->redirectToRoute('admin_index');
-    }
-
-    #[Route(path: '/wave', name: 'admin_wave_payment_checkout_webhook')]
-    public function callbackWavePayment(Request $request, PaymentRepository $paymentRepository, MemberRepository $memberRepository): Response
-    {
-        $payload = json_decode($request->getContent(), true);
-        if (!empty($payload) && array_key_exists("data", $payload)) {
-            $data = $payload['data'];
-            if (!empty($data) && array_key_exists("client_reference", $data)) {
-                $payment = $paymentRepository->findOneBy(["reference" => $data["client_reference"]]);
-                if ($payment && (array_key_exists("payment_status", $data) && (strtoupper($data["payment_status"]) === "SUCCEEDED"))) {
-                    $payment->setCodePaymentOperateur($data["transaction_id"]);
-                    $payment->setStatus("PAID");
-                    $paymentRepository->add($payment, true);
-                }
-            }
-        }
-        return $this->json($payload);
-    }
-
-    #[Route(path: '/receipt/{id}', name: 'member_display_receipt', methods: ['POST', 'GET'])]
+    #[Route(path: '/receipt/{id}', name: 'artisan_display_receipt', methods: ['POST', 'GET'])]
     public function showPaymentReceipt(?Payment $payment, PaymentService $paymentService): Response
     {
         $paymentService->generatePaymentReceipt($payment);
@@ -123,29 +56,19 @@ class PaymentController extends AbstractController
     }
 
     #[Route(path: '/successpage/{id}', name: 'admin_payment_success_page', methods: ['POST', 'GET'])]
-    public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
+    public function paymentSuccessPage(?Payment $payment, PaymentService $paymentService, ArtisanRepository $artisanRepository): Response
     {
         $paymentService->generatePaymentReceipt($payment);
-        $member = $payment->getPaymentFor();
-        $member->setEtape(3);
-        $memberRepository->add($member, true);
+        $artisan = $payment->getPaymentFor();
+        $artisan->setEtape(3);
+        $artisanRepository->add($artisan, true);
         return $this->render('admin/payment/payment-success.html.twig', ['payment' => $payment]);
-    }
-
-    #[Route(path: '/carte-syndicat/success/{id}', name: 'payment_succes_carte_syndicat', methods: ['POST', 'GET'])]
-    public function paymentCarteSyndicatSuccessPage(?Payment $payment, PaymentService $paymentService, MemberRepository $memberRepository): Response
-    {
-        $paymentService->generatePaymentReceipt($payment);
-        $member = $payment->getPaymentFor();
-        $member->setEtape(5);
-        $memberRepository->add($member, true);
-        return $this->render('admin/payment/payment_succes_carte_syndicat.html.twig', ['payment' => $payment]);
     }
 
     #[Route('/receipt/download/{id}', name: 'download_payment_receipt_pdf', methods: ['GET'])]
     public function pdfGenerate(Payment $payment, PaymentService $paymentService, ActivityLogger $activityLogger): Response
     {
         $activityLogger->create($payment, "Téléchargement de reçu");
-        return $paymentService->downloadMemberPaymentReceipt($payment);
+        return $paymentService->downloadArtisanPaymentReceipt($payment);
     }
 }

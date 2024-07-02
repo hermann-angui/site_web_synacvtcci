@@ -2,7 +2,7 @@
 
 namespace App\Service\Wave;
 
-use App\Entity\Member;
+use App\Entity\Artisan;
 use App\Service\ConfigurationService\ConfigurationService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -88,7 +88,7 @@ class WaveService
     }
 
 
-    public function makePayment($montant) : ?WaveCheckoutResponse
+    public function pay($montant) : ?WaveCheckoutResponse
     {
         try{
             $waveCheckoutRequest = new WaveCheckoutRequest();

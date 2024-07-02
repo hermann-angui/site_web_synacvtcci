@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        {{ include('admin/artisan/_member_cards_list.html.twig') }}
+                                        {{ include('admin/artisan/_artisan_cards_list.html.twig') }}
                                     </div>
                                     <!--end row-->
                                 </div>
@@ -81,7 +81,7 @@
 
         var datatable = initDatatable();
 
-        $("#matricule,#last_name,#driving_license_number,#id_number,#sex").change(function (e) {
+        $("#last_name,#driving_license_number,#id_number,#sex").change(function (e) {
                 datatable.draw();
         });
 
@@ -112,11 +112,9 @@
                 },
                 "columns": [
                     {"data":  "photo"},
-                    {"data":  "matricule"},
                     {"data":  "last_name"},
                     {"data":  "first_name"},
                     { "data": "subscription_date" },
-                    { "data": "has_withdraw_syndicat_carte" },
                     { "data": "" }
                 ],
                 "order": [[4, 'desc']]

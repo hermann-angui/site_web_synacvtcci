@@ -1,0 +1,712 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .nav-tabs-custom .nav-item .nav-link.active {
+            color: #61001b;
+        }
+        .nav-link:focus, .nav-link:hover {
+            color: #61001b;
+            text-decoration: none;
+        }
+        .nav-tabs-custom .nav-item .nav-link::after {
+            background: #61001b;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="layout-wrapper">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
+        {% endif %}
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Liste des artisans enrôlés à la CNMCI</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        {% if is_granted("ROLE_PAIEMENT_VALIDATOR") or is_granted("ROLE_ADMIN") %}
+                                        <a class="nav-link active font-size-15 p-2" data-bs-toggle="tab" href="#validation_paiement" role="tab" aria-selected="true">
+                                            Paiements en attente de vérification/validation
+                                        </a>
+                                        {% endif %}
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        {% if is_granted("ROLE_ENROLEMENT_VALIDATOR") or is_granted("ROLE_ADMIN") %}
+                                        <a class="nav-link font-size-15 p-2 mx-3" data-bs-toggle="tab" href="#validation_enrolement" role="tab" aria-selected="false" tabindex="-1">
+                                            Enrôlements en attente de validation finale (avant impression de carte)
+                                        </a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+
+                                <!-- Tab panes -->
+                                <div class="tab-content p-1">
+                                    <div class="tab-pane active show" id="validation_paiement" role="tabpanel">
+                                        {% if is_granted("ROLE_PAIEMENT_VALIDATOR") or is_granted("ROLE_ADMIN")  %}
+                                        <div class="row g-3 my-4 py-3 bg-light">
+                                            <div class="col-auto">
+                                                <div class="mt-2 fw-bold float-end"> Du :</div>
+                                            </div>
+                                            <div class="col-xxl-2 col-lg-2">
+                                                <input type="date" class="form-control js-datepicker" id="date_start" name="date_start"
+                                                       value="{{ from }}">
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="mt-2 fw-bold float-end"> Au :</div>
+                                            </div>
+                                            <div class="col-xxl-2 col-lg-2">
+                                                <input type="date" class="form-control js-datepicker" id="date_end" name="date_end"
+                                                       value="{{ to }}">
+                                            </div>
+                                            <div class="col-xxl-1 col-lg-1">
+                                                <button class="btn btn-dark" id="btn-filter"><i class="fa fa-search"></i></button>
+                                            </div>
+                                            <div class="col-xxl-6 col-lg-5">
+                                                <div class="d-flex align-items-end">
+                                                    <div class="d-flex justify-content-end flex-shrink-0">
+                                                        <a id="btn-validate-payments-batch" class="btn btn-dark btn-sm" href="#"><span class="fa fa-check fa-1x"></span> Valider les paiements</a>
+                                                        <a id="btnMatrice" class="btn btn-dark btn-sm mx-1" href="#"><span class="fa fa-download fa-1x"></span> Télécharger la matrice des encaissements</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table mt-2">
+                                            {{ include('cnmci/_cnmci_validation_paiement_datatable.html.twig') }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="tab-pane" id="validation_enrolement" role="tabpanel">
+                                        {% if is_granted("ROLE_ENROLEMENT_VALIDATOR") or is_granted("ROLE_ADMIN") %}
+                                        <div class="row g-3 my-4 py-3 bg-light">
+                                            <div class="col-auto">
+                                                <div class="mt-2 fw-bold float-end"> Du :</div>
+                                            </div>
+                                            <div class="col-xxl-2 col-lg-2">
+                                                <input type="date" class="form-control js-datepicker" id="date_start" name="date_start"
+                                                       value="{{ from }}">
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="mt-2 fw-bold float-end"> Au :</div>
+                                            </div>
+                                            <div class="col-xxl-2 col-lg-2">
+                                                <input type="date" class="form-control js-datepicker" id="date_end" name="date_end"
+                                                       value="{{ to }}">
+                                            </div>
+                                            <div class="col-xxl-1 col-lg-1">
+                                                <button class="btn btn-dark" id="btn-filter"><i class="fa fa-search"></i></button>
+                                            </div>
+                                            <div class="col-xxl-6 col-lg-5">
+                                                <div class="d-flex align-items-end">
+                                                    <div class="d-flex justify-content-end flex-shrink-0">
+{#                                                        <a id="btn-validate-enrolements-batch" class="btn btn-dark btn-sm" href="#"><span class="fa fa-check fa-1x"></span> Valider les enrôlements</a>#}
+                                                        <a id="btnList" class="btn btn-dark btn-sm mx-1" href="#"><span class="fa fa-download fa-1x"></span> Télécharger le fichier enrôlements</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table mt-4">
+                                                {{ include('cnmci/_cnmci_validation_enrolement_datatable.html.twig') }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- subscribeModal -->
+    <div class="modal fade" id="valider-enrolement-modal" tabindex="-1" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="avatar-md mx-auto mb-4">
+                        <div class="avatar-title bg-light rounded-circle text-primary h1">
+                            <i class="mdi mdi-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="row mb-3 p-3">
+                        <div class="alert alert-warning">
+                            <p><i class="mdi mdi-alert-circle mdi-24px"></i>  Vous vous apprêtez à valider l'inscription de cet artisan.<br> Assurez vous que toutes les vérifications necessaire ont été faites.</p>
+                        </div>
+                        <form id="validationEnrolementFrm" name="validationEnrolementFrm" method="post" action="{{ path('cnmci_validation_enrolement') }}">
+                            <div class="mb-3">
+                                <label for="cnmci_numero_rm" class="form-label">N° RM</label>
+                                <input type="text" class="form-control" name="cnmci_numero_rm" placeholder="Numéro RM ">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cnmci_carte_professionelle" class="form-label">N° Carte professionnelle</label>
+                                <input type="text" class="form-control" name="cnmci_carte_professionelle" placeholder="Numéro carte professionnelle">
+                            </div>
+                            <input type="hidden" class="form-control" value="" name="artisan_id" hidden="hidden" aria-hidden="true">
+                            <hr>
+                            <div class="row justify-content-end">
+                                <div class="col-sm-9">
+                                    <div>
+                                        <button type="button" class="btn btn-info me-1" data-dismiss="modal" id="modal-valider-enrolement-btn-close"> Annuler</button>
+                                        <button type="submit" class="btn btn-dark me-1" data-dismiss="modal"> Enregister</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal -->
+    <div class="modal fade" id="reject-enrolement-modal" tabindex="-1" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3 p-3">
+                        <div class="alert alert-warning">
+                            <p><i class="mdi mdi-alert-circle mdi-24px"></i>  Vous vous apprêtez à rejeter l'inscription de cet artisan.<br> Veuillez indiquer le motif du rejet en commentaire svp.</p>
+                        </div>
+                        <form id="rejectEnrolementFrm" name="rejectEnrolementFrm" method="post" action="{{ path('cnmci_reject_enrolement') }}">
+                            <div class="mb-3">
+                                <label for="reason_reject_enrolement" class="form-label">Raison du rejet de dossier</label>
+                                <input type="text" class="form-control" name="reason_reject_enrolement" placeholder="Description détaillée du motif du rejet de l'enrôlement ">
+                            </div>
+                            <input type="hidden" class="form-control" value="" name="artisan_enrolement_reject_id" hidden="hidden" aria-hidden="true">
+                            <hr>
+                            <div class="row justify-content-end">
+                                <div class="col-sm-9">
+                                    <div>
+                                        <button type="button" class="btn btn-info me-1" data-dismiss="modal" id="modal-enrolement_reject-btn-close"> Annuler</button>
+                                        <button type="submit" class="btn btn-dark me-1" data-dismiss="modal"> Enregister</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal -->
+    <div class="modal fade" id="reject-payment-modal" tabindex="-1" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3 p-3">
+                        <div class="alert alert-warning">
+                            <p><i class="mdi mdi-alert-circle mdi-24px"></i>  Vous vous apprêtez à rejeter l'inscription de cet artisan.<br> Veuillez indiquer le motif du rejet en commentaire svp.</p>
+                        </div>
+                        <form id="rejectPaymentFrm" name="rejectPaymentFrm" method="post" action="{{ path('cnmci_reject_payment') }}">
+                            <div class="mb-3">
+                                <label for="reason_reject_payment" class="form-label">Raison du rejet de dossier</label>
+                                <input type="text" class="form-control" name="reason_reject_payment" placeholder="Motif détaillé du rejet de paiement">
+                            </div>
+                            <input type="hidden" class="form-control" value="" name="artisan_payment_reject_id" hidden="hidden" aria-hidden="true">
+                            <hr>
+                            <div class="row justify-content-end">
+                                <div class="col-sm-9">
+                                    <div>
+                                        <button type="button" class="btn btn-info me-1" data-dismiss="modal" id="modal-reject-payment-btn-close"> Annuler</button>
+                                        <button type="submit" class="btn btn-dark me-1" data-dismiss="modal"> Enregister</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/js/dataTables.responsive.min.js') }}"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+
+        var paiementValidationDatatable = initPaiementValidationDatatable();
+        var enrolementValidationDatatable = null;
+
+         $('#btn-validate-payments-batch').hide();
+        // $('#btn-validate-enrolements-batch').hide();
+
+         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                console.log(tooltipTriggerEl);
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+         });
+
+        $(document).on('shown.bs.tab',"a[data-bs-toggle='tab']", function(event){
+            if("#validation_paiement" === event.target.getAttribute("href")){
+                $('#btn-validate-payments-batch').hide();
+               paiementValidationDatatable.ajax.reload( null, false );
+            }
+        });
+
+         $(document).on('shown.bs.tab',"a[data-bs-toggle='tab']", function(event){
+            if("#validation_enrolement" === event.target.getAttribute("href")){
+               // $('#btn-validate-enrolements-batch').hide();
+                if(!enrolementValidationDatatable) enrolementValidationDatatable = initEnrolementValidationDatatable();
+                else enrolementValidationDatatable.ajax.reload( null, false );
+            }
+        });
+
+        var selectedRow = [];
+
+        $("#btn-filter").click(function(){
+          //  datatable.draw(false);
+            datatable.ajax.reload( null, false );
+        });
+
+        $('#btnMatrice').click(function(e){
+            e.preventDefault();
+            window.location.href = "{{ path('cnmci_download_matrice') }}?date_from=" +  $('#date_start').val() +  "&date_to=" + $('#date_end').val();
+        });
+
+        // $('#btn-validate-enrolements-batch').click(function(){
+        //     $.post('/cnmci/validate/enrolement-cnmci/batch', {ids: selectedRow}, function(d){
+        //        // datatable.draw(false);
+        //         enrolementValidationDatatable.ajax.reload( null, false );
+        //         $('#btn-validate-enrolements-batch').hide();
+        //     });
+        // });
+
+        $('#btn-validate-payments-batch').click(function(){
+            $.post('/cnmci/validate/paiement-souscription/batch', {ids: selectedRow}, function(d){
+               // datatable.draw(false);
+                paiementValidationDatatable.ajax.reload( null, false );
+                $('#btn-validate-payments-batch').hide();
+            });
+        });
+
+        $('#btnList').click(function(e){
+            e.preventDefault();
+            window.location.href = "{{ path('cnmci_download_list') }}?date_from=" +  $('#date_start').val() +  "&date_to=" + $('#date_end').val();
+        });
+
+        $(document).on('click', '#payment-row-selector-all', function(){
+            $('input.row-selector:checkbox').not(this).prop('checked', this.checked);
+            selectedRow = [];
+            $('input.row-selector:checkbox').each(function (item) {
+                if($(this).is(":checked")){
+                    $(this).parents().closest('tr').css('background-color', "#fffef3");
+                    selectedRow.push($(this).data('id'));
+                }else{
+                    $(this).parents().closest('tr').css('background-color', "transparent");
+                }
+            });
+            if(selectedRow.length > 1 ) {
+                $('#btn-validate-enrolements-batch').show();
+                $('#btn-validate-payments-batch').show();
+            }
+            else {
+                $('#btn-validate-enrolements-batch').hide();
+                $('#btn-validate-payments-batch').hide();
+            }
+        });
+
+       // $(document).on('click', '#enrolement-row-selector-all', function(){
+       //      $('input.row-selector:checkbox').not(this).prop('checked', this.checked);
+       //      selectedRow = [];
+       //      $('input.row-selector:checkbox').each(function (item) {
+       //          if($(this).is(":checked")){
+       //              $(this).parents().closest('tr').css('background-color', "#fffef3");
+       //              selectedRow.push($(this).data('id'));
+       //          }else{
+       //              $(this).parents().closest('tr').css('background-color', "transparent");
+       //          }
+       //      });
+       //      if(selectedRow.length > 1 ) {
+       //          $('#btn-validate-enrolements-batch').show();
+       //          $('#btn-validate-payments-batch').show();
+       //      }
+       //      else {
+       //          $('#btn-validate-enrolements-batch').hide();
+       //          $('#btn-validate-payments-batch').hide();
+       //      }
+       //  });
+
+        $(document).on('change', '.row-selector', function(e){
+
+            var id = $(this).data('id');
+            if($(this).is(":checked")){
+                $(this).parents().closest('tr').css('background-color', "#f8f7e3");
+                selectedRow.push(id);
+            }else{
+                $(this).parents().closest('tr').css('background-color', "transparent");
+                selectedRow = selectedRow.filter(function(item) {
+                    return item !== id
+                });
+            }
+            if(selectedRow.length > 1 ) {
+                $('#btn-validate-enrolements-batch').show();
+                $('#btn-validate-payments-batch').show();
+            }
+            else {
+                $('#btn-validate-enrolements-batch').hide();
+                $('#btn-validate-payments-batch').hide();
+            }
+        });
+
+        $(document).on('click', '.btn-validate-payment', function(e){
+           e.preventDefault();
+           var id =  $(this).data('id');
+           Swal.fire({
+            title: "Êtes vous sûr de valider?",
+            text: "Assurez vous d'avoir fait les vérifications nécessaires!",
+            icon: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#34c38f",
+            cancelButtonColor: "#f46a6a",
+            confirmButtonText: "Oui",
+            cancelButtonText: "Annuler"
+          }).then(function(t) {
+               $.get("/cnmci/validate/paiement-souscription/" + id, function(data){
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                       // datatable.draw(false);
+                        paiementValidationDatatable.ajax.reload( null, false );
+                        paiementValidationDatatable.addClass("form-select form-select-sm");
+                        paiementValidationDatatable.addClass("pagination-rounded");
+                    });
+               });
+          });
+        });
+        $(document).on('click', '.btn-validate-enrolement', function(e){
+             $("input[name='artisan_id']").val($(this).data('id'));
+             $('#valider-enrolement-modal').modal('show');
+        });
+        $(document).on('click', '.btn-reject-enrolement', function(e){
+             $("input[name='artisan_enrolement_reject_id']").val($(this).data('id'));
+             $('#reject-enrolement-modal').modal('show');
+        });
+        $(document).on('click', '.btn-reject-payment', function(e){
+             $("input[name='artisan_payment_reject_id']").val($(this).data('id'));
+             $('#reject-payment-modal').modal('show');
+        });
+
+        $(document).on("click", "#modal-valider-enrolement-btn-close", function(){
+            var form1 = $("form[name='validationEnrolementFrm']");
+            form1[0].reset();
+            $('#valider-enrolement-modal').modal('hide');
+        });
+        $(document).on("click", "#modal-reject-enrolement-btn-close", function(){
+            var form1 = $("form[name='rejectEnrolementFrm']");
+            form1[0].reset();
+            $('#reject-enrolement-modal').modal('hide');
+        });
+        $(document).on("click", "#modal-reject-payment-btn-close", function(){
+            var form1 = $("form[name='rejectPaymentFrm']");
+            form1[0].reset();
+            $('#reject-payment-modal').modal('hide');
+        });
+
+       $(document).on("submit", "form[name='validationEnrolementFrm']", function(event) {
+                event.preventDefault();
+                var form = $("form[name='validationEnrolementFrm']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                })
+                .done(function(data) {
+                    if(data=== 'SUCCESS'){
+                         Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Enregistrement effectuée avec succès",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#valider-enrolement-modal').modal('hide');
+                            // datatable.draw(false);
+                            enrolementValidationDatatable.ajax.reload( null, false );
+                        });
+                    }else{
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Enregistrement a échoué",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#valider-enrolement-modal').modal('hide');
+                        });
+                    }
+
+                })
+                .fail(function(data) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Enregistrement a échoué",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        form[0].reset();
+                        $('#valider-enrolement-modal').modal('hide');
+                    });
+                });
+       });
+       $(document).on("submit", "form[name='rejectEnrolementFrm']", function(event) {
+                event.preventDefault();
+                var form = $("form[name='rejectEnrolementFrm']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                })
+                .done(function(data) {
+                    if(data=== 'SUCCESS'){
+                         Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Enregistrement effectuée avec succès",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#reject-enrolement-modal').modal('hide');
+                            // datatable.draw(false);
+                            enrolementValidationDatatable.ajax.reload( null, false );
+                        });
+                    }else{
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Enregistrement a échoué",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#reject-enrolement-modal').modal('hide');
+                        });
+                    }
+
+                })
+                .fail(function(data) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Enregistrement a échoué",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        form[0].reset();
+                        $('#reject-enrolement-modal').modal('hide');
+                    });
+                });
+       });
+       $(document).on("submit", "form[name='rejectPaymentFrm']", function(event) {
+                event.preventDefault();
+                var form = $("form[name='rejectPaymentFrm']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                })
+                .done(function(data) {
+                    if(data=== 'SUCCESS'){
+                         Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Enregistrement effectuée avec succès",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#reject-payment-modal').modal('hide');
+                            // datatable.draw(false);
+                            enrolementValidationDatatable.ajax.reload( null, false );
+                        });
+                    }else{
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Enregistrement a échoué",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function (result) {
+                            form[0].reset();
+                            $('#reject-payment-modal').modal('hide');
+                        });
+                    }
+
+                })
+                .fail(function(data) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Enregistrement a échoué",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        form[0].reset();
+                        $('#reject-payment-modal').modal('hide');
+                    });
+                });
+       });
+
+       function initPaiementValidationDatatable(){
+            /* DATATABLE INIT */
+            return $('#datatable_validation_paiement').DataTable({
+                bLengthChange : true,
+                responsive: true,
+                searching: false,
+                pageLength: 15,
+                stateSave: true,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                    lengthMenu: "Afficher _MENU_ entrées",
+                    zeroRecords: "Aucune entrée correspondante trouvée",
+                    oPaginate: {
+                        sNext: '<i class="mdi mdi-chevron-right"></i>',
+                        sPrevious: '<i class="mdi mdi-chevron-left"></i>'
+                    },
+                   // processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                },
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    "url": "{{ path('cnmci_enrolement_datatable') ~ '?payment_validated=1' }}",
+                    "data": function (d) {
+                        d.date_start = $("#date_start").val();
+                        d.date_end = $("#date_end").val();
+                    }
+                },
+               columns: [
+                    {"data":  "id" , "sortable": false},
+                    {"data":  "photo" },
+                    {"data":  "last_name" },
+                    {"data":  "first_name" },
+                    { "data": "subscription_date" },
+                    { "data": "driving_license_number" },
+                    { "data": "is_payment_validated" },
+                    { "data": "reference" }
+               ],
+               order: [[4, 'desc']],
+               drawCallback: function () {
+                   $(".dataTables_paginate").addClass("pagination-rounded");
+               }
+            });
+       }
+
+       function initEnrolementValidationDatatable(){
+            /* DATATABLE INIT */
+            return $('#datatable_validation_enrolement').DataTable({
+                bLengthChange : true,
+                responsive: true,
+                searching: false,
+                pageLength: 15,
+                stateSave: true,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                    lengthMenu: "Afficher _MENU_ entrées",
+                    zeroRecords: "Aucune entrée correspondante trouvée",
+                    oPaginate: {
+                        sNext: '<i class="mdi mdi-chevron-right"></i>',
+                        sPrevious: '<i class="mdi mdi-chevron-left"></i>'
+                    },
+                   // processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                },
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    "url": '{{ path('cnmci_enrolement_datatable') ~ '?inscription_validated=1' }}',
+                    "data": function (d) {
+                        d.date_start = $("#date_start").val();
+                        d.date_end = $("#date_end").val();
+                    }
+                },
+                columns: [
+                    {"data":  "id" , "sortable": false},
+                    {"data":  "photo" },
+                    {"data":  "last_name" },
+                    {"data":  "first_name" },
+                    { "data": "subscription_date" },
+                    { "data": "driving_license_number" },
+                    { "data": "is_payment_validated" },
+                    { "data": "is_inscription_validated" },
+                    { "data": "reference" }
+                ],
+                order: [[3, 'desc']],
+                drawCallback: function () {
+                   $(".dataTables_paginate").addClass("pagination-rounded");
+                }
+            });
+       }
+    });
+</script>
+{% endblock %}

@@ -48,8 +48,8 @@
                                     <div class="d-flex align-items-center">
                                         <h5 class="mb-0 card-title flex-grow-1"></h5>
                                         <div class="flex-shrink-0">
-                                            <a href="{{ path('admin_member_photostep') }}" class="btn btn-primary btn-sm"><span class="fa fa-plus-circle fa-1x"></span> Enregister un chauffeur</a>
-                                            <a href="{{ path('admin_member_upload') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-upload fa-1x"></span> Importer</a>
+                                            <a href="{{ path('admin_artisan_photostep') }}" class="btn btn-primary btn-sm"><span class="fa fa-plus-circle fa-1x"></span> Enregister un chauffeur</a>
+                                            <a href="{{ path('admin_artisan_upload') }}" class="btn btn-primary btn-sm waves-effect waves-light"><span class="fa fa-upload fa-1x"></span> Importer</a>
                                             <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".bs-downloadcards"><span class="fa fa-download fa-1x"></span>Télécharger les cartes</button>
                                         </div>
                                     </div>
@@ -58,9 +58,6 @@
                                     <div class="row g-3">
                                         <div class="col-xxl-1 col-lg-1">
                                             <button id="refresh-btn" type="button" class="btn btn-soft-secondary w-100">Filtre<i class="mdi mdi-filter-outline align-middle"></i></button>
-                                        </div>
-                                        <div class="col-xxl-2 col-lg-6">
-                                            <input type="search" class="form-control" id="matricule" placeholder="matricule">
                                         </div>
                                         <div class="col-xxl-2 col-lg-6">
                                             <input type="search" class="form-control" id="last_name" placeholder="Nom">
@@ -84,7 +81,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        {{ include('admin/artisan/_member_datatable.html.twig') }}
+                                        {{ include('admin/artisan/_artisan_datatable.html.twig') }}
                                     </div>
                                     <!--end row-->
                                 </div>
@@ -109,12 +106,8 @@
     <div class="modal fade bs-downloadcards" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Matricules à télécharger</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ path('admin_member_download_cards') }}">
+                    <form method="post" action="{{ path('admin_artisan_download_cards') }}">
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="selection_type" class="form-label">Interval:</label>
@@ -123,20 +116,6 @@
                             <div class="col-md-6">
                                 <label for="selection_type" class="form-label">Tous:</label>
                                 <input type="radio" name="selection_type" class="form-check" value="0"/>
-                            </div>
-                        </div>
-                        <div class="row" id="interval-row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="from_matricule" class="form-label">Du Matricule:</label>
-                                    <input type="text" class="form-control" name="from_matricule" placeholder="Entrez matricule initial">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="to_matricule" class="form-label">Au Matricule:</label>
-                                    <input type="text" class="form-control" name="to_matricule" placeholder="Entrez matricule final">
-                                </div>
                             </div>
                         </div>
                         <div>
@@ -159,7 +138,7 @@
 
         var datatable = initDatatable();
 
-        $("#matricule,#last_name,#driving_license_number,#id_number,#sex").change(function (e) {
+        $("#last_name,#driving_license_number,#id_number,#sex").change(function (e) {
                 datatable.draw();
         });
 
@@ -183,9 +162,8 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": '{{ path('admin_member_datatable') }}',
+                    "url": '{{ path('admin_artisan_datatable') }}',
                     "data": function (d) {
-                        d.matricule = $("#matricule").val();
                         d.last_name = $("#last_name").val();
                         d.driving_license_number = $("#driving_license_number").val();
                         d.id_number = $("#id_number").val();
@@ -194,7 +172,6 @@
                 },
                 "columns": [
                     {"data":  "photo"},
-                    {"data":  "matricule"},
                     {"data":  "last_name"},
                     {"data":  "first_name"},
                     { "data": "subscription_date" },

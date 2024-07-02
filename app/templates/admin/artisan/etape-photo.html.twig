@@ -14,17 +14,14 @@
             border: 2px solid #ffbb00;
             text-transform: uppercase;
         }
-
         .form-control:focus, .form-select:focus {
             outline: 0;
             box-shadow: none;
             border-color: #ffbb00;
         }
-
         .form-switch .form-check-input {
             border: 2px solid #ffbb00;
         }
-
         .form-check-input:checked {
             background-color: #117b01;
             border: 2px solid #117b01;
@@ -36,64 +33,52 @@
             font-size: 0.95rem;
             line-height: 1.5;
         }
-
         .form-label {
             margin-bottom: 0.5rem;
             font-size: 0.8rem;
             font-weight: bold;
             color: #2a3042;
         }
-
         .form-check-label {
             font-size: 0.82rem;
         }
-
         .form-check-input {
             margin-top: 0.4em;
         }
-
         #field {
             margin-left: .5em;
             float: left;
         }
-
         #field, label {
             float: left;
             font-family: Arial, Helvetica, sans-serif;
             font-size: small;
         }
-
         br {
             clear: both;
         }
-
         input {
             border: 1px solid black;
             margin-bottom: .5em;
         }
-
         input.error {
             border: 1px solid red;
         }
-
         label.error {
             padding-left: 0px;
             margin-left: 0em;
         }
-
         label.valid {
             display: block;
             width: 16px;
             height: 16px;
         }
-
         .select2 span.select2-selection__rendered,
         li.select2-results__option {
             font-size: 1.05rem;
             color: #117b01;
             font-weight: bolder;
         }
-
         .select2-container--default .select2-results__option--highlighted[aria-selected] {
             background-color: #117b01;
             /*font-size: 0.75rem;*/
@@ -101,31 +86,24 @@
             color: #fff;
             font-weight: bolder;
         }
-
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             color: #117b01;
             line-height: 28px;
         }
-
-
         input.select2-search__field {
             border: 1px solid black;
             margin-bottom: 0.0em;
         }
-
-
         @media (max-width: 768px) {
             .page-header-info h2 {
                 font-size: 26px;
                 line-height: 36px;
             }
         }
-
         label.required:after {
             content: " *";
             color: red;
         }
-
 
         #stepperform h3{
             background: linear-gradient(59deg, rgba(252,114,0,1) 9%, rgba(244,130,0,0.8855917366946778) 32%, rgba(62,146,60,0.9398113905325444) 69%, rgba(4,113,2,1) 95%);
@@ -305,7 +283,7 @@
                 //this.value = this.value.toUpperCase();
           });
 
-          $("#member_photo_step_photo").change(function(data){
+          $("#artisan_photo_step_photo").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
@@ -316,55 +294,55 @@
               }
           });
 
-          $("label[for='member_photo_step_photoPieceFront']").change(function(data){
+          $("label[for='artisan_photo_step_photoPieceFront']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_photo_step_photoPieceFrontPreview').attr('src', evt.target.result);
-                  $('#member_photo_step_photoPieceFrontPreview').attr('width', '85%');
-                  $("label[for='member_photo_step_photoPieceFront'] .upload-icon").hide();
-                  $('#member_photo_step_photoPieceFrontPreview').fadeIn(650);
+                  $('#artisan_photo_step_photoPieceFrontPreview').attr('src', evt.target.result);
+                  $('#artisan_photo_step_photoPieceFrontPreview').attr('width', '85%');
+                  $("label[for='artisan_photo_step_photoPieceFront'] .upload-icon").hide();
+                  $('#artisan_photo_step_photoPieceFrontPreview').fadeIn(650);
               }
           });
 
-          $("label[for='member_photo_step_photoPieceBack']").change(function(data){
+          $("label[for='artisan_photo_step_photoPieceBack']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_photo_step_photoPieceBackPreview').attr('src', evt.target.result);
-                  $('#member_photo_step_photoPieceBackPreview').attr('width','85%');
-                  $("label[for='member_photo_step_photoPieceBack'] .upload-icon").hide();
-                  $('#member_photo_step_photoPieceBackPreview').fadeIn(650);
+                  $('#artisan_photo_step_photoPieceBackPreview').attr('src', evt.target.result);
+                  $('#artisan_photo_step_photoPieceBackPreview').attr('width','85%');
+                  $("label[for='artisan_photo_step_photoPieceBack'] .upload-icon").hide();
+                  $('#artisan_photo_step_photoPieceBackPreview').fadeIn(650);
               }
           });
 
-          $("label[for='member_photo_step_photoPermisFront']").change(function(data){
+          $("label[for='artisan_photo_step_photoPermisFront']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_photo_step_photoPermisFrontPreview').attr('src', evt.target.result);
-                  $('#member_photo_step_photoPermisFrontPreview').attr('width','85%');
-                  $("label[for='member_photo_step_photoPermisFront'] .upload-icon").hide();
-                  $('#member_photo_step_photoPermisFrontPreview').fadeIn(650);
+                  $('#artisan_photo_step_photoPermisFrontPreview').attr('src', evt.target.result);
+                  $('#artisan_photo_step_photoPermisFrontPreview').attr('width','85%');
+                  $("label[for='artisan_photo_step_photoPermisFront'] .upload-icon").hide();
+                  $('#artisan_photo_step_photoPermisFrontPreview').fadeIn(650);
               }
           });
 
-          $("label[for='member_photo_step_photoPermisBack']").change(function(data){
+          $("label[for='artisan_photo_step_photoPermisBack']").change(function(data){
               var imageFile = data.target.files[0];
               var reader = new FileReader();
               reader.readAsDataURL(imageFile);
 
               reader.onload = function(evt){
-                  $('#member_photo_step_photoPermisBackPreview').attr('src', evt.target.result);
-                  $('#member_photo_step_photoPermisBackPreview').attr('width','85%');
-                  $("label[for='member_photo_step_photoPermisBack'] .upload-icon").hide();
-                  $('#member_photo_step_photoPermisBackPreview').fadeIn(650);
+                  $('#artisan_photo_step_photoPermisBackPreview').attr('src', evt.target.result);
+                  $('#artisan_photo_step_photoPermisBackPreview').attr('width','85%');
+                  $("label[for='artisan_photo_step_photoPermisBack'] .upload-icon").hide();
+                  $('#artisan_photo_step_photoPermisBackPreview').fadeIn(650);
               }
           });
 

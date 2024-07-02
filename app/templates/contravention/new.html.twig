@@ -1,0 +1,245 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+
+    <style>
+        .btn-cnmci {
+            background-color: #6e0000;
+            color: #ffffff;
+        }
+        .btn:hover {
+            color: #fff;
+            text-decoration: none;
+            background-color: #343a40;
+            border-color: var(--bs-btn-hover-border-color);
+        }
+        .table>thead {
+            background-color: #6e0000;
+            color: #ffffff;
+        }
+        .active>.page-link, .page-link.active {
+            background-color: #6e0000;
+            border-color: #6e0000;
+        }
+        .vertical-collpsed .main-content {
+            margin-left: 10px !important;
+        }
+        .field, .form-select{
+            background-color:#fce9da;
+            color: #400404;
+            font-weight: bolder;
+            border: 0;
+            border-bottom: 1px solid #350000;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="layout-wrapper">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig')}}
+            <!-- Left Sidebar End -->
+        {% endif %}
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">ENREGISTREMENT CONTRAVENTION</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form_start(form) }}
+                        <div class="col-12 p-3">
+                            <div class="row" style="background-color:#fce9da;">
+                                <div class="text-center mb-1">
+                                    <h4 class="text-center fw-bold py-2">VERBALISATION DU CONDUCTEUR ARTISAN</h4>
+                                    {#                                <h2 class="text-center fw-bold py-2" >CHAMBRE NATIONAL DE METIERS DE COTE D'IVOIRE</h2>#}
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-lg-10">
+                                        <p class="text-center small-title">La CNMCI est une institution consulaire créée par le décret N° 93-01 du 7 janvier 1993. Elle représente les intérêts des
+                                            opérateurs économiques du secteur de l’artisanat et des entreprises de métiers auprès des Pouvoirs Publics.</p>
+                                        <div class="row">
+                                            <div class="col-lg-8 d-flex">
+                                                <span style="padding: 10px;font-size:2.0rem; color: red;width:100px; text-align: center">N° :</span>
+                                                {{ form_widget(form.contraventionNumero, {'attr': {'style': 'background-color:#fce9da;font-size:2.0rem; color: red; border: 0; border-bottom: 1px solid #350000;'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <img src="{{ asset('assets/frontend/img/cnmci.png') }}" alt="" height="110">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-3" style="background-color:#fcd5b4;">
+                                <div class="row mb-2">
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFORMATIONS SUR L' AGENT CONTRÔLEUR</p>
+                                        <div class="row mb-3">
+                                            {{ form_label(form.nomControleur) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.nomControleur, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFRACTION</p>
+                                        <div class="row mb-1">
+                                            {{ form_label(form.infractionType) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.infractionType, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            {{ form_label(form.infractionDate) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.infractionDate, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            {{ form_label(form.infractionLieu) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.infractionLieu, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row my-3">
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFORMATIONS SUR LE CONTREVENANT</p>
+                                        <div class="row mb-1">
+                                            {{ form_label(form.contrevenantNom) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.contrevenantNom, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            {{ form_label(form.contrevenantNumeroPermis) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.contrevenantNumeroPermis, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            {{ form_label(form.contrevenantTelephone) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.contrevenantTelephone, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="fw-bolder">INFORMATIONS SUR LE VEHICULE</p>
+                                        <div class="row mb-1">
+                                            {{ form_label(form.vehiculeImmatriculation) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.vehiculeImmatriculation, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            {{ form_label(form.vehiculeMarque) }}
+                                            <div class="col-md-11">
+                                                {{ form_widget(form.vehiculeMarque, {'attr': {'class': 'form_control field'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        {{ form_row(form.contrevenantActivites, {'attr': {'class': 'd-flex justify-content-between mt-4 form-check-dark'}}) }}
+                                    </div>
+                                </div>
+                                <div class="row my-3">
+                                    <p class="fw-bolder">PIECES CONFISQUES</p>
+                                    <div class="col-lg-12">
+                                        {{ form_label(form.rapportAgent) }}
+                                        {{ form_widget(form.rapportAgent, {'attr': {'class': 'form_control field', 'rows': '3', 'style':'width:100%; height: 200px;background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_row(form._token) }}
+                            <div class="row justify-content-center p-3" style="background-color:#f4e4d5;">
+                                <a href="{{ path('cnmci_index') }}" class="btn btn-dark w-25 waves-effect waves-light  mx-2">Annuler</a>
+                                <button type="submit" class="btn btn-dark w-25 waves-effect waves-light"><i class="btn-spin bx bx-loader-alt bx-spin font-size-16 align-middle me-2 visually-hidden"></i>Enregister</button>
+                            </div>
+                        </div>
+                        {{ form_end(form, {render_rest: false}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery.form/jquery.form.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery.validation/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/jquery.validation/additional-methods.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/inputmask/dist/jquery.inputmask.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/toastr/build/toastr.min.js') }}"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+         $("input").keyup(function(e) {
+               var ss = e.target.selectionStart;
+               var se = e.target.selectionEnd;
+               e.target.value = e.target.value.toUpperCase();
+               e.target.selectionStart = ss;
+               e.target.selectionEnd = se;
+         });
+
+          $(document).on("submit", "form[name='contravention']", function(event) {
+                event.preventDefault();
+                var form = $("form[name='contravention']");
+                var formData = new FormData(form[0]);
+                $("i.btn-spin").removeClass("visually-hidden");
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $("i.btn-spin").addClass("visually-hidden");
+                        $("form[name='contravention']").resetForm();
+                        window.location.replace(data);
+                    });
+                }).fail(function(data) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Enregistrement a échoué. Essayez à nouveau.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $("i.btn-spin").addClass("visually-hidden");
+                        $("form[name='contravention']").resetForm();
+                    });
+                });
+            });
+    });
+</script>
+{% endblock %}

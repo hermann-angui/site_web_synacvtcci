@@ -281,24 +281,24 @@
                 }
           });
 
-          let index = {{ member.children|length }};
+          let index = {{ artisan.children|length }};
           $('#newChild').click(function(){
               let row = `<div class='d-flex justify-content-between w-75'>
                         <div class='col-md-3'>
                             <div class='mb-3'>
-                                <label for='member_registration_children_${index}_lastName' class='form-label required' aria-required='true'>Nom</label>
-                                <input type='text' id='member_registration_children_${index}_lastName' name='member_registration[children][${index}][lastName]' required='required' onkeyup='this.value=this.value.toUpperCase();' class='form-control' value='' aria-required='true'>
+                                <label for='artisan_registration_children_${index}_lastName' class='form-label required' aria-required='true'>Nom</label>
+                                <input type='text' id='artisan_registration_children_${index}_lastName' name='artisan_registration[children][${index}][lastName]' required='required' onkeyup='this.value=this.value.toUpperCase();' class='form-control' value='' aria-required='true'>
                             </div>
                         </div>
                         <div class='col-md-3'>
                             <div class='mb-3'>
-                                <label for='member_registration_children_${index}_firstName' class='form-label required' aria-required='true'>Prénoms</label>
-                                <input type='text' id='member_registration_children_${index}_firstName' name='member_registration[children][${index}][firstName]' required='required' onkeyup='this.value=this.value.toUpperCase();' class='form-control' value='' aria-required='true'>
+                                <label for='artisan_registration_children_${index}_firstName' class='form-label required' aria-required='true'>Prénoms</label>
+                                <input type='text' id='artisan_registration_children_${index}_firstName' name='artisan_registration[children][${index}][firstName]' required='required' onkeyup='this.value=this.value.toUpperCase();' class='form-control' value='' aria-required='true'>
                             </div>
                         </div>
                         <div class='col-md-3'>
-                            <div class='mb-3'><label class='form-label required' for='member_registration_children_${index}_sex' aria-required='true'>Sexe</label>
-                                <select id='member_registration_children_${index}_sex' name='member_registration[children][${index}][sex]' class='form-select'>
+                            <div class='mb-3'><label class='form-label required' for='artisan_registration_children_${index}_sex' aria-required='true'>Sexe</label>
+                                <select id='artisan_registration_children_${index}_sex' name='artisan_registration[children][${index}][sex]' class='form-select'>
                                     <option value='HOMME'>HOMME</option>
                                     <option value='FEMME'>FEMME</option>
                                 </select>
@@ -328,7 +328,7 @@
                 min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
           });
 
-          $("#member_registration_photo").change(function(data){
+          $("#artisan_registration_photo").change(function(data){
                 var imageFile = data.target.files[0];
                 var reader = new FileReader();
                 reader.readAsDataURL(imageFile);
@@ -338,63 +338,63 @@
                 }
           });
 
-          $("#member_registration_activity").change(function(data){
+          $("#artisan_registration_activity").change(function(data){
               var act = $(this).val();
               if( act !== "CHAUFFEUR VTC"){
-                  $("#member_registration_company").val("AUTRE").trigger('change');
+                  $("#artisan_registration_company").val("AUTRE").trigger('change');
                   $("#registration_company_container").hide();
               }else{
-                  $("#member_registration_company").val(null).trigger('change');
+                  $("#artisan_registration_company").val(null).trigger('change');
                   $("#registration_company_container .select2-container").attr("style", "width:97%;");
                   $("#registration_company_container").show();
               }
           });
 
-          $("label[for='member_registration_photoPieceFront']").change(function(data){
+          $("label[for='artisan_registration_photoPieceFront']").change(function(data){
                 var imageFile = data.target.files[0];
                 var reader = new FileReader();
                 reader.readAsDataURL(imageFile);
                 reader.onload = function(evt){
-                  $('#member_registration_photoPieceFrontPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPieceFrontPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPieceFront'] .upload-icon").hide();
-                  $('#member_registration_photoPieceFrontPreview').fadeIn(650);
+                  $('#artisan_registration_photoPieceFrontPreview').attr('src', evt.target.result);
+                  $('#artisan_registration_photoPieceFrontPreview').attr('width','85%');
+                  $("label[for='artisan_registration_photoPieceFront'] .upload-icon").hide();
+                  $('#artisan_registration_photoPieceFrontPreview').fadeIn(650);
                 }
           });
 
-          $("label[for='member_registration_photoPieceBack']").change(function(data){
+          $("label[for='artisan_registration_photoPieceBack']").change(function(data){
                 var imageFile = data.target.files[0];
                 var reader = new FileReader();
                 reader.readAsDataURL(imageFile);
                 reader.onload = function(evt){
-                  $('#member_registration_photoPieceBackPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPieceBackPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPieceBack'] .upload-icon").hide();
-                  $('#member_registration_photoPieceBackPreview').fadeIn(650);
+                  $('#artisan_registration_photoPieceBackPreview').attr('src', evt.target.result);
+                  $('#artisan_registration_photoPieceBackPreview').attr('width','85%');
+                  $("label[for='artisan_registration_photoPieceBack'] .upload-icon").hide();
+                  $('#artisan_registration_photoPieceBackPreview').fadeIn(650);
                 }
           });
 
-          $("label[for='member_registration_photoPermisFront']").change(function(data){
+          $("label[for='artisan_registration_photoPermisFront']").change(function(data){
                 var imageFile = data.target.files[0];
                 var reader = new FileReader();
                 reader.readAsDataURL(imageFile);
                 reader.onload = function(evt){
-                  $('#member_registration_photoPermisFrontPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPermisFrontPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPermisFront'] .upload-icon").hide();
-                  $('#member_registration_photoPermisFrontPreview').fadeIn(650);
+                  $('#artisan_registration_photoPermisFrontPreview').attr('src', evt.target.result);
+                  $('#artisan_registration_photoPermisFrontPreview').attr('width','85%');
+                  $("label[for='artisan_registration_photoPermisFront'] .upload-icon").hide();
+                  $('#artisan_registration_photoPermisFrontPreview').fadeIn(650);
                 }
           });
 
-          $("label[for='member_registration_photoPermisBack']").change(function(data){
+          $("label[for='artisan_registration_photoPermisBack']").change(function(data){
                 var imageFile = data.target.files[0];
                 var reader = new FileReader();
                 reader.readAsDataURL(imageFile);
                 reader.onload = function(evt){
-                  $('#member_registration_photoPermisBackPreview').attr('src', evt.target.result);
-                  $('#member_registration_photoPermisBackPreview').attr('width','85%');
-                  $("label[for='member_registration_photoPermisBack'] .upload-icon").hide();
-                  $('#member_registration_photoPermisBackPreview').fadeIn(650);
+                  $('#artisan_registration_photoPermisBackPreview').attr('src', evt.target.result);
+                  $('#artisan_registration_photoPermisBackPreview').attr('width','85%');
+                  $("label[for='artisan_registration_photoPermisBack'] .upload-icon").hide();
+                  $('#artisan_registration_photoPermisBackPreview').fadeIn(650);
                 }
           });
 
@@ -410,10 +410,10 @@
 
           $(".select2").select2();
 
-          $("#member_registration_birth_city_other_container").hide();
-          $('#member_registration_birth_city').on('select2:select', function (e) {
+          $("#artisan_registration_birth_city_other_container").hide();
+          $('#artisan_registration_birth_city').on('select2:select', function (e) {
                 if(e.params.data.text=== 'AUTRE'){
-                    $("#member_registration_birth_city_other_container").show();
+                    $("#artisan_registration_birth_city_other_container").show();
                 }
           });
 
@@ -422,7 +422,7 @@
           });
 
           var companies = [];
-          {% for company in member.company  %}
+          {% for company in artisan.company  %}
              companies.push('{{ company }}');
           {% endfor %}
           $(".select2-multiple").val(companies);

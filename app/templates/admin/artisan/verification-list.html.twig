@@ -63,8 +63,8 @@
                         <div class="tab-content p-3 text-muted">
                             <div class="tab-pane active show" id="enattente" role="tabpanel">
                                 <div class="row">
-                                {% for member in members %}
-                                    {% if member.etape == 3 %}
+                                {% for artisan in artisans %}
+                                    {% if artisan.etape == 3 %}
                                         <div class="col-md-3 col-sm-3">
                                             <div class="card text-center">
                                                 <div class="card-body">
@@ -75,31 +75,31 @@
                                                                     <i class="bx bx-dots-horizontal-rounded"></i>
                                                                 </button>
                                                                 <div class="dropdown-menu dropdown-menu-end " style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 42px);" data-popper-placement="bottom-end">
-                                                                    <a class="dropdown-item" href="{{ path('admin_member_show', {id: member.id})}}"><i class="fa fa-eye"></i> Afficher</a>
-                                                                    <a class="dropdown-item" href="{{ path('admin_member_edit', {id: member.id})}}"><i class="fa fa-pen"></i> Modifier</a>
+                                                                    <a class="dropdown-item" href="{{ path('admin_artisan_show', {id: artisan.id})}}"><i class="fa fa-eye"></i> Afficher</a>
+                                                                    <a class="dropdown-item" href="{{ path('admin_artisan_edit', {id: artisan.id})}}"><i class="fa fa-pen"></i> Modifier</a>
                                                                 </div>
                                                             </div>
                                                         </li>
                                                     </ul>
                                                     <div class="mb-4">
-                                                        <img src="{{ asset('/members/' ~ member.reference ~ '/' ~ member.photo|image_path) }}" alt="" width="50">
-                                                        <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ member.firstName ~ ' ' ~ member.lastName }}</a></h5>
-                                                        <p class="text-muted">{{ member.createdAt|date('d/m/y') }}</p>
+                                                        <img src="{{ asset('/artisans/' ~ artisan.reference ~ '/' ~ artisan.photo|image_path) }}" alt="" width="50">
+                                                        <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ artisan.firstName ~ ' ' ~ artisan.lastName }}</a></h5>
+                                                        <p class="text-muted">{{ artisan.createdAt|date('d/m/y') }}</p>
                                                         <div>
                                                             <div class="table-responsive">
                                                                 <table class="table table-nowrap mb-0">
                                                                     <tbody>
                                                                     <tr>
                                                                         <th scope="row">Mobile :</th>
-                                                                        <td>{{ member.mobile }}</td>
+                                                                        <td>{{ artisan.mobile }}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th scope="row">E-mail :</th>
-                                                                        <td>{{ member.email }}</td>
+                                                                        <td>{{ artisan.email }}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th scope="row">Ville :</th>
-                                                                        <td>{{ member.city }}</td>
+                                                                        <td>{{ artisan.city }}</td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -109,7 +109,7 @@
                                                     <div class="card-footer bg-transparent border-top">
                                                         <div class="contact-links d-flex font-size-20">
                                                             <div class="flex-fill">
-                                                                <a href="{{ path("admin_member_cncmi_show", { id: member.id }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
+                                                                <a href="{{ path("admin_artisan_review_cncmi", { artisan_id: artisan.id, service_id: 1 }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -122,8 +122,8 @@
                             </div>
                             <div class="tab-pane" id="completed" role="tabpanel">
                                 <div class="row">
-                                    {% for member in members %}
-                                        {% if member.etape > 3 %}
+                                    {% for artisan in artisans %}
+                                        {% if artisan.etape > 3 %}
                                             <div class="col-md-3 col-sm-3">
                                                 <div class="card text-center">
                                                     <div class="card-body">
@@ -134,31 +134,31 @@
                                                                         <i class="bx bx-dots-horizontal-rounded"></i>
                                                                     </button>
                                                                     <div class="dropdown-menu dropdown-menu-end " style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 42px);" data-popper-placement="bottom-end">
-                                                                        <a class="dropdown-item" href="{{ path('admin_member_show', {id: member.id})}}"><i class="fa fa-eye"></i> Afficher</a>
-                                                                        <a class="dropdown-item" href="{{ path('admin_member_edit', {id: member.id})}}"><i class="fa fa-pen"></i> Modifier</a>
+                                                                        <a class="dropdown-item" href="{{ path('admin_artisan_show', {id: artisan.id})}}"><i class="fa fa-eye"></i> Afficher</a>
+                                                                        <a class="dropdown-item" href="{{ path('admin_artisan_edit', {id: artisan.id})}}"><i class="fa fa-pen"></i> Modifier</a>
                                                                     </div>
                                                                 </div>
                                                             </li>
                                                         </ul>
                                                         <div class="mb-4">
-                                                            <img src="{{ asset('/members/' ~ member.reference ~ '/' ~ member.photo|image_path) }}" alt="" width="50">
-                                                            <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ member.firstName ~ ' ' ~ member.lastName }}</a></h5>
-                                                            <p class="text-muted">{{ member.createdAt|date('d/m/y') }}</p>
+                                                            <img src="{{ asset('/artisans/' ~ artisan.reference ~ '/' ~ artisan.photo|image_path) }}" alt="" width="50">
+                                                            <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{ artisan.firstName ~ ' ' ~ artisan.lastName }}</a></h5>
+                                                            <p class="text-muted">{{ artisan.createdAt|date('d/m/y') }}</p>
                                                             <div>
                                                                 <div class="table-responsive">
                                                                     <table class="table table-nowrap mb-0">
                                                                         <tbody>
                                                                         <tr>
                                                                             <th scope="row">Mobile :</th>
-                                                                            <td>{{ member.mobile }}</td>
+                                                                            <td>{{ artisan.mobile }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <th scope="row">E-mail :</th>
-                                                                            <td>{{ member.email }}</td>
+                                                                            <td>{{ artisan.email }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <th scope="row">Ville :</th>
-                                                                            <td>{{ member.city }}</td>
+                                                                            <td>{{ artisan.city }}</td>
                                                                         </tr>
                                                                         </tbody>
                                                                     </table>
@@ -168,7 +168,7 @@
                                                         <div class="card-footer bg-transparent border-top">
                                                             <div class="contact-links d-flex font-size-20">
                                                                 <div class="flex-fill">
-                                                                    <a href="{{ path("admin_member_cncmi_show", { id: member.id }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
+                                                                    <a href="{{ path("admin_artisan_review_cncmi", { artisan_id: artisan.id, service_id: 1 }) }}" class="btn btn-success text-white"><i class="bx bx-sticker"></i>Vérifier et imprimer les documents</a>
                                                                 </div>
                                                             </div>
                                                         </div>

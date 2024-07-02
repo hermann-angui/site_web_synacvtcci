@@ -1,0 +1,310 @@
+
+    {{ form_start(form, {'method': 'POST', 'attr': {'id': 'stepperform'}}) }}
+        <h3>INFORMATIONS PERSONNELLES</h3>
+        <fieldset>
+            <div id="step0">
+                <div class="row mb-4 mt-2">
+                    <div class="d-flex justify-content-center">
+                        <label for="artisan_registration_photo" class="d-block d-flex justify-content-center align-content-center">
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                {% if artisan.photo %}
+{#                                    <img id="imagePreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photo }}" alt="" width="150">#}
+                                    <img id="imagePreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photo|image_path }}" alt="" width="150">
+                                    <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
+                                        {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                    <div>Télécharger une photo</div>
+                                {% else %}
+                                    <img id="imagePreview" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="150">
+                                    <div class="d-block position-relative text-dark" style="top:-35px;left:32px"><i class="fa fa-camera fa-2x"></i></div>
+                                        {{ form_widget(form.photo, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                    <div>Télécharger une photo</div>
+                                {% endif %}
+
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row mb-3 mt-4">
+                    <div class="col-md-3">
+                        {{ form_row(form.cnmciNumeroRm, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.cnmciNumeroCarteProfessionelle, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                </div>
+                <div class="row mb-3 mt-4">
+                    <div class="col-md-2">
+                        {{ form_row(form.sex, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.lastName, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.firstName, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.email, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.mobile, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.whatsapp, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.phone, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        {{ form_row(form.birth_city, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-2" id="artisan_registration_birth_city_other_container">
+                        {{ form_row(form.birth_city_other, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.birth_country, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ form_row(form.date_of_birth, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.birth_locality, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.nationality, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.commune, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.city, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.quartier, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.postal_code, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h3>DOC D'IDENTITE</h3>
+        <fieldset>
+            <div id="step1">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        {{ form_row(form.IdType, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.IdNumber, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.IdDeliveryAuthority, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.IdDeliveryDate, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.IdDeliveryPlace, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.drivingLicenseNumber, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="artisan_registration_photoPieceFront" class="form-label">Copie scannée de la pièce (recto)
+                            {% if artisan.photoPieceFront %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPieceFrontPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPieceFront|image_path }}" alt="" width="80%" style="width:80%;">
+                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
+                                </div>
+                            {% else %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPieceFrontPreview" src="" alt="">
+                                    <div style="margin-top:0px"  class="upload-icon">
+                                        <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
+                                    </div>
+                                    {{ form_widget(form.photoPieceFront, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="artisan_registration_photoPieceBack" class="form-label">Copie scannée de la pièce (verso)
+                            {% if artisan.photoPieceBack %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPieceBackPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPieceBack|image_path }}" alt="" width="80%" style="width:80%;">
+                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                    <div style="margin-top:0px">Télécharger une image</div>
+                                </div>
+                            {% else %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPieceBackPreview" src="" alt="">
+                                    <div style="margin-top:0px"  class="upload-icon">
+                                        <i class="fa fa-upload fa-4x d-block"></i>Télécharger une photo
+                                    </div>
+                                    {{ form_widget(form.photoPieceBack, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="artisan_registration_photoPermisFront" class="form-label">Copie scannée du permis (recto)
+                            {% if artisan.photoPermisFront %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPermisFrontPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPermisFront|image_path }}" alt="" width="80%" style="width:80%;">
+                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                </div>
+                            {% else %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPermisFrontPreview" src="" alt="" style="width:80%;">
+                                    {{ form_widget(form.photoPermisFront, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label for="artisan_registration_photoPermisBack" class="form-label">Copie scannée du permis (verso)
+                            {% if artisan.photoPermisBack %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPermisBackPreview" src="/artisans/{{ artisan.reference }}/{{ artisan.photoPermisBack }}" alt="" width="100" style="width:80%">
+                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                </div>
+                            {% else %}
+                                <div class="image-upload-container">
+                                    <img id="artisan_registration_photoPermisBackPreview" src="" alt="" width="100" style="width:80%" >
+                                    {{ form_widget(form.photoPermisBack, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                </div>
+                            {% endif %}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h3>ACTIVITES</h3>
+        <fieldset>
+            <div id="step2">
+                <div class="py-3">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            {{ form_row(form.activity, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-4" id="registration_company_container">
+                            {{ form_row(form.company, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.activity_date_debut, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.socioprofessionnelle_category, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.activity_geo_location, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.activity_country_location, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.activity_city_location, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.activity_quartier_location, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.activity_secondary, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h3>DONNEES FAMILLES</h3>
+        <fieldset>
+            <div id="step3">
+                <div class="py-3">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            {{ form_row(form.etatCivil, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.partner_first_name, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.partner_last_name, { 'attr':{'disabled':'disabled'} }) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.referantLastName, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.referantFirstName, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.referantMobile, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div id="child-row" {{ artisan.children|length ? '': 'style="display:none;"' }}>
+                        <div id="children_bock"  class="pt-2">
+                            {% for  child in form.children %}
+                                <div class="d-flex justify-content-between w-75">
+                                    <div class="col-md-3">
+                                        {{ form_row(child.lastName, { 'attr':{'disabled':'disabled'} }) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form_row(child.firstName, { 'attr':{'disabled':'disabled'} }) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form_row(child.sex, { 'attr':{'disabled':'disabled'} }) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <span href="#" id="newChild" class="btn btn-small btn-rounded btn-success"> Enregistrer un enfant </span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h3>CHAMBRE DES METIERS</h3>
+        <fieldset>
+            <div id="step3">
+                <div class="py-3">
+                    <div id="partner_bock" class="my-3">
+                        {{ form_row(form.payment_receipt_cnmci_code, { 'attr':{'disabled':'disabled'} }) }}
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-5 mx-3">
+                            {% if artisan.paymentReceiptCnmciPdf %}
+                                <label for="artisan_registration_paymentReceiptCnmciPdf" class="form-label">Reçu de paiement Orange Money) CNMCI (format .pdf)
+                                    {{ form_widget(form.paymentReceiptCnmciPdf, {'attr': {'class': 'visually-hidden','disabled':'disabled'}}) }}
+                                </label>
+                                <embed src="/artisans/{{ artisan.reference }}/{{ artisan.paymentReceiptCnmciPdf|image_path }}" width="500" height="375" type="application/pdf">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <hr>
+    <hr>
+    <div class="d-flex justify-content-center">
+        <div class="text-center mx-3"><a href="{{ path('cnmci_souscripteurs') }}" class="btn btn-success btn-lg">Fermer</a></div>
+    </div>
+
+    {{ form_end(form, {'render_rest': false}) }}
+

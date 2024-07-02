@@ -97,13 +97,13 @@
                 <span>Chambre Nationale de<br>Métiers de Cote d'Ivoire</span>
             </td>
             <td style="margin-left:850px;padding:5px 5px;border-collapse: collapse;border:1px solid white">
-                {% if member.activity == "CHAUFFEUR VTC" %}
+                {% if artisan.activity == "CHAUFFEUR VTC" %}
                 <img src="/var/www/html/public/assets/frontend/img/logo-synacvtcci.jpg" width="95" height="85" alt="logo synacvtcci"/>
                 {% endif %}
             </td>
             <div style="position:absolute;top:-5px;right:20px;">
                 <div>
-                    <img id="imagePreview" src="/var/www/html/public/members/{{ member.reference }}/{{ member.photo }}" alt="" width="95" class="rounded-0">
+                    <img id="imagePreview" src="/var/www/html/public/artisans/{{ artisan.reference }}/{{ artisan.photo }}" alt="" width="95" class="rounded-0">
                 </div>
             </div>
         </tr>
@@ -139,52 +139,52 @@
             <th colspan="3">A. RENSEIGNEMENT SUR L'EXPLOITANT</th>
         </tr>
         <tr style="border:0;">
-            <td>Nom : <span>{{ member.lastName }}</span></td>
-            <td colspan="2">Prénoms : <span>{{ member.firstName }}</span></td>
+            <td>Nom : <span>{{ artisan.lastName }}</span></td>
+            <td colspan="2">Prénoms : <span>{{ artisan.firstName }}</span></td>
         </tr>
         <tr style="border:0;">
-            <td>Né(e) le : <span>{{ member.dateOfBirth | date('d/m/Y') }}</span></td>
-            <td>à : <span>{{ member.birthCity }}</span></td>
-            <td>Nationalité: <span>{{ member.nationality }}</span></td>
+            <td>Né(e) le : <span>{{ artisan.dateOfBirth | date('d/m/Y') }}</span></td>
+            <td>à : <span>{{ artisan.birthCity }}</span></td>
+            <td>Nationalité: <span>{{ artisan.nationality }}</span></td>
         </tr>
         <tr style="border:0;">
             <td>Sexe :
-                <input class="form-check-input" type="radio" {{ member.sex == 'H' ? 'checked' : ''}}> Masculin
-                <input class="form-check-input" type="radio" {{ member.sex == 'F' ? 'checked' : ''}}> Féminin
+                <input class="form-check-input" type="radio" {{ artisan.sex == 'H' ? 'checked' : ''}}> Masculin
+                <input class="form-check-input" type="radio" {{ artisan.sex == 'F' ? 'checked' : ''}}> Féminin
             </td>
-            <td colspan="">Domicilié (e) à : <span>{{ member.commune }}</span></td>
+            <td colspan="">Domicilié (e) à : <span>{{ artisan.commune }}</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="3">
                 <div class="form-check-label">Type de document :
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CNI" {{ member.idType == 'CNI' ? 'checked' : '' }}>CNI</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CC" {{ member.idType == 'CC' ? 'checked' : '' }}>CC</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="PASSEPORT" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>PASSEPORT</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CARTE DE RESIDENT" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>Carte de résident</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="AUTRE" {{ member.idType == 'AUTRE' ? 'checked' : '' }}>Autre</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CNI" {{ artisan.idType == 'CNI' ? 'checked' : '' }}>CNI</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CC" {{ artisan.idType == 'CC' ? 'checked' : '' }}>CC</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="PASSEPORT" {{ artisan.idType == 'PASSEPORT' ? 'checked' : '' }}>PASSEPORT</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="CARTE DE RESIDENT" {{ artisan.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>Carte de résident</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantTypeDoc" name="exploitantTypeDoc" value="AUTRE" {{ artisan.idType == 'AUTRE' ? 'checked' : '' }}>Autre</span>
                     <span class="form-check-label"></span>
                 </div>
             </td>
         </tr>
         <tr style="border:0;">
-            <td>N° : <span>{{ member.idNumber }}</span></td>
-            <td>Délivré à : <span>{{ member.idDeliveryPlace }}</span></td>
-            <td>Le : <span>{{ member.idDeliveryDate| date('d/m/Y') }}</span></td>
+            <td>N° : <span>{{ artisan.idNumber }}</span></td>
+            <td>Délivré à : <span>{{ artisan.idDeliveryPlace }}</span></td>
+            <td>Le : <span>{{ artisan.idDeliveryDate| date('d/m/Y') }}</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="3">
                 <div class="form-check-label">Etat civil :
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ member.etatCivil == 'MARIE(E)' ? 'checked' : '' }}>MARIE(E)</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="CELIBATAIRE" {{ member.etatCivil == 'CELIBATAIRE' ? 'checked' : '' }}>CELIBATAIRE</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE(E)" {{ member.etatCivil == 'DIVORCE(E)' ? 'checked' : '' }}>DIVORCE(E)</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF(VE)" {{ member.etatCivil == 'VEUF(VE)' ? 'checked' : '' }}>VEUF(VE)</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="MARIE(E)" {{ artisan.etatCivil == 'MARIE(E)' ? 'checked' : '' }}>MARIE(E)</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="CELIBATAIRE" {{ artisan.etatCivil == 'CELIBATAIRE' ? 'checked' : '' }}>CELIBATAIRE</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="DIVORCE(E)" {{ artisan.etatCivil == 'DIVORCE(E)' ? 'checked' : '' }}>DIVORCE(E)</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="exploitantEtatCivil" name="exploitantEtatCivil" value="VEUF(VE)" {{ artisan.etatCivil == 'VEUF(VE)' ? 'checked' : '' }}>VEUF(VE)</span>
                     <span class="form-check-label"></span>
                 </div>
             </td>
         </tr>
         <tr style="border:0;">
-            <td>Telephone : <span>{{ member.mobile }}</span></td>
-            <td colspan="2">Email : <span>{{ member.email }}</span></td>
+            <td>Telephone : <span>{{ artisan.mobile }}</span></td>
+            <td colspan="2">Email : <span>{{ artisan.email }}</span></td>
         </tr>
     </table>
 
@@ -231,17 +231,17 @@
             <th colspan="3" style="margin-top: 0.2em;margin-bottom: 0em;">C. RENSEIGNEMENTS SUR L'ETABLISSEMENT </th>
         </tr>
         <tr style="border:0;">
-            <td colspan="3">Activité principale exercée : <span>{{ member.activity}}</span></td>
+            <td colspan="3">Activité principale exercée : <span>{{ artisan.activity}}</span></td>
         </tr>
         <tr style="border:0;">
-            <td colspan="3">Activité secondaire : <span>{{ member.activitySecondary }}</span></td>
+            <td colspan="3">Activité secondaire : <span>{{ artisan.activitySecondary }}</span></td>
         </tr>
         <tr style="border:0;">
-            <td>Raison social : <span>{{ member.lastName ~ " " ~  member.firstName }}</span></td>
-            <td colspan="2">Sigle ou Enseigne :<span>{{ member.lastName|first|upper ~ member.firstName|first|upper}}</span></td>
+            <td>Raison social : <span>{{ artisan.lastName ~ " " ~  artisan.firstName }}</span></td>
+            <td colspan="2">Sigle ou Enseigne :<span>{{ artisan.lastName|first|upper ~ artisan.firstName|first|upper}}</span></td>
         </tr>
         <tr style="border:0;">
-            <td colspan="3">Date de début d'activité : <span>{{ member.activityDateDebut| date('d/m/Y') }}</span></td>
+            <td colspan="3">Date de début d'activité : <span>{{ artisan.activityDateDebut| date('d/m/Y') }}</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="3">
@@ -274,11 +274,11 @@
         <tr style="border:0;">
             <td>Adresse g&eacute;ographique :  departement<span></span></td>
             <td><span></span></td>
-            <td>Commune : <span>{{ member.commune }}</span></td>
+            <td>Commune : <span>{{ artisan.commune }}</span></td>
         </tr>
         <tr style="border:0;">
             <td>S/P : <span></span></td>
-            <td>Quartier : <span>{{ member.quartier }}</span></td>
+            <td>Quartier : <span>{{ artisan.quartier }}</span></td>
             <td>Village : <span></span></td>
         </tr>
         <tr style="border:0;">
@@ -293,52 +293,52 @@
             <th colspan="3" style="margin-top: 0.2em;margin-bottom: 0em;">D. RENSEIGNEMENT SUR PERSONNE POUVANT ENGAGER L'ENTREPRISE</th>
         </tr>
         <tr style="border:0;">
-            <td>Nom : <span>{{ member.lastName }}</span></td>
-            <td colspan="2">Prénoms : <span>{{ member.firstName }}</span></td>
+            <td>Nom : <span>{{ artisan.lastName }}</span></td>
+            <td colspan="2">Prénoms : <span>{{ artisan.firstName }}</span></td>
         </tr>
         <tr style="border:0;">
-            <td>Né(e) le : <span>{{ member.dateOfBirth | date('d/m/Y') }}</span></td>
-            <td>à : <span>{{ member.birthCity }}</span></td>
-            <td>Nationalité : <span>{{ member.nationality }}</span></td>
+            <td>Né(e) le : <span>{{ artisan.dateOfBirth | date('d/m/Y') }}</span></td>
+            <td>à : <span>{{ artisan.birthCity }}</span></td>
+            <td>Nationalité : <span>{{ artisan.nationality }}</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="2">Sexe :
-                <input class="form-check-input" type="radio" {{ member.sex == 'H' ? 'checked' : ''}}> Masculin
-                <input class="form-check-input" type="radio" {{ member.sex == 'F' ? 'checked' : ''}}> Féminin
+                <input class="form-check-input" type="radio" {{ artisan.sex == 'H' ? 'checked' : ''}}> Masculin
+                <input class="form-check-input" type="radio" {{ artisan.sex == 'F' ? 'checked' : ''}}> Féminin
             </td>
-            <td>Domicilié (e) à : <span>{{ member.domicile }} ({{ member.quartier }})</span></td>
+            <td>Domicilié (e) à : <span>{{ artisan.domicile }} ({{ artisan.quartier }})</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="3">
                 <div class="form-check-label">Type de document :
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="CNI" {{ member.idType == 'CNI' ? 'checked' : '' }}>CNI</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="CC" {{ member.idType == 'CC' ? 'checked' : '' }}>CC</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="PASSEPORT" {{ member.idType == 'PASSEPORT' ? 'checked' : '' }}>PASSEPORT</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="CARTE DE RESIDENT" {{ member.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>Carte de résident</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="AUTRE" {{ member.idType == 'AUTRE' ? 'checked' : '' }}>Autre</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="CNI" {{ artisan.idType == 'CNI' ? 'checked' : '' }}>CNI</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="CC" {{ artisan.idType == 'CC' ? 'checked' : '' }}>CC</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="PASSEPORT" {{ artisan.idType == 'PASSEPORT' ? 'checked' : '' }}>PASSEPORT</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="CARTE DE RESIDENT" {{ artisan.idType == 'CARTE DE RESIDENT' ? 'checked' : '' }}>Carte de résident</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantTypeDoc" name="referantTypeDoc" value="AUTRE" {{ artisan.idType == 'AUTRE' ? 'checked' : '' }}>Autre</span>
                     <span class="form-check-label"></span>
                 </div>
             </td>
         </tr>
         <tr style="border:0;">
-            <td>N° : <span>{{ member.idNumber }}</span></td>
-            <td>Délivré à : <span>{{ member.idDeliveryPlace }}</span></td>
-            <td>Le : <span>{{ member.idDeliveryDate| date('d/m/Y') }}</span></td>
+            <td>N° : <span>{{ artisan.idNumber }}</span></td>
+            <td>Délivré à : <span>{{ artisan.idDeliveryPlace }}</span></td>
+            <td>Le : <span>{{ artisan.idDeliveryDate| date('d/m/Y') }}</span></td>
         </tr>
         <tr style="border:0;">
             <td colspan="3">
                 <div class="form-check-label">Etat civil :
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="MARIE(E)" {{ member.etatCivil == 'MARIE(E)' ? 'checked' : '' }}>MARIE(E)</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="CELIBATAIRE" {{ member.etatCivil == 'CELIBATAIRE' ? 'checked' : '' }}>CELIBATAIRE</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="DIVORCE(E)" {{ member.etatCivil == 'DIVORCE(E)' ? 'checked' : '' }}>DIVORCE(E)</span>
-                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="VEUF(VE)" {{ member.etatCivil == 'VEUF(VE)' ? 'checked' : '' }}>VEUF(VE)</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="MARIE(E)" {{ artisan.etatCivil == 'MARIE(E)' ? 'checked' : '' }}>MARIE(E)</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="CELIBATAIRE" {{ artisan.etatCivil == 'CELIBATAIRE' ? 'checked' : '' }}>CELIBATAIRE</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="DIVORCE(E)" {{ artisan.etatCivil == 'DIVORCE(E)' ? 'checked' : '' }}>DIVORCE(E)</span>
+                    <span class="form-check-label"><input class="form-check-input mx-2" type="radio" id="referantEtatCivil" name="referantEtatCivil" value="VEUF(VE)" {{ artisan.etatCivil == 'VEUF(VE)' ? 'checked' : '' }}>VEUF(VE)</span>
                     <span class="form-check-label"></span>
                 </div>
             </td>
         </tr>
         <tr style="border:0;">
-            <td>Telephone : <span>{{ member.mobile }}</span></td>
-            <td colspan="2">Email : <span>{{ member.email }}</span></td>
+            <td>Telephone : <span>{{ artisan.mobile }}</span></td>
+            <td colspan="2">Email : <span>{{ artisan.email }}</span></td>
         </tr>
     </table>
 

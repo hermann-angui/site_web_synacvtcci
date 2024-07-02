@@ -49,10 +49,8 @@ class Payment
     private ?\DateTime $modified_at;
 
     #[ORM\ManyToOne(inversedBy: 'payments')]
-    private ?Member $payment_for = null;
+    private ?Artisan $payment_for = null;
 
-    #[ORM\ManyToOne(inversedBy: 'payments')]
-    private ?User $user = null;
 
     public function __construct()
     {
@@ -246,12 +244,12 @@ class Payment
         return $this;
     }
 
-    public function getPaymentFor(): ?Member
+    public function getPaymentFor(): ?Artisan
     {
         return $this->payment_for;
     }
 
-    public function setPaymentFor(?Member $payment_for): self
+    public function setPaymentFor(?Artisan $payment_for): self
     {
         $this->payment_for = $payment_for;
 

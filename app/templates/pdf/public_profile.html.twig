@@ -15,21 +15,17 @@
                                     <tr>
                                         <td colspan="2">
                                             <div class="d-flex justify-content-center">
-                                                <img id="imagePreview" src="/var/www/html/public/{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="200">
+                                                <img id="imagePreview" src="/var/www/html/public/{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.photo }}" alt="" width="200">
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Matricule</th>
-                                        <td><span class="text-primary fs-5 fw-bolder">{{ member.matricule }}</span></td>
-                                    </tr>
-                                    <tr>
                                         <th>Nom</th>
-                                        <td>{{ member.lastName }}</td>
+                                        <td>{{ artisan.lastName }}</td>
                                     </tr>
                                     <tr>
                                         <th>Prénoms</th>
-                                        <td>{{ member.firstName }}</td>
+                                        <td>{{ artisan.firstName }}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
@@ -44,7 +40,7 @@
                                     <tr>
                                         <td colspan="2">
                                             <div class="d-flex justify-content-center">
-                                                <img id="imagePreview" src="/var/www/html/public/{{ asset('members/') }}{{ member.reference }}/{{ member.reference }}_barcode.png" alt="" width="100" class="rounded-2">
+                                                <img id="imagePreview" src="/var/www/html/public/{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.reference }}_barcode.png" alt="" width="100" class="rounded-2">
                                             </div>
                                         </td>
                                     </tr>

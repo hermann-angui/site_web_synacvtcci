@@ -3,16 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Child;
-use App\Entity\Member;
+use App\Entity\Artisan;
 use App\Entity\Villes;
-use App\Form\MemberPhotoStepType;
-use App\Form\MemberRegistrationType;
+use App\Form\ArtisanPhotoStepType;
+use App\Form\ArtisanRegistrationType;
 use App\Helper\ActivityLogger;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
-use App\Repository\MemberRepository;
+use App\Repository\ArtisanRepository;
 use App\Repository\VillesRepository;
-use App\Service\Member\MemberService;
+use App\Service\Artisan\ArtisanService;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Expression;
 use Doctrine\DBAL\Connection;
@@ -32,9 +32,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class StatsController extends AbstractController
 {
     #[Route('', name: 'admin_stats_index', methods: ['GET'])]
-    public function getSexStats(Request $request, MemberRepository $memberRepository): Response
+    public function getSexStats(Request $request, ArtisanRepository $artisanRepository): Response
     {
-        $stats = $memberRepository->getTotalGroupBySex();
+        $stats = $artisanRepository->getTotalGroupBySex();
 
         foreach($stats as $stat) {
             if(in_array($stat['sex'], ['H', 'Homme'])) $key = "Homme (${stat['total']})";
@@ -47,7 +47,7 @@ class StatsController extends AbstractController
 
         unset($stats);
 
-        $stats = $memberRepository->getTotalGroupByActivity();
+        $stats = $artisanRepository->getTotalGroupByActivity();
         $activity_stat = array_map(function ($v){
             return [
                 "name" =>  "${v['activity']} (${v['total']})",
@@ -56,7 +56,7 @@ class StatsController extends AbstractController
         }, $stats);
         unset($stats);
 
-        $stats = $memberRepository->getTotalGroupByNationality();
+        $stats = $artisanRepository->getTotalGroupByNationality();
         $nationality_stat = array_map(function ($v){
             return [
                 "name" => "${v["nationality"]} (${v["total"]})",
@@ -68,7 +68,7 @@ class StatsController extends AbstractController
         $months = ['Janv', 'Fev', 'Mars', 'Avri', 'Mai', 'Jun', 'Juil', 'Aout', 'Sep', 'Oct', 'Nov', 'Dec'];
         $values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        $stats = $memberRepository->getTotalGroupByActivityAndMonth();
+        $stats = $artisanRepository->getTotalGroupByActivityAndMonth();
         $conducteurs = [];
         foreach ($stats as $stat){
             if(!array_key_exists($stat['activity'], $conducteurs)) $conducteurs[$stat['activity']] = $values;

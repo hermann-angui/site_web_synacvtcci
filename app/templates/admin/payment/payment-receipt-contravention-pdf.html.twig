@@ -1,0 +1,113 @@
+<div class="row">
+    <div class="col-lg-12 p-3">
+        <div class="row" style="background-color:#fce9da;">
+            <div class="text-center mb-1">
+                <h2 class="text-center fw-bold py-2" >CHAMBRE NATIONAL DE METIERS DE COTE D'IVOIRE</h2>
+            </div>
+            <div class="row mb-2">
+                <div class="col-lg-10">
+                    <h4>VERBALISATION DU CONDUCTEUR ARTISAN</h4>
+                    <p class="text-center small-title">La CNMCI est une institution consulaire créée par le décret N° 93-01 du 7 janvier 1993. Elle représente les intérêts des
+                        opérateurs économiques du secteur de l’artisanat et des entreprises de métiers auprès des Pouvoirs Publics.</p>
+                    <div class="row">
+                        <div class="col-lg-5">
+                                            <span class="text-center small-title ">
+                                                Siège social: non loin de l'ENA - Deux-plateaux - ENA  Cocody - 01 BP 8613 Abidjan 01  (+225) 27 22 41 47 38 - Abidjan - Côte d’Ivoire
+                                            </span>
+                        </div>
+                        <div class="col-lg-7">
+                            <span style="font-size:2.0rem; color: red;">N° :</span>
+                            <input type="text" id="numero_contravention" name="numero_contravention" style="background-color:#fce9da;font-size:2.0rem; color: red; border: 0; border-bottom: 1px solid #350000;">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-2">
+                    <img src="/var/www/html/public/assets/frontend/img/cnmci.png" alt="" height="120">
+                </div>
+            </div>
+        </div>
+        <div class="row p-3" style="background-color:#fcd5b4;">
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <p class="fw-bolder">INFORMATIONS SUR L' AGENT CONTRÔLEUR</p>
+                    <div class="row mb-3">
+                        <label for="nom_agent" class="col-md-2 col-form-label">Nom : </label>
+                        <div class="col-md-10">
+                            <div class="form-control" type="text"  name="nom_agent" style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <p class="fw-bolder">INFRACTION</p>
+                    <div class="row mb-1">
+                        <label for="infraction_type" class="col-auto col-form-label">Type : </label>
+                        <div class="col-md-10">
+                            <div class="form-control" id="infraction_type" name="infraction_type" style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="infraction_date" class="col-auto col-form-label">Date : </label>
+                        <div class="col-md-10">
+                            <div class="form-control" type="text" id="infraction_date" name="infraction_date" style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="infraction_lieu" class="col-auto col-form-label">Lieu : </label>
+                        <div class="col-md-10">
+                            <div class="form-control" type="text" id="infraction_lieu" name="infraction_lieu" style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-lg-6">
+                    <p class="fw-bolder">INFORMATIONS SUR LE CONTREVENANT</p>
+                    <div class="row mb-1">
+                        <label for="contrevenant_nom" class="col-auto col-form-label">Nom et Prénoms :</label>
+                        <div class="col-md-7">
+                            <div  type="text" id="contrevenant_nom" name="contrevenant_nom" style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="contrevenant_permis" class="col-auto col-form-label">Numéro du permis de conduire :</label>
+                        <div class="col-md-6">
+                            <div class="form-control" type="text" id="contrevenant_permis" name="contrevenant_permis"  style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="contrevenant_tel" class="col-auto col-form-label">Numéro de téléphone :</label>
+                        <div class="col-md-7">
+                            <div class="form-control"  id="contrevenant_tel" name="contrevenant_tel"  style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <p class="fw-bolder">INFORMATIONS SUR LE VEHICULE</p>
+                    <div class="row mb-1">
+                        <label for="vehicule_immatriculation" class="col-auto col-form-label">Numéro de plaque d'immatriculation :</label>
+                        <div class="col-md-5">
+                            <div class="form-control"  id="vehicule_immatriculation" name="vehicule_immatriculation"  style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="vehicule_marque" class="col-auto col-form-label">Marque :</label>
+                        <div class="col-md-8">
+                            <div class="form-control" type="text" id="vehicule_marque" name="vehicule_marque"  style="background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-3">
+                <p class="fw-bolder">PIECES CONFISQUES</p>
+                <div class="col-lg-12">
+                    <label for="formmessage">RAPPORT DE L'AGENT:</label>
+                    <textarea id="formmessage" class="form-control" rows="3" style="width:100%; height: 200px;background-color:#fce9da;color: #400404; font-weight: bolder; border: 0; border-bottom: 1px solid #350000;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center p-3" style="background-color:#f4e4d5;">
+            <button type="button" class="btn btn-dark w-25 waves-effect waves-light">Enregister</button>
+        </div>
+    </div>
+</div>

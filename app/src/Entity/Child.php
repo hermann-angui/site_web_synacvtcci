@@ -33,9 +33,9 @@ class Child
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $modified_at;
 
-    #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'children')]
+    #[ORM\ManyToOne(targetEntity: Artisan::class, inversedBy: 'children')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Member $member = null;
+    private ?Artisan $artisan = null;
 
     public function __construct()
     {
@@ -159,20 +159,20 @@ class Child
     }
 
     /**
-     * @return Member|null
+     * @return Artisan|null
      */
-    public function getMember(): ?Member
+    public function getArtisan(): ?Artisan
     {
-        return $this->member;
+        return $this->artisan;
     }
 
     /**
-     * @param Member|null $member
+     * @param Artisan|null $artisan
      * @return Child
      */
-    public function setMember(?Member $member): Child
+    public function setArtisan(?Artisan $artisan): Child
     {
-        $this->member = $member;
+        $this->artisan = $artisan;
         return $this;
     }
 

@@ -2,50 +2,35 @@
 
 namespace App\Controller\Cnmci;
 
-use App\Entity\Member;
-use App\Helper\DataTableHelper;
-use App\Repository\MemberRepository;
-use App\Service\Member\MemberService;
-use Doctrine\DBAL\Connection;
-use SplFileInfo;
+use App\Entity\Artisan;
+use App\Service\Artisan\ArtisanService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Conditional;
-use PhpOffice\PhpSpreadsheet\Style\ConditionalFormatting\Wizard;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Style;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 
-#[Route('/cnmci')]
+#[Route('/cnmci/validate')]
 class ValidationController extends AbstractController
 {
-     #[Route('/validate/paiement-souscription/batch', name: 'cnmci_validate_payment_batch', methods: ['GET', 'POST'])]
-    public function validateBatchPayment(Request $request, MemberService $memberService): Response
+     #[Route('/paiement-souscription/batch', name: 'cnmci_validate_payment_batch', methods: ['GET', 'POST'])]
+    public function validateBatchPayment(Request $request, ArtisanService $artisanService): Response
     {
-        if(!empty($request->get('ids'))) $memberService->validatePaymentBatch($request->get('ids'));
+        if(!empty($request->get('ids'))) $artisanService->validatePaymentBatch($request->get('ids'));
         return $this->json('SUCCESS');
     }
 
-    #[Route('/validate/souscription-cnmci/batch', name: 'cnmci_validation_souscription_batch', methods: ['POST'])]
-    public function validateSouscriptionBatch(Request $request, MemberService $memberService): Response
+    #[Route('/enrolement-cnmci/batch', name: 'cnmci_validation_enrolement_batch', methods: ['POST'])]
+    public function validateEnrolementBatch(Request $request, ArtisanService $artisanService): Response
     {
-        if(!empty($request->get('ids'))) $memberService->validateSouscriptionBatch($request->get('ids'));
+        if(!empty($request->get('ids'))) $artisanService->validateEnrolementBatch($request->get('ids'));
         return $this->json('SUCCESS');
     }
 
-    #[Route('/validate/souscription-cnmci', name: 'cnmci_validation_souscription', methods: ['POST', 'GET'])]
-    public function validateSouscription(Request $request, MemberService $memberService): Response
+    #[Route('/enrolement-cnmci', name: 'cnmci_validation_enrolement', methods: ['POST', 'GET'])]
+    public function validateEnrolement(Request $request, ArtisanService $artisanService): Response
     {
-        $response = $memberService->validateSouscription(
-            intval($request->get('member_id')),
+        $response = $artisanService->validateEnrolement(
+            intval($request->get('artisan_id')),
             $request->get('cnmci_numero_rm'),
             $request->get('cnmci_carte_professionelle')
         );
@@ -53,20 +38,40 @@ class ValidationController extends AbstractController
         else return $this->json('FAILED');
     }
 
-    #[Route('/validate/paiement-souscription/{id}', name: 'cnmci_validate_payment', methods: ['GET', 'POST'])]
-    public function validatePayment(Member $member, MemberService $memberService): Response
+    #[Route('/reject-enrolement-cnmci', name: 'cnmci_reject_enrolement', methods: ['POST', 'GET'])]
+    public function rejectEnrolement(Request $request, ArtisanService $artisanService): Response
     {
-        if($member && !$member->getIsPaymentValidated()) $memberService->validatePayment($member);
+        $response = $artisanService->rejectEnrolement(
+            intval($request->get('artisan_enrolement_reject_id')),
+            $request->get('reason_reject_enrolement')
+        );
+        if($response) return $this->json('SUCCESS');
+        else return $this->json('FAILED');
+    }
+
+    #[Route('/reject-paiement-cnmci', name: 'cnmci_reject_payment', methods: ['POST', 'GET'])]
+    public function rejectPayment(Request $request, ArtisanService $artisanService): Response
+    {
+        $response = $artisanService->rejectPayment(
+            intval($request->get('artisan_payment_reject_id')),
+            $request->get('reason_reject_payment')
+        );
+        if($response) return $this->json('SUCCESS');
+        else return $this->json('FAILED');
+    }
+
+    #[Route('/paiement-enrolement/{id}', name: 'cnmci_validate_payment', methods: ['GET', 'POST'])]
+    public function validatePayment(Artisan $artisan, ArtisanService $artisanService): Response
+    {
+        if($artisan && !$artisan->getIsPaymentValidated()) $artisanService->validatePayment($artisan);
         return $this->json('SUCCESS');
     }
 
     #[Route('/generate/virtual-cnmci-carte/{id}', name: 'cnmci_generate_virtual-cnmci-carte', methods: ['GET', 'POST'])]
-    public function generateCnmciCard(Member $member, MemberService $memberService): Response
+    public function generateCnmciCard(Artisan $artisan, ArtisanService $artisanService): Response
     {
-        $memberService->generateSingleCnmciCard($member);
-      //  if($member && $member->getIsInscriptionValidated()) $memberService->generateSingleCnmciCard($member);
+        $artisanService->generateSingleCnmciCard($artisan);
+      //  if($artisan && $artisan->getIsInscriptionValidated()) $artisanService->generateSingleCnmciCard($artisan);
         return $this->json('SUCCESS');
     }
-
-
 }

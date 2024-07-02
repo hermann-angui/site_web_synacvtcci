@@ -32,7 +32,7 @@ class ConfigurationController extends AbstractController
         $paramDB = $connection->getParams();
         $table = 'configuration';
         $primaryKey = 'id';
-        $member = null;
+        $artisan = null;
         $columns = [
             [
                 'db' => 'id',

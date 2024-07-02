@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 
+use App\Repository\CrmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,41 +22,65 @@ class Crm
     #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'member', targetEntity: Member::class, cascade: ["remove", "persist"], orphanRemoval: true)]
-    private ?Collection $members;
+    #[ORM\OneToMany(mappedBy: 'artisan', targetEntity: Artisan::class, cascade: ["remove", "persist"], orphanRemoval: true)]
+    private ?Collection $artisans;
 
     public function __construct()
     {
-        $this->members = new ArrayCollection();
+        $this->artisans = new ArrayCollection();
     }
 
     /**
-     * @return Collection<int, Member>
+     * @return Collection<int, Artisan>
      */
-    public function getMembers(): ?Collection
+    public function getArtisans(): ?Collection
     {
-        return $this->members;
+        return $this->artisans;
     }
 
-    public function addMember(Member $member): self
+    public function addArtisan(Artisan $artisan): self
     {
-        if (!$this->members->contains($member)) {
-            $this->members[] = $member;
-            $member->setCrm($this);
+        if (!$this->artisans->contains($artisan)) {
+            $this->artisans[] = $artisan;
+            $artisan->setCrm($this);
         }
 
         return $this;
     }
 
-    public function removeMember(Member $member): self
+    public function removeArtisan(Artisan $artisan): self
     {
-        if ($this->members->removeElement($member)) {
+        if ($this->artisans->removeElement($artisan)) {
             // set the owning side to null (unless already changed)
-            if ($member->getCrm() === $this) {
-                $member->setCrm(null);
+            if ($artisan->getCrm() === $this) {
+                $artisan->setCrm(null);
             }
         }
 
         return $this;
     }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): Crm
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): Crm
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+
 }

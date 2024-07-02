@@ -44,12 +44,12 @@
                                 <div class="card-body border-bottom">
                                     <div class="d-flex justify-content-end">
                                         <div class="flex-shrink-0">
-                                            <a href="{{ path('admin_member_index') }}" class="btn btn-primary waves-effect waves-light">Quitter</a>
+                                            <a href="{{ path('admin_artisan_index') }}" class="btn btn-primary waves-effect waves-light">Quitter</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="card-title mb-4">Dossier N° : <strong class="badge bg-gradient bg-info p-2">{{ member.trackingCode }}</strong></h4>
+                                    <h4 class="card-title mb-4">Dossier N° : <strong class="badge bg-gradient bg-info p-2">{{ artisan.trackingCode }}</strong></h4>
                                     <div class="row">
                                         <h2 class="section-title">INFORMATIONS PERSONNELLES</h2>
                                         <table class="table table-condensed table-bordered px-5">
@@ -57,83 +57,79 @@
                                             <tr>
                                                 <th colspan="2" width="5%">
                                                     <div class="d-flex justify-content-center">
-                                                        <label for="member_registration_edit_photo" class="d-block d-flex justify-content-center align-content-center">
-                                                            {% if member.photo is null %}
+                                                        <label for="artisan_registration_edit_photo" class="d-block d-flex justify-content-center align-content-center">
+                                                            {% if artisan.photo is null %}
                                                                 <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="" width="100" class="rounded-2">
                                                             {% else %}
-                                                                <img id="imagePreview" src="{{ asset('members/') }}{{ member.reference }}/{{ member.photo }}" alt="" width="200" class="rounded-2">
+                                                                <img id="imagePreview" src="{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.photo }}" alt="" width="200" class="rounded-2">
                                                             {% endif %}
                                                         </label>
                                                     </div>
                                                 </th>
                                             </tr>
                                             <tr>
-                                                <th>Matricule</th>
-                                                <td>{{ member.matricule }}</td>
-                                            </tr>
-                                            <tr>
                                                 <th>Sexe</th>
-                                                <td>{{ member.sex }}</td>
+                                                <td>{{ artisan.sex }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Nom</th>
-                                                <td>{{ member.lastName }}</td>
+                                                <td>{{ artisan.lastName }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Prénoms</th>
-                                                <td>{{ member.firstName }}</td>
+                                                <td>{{ artisan.firstName }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Email</th>
-                                                <td>{{ member.email }}</td>
+                                                <td>{{ artisan.email }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Numéro Mobile</th>
-                                                <td>{{ member.mobile }}</td>
+                                                <td>{{ artisan.mobile }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Numéro Whatsapp</th>
-                                                <td>{{ member.Whatsapp }}</td>
+                                                <td>{{ artisan.Whatsapp }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Numéro Fixe</th>
-                                                <td>{{ member.phone }}</td>
+                                                <td>{{ artisan.phone }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Ville de naissance</th>
-                                                <td>{{ member.birthCity }}</td>
+                                                <td>{{ artisan.birthCity }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Pays de naissance</th>
-                                                <td>{{ member.birthCountry }}</td>
+                                                <td>{{ artisan.birthCountry }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Date de naissance</th>
-                                                <td>{{ member.dateOfBirth ? member.dateOfBirth|date('d-m-Y') }}</td>
+                                                <td>{{ artisan.dateOfBirth ? artisan.dateOfBirth|date('d-m-Y') }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Localité de naissance</th>
-                                                <td>{{ member.birthLocality }}</td>
+                                                <td>{{ artisan.birthLocality }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Nationalité</th>
-                                                <td>{{ member.nationality }}</td>
+                                                <td>{{ artisan.nationality }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Situation géographique de résidence</th>
-                                                <td>{{ member.commune }}</td>
+                                                <td>{{ artisan.commune }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Ville résidence</th>
-                                                <td>{{ member.city }}</td>
+                                                <td>{{ artisan.city }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Quartier de résidence</th>
-                                                <td>{{ member.quartier }}</td>
+                                                <td>{{ artisan.quartier }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Boîte postale</th>
-                                                <td>{{ member.postalCode }}</td>
+                                                <td>{{ artisan.postalCode }}</td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -144,45 +140,45 @@
                                             <tbody>
                                             <tr>
                                                 <th>Compagnie de VTC</th>
-                                                <td>{{ member.company ? member.company|json_encode: "" }}</td>
+                                                <td>{{ artisan.company ? artisan.company|json_encode: "" }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Type de la pièce d'identite (CNI ou Carte consulaire)</th>
-                                                <td>{{ member.IdType }}</td>
+                                                <td>{{ artisan.IdType }}</td>
                                             </tr>
                                             <tr>
                                                 <th>N° Pièce d'identité</th>
-                                                <td>{{ member.IdNumber }}</td>
+                                                <td>{{ artisan.IdNumber }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Autorité délivrant la pièce d'identité</th>
-                                                <td>{{ member.IdDeliveryAuthority }}</td>
+                                                <td>{{ artisan.IdDeliveryAuthority }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Délivré le</th>
-                                                <td>{{ member.IdDeliveryDate ? member.IdDeliveryDate| date('d-m-Y')  : ''}}</td>
+                                                <td>{{ artisan.IdDeliveryDate ? artisan.IdDeliveryDate| date('d-m-Y')  : ''}}</td>
                                             </tr>
                                             <tr>
                                                 <th>Lieu d'établissement de la pièce d'identité</th>
-                                                <td>{{ member.IdDeliveryPlace }}</td>
+                                                <td>{{ artisan.IdDeliveryPlace }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Numéro du permis de conduire</th>
-                                                <td>{{ member.drivingLicenseNumber }}</td>
+                                                <td>{{ artisan.drivingLicenseNumber }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Scan pièce d'identité</th>
                                                 <td>
-                                                    <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPieceFront }}" alt="" width="300" class="rounded-2">
-                                                    <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPieceBack }}" alt="" width="300" class="rounded-2">
+                                                    <img src="{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.photoPieceFront }}" alt="" width="300" class="rounded-2">
+                                                    <img src="{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.photoPieceBack }}" alt="" width="300" class="rounded-2">
 
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>Scan permis d'identité</th>
                                                 <td>
-                                                    <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPermisFront }}" alt="" width="300" class="rounded-2">
-                                                    <img src="{{ asset('members/') }}{{ member.reference }}/{{ member.photoPermisBack }}" alt="" width="300" class="rounded-2">
+                                                    <img src="{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.photoPermisFront }}" alt="" width="300" class="rounded-2">
+                                                    <img src="{{ asset('artisans/') }}{{ artisan.reference }}/{{ artisan.photoPermisBack }}" alt="" width="300" class="rounded-2">
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -194,27 +190,27 @@
                                             <tbody>
                                             <tr>
                                                 <th>Situation matrimoniale</th>
-                                                <td>{{ member.etatCivil }}</td>
+                                                <td>{{ artisan.etatCivil }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Prénoms conjoint</th>
-                                                <td>{{ member.partnerFirstName }}</td>
+                                                <td>{{ artisan.partnerFirstName }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Nom conjoint</th>
-                                                <td>{{ member.partnerLastName }}</td>
+                                                <td>{{ artisan.partnerLastName }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Nom personne à contacter</th>
-                                                <td>{{ member.referantLastName }}</td>
+                                                <td>{{ artisan.referantLastName }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Prénoms personne à contacter </th>
-                                                <td>{{ member.referantFirstName }}</td>
+                                                <td>{{ artisan.referantFirstName }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Numéro Téléphone personne à contacter</th>
-                                                <td>{{ member.referantMobile }}</td>
+                                                <td>{{ artisan.referantMobile }}</td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -225,33 +221,25 @@
                                             <tbody>
                                             <tr>
                                                 <th>Code reçu de paiement Orange money</th>
-                                                <td>{{ member.paymentReceiptCnmciCode }}</td>
+                                                <td>{{ artisan.paymentReceiptCnmciCode }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Reçu orange</th>
                                                 <td>
-                                                    {% if member.paymentReceiptCnmciPdf %}
-                                                        <embed src="/members/{{ member.reference }}/{{ member.paymentReceiptCnmciPdf }}" width="500" height="375" type="application/pdf">
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Documents scannés</th>
-                                                <td>
-                                                    {% if member.scanDocumentIdentitePdf %}
-                                                        <embed src="/members/{{ member.reference }}/{{ member.scanDocumentIdentitePdf }}" width="500" height="375" type="application/pdf">
+                                                    {% if artisan.paymentReceiptCnmciPdf %}
+                                                        <embed src="/artisans/{{ artisan.reference }}/{{ artisan.paymentReceiptCnmciPdf }}" width="500" height="375" type="application/pdf">
                                                     {% endif %}
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    {% if member.children|length %}
+                                    {% if artisan.children|length %}
                                     <div class="row">
                                         <h2 class="section-title">ENFANTS</h2>
                                         <table class="table table-bordered px-5">
                                             <tbody>
-                                            {% for child in member.children %}
+                                            {% for child in artisan.children %}
                                             <tr>
                                                 <td><span class="text-dark">Nom:</span> {{ child.lastName }}</td>
                                                 <td><span class="text-dark">Prénoms : </span>{{ child.firstName }}</td>
@@ -263,8 +251,8 @@
                                     </div>
                                     {% endif %}
                                     <div class="row d-flex justify-content-center mt-5">
-                                        {% if member.etape == 2 %}
-                                            <a href="{{ path('admin_payment_choose',{'id': member.id}) }}" class="btn btn-success btn-lg waves-effect waves-light col-md-3"> Enregistrer et passer au paiement &nbsp;<i class="fa fa-arrow-right fa-1x"></i></a>
+                                        {% if artisan.etape == 2 %}
+                                            <a href="{{ path('admin_payment_choose',{'id': artisan.id}) }}" class="btn btn-success btn-lg waves-effect waves-light col-md-3"> Enregistrer et passer au paiement &nbsp;<i class="fa fa-arrow-right fa-1x"></i></a>
                                         {% else %}
                                             <a href="{{ path('admin_index')}}" class="btn btn-primary btn-lg waves-effect waves-light col-md-3"><i class="fa fa-save fa-1x"></i>  &nbsp; Enregistrer et quitter</a>
                                         {% endif %}

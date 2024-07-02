@@ -1,0 +1,173 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <link href="{{ asset('assets/admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+          rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
+    <style>
+        .nav-tabs-custom .nav-item .nav-link.active {
+            color: #61001b;
+        }
+        .nav-link:focus, .nav-link:hover {
+            color: #61001b;
+            text-decoration: none;
+        }
+        .nav-tabs-custom .nav-item .nav-link::after {
+            background: #61001b;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="layout-wrapper">
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('admin/_partials/header.html.twig') }}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {{ include('admin/_partials/left-sidebar.html.twig') }}
+            <!-- Left Sidebar End -->
+        {% endif %}
+
+        {% if is_granted('ROLE_AGENT') %}
+            {{ include('admin/_partials/simple-header.html.twig') }}
+        {% endif %}
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18"></h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row mb-4">
+                                        <div class="d-flex justify-content-between">
+                                            <div><h4 class="card-title mb-3">LISTE DES CONTRAVENTIONS</h4></div>
+                                            <div><a href="{{ path('cnmci_new_contravention')}}" class="btn btn-sm btn-dark"><i class="bx bx-plus align-middle"></i> Enregistrer une contravention</a></div>
+                                        </div><!--end col-->
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="search-box me-2 mb-2 d-inline-block w-50">
+                                                <div class="position-relative">
+                                                    <input type="search" class="form-control" id="search_numero_contravention" placeholder="Saisir le n° de la contravention ici...">
+                                                    <i class="bx bx-search-alt search-icon"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="btn-group" role="group" aria-label="">
+                                                <input type="radio" class="btn-check" name="filtre" id="filtreImpaye" value="0" autocomplete="off" checked="">
+                                                <label class="btn btn-outline-primary" for="filtreImpaye">En attente de paiement</label>
+
+                                                <input type="radio" class="btn-check" name="filtre" value="1" id="filtrePaye" autocomplete="off">
+                                                <label class="btn btn-outline-primary" for="filtrePaye">Déjà payeés</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table mt-2">
+                                        {{ include('contravention/_contraventions_datatable.html.twig') }}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ asset('assets/admin/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/frontend/js/vendor/jquery.datetimepicker.full.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/datatables.net-responsive-bs4/js/dataTables.responsive.min.js') }}"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+
+        var datatable = initDatatable();
+
+        $("#btn-filter").click(function(){
+            datatable.draw();
+        });
+
+        $("#search_numero_contravention").change(function(e){
+           datatable.draw();
+        });
+
+        $("#filtreImpaye").click(function(e){
+            datatable.draw();
+        });
+
+        $("#filtrePaye").click(function(e){
+            datatable.draw();
+        });
+
+        function initDatatable(){
+           var dt = $('#datatable').DataTable( {
+                bLengthChange : true,
+                responsive: true,
+                searching: false,
+                pageLength: 15,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/French.json',
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                    lengthMenu: "Afficher _MENU_ entrées",
+                    zeroRecords: "Aucune entrée correspondante trouvée",
+                    oPaginate: {
+                        sNext: '<i class="mdi mdi-chevron-right"></i>',
+                        sPrevious: '<i class="mdi mdi-chevron-left"></i>'
+                    },
+                   // processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                },
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    "url": '{{ path('cnmci_contravention_datatable') }}',
+                    "data": function (d) {
+                        d.search_numero_contravention = $('#search_numero_contravention').val()
+                        d.filtre = $("input[name='filtre']:checked").val()
+                    }
+                },
+                columns: [
+                    {"data":  "contravention_numero" },
+                    {"data":  "nom_controleur" },
+                    {"data":  "infraction_type" },
+                    { "data": "infraction_date" },
+                    { "data": "infraction_lieu" },
+                    { "data": "is_paid" },
+                    { "data": "vehicule_immatriculation" },
+                    { "data": "vehicule_marque" },
+                ],
+                order: [[3, 'desc']],
+                drawCallback: function () {
+                   $(".dataTables_paginate").addClass("pagination-rounded");
+                }
+            });
+           return dt;
+       }
+    });
+</script>
+{% endblock %}

@@ -34,14 +34,6 @@ class MediaAsset
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified_at;
 
-    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'mediaAssets')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Article $article = null;
-
-    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'mediaAssets')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Article $album = null;
-
     public function __construct()
     {
         $this->created_at = new \DateTime();
@@ -62,7 +54,7 @@ class MediaAsset
 
     /**
      * @param \DateTimeInterface|null $created_at
-     * @return Member
+     * @return Artisan
      */
     public function setCreatedAt(?\DateTimeInterface $created_at): self
     {
@@ -80,7 +72,7 @@ class MediaAsset
 
     /**
      * @param \DateTimeInterface|null $modified_at
-     * @return Member
+     * @return Artisan
      */
     public function setModifiedAt(?\DateTimeInterface $modified_at): self
     {
@@ -139,24 +131,6 @@ class MediaAsset
     public function setFile(?string $file): MediaAsset
     {
         $this->file = $file;
-        return $this;
-    }
-
-    /**
-     * @return Article|null
-     */
-    public function getArticle(): ?Article
-    {
-        return $this->article;
-    }
-
-    /**
-     * @param Article|null $article
-     * @return MediaAsset
-     */
-    public function setArticle(?Article $article): MediaAsset
-    {
-        $this->article = $article;
         return $this;
     }
 
