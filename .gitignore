@@ -1,7 +1,7 @@
 .idea
 .vscode
 res
-db
+db/
 app/var
 app/vendor
 app/*.zip

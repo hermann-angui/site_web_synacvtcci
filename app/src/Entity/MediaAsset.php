@@ -152,23 +152,6 @@ class MediaAsset
         return $this;
     }
 
-    /**
-     * @return Article|null
-     */
-    public function getAlbum(): ?Article
-    {
-        return $this->album;
-    }
-
-    /**
-     * @param Article|null $album
-     * @return MediaAsset
-     */
-    public function setAlbum(?Article $album): MediaAsset
-    {
-        $this->album = $album;
-        return $this;
-    }
 
 
 }

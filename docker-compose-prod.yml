@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
 
-  db:
+  database:
     image: mariadb:10.5
-    container_name: db
+    container_name: database
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: QT6e5APtSYaU
